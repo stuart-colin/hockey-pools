@@ -4,7 +4,7 @@ import axios from 'axios';
 const URL = 'https://statsapi.web.nhl.com/api/v1/teams';
 
 const Teams = () => {
-  const [teams, setTeams] = useState({});
+  const [teams, setTeams] = useState({teams: ['']});
 
   useEffect(() => {
     const getTeams = async () => {
@@ -15,15 +15,17 @@ const Teams = () => {
     getTeams();
   }, []);
 
-  // const renderedTeams = teams.map((teams) => {
-  //   return <li key={teams.id}>{teams.name}</li>
-  // });
-    
-  console.log(teams.teams);
+  // if (teams.teams) {
+    const renderedTeams = teams.teams.map((team) => {
+    return <li key={team.link}>{team.name}</li>
+  });
+  // }
 
   return (
-    <div>Teams</div>
-    // <ul>{renderedTeams}</ul>
+      <div>
+        <h1>Teams</h1>
+        <ul>{renderedTeams}</ul>
+      </div>
   );
 };
 
