@@ -5,14 +5,14 @@ import Stats from '../api/Stats';
 const URL = 'https://statsapi.web.nhl.com/api/v1/people/';
 
 const Search = () => {
-  const [playerId, setPlayerId] = useState('');
+  const [playerId, setPlayerId] = useState('8476453');
   const [debouncedTerm, setDebouncedTerm] = useState(playerId);
   const [playerList, setPlayerList] = useState({people: ['']});
 
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedTerm(playerId);
-    }, 1000)
+    }, 0)
 
     return () => {
       clearTimeout(timerId);
@@ -30,7 +30,7 @@ const Search = () => {
       search();
     };
 
-  }, [debouncedTerm]);
+  }, [debouncedTerm, playerId]);
 
   // useEffect(() => {
 
