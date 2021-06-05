@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const URL = 'http://localhost:5001/_api/rosters';
+// const URL = 'http://localhost:5001/_api/rosters';
 
 const testRoster = {
   participant: {
@@ -41,7 +41,7 @@ const testRoster = {
 }
 
 const ParticipantRoster = () => {
-  const [roster, setRoster] = useState();
+  // const [roster, setRoster] = useState();
 
   // useEffect(() => {
   //   const getRoster = async () => {

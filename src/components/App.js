@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PlayerLookup from './PlayerLookup';
-import Teams from '../api/Teams';
-import Stats from '../api/Stats';
-import ParticipantRoster from './ParticipantRoster';
+// import Teams from '../api/Teams';
+// import Stats from '../api/Stats';
+// import ParticipantRoster from './ParticipantRoster';
 
 // const playerId = '8476453';
 

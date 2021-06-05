@@ -22,7 +22,7 @@ const Stats = ({ playerId, playerName }) => {
     }
     
     getStatList();
-  }, [playerId]);
+  });
 
   const goals = statList.stats[0].splits[0].stat.goals;
   const assists = statList.stats[0].splits[0].stat.assists;
@@ -31,10 +31,10 @@ const Stats = ({ playerId, playerName }) => {
   const renderedStats = statList.stats.map((stat) => {
     return (
       <div>
-        <li key={''}>Goals: {goals}</li>
-        <li key={''}>Assists: {assists}</li>
-        <li key={''}>Overtime Goals: {overtimeGoals}</li>
-        <li key={''}>Total Pool Points: {overtimeGoals + assists + goals}</li>
+        <li key={'1'}>Goals: {goals}</li>
+        <li key={'2'}>Assists: {assists}</li>
+        <li key={'3'}>Overtime Goals: {overtimeGoals}</li>
+        <li key={'4'}>Total Pool Points: {overtimeGoals + assists + goals}</li>
       </div>
     );    
   });
