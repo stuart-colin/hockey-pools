@@ -4,20 +4,24 @@ import axios from 'axios';
 const URL = 'https://statsapi.web.nhl.com/api/v1/teams';
 
 const Teams = () => {
-  const [teams, setTeams] = useState({teams: ['']});
+  const [teamList, setTeamList] = useState({teams: ['']});
 
   useEffect(() => {
-    const getTeams = async () => {
+    const getTeamList = async () => {
       const { data } = await axios.get(URL);
-      setTeams(data);
+      setTeamList(data);
     }
     
-    getTeams();
+    getTeamList();
   }, []);
 
   // if (teams.teams) {
-    const renderedTeams = teams.teams.map((team) => {
-    return <li key={team.link}>{team.name}</li>
+    const renderedTeams = teamList.teams.map((team) => {
+    return (
+      <div>
+        <li key={team.id}><a href={team.officialSiteUrl}>{team.name}</a></li>
+      </div>
+    );    
   });
   // }
 
