@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import StatsNew from '../api/StatsNew';
 
 // const URL = 'http://localhost:5001/_api/rosters';
@@ -43,6 +43,13 @@ const testRoster = {
 
 const ParticipantRoster = () => {
   // const [roster, setRoster] = useState();
+  const [pointTotal, setPointTotal] = useState(0);
+
+  const getPlayerTotal = (points) => {
+    if (points > 0) {
+      setPointTotal(pointTotal + points)
+    }
+  };
 
   // useEffect(() => {
   //   const getRoster = async () => {
@@ -56,45 +63,59 @@ const ParticipantRoster = () => {
   return (
     <div className="ui container">
       <div className="ui header">
-        <div>
-          <h2>{testRoster.participant.name}</h2>
-          <h3>{testRoster.participant.region}, {testRoster.participant.country}</h3>
+        <div className="ui four column stackable grid">
+          <div className="four column row">
+            <div className="middle aligned column">
+              <h2>{testRoster.participant.name}</h2>
+              <h3>{testRoster.participant.region}, {testRoster.participant.country}</h3>
+            </div>
+            <div className="middle aligned column">
+            <div className="ui small statistic">
+                <div className="value">
+                  {pointTotal}
+                </div>
+                <div className="label">
+                  Pool Points
+                </div>
+              </div>  
+            </div>
+          </div>
         </div>
       </div>
       <div className="ui four column stackable grid">
         <div className="content">
-          <ul><h4>Left Wing</h4></ul>
-          <ul><StatsNew id={testRoster.roster.left.playerId1} /></ul>
-          <ul><StatsNew id={testRoster.roster.left.playerId2} /></ul>
-          <ul><StatsNew id={testRoster.roster.left.playerId3} /></ul>
+          <ul key={'left position'}><h4>Left Wing</h4></ul>
+          <ul key={'left 1 stats'}><StatsNew id={testRoster.roster.left.playerId1} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'left 2 stats'}><StatsNew id={testRoster.roster.left.playerId2} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'left 3 stats'}><StatsNew id={testRoster.roster.left.playerId3} getPlayerTotal={getPlayerTotal}/></ul>
         </div>
         <div className="content">
-          <ul><h4>Center</h4></ul>
-          <ul><StatsNew id={testRoster.roster.center.playerId1} /></ul>
-          <ul><StatsNew id={testRoster.roster.center.playerId2} /></ul>
-          <ul><StatsNew id={testRoster.roster.center.playerId3} /></ul>
+          <ul key={'center position'}><h4>Center</h4></ul>
+          <ul key={'center 1 stats'}><StatsNew id={testRoster.roster.center.playerId1} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'center 2 stats'}><StatsNew id={testRoster.roster.center.playerId2} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'center 3 stats'}><StatsNew id={testRoster.roster.center.playerId3} getPlayerTotal={getPlayerTotal}/></ul>
         </div>
         <div className="content">
-          <ul><h4>Right Wing</h4></ul>
-          <ul><StatsNew id={testRoster.roster.right.playerId1} /></ul>
-          <ul><StatsNew id={testRoster.roster.right.playerId2} /></ul>
-          <ul><StatsNew id={testRoster.roster.right.playerId3} /></ul>
+          <ul key={'right position'}><h4>Right Wing</h4></ul>
+          <ul key={'right 1 stats'}><StatsNew id={testRoster.roster.right.playerId1} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'right 2 stats'}><StatsNew id={testRoster.roster.right.playerId2} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'right 3 stats'}><StatsNew id={testRoster.roster.right.playerId3} getPlayerTotal={getPlayerTotal}/></ul>
         </div>
         <div className="content">
-          <ul><h4>Defense</h4></ul>
-          <ul><StatsNew id={testRoster.roster.defense.playerId1} /></ul>
-          <ul><StatsNew id={testRoster.roster.defense.playerId2} /></ul>
-          <ul><StatsNew id={testRoster.roster.defense.playerId3} /></ul>
-          <ul><StatsNew id={testRoster.roster.defense.playerId4} /></ul>
+          <ul key={'defense position'}><h4>Defense</h4></ul>
+          <ul key={'defense 1 stats'}><StatsNew id={testRoster.roster.defense.playerId1} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'defense 2 stats'}><StatsNew id={testRoster.roster.defense.playerId2} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'defense 3 stats'}><StatsNew id={testRoster.roster.defense.playerId3} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'defense 4 stats'}><StatsNew id={testRoster.roster.defense.playerId4} getPlayerTotal={getPlayerTotal}/></ul>
         </div>
         <div className="content">
-          <ul><h4>Goalie</h4></ul>
-          <ul><StatsNew id={testRoster.roster.goalie.playerId1} /></ul>
-          <ul><StatsNew id={testRoster.roster.goalie.playerId2} /></ul>
+          <ul key={'goalie position'}><h4>Goalie</h4></ul>
+          <ul key={'goalie 1 stats'}><StatsNew id={testRoster.roster.goalie.playerId1} getPlayerTotal={getPlayerTotal}/></ul>
+          <ul key={'goalie 2 stats'}><StatsNew id={testRoster.roster.goalie.playerId2} getPlayerTotal={getPlayerTotal}/></ul>
         </div>
         <div className="content">
-          <ul><h4>Utility</h4></ul>
-          <ul><StatsNew id={testRoster.roster.utility.playerId1} /></ul>
+          <ul key={'utility position'}><h4>Utility</h4></ul>
+          <ul key={'utility stats'}><StatsNew id={testRoster.roster.utility.playerId1} getPlayerTotal={getPlayerTotal}/></ul>
         </div>
       </div>
     </div>

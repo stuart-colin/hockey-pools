@@ -20,7 +20,7 @@ const playerPlaceholder = {
   }]
 }
 
-const Stats = ({ id }) => {
+const Stats = ({ id, getPlayerTotal }) => {
   const [statList, setStatList] = useState(statsPlaceholder);
   const [playerList, setPlayerList] = useState(playerPlaceholder);
 
@@ -43,8 +43,12 @@ const Stats = ({ id }) => {
     getStatList();
   }, []);
 
+  useEffect(() => {
+    getPlayerTotal(playerStats()[6]);
+  }, [statList]);
+
   const playerName = playerList.people[0].fullName;
-  const playerPosition = playerList.people[0].primaryPosition.code;
+  const playerPosition = playerList.people[0].primaryPosition.abbreviation;
   const playerStats = () => {
     if (playerPosition === 'G') {
       const W = statList.stats[0].splits[0].stat.wins;
@@ -54,7 +58,7 @@ const Stats = ({ id }) => {
       const OTL = statList.stats[0].splits[0].stat.ot;
       const OTLLabel = 'OT Losses';
       const totalPoolPoints = W*2 + S*2 + OTL;
-      return [W, WLabel, S, SLabel, OTL, OTLLabel, totalPoolPoints.toString()];
+      return [W, WLabel, S, SLabel, OTL, OTLLabel, totalPoolPoints];
     } else {
       const G = statList.stats[0].splits[0].stat.goals;
       const GLabel = 'Goals';
@@ -63,7 +67,7 @@ const Stats = ({ id }) => {
       const OTG = statList.stats[0].splits[0].stat.overTimeGoals;
       const OTGLabel = 'OT Goals';
       const totalPoolPoints = G + A + OTG;
-      return [G, GLabel, A, ALabel, OTG, OTGLabel, totalPoolPoints.toString()];
+      return [G, GLabel, A, ALabel, OTG, OTGLabel, totalPoolPoints];
     };
   };
   
@@ -71,7 +75,7 @@ const Stats = ({ id }) => {
     return (
       <div className="ui card">
         <div className="content">
-          <div className="header">{playerPosition} : {playerName}</div>
+          <div className="header">{playerName} / {playerPosition}</div>
           <div className="ui two column relaxed stackable grid">
             <div className="middle aligned column">
               <div className="ui mini horizontal statistics">
@@ -104,7 +108,7 @@ const Stats = ({ id }) => {
           <div className="middle aligned column">
             <div className="ui small statistic">
               <div className="value">
-                {playerStats()[6]}
+                {playerStats()[6].toString()}
               </div>
               <div className="label">
                 Pool Points
