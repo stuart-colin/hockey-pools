@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Stats from '../api/Stats';
 
 const URL = 'https://statsapi.web.nhl.com/api/v1/people/';
 
-const Search = () => {
+const PlayerLookup = ({ onPlayerLookup }) => {
   const [playerId, setPlayerId] = useState('8476453');
   const [debouncedTerm, setDebouncedTerm] = useState(playerId);
   const [playerList, setPlayerList] = useState({people: ['']});
@@ -12,6 +11,7 @@ const Search = () => {
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedTerm(playerId);
+      
     }, 0)
 
     return () => {
@@ -32,11 +32,14 @@ const Search = () => {
 
   }, [debouncedTerm, playerId]);
 
-  // useEffect(() => {
-
-  // }, [playerId, playerList.length]);
+  useEffect(() => {
+    onPlayerLookup(playerId, playerName);
+  }, [playerList, playerId]);
 
   const playerName = playerList.people[0].fullName;
+
+
+  
 
   // const renderedResults = playerList.people.map((player) => {
   //   return (
@@ -60,9 +63,9 @@ const Search = () => {
       </div>
     </div>
     <div className="ui celled list">
-      <Stats playerId={playerId} playerName={playerName}/>
+      
     </div>
   </div>);
 };
 
-export default Search;
+export default PlayerLookup;
