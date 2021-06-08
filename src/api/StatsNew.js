@@ -73,40 +73,34 @@ const Stats = ({ id, getPlayerTotal }) => {
   
   const renderedStats = statList.stats.map(() => {
     return (
-      <div className="ui card">
+      <div key={id} className="ui card">
         <div className="content">
-          <div className="header">{playerName} / {playerPosition}</div>
-          <div className="ui two column relaxed stackable grid">
-            <div className="middle aligned column">
-              <div className="ui mini horizontal statistics">
-                <div className="statistic">
-                  <div className="value">
-                    {playerStats()[0]}
-                  </div>
-                  <div className="label">
-                    {playerStats()[1]}
-                  </div>
+          <div className="right floated meta">{playerPosition}</div>
+          <div className="header">{playerName}</div>
+        </div>
+        <div className="content">
+        <div className="ui two column relaxed stackable grid">
+          <div className="middle aligned column">
+            <div className="ui divided items">
+              <div className="item">
+                <div className="middle aligned content">
+                  <b>{playerStats()[0]}</b> {playerStats()[1]}
                 </div>
-                <div className="statistic">
-                  <div className="value">
-                    {playerStats()[2]}
-                  </div>
-                  <div className="label">
-                    {playerStats()[3]}
-                  </div>
+              </div>
+              <div className="item">
+                <div className="middle aligned content">
+                  <b>{playerStats()[2]}</b> {playerStats()[3]}
                 </div>
-                <div className="statistic">
-                  <div className="value">
-                    {playerStats()[4]}
-                  </div>
-                  <div className="label">
-                    {playerStats()[5]}
-                  </div>
+              </div>
+              <div className="item">
+                <div className="middle aligned content">
+                  <b></b>{playerStats()[4]} {playerStats()[5]}
                 </div>
               </div>
             </div>
+          </div>
           <div className="middle aligned column">
-            <div className="ui small statistic">
+            <div className="ui small teal statistic">
               <div className="value">
                 {playerStats()[6].toString()}
               </div>
@@ -114,8 +108,11 @@ const Stats = ({ id, getPlayerTotal }) => {
                 Pool Points
               </div>
             </div>  
-          </div>  
+          </div> 
         </div>
+          
+           
+        
       </div>
     </div>
       

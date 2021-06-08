@@ -70,7 +70,7 @@ const ParticipantRoster = () => {
               <h3>{testRoster.participant.region}, {testRoster.participant.country}</h3>
             </div>
             <div className="middle aligned column">
-            <div className="ui small statistic">
+            <div className="ui small teal statistic">
                 <div className="value">
                   {pointTotal}
                 </div>
