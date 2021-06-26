@@ -13,7 +13,7 @@ import Header from './Header';
 // const playerId = '8476453';
 
 const App = () => {
-  // const [rosterPoints, setRosterPoints] = useState(['']);
+  // const [rosterData, setRosterPoints] = useState(['']);
   const [selectedRoster, setSelectedRoster] = useState(['']);
 
   return (
@@ -31,14 +31,14 @@ const App = () => {
           {/* <AllRosters rosters={rosters} getRosterPoints={getRosterPoints}/> */}
           <ParticipantRoster
             selectedRoster={selectedRoster[0]}
-            rosterPoints={selectedRoster[1]}
+            rosterData={selectedRoster[1]}
           />
         </div>
         {/* <div><PlayerLookup onPlayerLookup={updatePlayerData}/></div> */}
         {/* <div><Player onPlayerLookup={updatePlayerData}/></div> */}
         {/* <div><Stats playerId={playerId} playerName={playerName}/></div> */}
         {/* <div><Teams /></div> */}
-        </div>
+      </div>
     </div>
   );
 }

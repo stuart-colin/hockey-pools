@@ -6,8 +6,8 @@ const URL = "https://assets.nhle.com/mugs/nhl/default-skater.png";
 const StandingsItem = ({ activeRoster, onRosterSelect }) => {
   const [rosterData, setRosterData] = useState();
 
-  const getRosterData = (data) => {
-    setRosterData(data);
+  const getRosterData = (points, players) => {
+    setRosterData([points, players]);
   }
 
   return (

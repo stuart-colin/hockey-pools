@@ -8,14 +8,14 @@ const StandingsList = ({ rosters, onRosterSelect }) => {
   useEffect(() => {
     const timeoutID = window.setTimeout(() => {
       setLoading(false)
-    }, 10000);
-    
+    }, 6000);
+
     return () => window.clearTimeout(timeoutID);
-    }, []);
+  }, []);
 
   const loadedStyle = () => {
     if (!loading) {
-      return  {display: "none"}
+      return { display: "none" }
     }
   }
 
@@ -23,7 +23,7 @@ const StandingsList = ({ rosters, onRosterSelect }) => {
     return (
       // <Sort by="onRosterSelect">
       //   { store.results.data.sort((a, b) => a.onRosterSelect)}
-      <StandingsItem 
+      <StandingsItem
         activeRoster={roster}
         onRosterSelect={onRosterSelect}
         key={roster.name}
@@ -35,8 +35,8 @@ const StandingsList = ({ rosters, onRosterSelect }) => {
   return (
     <div className="ui vertical segment">
       <div>
-        <div className="ui top attached header">
-          <h3>Standings</h3>
+        <div className="ui top attached centered blue header">
+          <h2>Standings</h2>
         </div>
         <div className="ui attached segment">
           <div className="ui middle aligned selection ordered list" >
