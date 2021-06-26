@@ -12,6 +12,7 @@ const out = [
   'Florida Panthers',
   'Minnesota Wild',
   'Nashville Predators',
+  'New York Islanders',
   'Pittsburgh Penguins',
   'St. Louis Blues',
   'Toronto Maple Leafs',
@@ -20,11 +21,11 @@ const out = [
   'Winnipeg Jets'
 ];
 
-const useStats = ( id ) => {
+const useStats = (id) => {
   const [playerName, setPlayerName] = useState('');
   const [playerPosition, setPlayerPosition] = useState('');
   const [playerTeam, setPlayerTeam] = useState('');
-  const [playerTeamLogo, setPlayerTeamLogo] = useState ('');
+  const [playerTeamLogo, setPlayerTeamLogo] = useState('');
   const [statList, setStatList] = useState('');
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const useStats = ( id ) => {
       const SLabel = 'Shutouts';
       const OTL = statList.ot;
       const OTLLabel = 'OT Losses';
-      const totalPoolPoints = W*2 + S*2 + OTL;
+      const totalPoolPoints = W * 2 + S * 2 + OTL;
       return [W, WLabel, S, SLabel, OTL, OTLLabel, totalPoolPoints];
     } else {
       const G = statList.goals;
