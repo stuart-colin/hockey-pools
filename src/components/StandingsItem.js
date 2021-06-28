@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RosterPoints from './RosterPoints';
 
 const URL = "https://assets.nhle.com/mugs/nhl/default-skater.png";

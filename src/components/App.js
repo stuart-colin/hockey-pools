@@ -20,7 +20,7 @@ const App = () => {
     <div>
       <Announcement />
       <Header />
-      <div className="ui grid">
+      <div className="ui stackable grid">
         <div className="three wide column">
           <StandingsList
             rosters={rosters}

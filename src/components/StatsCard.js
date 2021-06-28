@@ -4,7 +4,7 @@ import '../css/customStyle.css';
 
 const StatsCard = ({ id }) => {
   const player = usePlayer(id)
-  
+
   return (
     <div key={id} className={`ui blue card ${player.eliminated.includes(player.team) ? 'eliminated' : ''}`} alt={`${player.team} logo`}>
       <div className='logoBox'>
@@ -12,8 +12,8 @@ const StatsCard = ({ id }) => {
       </div>
       <div className="content">
         <div className="left floated meta">
-          <img className="ui mini circular image" src={player.photo} alt={`${player.name} Headshot`} />
-        </div>        
+          <img className="ui tiny circular image" src={player.photo} alt={`${player.name} Headshot`} />
+        </div>
         <div className="right floated meta">{player.position}</div>
         <div className="sub header">{player.name}</div>
         {player.team}
@@ -47,12 +47,12 @@ const StatsCard = ({ id }) => {
               <div className="label">
                 Pool Points
               </div>
-            </div>  
-          </div> 
+            </div>
+          </div>
         </div>
-      </div>        
+      </div>
     </div>
-  );    
+  );
 }
 
 export default StatsCard;
