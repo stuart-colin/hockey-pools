@@ -5,22 +5,8 @@ const playerDetailsEndpoint = 'https://statsapi.web.nhl.com/api/v1/people/';
 const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20202021';
 const logoUrl = 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/';
 const photoUrl = 'https://cms.nhl.bamgrid.com/images/headshots/current/168x168/';
-const out = [
-  'Boston Bruins',
-  'Carolina Hurricanes',
-  'Colorado Avalanche',
-  'Edmonton Oilers',
-  'Florida Panthers',
-  'Minnesota Wild',
-  'Montreal Canadiens',
-  'Nashville Predators',
-  'New York Islanders',
-  'Pittsburgh Penguins',
-  'St. Louis Blues',
-  'Toronto Maple Leafs',
-  'Vegas Golden Knights',
-  'Washington Capitals',
-  'Winnipeg Jets'
+const remainingTeams = [
+  'Tampa Bay Lightning'
 ];
 
 const useStats = (id) => {
@@ -74,7 +60,7 @@ const useStats = (id) => {
     team: playerTeam,
     logo: playerTeamLogo,
     stats: playerStats(),
-    eliminated: out
+    eliminated: remainingTeams,
   }
 }
 
