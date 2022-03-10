@@ -6,7 +6,7 @@ const PlayerPoints = ({ id, getPlayerTotal, getPlayersRemaining }) => {
 
   useEffect(() => {
     getPlayerTotal(player.stats[6]);
-    getPlayersRemaining(player.eliminated.includes(player.team) ? 0 : 1)
+    getPlayersRemaining(!player.eliminated.includes(player.team) ? 0 : 1)
   }, [player.stats[6]])
 
   return player.stats[6];
