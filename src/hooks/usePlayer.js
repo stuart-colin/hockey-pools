@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 
 const playerDetailsEndpoint = 'https://statsapi.web.nhl.com/api/v1/people/';
-const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs';
+// const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs'; // use for current year only
+const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20202021';
 const logoUrl = 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/';
 const photoUrl = 'https://cms.nhl.bamgrid.com/images/headshots/current/168x168/';
 const out = [
@@ -11,6 +12,7 @@ const out = [
   'Edmonton Oilers',
   'Florida Panthers',
   'Minnesota Wild',
+  'Montreal Canadiens',
   'Nashville Predators',
   'New York Islanders',
   'Pittsburgh Penguins',

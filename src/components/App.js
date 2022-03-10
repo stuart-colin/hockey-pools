@@ -45,7 +45,7 @@ const App = () => {
 
 export default App;
 
-const testRoster = {
+const testRosters = {
   participant: [{
     name: 'Michael Lai',
     region: 'Alberta',
@@ -2817,4 +2817,4 @@ const testRoster = {
   }]
 }
 
-const rosters = testRoster.participant;
+const rosters = testRosters.participant;
