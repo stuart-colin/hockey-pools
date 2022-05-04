@@ -6,7 +6,7 @@ const StatsCard = ({ id }) => {
   const player = usePlayer(id)
 
   return (
-    <div key={id} className={`ui blue card ${!player.eliminated.includes(player.team) ? 'eliminated' : ''}`} alt={`${player.team} logo`}>
+    <div key={id} className={`ui blue card ${player.eliminated.includes(player.team) ? 'eliminated' : ''}`} alt={`${player.team} logo`}>
       <div className='logoBox'>
         <img className='teamLogo' src={player.logo} alt={`${player.team} Logo`} />
       </div>

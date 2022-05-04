@@ -3,7 +3,7 @@ import PlayerPoints from './PlayerPoints';
 
 const RosterPoints = ({ activeRoster, getRosterData }) => {
   const [pointTotal, setPointTotal] = useState(0);
-  const [playersRemaining, setPlayersRemaining] = useState(0);
+  const [playersRemaining, setPlayersRemaining] = useState(-1);
 
   const idList = [
     activeRoster.season.roster.left.playerId1,

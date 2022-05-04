@@ -2,11 +2,26 @@ import { useState, useEffect } from 'react';
 
 const playerDetailsEndpoint = 'https://statsapi.web.nhl.com/api/v1/people/';
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs'; // use for current year only
-const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20202021';
+const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20212022';
 const logoUrl = 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/';
 const photoUrl = 'https://cms.nhl.bamgrid.com/images/headshots/current/168x168/';
-const remainingTeams = [
-  'Tampa Bay Lightning'
+const eliminated = [
+  'Anaheim Ducks',
+  'Arizona Coyotes',
+  'Buffalo Sabres',
+  'Chicago Blackhawks',
+  'Columbus Blue Jackets',
+  'Detroit Red Wings',
+  'Montreal Canadiens',
+  'New Jersey Devils',
+  'New York Islanders',
+  'Ottawa Senators',
+  'Philadelphia Flyers',
+  'San Jose Sharks',
+  'Seattle Kraken',
+  'Vancouver Canucks',
+  'Vegas Golden Knights',
+  'Winnipeg Jets'
 ];
 
 const useStats = (id) => {
@@ -24,8 +39,8 @@ const useStats = (id) => {
       const json2 = await res2.json();
       setPlayerName(json1.people[0].fullName);
       setPlayerPosition(json1.people[0].primaryPosition.abbreviation);
-      setPlayerTeam(json1.people[0].currentTeam.name)
-      setPlayerTeamLogo(logoUrl + json1.people[0].currentTeam.id + '.svg')
+      setPlayerTeam((json1.people[0].active ? json1.people[0].currentTeam.name : ''));
+      setPlayerTeamLogo((json1.people[0].active ? logoUrl + json1.people[0].currentTeam.id + '.svg' : ''));
       setStatList(json2.stats[0].splits[0].stat);
     };
     getPlayerData();
@@ -60,7 +75,7 @@ const useStats = (id) => {
     team: playerTeam,
     logo: playerTeamLogo,
     stats: playerStats(),
-    eliminated: remainingTeams,
+    eliminated: eliminated,
   }
 }
 
