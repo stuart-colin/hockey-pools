@@ -37,10 +37,11 @@ const useStats = (id) => {
       const json1 = await res1.json();
       const res2 = await fetch(playerDetailsEndpoint + id + playoffStatsEndpoint);
       const json2 = await res2.json();
-      setPlayerName(json1.people[0].fullName);
-      setPlayerPosition(json1.people[0].primaryPosition.abbreviation);
-      setPlayerTeam((json1.people[0].active ? json1.people[0].currentTeam.name : ''));
-      setPlayerTeamLogo((json1.people[0].active ? logoUrl + json1.people[0].currentTeam.id + '.svg' : ''));
+      const player = json1.people[0];
+      setPlayerName(player.fullName);
+      setPlayerPosition(player.primaryPosition.abbreviation);
+      setPlayerTeam((player.active ? player.currentTeam.name : ''));
+      setPlayerTeamLogo((player.active ? logoUrl + player.currentTeam.id + '.svg' : ''));
       setStatList(json2.stats[0].splits[0].stat);
     };
     getPlayerData();

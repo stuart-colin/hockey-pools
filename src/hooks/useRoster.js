@@ -38,7 +38,7 @@ const RosterPoints = ({ activeRoster, getRosterData }) => {
     getRosterData(pointTotal, playersRemaining);
   }, [pointTotal])
 
-  const ids = idList.map((id) => {
+  idList.map((id) => {
     return (
       <PlayerPoints
         id={id}
