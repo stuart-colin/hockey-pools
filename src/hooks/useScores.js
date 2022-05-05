@@ -14,12 +14,21 @@ const useScores = () => {
       setGames(json1.games)
     };
     getScoreData();
-  }, []);
+    const interval = setInterval(() => {
+      getScoreData();
+      console.log('refresh')
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [setDate, setGames]);
 
+  const gameList = [];
+  for (const [day, game] of Object.entries(games)) {
+    gameList.push(game.scores)
+  }
 
   return {
     date: date,
-    games: games,
+    games: gameList,
   }
 }
 

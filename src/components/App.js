@@ -9,6 +9,7 @@ import ParticipantRoster from './ParticipantRoster';
 // import useStats from '../hooks/useStats';
 import Announcement from './Announcement';
 import Header from './Header';
+import Scoreboard from './Scoreboard';
 
 // const playerId = '8476453';
 
@@ -19,6 +20,7 @@ const App = () => {
   return (
     <div>
       <Announcement />
+      <Scoreboard />
       <Header />
       <div className="ui stackable grid">
         <div className="three wide column">

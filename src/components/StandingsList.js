@@ -8,7 +8,7 @@ const StandingsList = ({ rosters, onRosterSelect }) => {
   useEffect(() => {
     const timeoutID = window.setTimeout(() => {
       setLoading(false)
-    }, 7000);
+    }, 1000);
 
     return () => window.clearTimeout(timeoutID);
   }, []);
