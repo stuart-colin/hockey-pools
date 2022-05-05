@@ -16,7 +16,6 @@ const useScores = () => {
     getScoreData();
     const interval = setInterval(() => {
       getScoreData();
-      console.log('refresh')
     }, 60000);
     return () => clearInterval(interval);
   }, [setDate, setGames]);

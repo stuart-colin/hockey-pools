@@ -8,22 +8,26 @@ const Scoreboard = () => {
 
   const games = scoreboard.games.map(game => (
     <div className="item">
-      <div className="content">
-        <div className="header">
-          {/* <img className="ui avatar image" src={logoUrl + '20.svg'} /> */}
-          {Object.entries(game)[0][0]}: {Object.entries(game)[0][1]}
-          -
-          {/* <img className="ui avatar image" src={logoUrl + '18.svg'} /> */}
-          {Object.entries(game)[1][0]}: {Object.entries(game)[1][1]}
-        </div>
-      </div>
+      {/* <img className="ui avatar image" src={logoUrl + '20.svg'} /> */}
+      <a className="ui large label">
+        {Object.entries(game)[0][0]}: {Object.entries(game)[0][1]}
+      </a>
+      {/* <img className="ui avatar image" src={logoUrl + '18.svg'} /> */}
+      <a className="ui large label">
+        {Object.entries(game)[1][0]}: {Object.entries(game)[1][1]}
+      </a>
     </div>
   ))
 
   return (
-    <div className="ui center aligned">
-      <div className="ui small horizontal divided list">
-        Scores for {scoreboard.date}: {games}
+    <div className="ui center aligned header">
+      <div className="ui large horizontal list">
+        <div className="item">
+          <div className="extra content">
+            <a className="ui large blue label">{scoreboard.date}</a>
+          </div>
+        </div>
+        {games}
       </div>
     </div>
   )

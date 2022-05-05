@@ -7,7 +7,7 @@ import StandingsList from './StandingsList';
 import ParticipantRoster from './ParticipantRoster';
 // import AllRosters from './AllRosters';
 // import useStats from '../hooks/useStats';
-import Announcement from './Announcement';
+// import Announcement from './Announcement';
 import Header from './Header';
 import Scoreboard from './Scoreboard';
 
@@ -19,7 +19,6 @@ const App = () => {
 
   return (
     <div>
-      <Announcement />
       <Scoreboard />
       <Header />
       <div className="ui stackable grid">
