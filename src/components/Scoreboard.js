@@ -16,7 +16,9 @@ const Scoreboard = () => {
           game.status.progress.currentPeriodTimeRemaining.pretty,
           game.status.progress.currentPeriodOrdinal,
         ]
-      ) : gameList.push([game.scores, 'Coming Up', ''])
+      ) : game.status.state == 'FINAL'
+        ? gameList.push([game.scores, 'Final', ''])
+        : gameList.push([game.scores, 'Coming Up', ''])
   }
 
   const games = gameList.map(game => (
