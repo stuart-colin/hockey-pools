@@ -20,14 +20,11 @@ const useScores = () => {
     return () => clearInterval(interval);
   }, [setDate, setGames]);
 
-  const gameList = [];
-  for (const [day, game] of Object.entries(games)) {
-    gameList.push(game.scores)
-  }
+
 
   return {
     date: date,
-    games: gameList,
+    games: games,
   }
 }
 
