@@ -11,7 +11,6 @@ const RosterPoints = ({ activeRoster, getRosterData }) => {
   const roster = useRoster(id);
 
   if (!roster.loading) {
-    // console.log(roster.roster.left[0].name)
     rosterList.push(
       roster.roster.left[0],
       roster.roster.left[1],

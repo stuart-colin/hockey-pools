@@ -10,8 +10,6 @@ const StandingsItem = ({ activeRoster, onRosterSelect, loading }) => {
     setRosterData([points, players, roster]);
   }
 
-  console.log(rosterData)
-
   return (
     <div
       onClick={() => onRosterSelect([activeRoster, rosterData])}

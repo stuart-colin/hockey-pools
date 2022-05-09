@@ -16,7 +16,7 @@ import Scoreboard from './Scoreboard';
 const App = () => {
   // const [rosterData, setRosterPoints] = useState(['']);
   const [selectedRoster, setSelectedRoster] = useState([]);
-  console.log(selectedRoster)
+
   return (
     <div>
       <Scoreboard />
