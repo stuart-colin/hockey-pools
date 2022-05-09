@@ -3,12 +3,14 @@ import RosterPoints from './RosterPoints';
 
 const URL = "https://assets.nhle.com/mugs/nhl/default-skater.png";
 
-const StandingsItem = ({ activeRoster, onRosterSelect }) => {
+const StandingsItem = ({ activeRoster, onRosterSelect, loading }) => {
   const [rosterData, setRosterData] = useState();
 
-  const getRosterData = (points, players) => {
-    setRosterData([points, players]);
+  const getRosterData = (points, players, roster) => {
+    setRosterData([points, players, roster]);
   }
+
+  console.log(rosterData)
 
   return (
     <div

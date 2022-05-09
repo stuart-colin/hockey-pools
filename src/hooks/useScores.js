@@ -8,10 +8,10 @@ const useScores = () => {
 
   useEffect(() => {
     const getScoreData = async () => {
-      const res1 = await fetch(scoreDetailsEndpoint);
-      const json1 = await res1.json();
-      setDate(json1.date.pretty);
-      setGames(json1.games)
+      const res = await fetch(scoreDetailsEndpoint);
+      const json = await res.json();
+      setDate(json.date.pretty);
+      setGames(json.games)
     };
     getScoreData();
     const interval = setInterval(() => {

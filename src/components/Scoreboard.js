@@ -17,26 +17,26 @@ const Scoreboard = () => {
           game.status.progress.currentPeriodOrdinal,
         ]
       ) : game.status.state == 'FINAL'
-        ? gameList.push([game.scores, 'Final', ''])
-        : gameList.push([game.scores, 'Coming Up', ''])
+        ? gameList.push([game.scores, game.status.state, ''])
+        : gameList.push([game.scores, 'COMING UP', ''])
   }
 
   const games = gameList.map(game => (
     <div className="item">
       <div className="ui buttons">
         {/* <img className="ui avatar image" src={logoUrl + '20.svg'} /> */}
-        <div className="ui attached button">
+        <div className="ui attached button" style={{ cursor: "default" }}>
           {Object.entries(game[0])[0][0]}
           {`: `}
           {Object.entries(game[0])[0][1]}
         </div>
         {/* <img className="ui avatar image" src={logoUrl + '18.svg'} /> */}
-        <div className="ui attached button">
+        <div className="ui attached button" style={{ cursor: "default" }}>
           {Object.entries(game[0])[1][0]}
           {`: `}
           {Object.entries(game[0])[1][1]}
         </div>
-        <div className="ui basic attached button">
+        <div className="ui basic attached button" style={{ cursor: "default" }}>
           {Object.entries(game)[1][1]}
           {` `}
           {Object.entries(game)[2][1]}
@@ -50,7 +50,7 @@ const Scoreboard = () => {
       <div className="ui large horizontal list">
         <div className="item">
           <div className="extra content">
-            <a className="ui large blue label">{scoreboard.date}</a>
+            <a className="ui large blue label" style={{ cursor: "default" }}>{scoreboard.date}</a>
           </div>
         </div>
         {games}

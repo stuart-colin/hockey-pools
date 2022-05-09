@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import useRoster from '../hooks/useRoster';
 import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 // import useStats from '../hooks/useStats';
@@ -48,30 +49,30 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
       <div className="ui attached vertical segment">
         <div className="ui stackable grid">
           <div className="row">
-            <ul key={'left 1 stats'}><StatsCard id={selectedRoster.season.roster.left.playerId1} /></ul>
-            <ul key={'left 2 stats'}><StatsCard id={selectedRoster.season.roster.left.playerId2} /></ul>
-            <ul key={'left 3 stats'}><StatsCard id={selectedRoster.season.roster.left.playerId3} /></ul>
+            <ul key={'left 1 stats'}><StatsCard id={rosterData[2][0]} /></ul>
+            <ul key={'left 2 stats'}><StatsCard id={rosterData[2][1]} /></ul>
+            <ul key={'left 3 stats'}><StatsCard id={rosterData[2][2]} /></ul>
           </div>
           <div className="row">
-            <ul key={'center 1 stats'}><StatsCard id={selectedRoster.season.roster.center.playerId1} /></ul>
-            <ul key={'center 2 stats'}><StatsCard id={selectedRoster.season.roster.center.playerId2} /></ul>
-            <ul key={'center 3 stats'}><StatsCard id={selectedRoster.season.roster.center.playerId3} /></ul>
+            <ul key={'center 1 stats'}><StatsCard id={rosterData[2][3]} /></ul>
+            <ul key={'center 2 stats'}><StatsCard id={rosterData[2][4]} /></ul>
+            <ul key={'center 3 stats'}><StatsCard id={rosterData[2][5]} /></ul>
           </div>
           <div className="row">
-            <ul key={'right 1 stats'}><StatsCard id={selectedRoster.season.roster.right.playerId1} /></ul>
-            <ul key={'right 2 stats'}><StatsCard id={selectedRoster.season.roster.right.playerId2} /></ul>
-            <ul key={'right 3 stats'}><StatsCard id={selectedRoster.season.roster.right.playerId3} /></ul>
+            <ul key={'right 1 stats'}><StatsCard id={rosterData[2][6]} /></ul>
+            <ul key={'right 2 stats'}><StatsCard id={rosterData[2][7]} /></ul>
+            <ul key={'right 3 stats'}><StatsCard id={rosterData[2][8]} /></ul>
           </div>
           <div className="row">
-            <ul key={'defense 1 stats'}><StatsCard id={selectedRoster.season.roster.defense.playerId1} /></ul>
-            <ul key={'defense 2 stats'}><StatsCard id={selectedRoster.season.roster.defense.playerId2} /></ul>
-            <ul key={'defense 3 stats'}><StatsCard id={selectedRoster.season.roster.defense.playerId3} /></ul>
-            <ul key={'defense 4 stats'}><StatsCard id={selectedRoster.season.roster.defense.playerId4} /></ul>
+            <ul key={'defense 1 stats'}><StatsCard id={rosterData[2][9]} /></ul>
+            <ul key={'defense 2 stats'}><StatsCard id={rosterData[2][10]} /></ul>
+            <ul key={'defense 3 stats'}><StatsCard id={rosterData[2][11]} /></ul>
+            <ul key={'defense 4 stats'}><StatsCard id={rosterData[2][12]} /></ul>
           </div>
           <div className="row">
-            <ul key={'goalie 1 stats'}><StatsCard id={selectedRoster.season.roster.goalie.playerId1} /></ul>
-            <ul key={'goalie 2 stats'}><StatsCard id={selectedRoster.season.roster.goalie.playerId2} /></ul>
-            <ul key={'utility stats'}><StatsCard id={selectedRoster.season.roster.utility.playerId1} /></ul>
+            <ul key={'goalie 1 stats'}><StatsCard id={rosterData[2][13]} /></ul>
+            <ul key={'goalie 2 stats'}><StatsCard id={rosterData[2][14]} /></ul>
+            <ul key={'utility stats'}><StatsCard id={rosterData[2][15]} /></ul>
           </div>
         </div>
       </div>

@@ -1,58 +1,25 @@
 import { useState, useEffect } from 'react';
-import PlayerPoints from './PlayerPoints';
 
-const RosterPoints = ({ activeRoster, getRosterData }) => {
-  const [pointTotal, setPointTotal] = useState(0);
-  const [playersRemaining, setPlayersRemaining] = useState(-1);
+const rosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/';
 
-  const idList = [
-    activeRoster.season.roster.left.playerId1,
-    activeRoster.season.roster.left.playerId2,
-    activeRoster.season.roster.left.playerId3,
-    activeRoster.season.roster.center.playerId1,
-    activeRoster.season.roster.center.playerId2,
-    activeRoster.season.roster.center.playerId3,
-    activeRoster.season.roster.right.playerId1,
-    activeRoster.season.roster.right.playerId2,
-    activeRoster.season.roster.right.playerId3,
-    activeRoster.season.roster.defense.playerId1,
-    activeRoster.season.roster.defense.playerId2,
-    activeRoster.season.roster.defense.playerId3,
-    activeRoster.season.roster.defense.playerId4,
-    activeRoster.season.roster.goalie.playerId1,
-    activeRoster.season.roster.goalie.playerId2,
-    activeRoster.season.roster.utility.playerId1
-  ];
-
-  const getPlayerTotal = (points) => {
-    if (!isNaN(points)) {
-      setPointTotal(pointTotal + points);
-    }
-  };
-
-  const getPlayersRemaining = (players) => {
-    setPlayersRemaining(playersRemaining + players)
-  }
+const useRoster = (id) => {
+  const [roster, setRoster] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getRosterData(pointTotal, playersRemaining);
-  }, [pointTotal])
-
-  idList.map((id) => {
-    return (
-      <PlayerPoints
-        id={id}
-        getPlayerTotal={getPlayerTotal}
-        getPlayersRemaining={getPlayersRemaining}
-        key={id}
-      />
-    )
-  })
+    const getRoster = async () => {
+      const res = await fetch(rosterEndpoint + id);
+      const rosters = await res.json();
+      setRoster(rosters);
+      setLoading(false);
+    };
+    getRoster();
+  }, [id]);
 
   return {
-    playersRemaining: playersRemaining,
-    pointToal: pointTotal
+    roster: roster,
+    loading: loading,
   }
 }
 
-export default RosterPoints;
+export default useRoster;

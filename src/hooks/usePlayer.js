@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const playerDetailsEndpoint = 'https://statsapi.web.nhl.com/api/v1/people/';
+const playerDetailsEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/players/';
+const playerDetailsEndpointOld = 'https://statsapi.web.nhl.com/api/v1/people/';
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs'; // use for current year only
 const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20212022';
 const logoUrl = 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/';
@@ -24,7 +25,7 @@ const eliminated = [
   'Winnipeg Jets'
 ];
 
-const useStats = (id) => {
+const useStats = (playerId) => {
   const [playerName, setPlayerName] = useState('');
   const [playerPosition, setPlayerPosition] = useState('');
   const [playerTeam, setPlayerTeam] = useState('');
@@ -33,19 +34,22 @@ const useStats = (id) => {
 
   useEffect(() => {
     const getPlayerData = async () => {
-      const res1 = await fetch(playerDetailsEndpoint + id);
-      const json1 = await res1.json();
-      const res2 = await fetch(playerDetailsEndpoint + id + playoffStatsEndpoint);
-      const json2 = await res2.json();
-      const player = json1.people[0];
-      setPlayerName(player.fullName);
-      setPlayerPosition(player.primaryPosition.abbreviation);
+      // const res1 = await fetch(playerDetailsEndpoint + id);
+      // const player = await res1.json();
+      const res2 = await fetch(playerDetailsEndpointOld + playerId.nhl_id);
+      const player2 = await res2.json();
+      const player = player2.people[0];
+      setPlayerName(playerId.name);
+      setPlayerPosition(playerId.position);
       setPlayerTeam((player.active ? player.currentTeam.name : ''));
       setPlayerTeamLogo((player.active ? logoUrl + player.currentTeam.id + '.svg' : ''));
-      setStatList(json2.stats[0].splits[0].stat);
+      // player.stats[0].splits[0].stat = undefined ?
+      //   setStatList(null) :
+      //   setStatList(player2.stats[0].splits[0].stat);
+      setStatList(playerId.stats)
     };
     getPlayerData();
-  }, [id]);
+  }, [playerId.nhl_id]);
 
   const playerStats = () => {
     if (playerPosition === 'G') {
@@ -72,7 +76,7 @@ const useStats = (id) => {
   return {
     name: playerName,
     position: playerPosition,
-    photo: photoUrl + id + '.png',
+    photo: photoUrl + playerId.nhl_id + '.png',
     team: playerTeam,
     logo: playerTeamLogo,
     stats: playerStats(),

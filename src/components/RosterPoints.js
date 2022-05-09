@@ -1,29 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import PlayerPoints from './PlayerPoints';
+import useRoster from '../hooks/useRoster';
 
 const RosterPoints = ({ activeRoster, getRosterData }) => {
   // const [currentId, setCurrentId] = useState('');
   const [pointTotal, setPointTotal] = useState(0);
   const [playersRemaining, setPlayersRemaining] = useState(-1);
+  const rosterList = [];
+  const id = activeRoster.id;
+  const roster = useRoster(id);
 
-  const idList = [
-    activeRoster.season.roster.left.playerId1,
-    activeRoster.season.roster.left.playerId2,
-    activeRoster.season.roster.left.playerId3,
-    activeRoster.season.roster.center.playerId1,
-    activeRoster.season.roster.center.playerId2,
-    activeRoster.season.roster.center.playerId3,
-    activeRoster.season.roster.right.playerId1,
-    activeRoster.season.roster.right.playerId2,
-    activeRoster.season.roster.right.playerId3,
-    activeRoster.season.roster.defense.playerId1,
-    activeRoster.season.roster.defense.playerId2,
-    activeRoster.season.roster.defense.playerId3,
-    activeRoster.season.roster.defense.playerId4,
-    activeRoster.season.roster.goalie.playerId1,
-    activeRoster.season.roster.goalie.playerId2,
-    activeRoster.season.roster.utility.playerId1
-  ];
+  if (!roster.loading) {
+    // console.log(roster.roster.left[0].name)
+    rosterList.push(
+      roster.roster.left[0],
+      roster.roster.left[1],
+      roster.roster.left[2],
+      roster.roster.center[0],
+      roster.roster.center[1],
+      roster.roster.center[2],
+      roster.roster.right[0],
+      roster.roster.right[1],
+      roster.roster.right[2],
+      roster.roster.defense[0],
+      roster.roster.defense[1],
+      roster.roster.defense[2],
+      roster.roster.defense[3],
+      roster.roster.goalie[0],
+      roster.roster.goalie[1],
+      roster.roster.utility,
+    )
+  }
 
   const getPlayerTotal = (points) => {
     if (!isNaN(points)) {
@@ -36,16 +43,16 @@ const RosterPoints = ({ activeRoster, getRosterData }) => {
   }
 
   useEffect(() => {
-    getRosterData(pointTotal, playersRemaining);
+    getRosterData(pointTotal, playersRemaining, rosterList);
   }, [pointTotal])
 
-  const ids = idList.map((id) => {
+  const players = rosterList.map((playerId) => {
     return (
       <PlayerPoints
-        id={id}
+        playerId={playerId}
         getPlayerTotal={getPlayerTotal}
         getPlayersRemaining={getPlayersRemaining}
-        key={id}
+        key={activeRoster.id}
       />
     )
   })
@@ -55,7 +62,7 @@ const RosterPoints = ({ activeRoster, getRosterData }) => {
       <div className="left floated content">{playersRemaining}/16</div>
       <div className="right floated content">{pointTotal} Points</div>
       <div style={{ display: "none" }}>
-        {ids}
+        {players}
       </div>
     </div>
   )

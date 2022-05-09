@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import StandingsItem from './StandingsItem';
 import Sort from './Sort';
+import useUsers from '../hooks/useUsers';
 
-const StandingsList = ({ rosters, onRosterSelect }) => {
+const StandingsList = ({ onRosterSelect }) => {
   const [loading, setLoading] = useState(true);
+  const users = useUsers();
 
   useEffect(() => {
-    const timeoutID = window.setTimeout(() => {
-      setLoading(false)
-    }, 1000);
-
-    return () => window.clearTimeout(timeoutID);
-  }, []);
+    if (!users.loading) {
+      setLoading(false);
+    }
+  }, [users]);
 
   const loadedStyle = () => {
     if (!loading) {
       return { display: "none" }
+    } else {
+      return { paddingTop: 150 }
     }
   }
 
-  const renderedList = rosters.map((roster) => {
+  const renderedList = users.userList.map((user) => {
     return (
       // <Sort by="onRosterSelect">
       //   { store.results.data.sort((a, b) => a.onRosterSelect)}
       <StandingsItem
-        activeRoster={roster}
+        activeRoster={user}
         onRosterSelect={onRosterSelect}
-        key={roster.name}
+        key={user.name}
+        loading={users.loading}
       />
       // </Sort>
     )
@@ -40,10 +43,12 @@ const StandingsList = ({ rosters, onRosterSelect }) => {
         </div>
         <div className="ui attached segment">
           <div className="ui middle aligned selection ordered list" >
-            {renderedList}
             <div className="ui active inverted dimmer" style={loadedStyle()}>
-              <div className="ui text loader">Fetching Scores...</div>
+              <div className="ui text loader">
+                Loading Standings...
+              </div>
             </div>
+            {renderedList}
           </div>
         </div>
       </div>

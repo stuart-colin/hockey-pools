@@ -7,7 +7,7 @@ import StandingsList from './StandingsList';
 import ParticipantRoster from './ParticipantRoster';
 // import AllRosters from './AllRosters';
 // import useStats from '../hooks/useStats';
-// import Announcement from './Announcement';
+import Announcement from './Announcement';
 import Header from './Header';
 import Scoreboard from './Scoreboard';
 
@@ -15,16 +15,17 @@ import Scoreboard from './Scoreboard';
 
 const App = () => {
   // const [rosterData, setRosterPoints] = useState(['']);
-  const [selectedRoster, setSelectedRoster] = useState(['']);
-
+  const [selectedRoster, setSelectedRoster] = useState([]);
+  console.log(selectedRoster)
   return (
     <div>
       <Scoreboard />
+      <Announcement />
       <Header />
       <div className="ui stackable grid">
         <div className="three wide column">
           <StandingsList
-            rosters={rosters}
+            // rosters={rosters}
             onRosterSelect={setSelectedRoster}
           />
         </div>
@@ -2820,4 +2821,4 @@ const testRosters = {
   ]
 }
 
-const rosters = testRosters.participant;
+// const rosters = testRosters.participant;
