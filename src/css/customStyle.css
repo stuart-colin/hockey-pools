@@ -19,7 +19,7 @@
 }
 
 .teamLogo {
-  opacity: 0.14;
+  opacity: 0.15;
   width: 420px;
   top: 0;
   left: 0;
@@ -27,7 +27,7 @@
   bottom: 0;
   position: absolute;
   pointer-events: none;
-  -webkit-filter: blur(2px);
+  -webkit-filter: blur(4px);
 }
 
 /* .teamLogo1::before {

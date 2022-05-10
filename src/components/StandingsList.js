@@ -3,7 +3,7 @@ import StandingsItem from './StandingsItem';
 import Sort from './Sort';
 import useUsers from '../hooks/useUsers';
 
-const StandingsList = ({ onRosterSelect }) => {
+const StandingsList = ({ selectedUser, onRosterSelect }) => {
   const [loading, setLoading] = useState(true);
   const users = useUsers();
 

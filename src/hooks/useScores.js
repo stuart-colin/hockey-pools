@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const scoreDetailsEndpoint = 'https://nhl-score-api.herokuapp.com/api/scores/latest';
+const date = new Date().toLocaleDateString().split('/');
+const scoreDetailsEndpoint = 'https://nhl-score-api.herokuapp.com/api/scores?startDate=' + date[2] + '-' + date[0] + '-' + date[1];
 
 const useScores = () => {
   const [date, setDate] = useState('');
@@ -10,8 +11,8 @@ const useScores = () => {
     const getScoreData = async () => {
       const res = await fetch(scoreDetailsEndpoint);
       const json = await res.json();
-      setDate(json.date.pretty);
-      setGames(json.games)
+      setDate(json[0].date.pretty);
+      setGames(json[0].games)
     };
     getScoreData();
     const interval = setInterval(() => {

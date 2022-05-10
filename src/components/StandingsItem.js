@@ -3,8 +3,8 @@ import RosterPoints from './RosterPoints';
 
 const URL = "https://assets.nhle.com/mugs/nhl/default-skater.png";
 
-const StandingsItem = ({ activeRoster, onRosterSelect, loading }) => {
-  const [rosterData, setRosterData] = useState();
+const StandingsItem = ({ activeRoster, onRosterSelect }) => {
+  const [rosterData, setRosterData] = useState([]);
 
   const getRosterData = (points, players, roster) => {
     setRosterData([points, players, roster]);
@@ -13,7 +13,8 @@ const StandingsItem = ({ activeRoster, onRosterSelect, loading }) => {
   return (
     <div
       onClick={() => onRosterSelect([activeRoster, rosterData])}
-      className="item">
+      className="item"
+    >
       <img
         className="ui left floated avatar image"
         src={URL} alt="participant avatar"></img>
@@ -22,6 +23,7 @@ const StandingsItem = ({ activeRoster, onRosterSelect, loading }) => {
         <RosterPoints
           activeRoster={activeRoster}
           getRosterData={getRosterData}
+          key={activeRoster.id}
         />
         {/* <div className="left floated content">10/16</div> */}
       </div>
