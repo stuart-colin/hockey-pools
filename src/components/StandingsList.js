@@ -5,6 +5,7 @@ import useUsers from '../hooks/useUsers';
 
 const StandingsList = ({ selectedUser, onRosterSelect }) => {
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState('false');
   const users = useUsers();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
       <StandingsItem
         activeRoster={user}
         onRosterSelect={onRosterSelect}
-        key={user.name}
+        key={user.name} overflowY
         loading={users.loading}
       />
       // </Sort>
@@ -38,21 +39,40 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
   return (
     <div className="ui vertical segment">
       <div>
-        <div className="ui top attached centered blue header">
-          <h2>Standings</h2>
-        </div>
-        <div className="ui attached segment" style={{ maxHeight: '65em', overflowY: 'auto', overflowX: 'hidden' }}>
-          <div className="ui middle aligned selection ordered list" >
-            <div className="ui active inverted dimmer" style={loadedStyle()}>
-              <div className="ui text loader">
-                Loading Standings...
+        <div className="ui top blue centered attached header" onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+          <div className='ui stackable grid'>
+            <div className="ui three column row">
+              <div className='left aligned column'>
+                <h3>
+                  {visible &&
+                    <i className="ui small angle double up icon"></i>
+                  }
+                  {!visible &&
+                    <i className="ui small angle double down icon"></i>
+                  }
+                </h3>
+              </div>
+              <div className='middle aligned column'>
+                <h2>Standings</h2>
               </div>
             </div>
-            {renderedList}
           </div>
         </div>
+        {
+          visible &&
+          <div className="ui attached segment" style={{ maxHeight: '85em', overflowY: 'auto', overflowX: 'hidden' }}>
+            <div className="ui middle aligned selection ordered list" >
+              <div className="ui active inverted dimmer" style={loadedStyle()}>
+                <div className="ui text loader">
+                  Loading Standings...
+                </div>
+              </div>
+              {renderedList}
+            </div>
+          </div>
+        }
       </div>
-    </div>
+    </div >
   )
 };
 

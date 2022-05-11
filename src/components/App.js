@@ -19,21 +19,21 @@ const App = () => {
 
   return (
     <div>
-      <Scoreboard />
       <Announcement />
-      <Header />
       <div className="ui stackable grid">
-        <div className="three wide column">
-          <StandingsList
-            // rosters={rosters}
-            onRosterSelect={setSelectedRoster}
-          />
-        </div>
         <div className="thirteen wide column">
+          <Header />
+          <Scoreboard />
           {/* <AllRosters rosters={rosters} getRosterPoints={getRosterPoints}/> */}
           <ParticipantRoster
             selectedRoster={selectedRoster[0]}
             rosterData={selectedRoster[1]}
+          />
+        </div>
+        <div className="three wide column">
+          <StandingsList
+            // rosters={rosters}
+            onRosterSelect={setSelectedRoster}
           />
         </div>
         {/* <div><PlayerLookup onPlayerLookup={updatePlayerData}/></div> */}
