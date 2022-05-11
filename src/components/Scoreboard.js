@@ -8,56 +8,40 @@ const Scoreboard = () => {
 
   function localDate(date) {
     let newDate = new Date(date);
-    return newDate.toLocaleTimeString([], { timeStyle: 'short' });
+    return newDate.toLocaleTimeString(undefined, { timeStyle: 'short' });
   }
 
-  const gameList = [];
-  for (const [index, game] of Object.entries(scoreboard.games)) {
-    game.status.state == 'LIVE' ?
-      gameList.push(
-        [
-          game.scores,
-          game.status.progress.currentPeriodTimeRemaining.pretty,
-          game.status.progress.currentPeriodOrdinal,
-        ]
-      ) : game.status.state == 'FINAL' ?
-        gameList.push(
-          [
-            game.scores,
-            game.status.state,
-            '',
-          ]
-        ) : gameList.push(
-          [
-            game.scores,
-            localDate(game.startTime),
-            '',
-          ]
-        )
+  function prettyDate(date) {
+    let newDate = new Date(date);
+    return newDate.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' });
   }
-  const games = gameList.map((game, index) => (
+
+  const games = scoreboard.games.map((game, index) => (
     <div className="item" key={index}>
-      <div className="ui buttons" >
-        {/* <img className="ui avatar image" src={logoUrl + '20.svg'} /> */}
-        <div className="ui attached button" style={{ cursor: "default" }} >
-          {Object.entries(game[0])[0][0]}
-          {`: `}
-          {Object.entries(game[0])[0][1]}
+      <div className='ui small label'>
+        <div className="ui image label" style={{ cursor: "default" }} >
+          <img src={logoUrl + game.teams.away.team.id + '.svg'} />
+          {/* {game.teams.away.team.name} */}
+          {/* {`: `} */}
+          {game.teams.away.score}
+        </div>
+        <div className="ui image label" style={{ cursor: "default" }} >
+          <img src={logoUrl + game.teams.home.team.id + '.svg'} />
+          {/* {game.teams.home.team.name} */}
+          {/* {`: `} */}
+          {game.teams.home.score}
+        </div>
 
-        </div>
-        {/* <img className="ui avatar image" src={logoUrl + '18.svg'} /> */}
-        <div className="ui attached button" style={{ cursor: "default" }} >
-          {Object.entries(game[0])[1][0]}
-          {`: `}
-          {Object.entries(game[0])[1][1]}
-        </div>
-        <div className="ui basic attached button" style={{ cursor: "default" }} >
-          {Object.entries(game)[1][1]}
+        <div className="ui blue label" style={{ cursor: "default", verticalAlign: "middle" }} >
+
+          {game.linescore.currentPeriodTimeRemaining}
           {` `}
-          {Object.entries(game)[2][1]}
+          {game.linescore.currentPeriodTimeRemaining == 'Final'
+            ?
+            '' : game.linescore.currentPeriodOrdinal}
         </div>
       </div>
-    </div >
+    </div>
   ))
 
   return (
@@ -65,7 +49,7 @@ const Scoreboard = () => {
       <div className="ui large horizontal list">
         <div className="item">
           <div className="extra content">
-            <a className="ui large blue label" style={{ cursor: "default" }}>{scoreboard.date}</a>
+            <a className="ui large blue label" style={{ cursor: "default" }}>{prettyDate(scoreboard.date)}</a>
           </div>
         </div>
         {games}

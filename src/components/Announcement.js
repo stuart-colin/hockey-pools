@@ -13,7 +13,7 @@ const Announcement = () => {
   }
 
   return (
-    <div style={{ position: "fixed", right: 5, top: 5, zIndex: 100, width: 500 }}>
+    <div style={{ position: "fixed", right: 5, bottom: 5, zIndex: 100, width: 500, maxWidth: '100%' }}>
       <div className={`ui bottom attached small yellow message ${close()}`}>
 
         <p>{message}</p>
