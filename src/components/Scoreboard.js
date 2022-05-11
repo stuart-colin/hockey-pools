@@ -32,7 +32,7 @@ const Scoreboard = () => {
           {game.teams.home.score}
         </div>
 
-        <div className="ui blue label" style={{ cursor: "default", verticalAlign: "middle" }} >
+        <div className="ui label" style={{ cursor: "default", verticalAlign: "middle" }} >
           {game.status.abstractGameState == 'Final'
             ? game.status.abstractGameState
             : game.status.abstractGameState == 'Preview'
