@@ -33,12 +33,11 @@ const Scoreboard = () => {
         </div>
 
         <div className="ui blue label" style={{ cursor: "default", verticalAlign: "middle" }} >
-
-          {game.linescore.currentPeriodTimeRemaining}
-          {` `}
-          {game.linescore.currentPeriodTimeRemaining == 'Final'
-            ?
-            '' : game.linescore.currentPeriodOrdinal}
+          {game.status.abstractGameState == 'Final'
+            ? game.status.abstractGameState
+            : game.status.abstractGameState == 'Preview'
+              ? localDate(game.gameDate)
+              : game.linescore.currentPeriodTimeRemaining} {` `} {game.linescore.currentPeriodOrdinal}
         </div>
       </div>
     </div>
