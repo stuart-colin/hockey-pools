@@ -21,7 +21,7 @@ const App = () => {
     <div>
       <Announcement />
       <div className="ui stackable grid">
-        <div className="thirteen wide column">
+        <div className="twelve wide column">
           <Header />
           <Scoreboard />
           {/* <AllRosters rosters={rosters} getRosterPoints={getRosterPoints}/> */}
@@ -30,7 +30,7 @@ const App = () => {
             rosterData={selectedRoster[1]}
           />
         </div>
-        <div className="three wide column">
+        <div className="four wide column">
           <StandingsList
             // rosters={rosters}
             onRosterSelect={setSelectedRoster}
