@@ -16,7 +16,6 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
   };
 
   return (
-
     <div className="ui vertical segment" style={{ position: "sticky", top: 10 }}>
       <div className="ui top attached header">
         <div className="ui stackable grid">
@@ -46,7 +45,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
           </div>
         </div>
       </div>
-      <div className="ui attached vertical segment">
+      <div className="ui attached segment" style={{ maxHeight: '62em', overflowY: 'auto', overflowX: 'hidden' }}>
         <div className="ui stackable grid">
           <div className="row">
             <ul key={'left 1 stats'}><StatsCard id={rosterData[2][0]} /></ul>

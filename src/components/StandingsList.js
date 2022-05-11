@@ -41,7 +41,7 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
         <div className="ui top attached centered blue header">
           <h2>Standings</h2>
         </div>
-        <div className="ui attached segment">
+        <div className="ui attached segment" style={{ maxHeight: '65em', overflowY: 'auto', overflowX: 'hidden' }}>
           <div className="ui middle aligned selection ordered list" >
             <div className="ui active inverted dimmer" style={loadedStyle()}>
               <div className="ui text loader">

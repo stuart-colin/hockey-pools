@@ -37,7 +37,7 @@ const Scoreboard = () => {
             ? game.status.abstractGameState
             : game.status.abstractGameState == 'Preview'
               ? localDate(game.gameDate)
-              : game.linescore.currentPeriodTimeRemaining} {` `} {game.linescore.currentPeriodOrdinal}
+              : game.linescore.currentPeriodTimeRemaining + ` ` + game.linescore.currentPeriodOrdinal}
         </div>
       </div>
     </div>
