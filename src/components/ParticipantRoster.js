@@ -22,7 +22,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
         <div className="ui stackable grid">
           <div className="three column row">
             <div className="left aligned column">
-              <h3>
+              <h3 style={{ position: 'absolute' }}>
                 {visible &&
                   <i className="ui small angle double up icon"></i>
                 }

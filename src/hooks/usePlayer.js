@@ -14,6 +14,7 @@ const eliminated = [
   'Columbus Blue Jackets',
   'Detroit Red Wings',
   'Montreal Canadiens',
+  'Nashville Predators',
   'New Jersey Devils',
   'New York Islanders',
   'Ottawa Senators',

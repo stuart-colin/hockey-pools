@@ -20,7 +20,7 @@
 
 .teamLogo {
   opacity: 0.15;
-  width: 420px;
+  width: 450px;
   top: 0;
   left: 0;
   right: 0;
@@ -28,445 +28,85 @@
   position: absolute;
   pointer-events: none;
   -webkit-filter: blur(4px);
+  filter: blur(4px);
 }
 
-/* .teamLogo1::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/1.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining0 {
+  color: #ff0000;
 }
 
-.teamLogo2::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/2.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining1 {
+  color: #f71e26;
 }
 
-.teamLogo3::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/3.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining2 {
+  color: #ec2f3d;
 }
 
-.teamLogo4::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/4.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining3 {
+  color: #df3b50;
 }
 
-.teamLogo5::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/5.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining4 {
+  color: #d14461;
 }
 
-.teamLogo6::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/6.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining5 {
+  color: #c14b72;
 }
 
-.teamLogo7::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/7.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining6 {
+  color: #b05083;
 }
 
-.teamLogo8::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/8.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining7 {
+  color: #9e5293;
 }
 
-.teamLogo9::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/9.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining8 {
+  color: #8c53a2;
 }
 
-.teamLogo10::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/10.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining9 {
+  color: #7a52b1;
 }
 
-.teamLogo11::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/11.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining10 {
+  color: #684ec0;
 }
 
-.teamLogo12::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/12.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining11 {
+  color: #5649cd;
 }
 
-.teamLogo13::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/13.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-.teamLogo14::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/14.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining12 {
+  color: #4542da;
 }
 
-.teamLogo15::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/15.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining13 {
+  color: #3438e6;
 }
 
-.teamLogo16::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/16.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining14 {
+  color: #242cf0;
 }
 
-.teamLogo17::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/17.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining15 {
+  color: #131cf8;
 }
 
-.teamLogo18::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/18.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.playersRemaining16 {
+  color: #0000ff;
 }
 
-.teamLogo19::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/19.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.standings0 {
+  background-color: #ffd90077;
 }
 
-.teamLogo20::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/20.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.standings1 {
+  background-color: #c0c0c077;
 }
 
-.teamLogo21::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/21.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
+.standings1 {
+  background-color: #cd803279;
 }
-
-.teamLogo22::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/22.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo23::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/23.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo24::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/24.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo25::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/25.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo26::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/26.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo27::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/27.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo28::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/28.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo29::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/29.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo30::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/30.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo52::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/52.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo53::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/53.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo54::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/54.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-}
-
-.teamLogo55::before {
-  content: '';
-  opacity: 0.1;
-  background-image: url('https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/55.svg');
-  background-size: 400px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  -webkit-filter: blur(2px);
-} */
