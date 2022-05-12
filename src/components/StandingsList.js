@@ -58,19 +58,16 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
             </div>
           </div>
         </div>
-        {
-          visible &&
-          <div className="ui attached segment" style={{ maxHeight: '85em', overflowY: 'auto', overflowX: 'hidden' }}>
-            <div className="ui middle aligned selection ordered list" >
-              <div className="ui active inverted dimmer" style={loadedStyle()}>
-                <div className="ui text loader">
-                  Loading Standings...
-                </div>
+        <div className="ui attached segment" style={{ display: !visible ? 'none' : 'block', maxHeight: '85em', overflowY: 'auto', overflowX: 'hidden' }}>
+          <div className="ui middle aligned selection ordered list" >
+            <div className="ui active inverted dimmer" style={loadedStyle()}>
+              <div className="ui text loader">
+                Loading Standings...
               </div>
-              {renderedList}
             </div>
+            {renderedList}
           </div>
-        }
+        </div>
       </div>
     </div >
   )
