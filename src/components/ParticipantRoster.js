@@ -31,7 +31,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
   if (!selectedRoster) {
     return (
       <div className="ui vertical segment">
-        <div className="ui top blue centered attached header" onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+        <div className="ui top blue centered attached header">
           <h2>
             Select a roster...
           </h2>
