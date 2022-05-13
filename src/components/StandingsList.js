@@ -3,6 +3,27 @@ import StandingsItem from './StandingsItem';
 import Sort from './Sort';
 import useUsers from '../hooks/useUsers';
 
+const transitionStyle = {
+  transition: 'all 0.5s',
+}
+
+const collapsedStyle = {
+  ...transitionStyle,
+  maxHeight: '0em',
+  transition: 'all 0.5s',
+  overflow: 'hidden',
+  filter: 'opacity(0)',
+}
+
+const expandedStyle = {
+  ...transitionStyle,
+  maxHeight: '85em',
+  minHeight: '15em',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  filter: 'opacity(1)',
+}
+
 const StandingsList = ({ selectedUser, onRosterSelect }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState('false');
@@ -54,7 +75,7 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
             <h2>Standings</h2>
           </div>
         </div>
-        <div className="ui attached segment" style={{ display: !visible ? 'none' : 'block', maxHeight: '85em', minHeight: '15em', overflowY: 'auto', overflowX: 'hidden' }}>
+        <div className="ui attached segment" style={!visible ? collapsedStyle : expandedStyle}>
           <div className="ui active inverted dimmer" style={loadedStyle()}>
             <div className="ui text loader">
               Loading Standings...

@@ -39,6 +39,8 @@ const Scoreboard = () => {
               ? localDate(game.gameDate)
               : game.linescore.currentPeriodTimeRemaining + ` ` + game.linescore.currentPeriodOrdinal}
         </div>
+        {/* <br></br> */}
+        {/* <br></br>Series: {game.teams.away.leagueRecord.wins} - {game.teams.home.leagueRecord.wins} */}
       </div>
     </div>
   ))

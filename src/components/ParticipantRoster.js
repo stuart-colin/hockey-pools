@@ -2,17 +2,41 @@ import React, { useState, useEffect } from 'react';
 import useRoster from '../hooks/useRoster';
 import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
-// import useStats from '../hooks/useStats';
 import '../data/TempRosters';
 
-// const URL = 'http://localhost:5001/_api/rosters';
+const transitionStyle = {
+  transition: 'all 0.5s',
+}
+
+const collapsedStyle = {
+  ...transitionStyle,
+  maxHeight: '0em',
+  transition: 'all 0.5s',
+  overflow: 'hidden',
+  filter: 'opacity(0)',
+}
+
+const expandedStyle = {
+  ...transitionStyle,
+  maxHeight: '60em',
+  minHeight: '15em',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  filter: 'opacity(1)',
+}
 
 const ParticipantRoster = ({ selectedRoster, rosterData }) => {
   const [visible, setVisible] = useState('false');
 
   if (!selectedRoster) {
     return (
-      <div style={{ position: "sticky", top: 20, paddingLeft: 10 }}>Select a roster...</div>
+      <div className="ui vertical segment">
+        <div className="ui top blue centered attached header" onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+          <h2>
+            Select a roster...
+          </h2>
+        </div>
+      </div >
     )
   };
 
@@ -58,7 +82,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
           </div>
         </div>
       </div>
-      <div className="ui attached segment" style={{ display: !visible ? 'none' : 'block', maxHeight: '64.7em', overflowY: 'auto', overflowX: 'hidden' }}>
+      <div className="ui attached segment" style={!visible ? collapsedStyle : expandedStyle}>
         <div className="ui stackable grid">
           <div className="row">
             <ul key={'left 1 stats'}><StatsCard id={rosterData[2][0]} /></ul>
