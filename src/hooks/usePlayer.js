@@ -9,6 +9,7 @@ const photoUrl = 'https://cms.nhl.bamgrid.com/images/headshots/current/168x168/'
 const eliminated = [
   'Anaheim Ducks',
   'Arizona Coyotes',
+  'Boston Bruins',
   'Buffalo Sabres',
   'Chicago Blackhawks',
   'Columbus Blue Jackets',

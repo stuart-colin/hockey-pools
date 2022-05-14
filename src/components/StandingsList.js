@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import StandingsItem from './StandingsItem';
-import Sort from './Sort';
 import useUsers from '../hooks/useUsers';
 
 const transitionStyle = {
@@ -43,16 +42,12 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
 
   const renderedList = users.userList.map((user, index) => {
     return (
-      // <Sort by='onRosterSelect'>
-      //   { store.results.data.sort((a, b) => a.onRosterSelect)}
       <StandingsItem
         index={index}
         activeRoster={user}
         onRosterSelect={onRosterSelect}
-        key={user.name}
-        loading={users.loading}
+        key={index}
       />
-      // </Sort>
     )
   })
 
