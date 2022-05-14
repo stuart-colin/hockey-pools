@@ -60,8 +60,8 @@ const RosterPoints = ({ activeRoster, getRosterData }) => {
   return (
     <div key={id}>
       <div className={`left floated content playersRemaining${playersRemaining}`}>{playersRemaining}/16</div>
-      <div className="right floated content">{pointTotal} Points</div>
-      <div style={{ display: "none" }}>
+      <div className='right floated content'>{pointTotal} Points</div>
+      <div style={{ display: 'none' }}>
         {players}
       </div>
     </div>

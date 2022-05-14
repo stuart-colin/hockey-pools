@@ -37,13 +37,13 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
 
   const loadedStyle = () => {
     if (!loading) {
-      return { display: "none" }
+      return { display: 'none' }
     }
   }
 
   const renderedList = users.userList.map((user, index) => {
     return (
-      // <Sort by="onRosterSelect">
+      // <Sort by='onRosterSelect'>
       //   { store.results.data.sort((a, b) => a.onRosterSelect)}
       <StandingsItem
         index={index}
@@ -57,17 +57,17 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
   })
 
   return (
-    <div className="ui vertical segment">
+    <div className='ui vertical segment'>
       <div>
-        <div className="ui top blue centered attached header" onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+        <div className='ui top blue centered attached header' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
 
           <div className='left aligned column' style={{ position: 'absolute' }}>
             <h3>
               {visible &&
-                <i className="ui small angle double up icon"></i>
+                <i className='ui small angle double up icon'></i>
               }
               {!visible &&
-                <i className="ui small angle double down icon"></i>
+                <i className='ui small angle double down icon'></i>
               }
             </h3>
           </div>
@@ -75,13 +75,13 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
             <h2>Standings</h2>
           </div>
         </div>
-        <div className="ui attached segment" style={!visible ? collapsedStyle : expandedStyle}>
-          <div className="ui active inverted dimmer" style={loadedStyle()}>
-            <div className="ui text loader">
+        <div className='ui attached segment' style={!visible ? collapsedStyle : expandedStyle}>
+          <div className='ui active inverted dimmer' style={loadedStyle()}>
+            <div className='ui text loader'>
               Loading Standings...
             </div>
           </div>
-          <div className="ui middle aligned selection ordered list" >
+          <div className='ui middle aligned selection ordered list' >
             {renderedList}
           </div>
         </div>

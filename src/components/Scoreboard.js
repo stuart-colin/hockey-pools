@@ -17,22 +17,22 @@ const Scoreboard = () => {
   }
 
   const games = scoreboard.games.map((game, index) => (
-    <div className="item" key={index}>
+    <div className='item' key={index}>
       <div className='ui small label'>
-        <div className="ui image label" style={{ cursor: "default" }} >
+        <div className='ui image label' style={{ cursor: 'default' }} >
           <img src={logoUrl + game.teams.away.team.id + '.svg'} />
           {/* {game.teams.away.team.name} */}
           {/* {`: `} */}
           {game.teams.away.score}
         </div>
-        <div className="ui image label" style={{ cursor: "default" }} >
+        <div className='ui image label' style={{ cursor: 'default' }} >
           <img src={logoUrl + game.teams.home.team.id + '.svg'} />
           {/* {game.teams.home.team.name} */}
           {/* {`: `} */}
           {game.teams.home.score}
         </div>
 
-        <div className="ui label" style={{ cursor: "default", verticalAlign: "middle" }} >
+        <div className='ui label' style={{ cursor: 'default', verticalAlign: 'middle' }} >
           {game.status.abstractGameState == 'Final'
             ? game.status.abstractGameState
             : game.status.abstractGameState == 'Preview'
@@ -46,11 +46,11 @@ const Scoreboard = () => {
   ))
 
   return (
-    <div className="ui center aligned header" style={{ paddingTop: 5 }}>
-      <div className="ui large horizontal list">
-        <div className="item">
-          <div className="extra content">
-            <a className="ui large blue label" style={{ cursor: "default" }}>{prettyDate(scoreboard.date)}</a>
+    <div className='ui center aligned header' style={{ paddingTop: 5 }}>
+      <div className='ui large horizontal list'>
+        <div className='item'>
+          <div className='extra content'>
+            <a className='ui large blue label' style={{ cursor: 'default' }}>{prettyDate(scoreboard.date)}</a>
           </div>
         </div>
         {games}
