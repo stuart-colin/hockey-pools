@@ -11,8 +11,6 @@ import Announcement from './Announcement';
 import Header from './Header';
 import Scoreboard from './Scoreboard';
 
-// const playerId = '8476453';
-
 const App = () => {
   // const [rosterData, setRosterPoints] = useState(['']);
   const [selectedRoster, setSelectedRoster] = useState([]);

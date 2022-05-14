@@ -81,7 +81,7 @@ const StandingsList = ({ selectedUser, onRosterSelect }) => {
               Loading Standings...
             </div>
           </div>
-          <div className='ui middle aligned selection ordered list' >
+          <div className='ui middle aligned selection list' >
             {renderedList}
           </div>
         </div>
