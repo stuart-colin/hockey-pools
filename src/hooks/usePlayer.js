@@ -24,6 +24,7 @@ const eliminated = [
   'Seattle Kraken',
   'Vancouver Canucks',
   'Vegas Golden Knights',
+  'Washington Capitals',
   'Winnipeg Jets'
 ];
 
