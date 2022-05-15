@@ -23,6 +23,7 @@ const eliminated = [
   'Philadelphia Flyers',
   'San Jose Sharks',
   'Seattle Kraken',
+  'Toronto Maple Leafs',
   'Vancouver Canucks',
   'Vegas Golden Knights',
   'Washington Capitals',
