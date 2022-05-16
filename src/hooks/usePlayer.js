@@ -13,6 +13,7 @@ const eliminated = [
   'Buffalo Sabres',
   'Chicago Blackhawks',
   'Columbus Blue Jackets',
+  'Dallas Stars',
   'Detroit Red Wings',
   'Los Angeles Kings',
   'Minnesota Wild',
