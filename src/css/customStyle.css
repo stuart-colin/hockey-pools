@@ -1,6 +1,45 @@
+.expandedStandingsStyle {
+  transition: all 0.5s;
+  max-height: 92vh;
+  min-height: 15em;
+  overflow-y: auto;
+  overflow-x: hidden;
+  filter: opacity(1);
+}
+
+@media screen and (max-width: 767px) {
+  .expandedStandingsStyle {
+    max-height: 30vh;
+  }
+}
+
+.collapsedStandingsStyle {
+  transition: all 0.5s;
+  max-height: 0em;
+  overflow: hidden;
+  filter: opacity(0);
+}
+
+.expandedRosterStyle {
+  transition: all 0.5s;
+  max-height: 62vh;
+  min-height: 15em;
+  overflow-y: auto;
+  overflow-x: hidden;
+  filter: opacity(1);
+}
+
+.collapsedRosterStyle {
+  transition: all 0.5s;
+  max-height: 0em;
+  overflow: hidden;
+  filter: opacity(0);
+}
+
+
 .eliminated {
-  opacity: 0.4;
-  filter: grayscale(0.7);
+  opacity: 0.3;
+  filter: grayscale(0.8);
   transition: 1s;
 }
 
@@ -25,6 +64,19 @@
   left: 0;
   right: 0;
   bottom: 0;
+  position: absolute;
+  pointer-events: none;
+  -webkit-filter: blur(4px);
+  filter: blur(4px);
+}
+
+.teamLogoSlim {
+  opacity: 0.15;
+  width: 200px;
+  top: -1.5em;
+  left: 10em;
+  right: 0em;
+  bottom: 0em;
   position: absolute;
   pointer-events: none;
   -webkit-filter: blur(4px);
@@ -97,16 +149,4 @@
 
 .playersRemaining16 {
   color: #0000ff;
-}
-
-.standings0 {
-  background-color: #ffd90077;
-}
-
-.standings1 {
-  background-color: #c0c0c077;
-}
-
-.standings1 {
-  background-color: #cd803279;
 }

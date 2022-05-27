@@ -1,53 +1,40 @@
 import { useState, useEffect } from 'react';
+import eliminatedTeams from '../constants/eliminatedTeams';
 
-const playerDetailsEndpoint = 'https://statsapi.web.nhl.com/api/v1/people/';
+const playerDetailsEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/players/';
+const playerDetailsEndpointOld = 'https://statsapi.web.nhl.com/api/v1/people/';
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs'; // use for current year only
-const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20212022';
+// const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20212022';
 const logoUrl = 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/';
 const photoUrl = 'https://cms.nhl.bamgrid.com/images/headshots/current/168x168/';
-const eliminated = [
-  'Anaheim Ducks',
-  'Arizona Coyotes',
-  'Buffalo Sabres',
-  'Chicago Blackhawks',
-  'Columbus Blue Jackets',
-  'Detroit Red Wings',
-  'Montreal Canadiens',
-  'New Jersey Devils',
-  'New York Islanders',
-  'Ottawa Senators',
-  'Philadelphia Flyers',
-  'San Jose Sharks',
-  'Seattle Kraken',
-  'Vancouver Canucks',
-  'Vegas Golden Knights',
-  'Winnipeg Jets'
-];
 
-const useStats = (id) => {
+const useStats = (playerId) => {
   const [playerName, setPlayerName] = useState('');
   const [playerPosition, setPlayerPosition] = useState('');
   const [playerTeam, setPlayerTeam] = useState('');
   const [playerTeamLogo, setPlayerTeamLogo] = useState('');
   const [statList, setStatList] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getPlayerData = async () => {
-      const res1 = await fetch(playerDetailsEndpoint + id);
-      const json1 = await res1.json();
-      const res2 = await fetch(playerDetailsEndpoint + id + playoffStatsEndpoint);
-      const json2 = await res2.json();
-      const player = json1.people[0];
-      setPlayerName(player.fullName);
-      setPlayerPosition(player.primaryPosition.abbreviation);
+      const res1 = await fetch(playerDetailsEndpoint + playerId.id);
+      const player1 = await res1.json();
+      const res2 = await fetch(playerDetailsEndpointOld + playerId.nhl_id);
+      const player2 = await res2.json();
+      const player = player2.people[0];
+      setPlayerName(playerId.name);
+      setPlayerPosition(playerId.position);
       setPlayerTeam((player.active ? player.currentTeam.name : ''));
       setPlayerTeamLogo((player.active ? logoUrl + player.currentTeam.id + '.svg' : ''));
-      json2.stats[0].splits[0].stat = undefined ?
-        setStatList(null) :
-        setStatList(json2.stats[0].splits[0].stat);
+      // player.stats[0].splits[0].stat = undefined ?
+      //   setStatList(null) :
+      //   setStatList(player2.stats[0].splits[0].stat);
+      setStatList(player1.stats)
+      setLoading(false);
     };
     getPlayerData();
-  }, [id]);
+  }, [playerId.nhl_id, playerId.id, playerId.name, playerId.position]);
 
   const playerStats = () => {
     if (playerPosition === 'G') {
@@ -74,11 +61,12 @@ const useStats = (id) => {
   return {
     name: playerName,
     position: playerPosition,
-    photo: photoUrl + id + '.png',
+    photo: photoUrl + playerId.nhl_id + '.png',
     team: playerTeam,
     logo: playerTeamLogo,
     stats: playerStats(),
-    eliminated: eliminated,
+    eliminated: eliminatedTeams,
+    loading: loading,
   }
 }
 

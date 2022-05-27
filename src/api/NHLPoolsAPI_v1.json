@@ -1,1 +1,453 @@
-{"_type":"export","__export_format":4,"__export_date":"2022-05-06T03:57:37.346Z","__export_source":"insomnia.desktop.app:v2022.2.1","resources":[{"_id":"req_35b1add8f2ea42d98f9c31b5aac83825","parentId":"fld_c3384edcf0db4141817dfc6b76cd83fd","modified":1651808115659,"created":1649908950709,"url":"{{ _.base_uri }}{{ _.port }}/v1/rosters/","name":"Get Rosters","description":"## Description\nGets all available rosters, paginated. \n\n## Usage\nIncrease the `limit` query parameter to a larger number to get back more than the default 10 records back.\n\n## Response\nAn object of all the rosters, the rosters owner, roster id, and pagination information","method":"GET","body":{},"parameters":[{"id":"pair_92d548278d774cdfa7e498853e1f2956","name":"limit","value":"20","description":""},{"id":"pair_7c3720bfa1d94921a871a808055f9464","name":"","value":"","description":""}],"headers":[],"authentication":{},"metaSortKey":-1649908950832,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_c3384edcf0db4141817dfc6b76cd83fd","parentId":"wrk_cc16e3428b834e7fbe229fddf7d4cd76","modified":1649908940756,"created":1649908940756,"name":"Rosters","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1649908940756,"_type":"request_group"},{"_id":"wrk_cc16e3428b834e7fbe229fddf7d4cd76","parentId":null,"modified":1649902213545,"created":1649902213545,"name":"NHLPoolsAPI","description":"","scope":"collection","_type":"workspace"},{"_id":"req_1034d43bc60d445fa7da08fb9e20d948","parentId":"fld_c3384edcf0db4141817dfc6b76cd83fd","modified":1651807462011,"created":1649994128720,"url":"{{ _.base_uri }}{{ _.port }}/v1/rosters/6257a21473277255ec28477e","name":"Get Roster By Owner","description":"## Description\nGet the roster, as well as player stats based on position, for a specific owner id.\n\n## Usage\nappend the owner id to the end of the route.\n\n## Response\nAn object of the players by position, as well as their current playoff stats.","method":"GET","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1649908950807,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_498bd823cebf427ba43feb2cd72b8d81","parentId":"fld_c3384edcf0db4141817dfc6b76cd83fd","modified":1651809349131,"created":1649909435808,"url":"{{ _.base_uri }}{{ _.port }}/v1/rosters/","name":"Create Roster","description":"## Description\nCreates a roster based on the object body passed in\n\n## Usage\nmake a request with the following json payload.\nNote: Any player id passed into the roster that has not been added to the database, they will be automatically created. Any player id passed into the roster that has been created will be ignored.\n\n```JSON\n{\n\"owner\": \"ownerID\",\n\"center\": array[playerNHLID],\n\"left\": array[playerNHLID],\n\"right\": array[playerNHLID],\n\"defense\":array[playerNHLID],\n\"goalie\": array[playerNHLID],\n\"utility\": array[playerNHLID]\t\t\t\t\n}\n```\n\n## Response\n`200` if success","method":"POST","body":{"mimeType":"application/json","text":"{\n\t\"owner\":\"6257a21473277255ec28477e\",\n  \"center\": [8470638,8477492,8478402],\n\t\"left\": [8473419,8476455,8477444],\n\t\"right\": [8478420, 8477956, 8475820],\n\t\"defense\":[8479398,8480069,8475197,8479325],\n\t\"goalie\": [8475831,8471695],\n\t\"utility\": [8477934]\t\t\t\t\t\t\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_3b27ee8062ef49afb6fd10dc56c61348"}],"authentication":{},"metaSortKey":-1649908950782,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_b6182ae737c64cea9efe9404b46f47d9","parentId":"fld_96e0182fddea4e34bac78e5433e90ead","modified":1651808552257,"created":1649907178315,"url":"{{ _.base_uri }}{{ _.port }}/v1/players","name":"Get Players","description":"## Description\nGets all available players across all rosters, paginated. \n\n## Usage\nIncrease the `limit` query parameter to a larger number to get back more than the default 10 records back.\n\n## Response\nAn object of all the players, their info sans stats, and pagination information.","method":"GET","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1649907178315,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_96e0182fddea4e34bac78e5433e90ead","parentId":"wrk_cc16e3428b834e7fbe229fddf7d4cd76","modified":1649905336368,"created":1649905336368,"name":"Players","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1649905336368,"_type":"request_group"},{"_id":"req_645e1e76962c434ba29ce199a43cc1e8","parentId":"fld_96e0182fddea4e34bac78e5433e90ead","modified":1651808789142,"created":1649907364557,"url":"{{ _.base_uri }}{{ _.port }}/v1/players/6257a4ae360f4b0c6483c5d0","name":"Get Player By ID","description":"## Description\nGets player stats based on player id (in database, not nhl_id)\n\n## Usage\npass players database id in route\n\n## Response\nPlayers current playoff stats","method":"GET","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1649906994516.5,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_96fb387c604b41abb3fbe60d834d0a7c","parentId":"fld_96e0182fddea4e34bac78e5433e90ead","modified":1651808853452,"created":1649906810718,"url":"{{ _.base_uri }}{{ _.port }}/v1/players","name":"Create Player","description":"## Description\nCreates a player record in the database\n\n## Usage\nmake a request with the following json payload\n\n```\n{\n\"id\": \"nhl_id\"\t\t\n}\n```\n\n## Response\n`200` if successful","method":"POST","body":{"mimeType":"application/json","text":"{\n\t\"id\": \"8473419\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_e62ca25670c04218932a6b90c79654b5"}],"authentication":{},"metaSortKey":-1649906810718,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_2258f63d245a4257ab32c3dd33af356b","parentId":"fld_96e0182fddea4e34bac78e5433e90ead","modified":1651808996719,"created":1649907483268,"url":"{{ _.base_uri }}{{ _.port }}/v1/players/6257951a46ff6356f05054ec","name":"Delete Player","description":"## Description\nDeletes a player from the database, based on the player id (in database, not nhl_id)\n\n## Usage\npass players database id in route\n\n## Response\n`200` if success","method":"DELETE","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1649906810668,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_115c98fab49c4c25ad5bc5a3f8de7e93","parentId":"fld_27c23c6d3ad74d8793c4afc573118608","modified":1651808783723,"created":1649902721885,"url":"{{ _.base_uri }}{{ _.port }}/v1/users","name":"Get Users","description":"## Description\nGets all available users (owners), paginated. \n\n## Usage\nIncrease the `limit` query parameter to a larger number to get back more than the default 10 records back.\n\n## Response\nAn object of all the users, their data, and pagination information.","method":"GET","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1649904411157,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"fld_27c23c6d3ad74d8793c4afc573118608","parentId":"wrk_cc16e3428b834e7fbe229fddf7d4cd76","modified":1649902218989,"created":1649902218989,"name":"Users","description":"","environment":{},"environmentPropertyOrder":null,"metaSortKey":-1649902218989,"_type":"request_group"},{"_id":"req_75d15dd070cf4ee8bec6ea135001bf0a","parentId":"fld_27c23c6d3ad74d8793c4afc573118608","modified":1651808836670,"created":1649904411062,"url":"{{ _.base_uri }}{{ _.port }}/v1/users/62578534d205f35768960a1a","name":"Get User By ID","description":"## Description\nGets user info based on user id\n\n## Usage\npass users id in route\n\n## Response\nUser and basic information","method":"GET","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1649904411107,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_f1ba0bf0380e45079f3f39d9d021e159","parentId":"fld_27c23c6d3ad74d8793c4afc573118608","modified":1651808941224,"created":1649902826060,"url":"{{ _.base_uri }}{{ _.port }}/v1/users","name":"Create User","description":"## Description\nCreates a user record in the database\n\n## Usage\nmake a request with the following json payload\n\n```\n{\n\t\"name\": \"users name\",\n\t\"region\": \"City, State, Province\",\n\t\"country\": \"USA, CAN\"\n}\n```\n\n## Response\n`200` if successful","method":"POST","body":{"mimeType":"application/json","text":"{\n\t\"name\": \"test\",\n\t\"region\": \"test\",\n\t\"country\": \"test\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_fd5a1a8b9a3f424fa3f139e6627b9916"}],"authentication":{},"metaSortKey":-1649902721935,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_6b3f82d24d8c4c8881191bbc8a174b9b","parentId":"fld_27c23c6d3ad74d8793c4afc573118608","modified":1651808990039,"created":1649904456814,"url":"{{ _.base_uri }}{{ _.port }}/v1/users/62578534d205f35768960a1a","name":"Update User","description":"## Description\nUpdates a user record in the database\n\n## Usage\nmake a request with the following json payload\nNote, not all fields are required, only the fields that are intended to be updated\n\n```\n{\n\t\"name\": \"users name\",\n\t\"region\": \"City, State, Province\",\n\t\"country\": \"USA, CAN\"\n}\n```\n\n## Response\nuser object with updated values","method":"PATCH","body":{"mimeType":"application/json","text":"{\n\t\"name\": \"Dork\",\n\t\"region\": \"test\",\n\t\"country\": \"test\"\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json","id":"pair_fd5a1a8b9a3f424fa3f139e6627b9916"}],"authentication":{},"metaSortKey":-1646015958381.5,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_0d250916f2f048e68381745c2e34eca5","parentId":"fld_27c23c6d3ad74d8793c4afc573118608","modified":1651809019219,"created":1649905220737,"url":"{{ _.base_uri }}{{ _.port }}/v1/users/62578534d205f35768960a1a","name":"Delete User","description":"## Description\nDeletes a user from the database, based on the user id\n\n## Usage\npass users id in route\n\n## Response\n`200` if success","method":"DELETE","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1646015958331.5,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"env_f1f3b40af84709de8ba695423fbdd27a1760465b","parentId":"wrk_cc16e3428b834e7fbe229fddf7d4cd76","modified":1649902708470,"created":1649902213554,"name":"Base Environment","data":{},"dataPropertyOrder":{},"color":null,"isPrivate":false,"metaSortKey":1649902213554,"_type":"environment"},{"_id":"jar_f1f3b40af84709de8ba695423fbdd27a1760465b","parentId":"wrk_cc16e3428b834e7fbe229fddf7d4cd76","modified":1649902213557,"created":1649902213557,"name":"Default Jar","cookies":[],"_type":"cookie_jar"},{"_id":"spc_4278a42bed044a65b2d04b2dfebbb027","parentId":"wrk_cc16e3428b834e7fbe229fddf7d4cd76","modified":1649902213547,"created":1649902213547,"fileName":"NHLPoolsAPI","contents":"","contentType":"yaml","_type":"api_spec"},{"_id":"env_8da82de222f74b27add50665798e1d0a","parentId":"env_f1f3b40af84709de8ba695423fbdd27a1760465b","modified":1650252331736,"created":1649902237485,"name":"Local","data":{"port":"3000","base_uri":"http://localhost:"},"dataPropertyOrder":{"&":["port","base_uri"]},"color":null,"isPrivate":false,"metaSortKey":1649902237485,"_type":"environment"},{"_id":"env_afa32bf1b2c44275afafcb33b130e317","parentId":"env_f1f3b40af84709de8ba695423fbdd27a1760465b","modified":1651806776558,"created":1650248059994,"name":"GCP","data":{"port":"","base_uri":"https://nhl-pools-api-efhcx3qyra-uc.a.run.app"},"dataPropertyOrder":{"&":["port","base_uri"]},"color":null,"isPrivate":false,"metaSortKey":1650248059994,"_type":"environment"}]}
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2022-05-06T03:57:37.346Z",
+  "__export_source": "insomnia.desktop.app:v2022.2.1",
+  "resources": [
+    {
+      "_id": "req_35b1add8f2ea42d98f9c31b5aac83825",
+      "parentId": "fld_c3384edcf0db4141817dfc6b76cd83fd",
+      "modified": 1651808115659,
+      "created": 1649908950709,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/rosters/",
+      "name": "Get Rosters",
+      "description": "## Description\nGets all available rosters, paginated. \n\n## Usage\nIncrease the `limit` query parameter to a larger number to get back more than the default 10 records back.\n\n## Response\nAn object of all the rosters, the rosters owner, roster id, and pagination information",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_92d548278d774cdfa7e498853e1f2956",
+          "name": "limit",
+          "value": "20",
+          "description": ""
+        },
+        {
+          "id": "pair_7c3720bfa1d94921a871a808055f9464",
+          "name": "",
+          "value": "",
+          "description": ""
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1649908950832,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_c3384edcf0db4141817dfc6b76cd83fd",
+      "parentId": "wrk_cc16e3428b834e7fbe229fddf7d4cd76",
+      "modified": 1649908940756,
+      "created": 1649908940756,
+      "name": "Rosters",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1649908940756,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_cc16e3428b834e7fbe229fddf7d4cd76",
+      "parentId": null,
+      "modified": 1649902213545,
+      "created": 1649902213545,
+      "name": "NHLPoolsAPI",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_1034d43bc60d445fa7da08fb9e20d948",
+      "parentId": "fld_c3384edcf0db4141817dfc6b76cd83fd",
+      "modified": 1651807462011,
+      "created": 1649994128720,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/rosters/6257a21473277255ec28477e",
+      "name": "Get Roster By Owner",
+      "description": "## Description\nGet the roster, as well as player stats based on position, for a specific owner id.\n\n## Usage\nappend the owner id to the end of the route.\n\n## Response\nAn object of the players by position, as well as their current playoff stats.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1649908950807,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_498bd823cebf427ba43feb2cd72b8d81",
+      "parentId": "fld_c3384edcf0db4141817dfc6b76cd83fd",
+      "modified": 1651809349131,
+      "created": 1649909435808,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/rosters/",
+      "name": "Create Roster",
+      "description": "## Description\nCreates a roster based on the object body passed in\n\n## Usage\nmake a request with the following json payload.\nNote: Any player id passed into the roster that has not been added to the database, they will be automatically created. Any player id passed into the roster that has been created will be ignored.\n\n```JSON\n{\n\"owner\": \"ownerID\",\n\"center\": array[playerNHLID],\n\"left\": array[playerNHLID],\n\"right\": array[playerNHLID],\n\"defense\":array[playerNHLID],\n\"goalie\": array[playerNHLID],\n\"utility\": array[playerNHLID]\t\t\t\t\n}\n```\n\n## Response\n`200` if success",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"owner\":\"6257a21473277255ec28477e\",\n  \"center\": [8470638,8477492,8478402],\n\t\"left\": [8473419,8476455,8477444],\n\t\"right\": [8478420, 8477956, 8475820],\n\t\"defense\":[8479398,8480069,8475197,8479325],\n\t\"goalie\": [8475831,8471695],\n\t\"utility\": [8477934]\t\t\t\t\t\t\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_3b27ee8062ef49afb6fd10dc56c61348"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1649908950782,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_b6182ae737c64cea9efe9404b46f47d9",
+      "parentId": "fld_96e0182fddea4e34bac78e5433e90ead",
+      "modified": 1651808552257,
+      "created": 1649907178315,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/players",
+      "name": "Get Players",
+      "description": "## Description\nGets all available players across all rosters, paginated. \n\n## Usage\nIncrease the `limit` query parameter to a larger number to get back more than the default 10 records back.\n\n## Response\nAn object of all the players, their info sans stats, and pagination information.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1649907178315,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_96e0182fddea4e34bac78e5433e90ead",
+      "parentId": "wrk_cc16e3428b834e7fbe229fddf7d4cd76",
+      "modified": 1649905336368,
+      "created": 1649905336368,
+      "name": "Players",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1649905336368,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_645e1e76962c434ba29ce199a43cc1e8",
+      "parentId": "fld_96e0182fddea4e34bac78e5433e90ead",
+      "modified": 1651808789142,
+      "created": 1649907364557,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/players/6257a4ae360f4b0c6483c5d0",
+      "name": "Get Player By ID",
+      "description": "## Description\nGets player stats based on player id (in database, not nhl_id)\n\n## Usage\npass players database id in route\n\n## Response\nPlayers current playoff stats",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1649906994516.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_96fb387c604b41abb3fbe60d834d0a7c",
+      "parentId": "fld_96e0182fddea4e34bac78e5433e90ead",
+      "modified": 1651808853452,
+      "created": 1649906810718,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/players",
+      "name": "Create Player",
+      "description": "## Description\nCreates a player record in the database\n\n## Usage\nmake a request with the following json payload\n\n```\n{\n\"id\": \"nhl_id\"\t\t\n}\n```\n\n## Response\n`200` if successful",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"id\": \"8473419\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_e62ca25670c04218932a6b90c79654b5"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1649906810718,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_2258f63d245a4257ab32c3dd33af356b",
+      "parentId": "fld_96e0182fddea4e34bac78e5433e90ead",
+      "modified": 1651808996719,
+      "created": 1649907483268,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/players/6257951a46ff6356f05054ec",
+      "name": "Delete Player",
+      "description": "## Description\nDeletes a player from the database, based on the player id (in database, not nhl_id)\n\n## Usage\npass players database id in route\n\n## Response\n`200` if success",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1649906810668,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_115c98fab49c4c25ad5bc5a3f8de7e93",
+      "parentId": "fld_27c23c6d3ad74d8793c4afc573118608",
+      "modified": 1651808783723,
+      "created": 1649902721885,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/users",
+      "name": "Get Users",
+      "description": "## Description\nGets all available users (owners), paginated. \n\n## Usage\nIncrease the `limit` query parameter to a larger number to get back more than the default 10 records back.\n\n## Response\nAn object of all the users, their data, and pagination information.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1649904411157,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_27c23c6d3ad74d8793c4afc573118608",
+      "parentId": "wrk_cc16e3428b834e7fbe229fddf7d4cd76",
+      "modified": 1649902218989,
+      "created": 1649902218989,
+      "name": "Users",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1649902218989,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_75d15dd070cf4ee8bec6ea135001bf0a",
+      "parentId": "fld_27c23c6d3ad74d8793c4afc573118608",
+      "modified": 1651808836670,
+      "created": 1649904411062,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/users/62578534d205f35768960a1a",
+      "name": "Get User By ID",
+      "description": "## Description\nGets user info based on user id\n\n## Usage\npass users id in route\n\n## Response\nUser and basic information",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1649904411107,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_f1ba0bf0380e45079f3f39d9d021e159",
+      "parentId": "fld_27c23c6d3ad74d8793c4afc573118608",
+      "modified": 1651808941224,
+      "created": 1649902826060,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/users",
+      "name": "Create User",
+      "description": "## Description\nCreates a user record in the database\n\n## Usage\nmake a request with the following json payload\n\n```\n{\n\t\"name\": \"users name\",\n\t\"region\": \"City, State, Province\",\n\t\"country\": \"USA, CAN\"\n}\n```\n\n## Response\n`200` if successful",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"test\",\n\t\"region\": \"test\",\n\t\"country\": \"test\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_fd5a1a8b9a3f424fa3f139e6627b9916"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1649902721935,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_6b3f82d24d8c4c8881191bbc8a174b9b",
+      "parentId": "fld_27c23c6d3ad74d8793c4afc573118608",
+      "modified": 1651808990039,
+      "created": 1649904456814,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/users/62578534d205f35768960a1a",
+      "name": "Update User",
+      "description": "## Description\nUpdates a user record in the database\n\n## Usage\nmake a request with the following json payload\nNote, not all fields are required, only the fields that are intended to be updated\n\n```\n{\n\t\"name\": \"users name\",\n\t\"region\": \"City, State, Province\",\n\t\"country\": \"USA, CAN\"\n}\n```\n\n## Response\nuser object with updated values",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"Dork\",\n\t\"region\": \"test\",\n\t\"country\": \"test\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_fd5a1a8b9a3f424fa3f139e6627b9916"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1646015958381.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_0d250916f2f048e68381745c2e34eca5",
+      "parentId": "fld_27c23c6d3ad74d8793c4afc573118608",
+      "modified": 1651809019219,
+      "created": 1649905220737,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/users/62578534d205f35768960a1a",
+      "name": "Delete User",
+      "description": "## Description\nDeletes a user from the database, based on the user id\n\n## Usage\npass users id in route\n\n## Response\n`200` if success",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1646015958331.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_f1f3b40af84709de8ba695423fbdd27a1760465b",
+      "parentId": "wrk_cc16e3428b834e7fbe229fddf7d4cd76",
+      "modified": 1649902708470,
+      "created": 1649902213554,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": {},
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1649902213554,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_f1f3b40af84709de8ba695423fbdd27a1760465b",
+      "parentId": "wrk_cc16e3428b834e7fbe229fddf7d4cd76",
+      "modified": 1649902213557,
+      "created": 1649902213557,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "spc_4278a42bed044a65b2d04b2dfebbb027",
+      "parentId": "wrk_cc16e3428b834e7fbe229fddf7d4cd76",
+      "modified": 1649902213547,
+      "created": 1649902213547,
+      "fileName": "NHLPoolsAPI",
+      "contents": "",
+      "contentType": "yaml",
+      "_type": "api_spec"
+    },
+    {
+      "_id": "env_8da82de222f74b27add50665798e1d0a",
+      "parentId": "env_f1f3b40af84709de8ba695423fbdd27a1760465b",
+      "modified": 1650252331736,
+      "created": 1649902237485,
+      "name": "Local",
+      "data": {
+        "port": "3000",
+        "base_uri": "http://localhost:"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "port",
+          "base_uri"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1649902237485,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_afa32bf1b2c44275afafcb33b130e317",
+      "parentId": "env_f1f3b40af84709de8ba695423fbdd27a1760465b",
+      "modified": 1651806776558,
+      "created": 1650248059994,
+      "name": "GCP",
+      "data": {
+        "port": "",
+        "base_uri": "https://nhl-pools-api-efhcx3qyra-uc.a.run.app"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "port",
+          "base_uri"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1650248059994,
+      "_type": "environment"
+    }
+  ]
+}
