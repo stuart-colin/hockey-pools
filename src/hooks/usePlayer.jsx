@@ -30,7 +30,7 @@ const useStats = (playerId) => {
       // player.stats[0].splits[0].stat = undefined ?
       //   setStatList(null) :
       //   setStatList(player2.stats[0].splits[0].stat);
-      setStatList(player1.stats)
+      setStatList(player1.stats.stats)
       setLoading(false);
     };
     getPlayerData();

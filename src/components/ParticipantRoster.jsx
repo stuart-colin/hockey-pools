@@ -28,7 +28,9 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
     )
   };
 
-  const rosterPlayers = rosterData[2].map((player, index) => {
+  // console.log(rosterData[0])
+
+  const rosterPlayers = rosterData[0].map((player, index) => {
     return (
 
       <ul key={index}>
@@ -72,7 +74,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
               <div className='right aligned column'>
                 <div className='ui right floated small blue statistic' style={statStyle}>
                   <div className='value'>
-                    {rosterData[0]}
+                    {rosterData[1]}
                   </div>
                   <div className='label'>
                     Pool Points
@@ -80,7 +82,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
                 </div>
                 <div className='ui right floated small blue statistic'>
                   <div className='value'>
-                    {rosterData[1]}/16
+                    {rosterData[2]}/16
                   </div>
                   <div className='label'>
                     Players Remaining

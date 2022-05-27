@@ -1,6 +1,6 @@
 function countPoints(roster) {
   return (
-    (roster.utility.position == 'G'
+    (roster.utility.position === 'G'
       ? (roster.utility.stats.stats.wins * 2) + (roster.utility.stats.stats.shutouts * 2) + roster.utility.stats.stats.ot
       : roster.utility.stats.stats.goals + roster.utility.stats.stats.assists + roster.utility.stats.stats.overTimeGoals)
     + roster.left[0].stats.stats.goals + roster.left[0].stats.stats.assists + roster.left[0].stats.stats.overTimeGoals

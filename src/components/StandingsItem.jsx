@@ -38,7 +38,7 @@ const StandingsItem = ({ user, onRosterSelect, index }) => {
   const points = user.points;
   const playersRemaining = user.playersRemaining;
 
-  const rosterData = [points, playersRemaining, roster]
+  const rosterData = [roster, points, playersRemaining]
 
   return (
     <div

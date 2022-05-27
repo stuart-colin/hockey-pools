@@ -1,8 +1,8 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2022-05-06T03:57:37.346Z",
-  "__export_source": "insomnia.desktop.app:v2022.2.1",
+  "__export_date": "2022-05-27T05:14:43.895Z",
+  "__export_source": "insomnia.desktop.app:v2022.3.0",
   "resources": [
     {
       "_id": "req_35b1add8f2ea42d98f9c31b5aac83825",
@@ -120,14 +120,21 @@
     {
       "_id": "req_b6182ae737c64cea9efe9404b46f47d9",
       "parentId": "fld_96e0182fddea4e34bac78e5433e90ead",
-      "modified": 1651808552257,
+      "modified": 1653531224481,
       "created": 1649907178315,
       "url": "{{ _.base_uri }}{{ _.port }}/v1/players",
       "name": "Get Players",
       "description": "## Description\nGets all available players across all rosters, paginated. \n\n## Usage\nIncrease the `limit` query parameter to a larger number to get back more than the default 10 records back.\n\n## Response\nAn object of all the players, their info sans stats, and pagination information.",
       "method": "GET",
       "body": {},
-      "parameters": [],
+      "parameters": [
+        {
+          "id": "pair_c9bb6d2b13844c6e9a6ed7c996e9e9c5",
+          "name": "limit",
+          "value": "100",
+          "description": ""
+        }
+      ],
       "headers": [],
       "authentication": {},
       "metaSortKey": -1649907178315,
@@ -155,9 +162,9 @@
     {
       "_id": "req_645e1e76962c434ba29ce199a43cc1e8",
       "parentId": "fld_96e0182fddea4e34bac78e5433e90ead",
-      "modified": 1651808789142,
+      "modified": 1653537687907,
       "created": 1649907364557,
-      "url": "{{ _.base_uri }}{{ _.port }}/v1/players/6257a4ae360f4b0c6483c5d0",
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/players/6275f59ea8bbee12c073be3b",
       "name": "Get Player By ID",
       "description": "## Description\nGets player stats based on player id (in database, not nhl_id)\n\n## Usage\npass players database id in route\n\n## Response\nPlayers current playoff stats",
       "method": "GET",
@@ -198,6 +205,38 @@
       ],
       "authentication": {},
       "metaSortKey": -1649906810718,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_8c4bffe7d8ce4441b708045b63c652ef",
+      "parentId": "fld_96e0182fddea4e34bac78e5433e90ead",
+      "modified": 1653537672280,
+      "created": 1653535939580,
+      "url": "{{ _.base_uri }}{{ _.port }}/v1/players/6275f59ea8bbee12c073be3b",
+      "name": "Update Player OTL",
+      "description": "## Description\nCreates a player record in the database\n\n## Usage\nmake a request with the following json payload\n\n```\n{\n\"id\": \"nhl_id\"\t\t\n}\n```\n\n## Response\n`200` if successful",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"otl\": 0\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_e62ca25670c04218932a6b90c79654b5"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1649906810693,
       "isPrivate": false,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -410,11 +449,11 @@
     {
       "_id": "env_8da82de222f74b27add50665798e1d0a",
       "parentId": "env_f1f3b40af84709de8ba695423fbdd27a1760465b",
-      "modified": 1650252331736,
+      "modified": 1653531165207,
       "created": 1649902237485,
       "name": "Local",
       "data": {
-        "port": "3000",
+        "port": "5000",
         "base_uri": "http://localhost:"
       },
       "dataPropertyOrder": {
