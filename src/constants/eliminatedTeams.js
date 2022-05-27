@@ -3,6 +3,7 @@ const eliminatedTeams = [
   'Arizona Coyotes',
   'Boston Bruins',
   'Buffalo Sabres',
+  'Calgary Flames',
   'Chicago Blackhawks',
   'Columbus Blue Jackets',
   'Dallas Stars',
