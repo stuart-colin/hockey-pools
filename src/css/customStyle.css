@@ -1,16 +1,10 @@
 .expandedStandingsStyle {
   transition: all 0.5s;
   max-height: 92vh;
-  min-height: 15em;
+  min-height: 20em;
   overflow-y: auto;
   overflow-x: hidden;
   filter: opacity(1);
-}
-
-@media screen and (max-width: 767px) {
-  .expandedStandingsStyle {
-    max-height: 30vh;
-  }
 }
 
 .collapsedStandingsStyle {
@@ -23,7 +17,7 @@
 .expandedRosterStyle {
   transition: all 0.5s;
   max-height: 62vh;
-  min-height: 15em;
+  min-height: 20em;
   overflow-y: auto;
   overflow-x: hidden;
   filter: opacity(1);
@@ -36,6 +30,15 @@
   filter: opacity(0);
 }
 
+@media screen and (max-width: 767px) {
+  .expandedStandingsStyle {
+    max-height: 40vh;
+  }
+
+  .expandedRosterStyle {
+    max-height: 40vh;
+  }
+}
 
 .eliminated {
   opacity: 0.3;
@@ -60,10 +63,6 @@
 .teamLogo {
   opacity: 0.15;
   width: 450px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   position: absolute;
   pointer-events: none;
   -webkit-filter: blur(4px);

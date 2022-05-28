@@ -28,8 +28,6 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
     )
   };
 
-  // console.log(rosterData[0])
-
   const rosterPlayers = rosterData[0].map((player, index) => {
     return (
 
