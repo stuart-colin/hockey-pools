@@ -4,6 +4,7 @@ const eliminatedTeams = [
   'Boston Bruins',
   'Buffalo Sabres',
   'Calgary Flames',
+  'Carolina Hurricanes',
   'Chicago Blackhawks',
   'Columbus Blue Jackets',
   'Dallas Stars',
