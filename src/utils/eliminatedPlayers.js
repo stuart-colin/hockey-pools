@@ -2,22 +2,22 @@ import eliminatedTeams from '../constants/eliminatedTeams';
 
 function eliminatedPlayers(roster) {
   const teams = [
-    roster.utility.stats.team.name,
-    roster.left[0].stats.team.name,
-    roster.left[1].stats.team.name,
-    roster.left[2].stats.team.name,
-    roster.center[0].stats.team.name,
-    roster.center[1].stats.team.name,
-    roster.center[2].stats.team.name,
-    roster.right[0].stats.team.name,
-    roster.right[1].stats.team.name,
-    roster.right[2].stats.team.name,
-    roster.defense[0].stats.team.name,
-    roster.defense[1].stats.team.name,
-    roster.defense[2].stats.team.name,
-    roster.defense[3].stats.team.name,
-    roster.goalie[0].stats.team.name,
-    roster.goalie[1].stats.team.name,
+    roster.utility.team.name,
+    roster.left[0].team.name,
+    roster.left[1].team.name,
+    roster.left[2].team.name,
+    roster.center[0].team.name,
+    roster.center[1].team.name,
+    roster.center[2].team.name,
+    roster.right[0].team.name,
+    roster.right[1].team.name,
+    roster.right[2].team.name,
+    roster.defense[0].team.name,
+    roster.defense[1].team.name,
+    roster.defense[2].team.name,
+    roster.defense[3].team.name,
+    roster.goalie[0].team.name,
+    roster.goalie[1].team.name,
   ];
 
   let playersRemaining = 16;

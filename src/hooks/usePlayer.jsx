@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import eliminatedTeams from '../constants/eliminatedTeams';
 
-const playerDetailsEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/players/';
+// const playerDetailsEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/players/';
+const playerDetailsEndpoint = 'http://localhost:5000/v1/players/'
 const playerDetailsEndpointOld = 'https://statsapi.web.nhl.com/api/v1/people/';
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs'; // use for current year only
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20212022';
@@ -14,6 +15,7 @@ const useStats = (playerId) => {
   const [playerTeam, setPlayerTeam] = useState('');
   const [playerTeamLogo, setPlayerTeamLogo] = useState('');
   const [statList, setStatList] = useState('');
+  const [otStatList, setOtStatList] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +32,8 @@ const useStats = (playerId) => {
       // player.stats[0].splits[0].stat = undefined ?
       //   setStatList(null) :
       //   setStatList(player2.stats[0].splits[0].stat);
-      setStatList(player1.stats.stats)
+      setStatList(player1.stats.stat)
+      setOtStatList(player1.stats.otl)
       setLoading(false);
     };
     getPlayerData();
@@ -42,7 +45,7 @@ const useStats = (playerId) => {
       const WLabel = 'Wins';
       const S = statList.shutouts;
       const SLabel = 'Shutouts';
-      const OTL = statList.ot;
+      const OTL = otStatList;
       const OTLLabel = 'OT Losses';
       const totalPoolPoints = W * 2 + S * 2 + OTL;
       return [W, WLabel, S, SLabel, OTL, OTLLabel, totalPoolPoints];

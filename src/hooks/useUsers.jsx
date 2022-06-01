@@ -22,20 +22,14 @@ const useUsers = () => {
 
   useEffect(() => {
     userList.forEach((user) => {
-      const getRosterList = async () => {
-        const res = await fetch(rosterEndpoint + '/' + user.owner.id);
-        const roster = await res.json();
-        const points = countPoints(roster);
-        const playersRemaining = eliminatedPlayers(roster);
-        setRosters(rosters => [...rosters, { roster, points, playersRemaining }])
-      };
-      getRosterList();
+      const points = countPoints(user);
+      const playersRemaining = eliminatedPlayers(user);
+      setRosters(rosters => [...rosters, { user, points, playersRemaining }])
       setLoading(false);
     })
   }, [userList])
 
   return {
-    userList: userList,
     rosters: rosters,
     loading: loading,
   }

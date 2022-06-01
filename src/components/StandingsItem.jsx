@@ -15,26 +15,24 @@ const winnings = [
 
 const StandingsItem = ({ user, onRosterSelect, index }) => {
 
-
   const roster = [
-    user.roster.left[0],
-    user.roster.left[1],
-    user.roster.left[2],
-    user.roster.center[0],
-    user.roster.center[1],
-    user.roster.center[2],
-    user.roster.right[0],
-    user.roster.right[1],
-    user.roster.right[2],
-    user.roster.defense[0],
-    user.roster.defense[1],
-    user.roster.defense[2],
-    user.roster.defense[3],
-    user.roster.goalie[0],
-    user.roster.goalie[1],
-    user.roster.utility,
+    user.user.left[0],
+    user.user.left[1],
+    user.user.left[2],
+    user.user.center[0],
+    user.user.center[1],
+    user.user.center[2],
+    user.user.right[0],
+    user.user.right[1],
+    user.user.right[2],
+    user.user.defense[0],
+    user.user.defense[1],
+    user.user.defense[2],
+    user.user.defense[3],
+    user.user.goalie[0],
+    user.user.goalie[1],
+    user.user.utility,
   ];
-
   const points = user.points;
   const playersRemaining = user.playersRemaining;
 
@@ -42,7 +40,7 @@ const StandingsItem = ({ user, onRosterSelect, index }) => {
 
   return (
     <div
-      onClick={() => onRosterSelect([user.roster, rosterData])}
+      onClick={() => onRosterSelect([user.user, rosterData])}
       className='item'
       style={{ backgroundColor: index <= 5 ? top6[index] : '' }}
     >
@@ -51,7 +49,7 @@ const StandingsItem = ({ user, onRosterSelect, index }) => {
         className='ui left floated avatar image'
         src={URL} alt='participant avatar'></img>
       <div className='item'>
-        <div className='header'>{user.roster.owner.name} {index <= 5 ? winnings[index] : ''}</div>
+        <div className='header'>{user.user.owner.name} {index <= 5 ? winnings[index] : ''}</div>
         <div className={`left floated content playersRemaining${playersRemaining}`}>{playersRemaining}/16</div>
         <div className='right floated content'>{points} Points</div>
       </div>

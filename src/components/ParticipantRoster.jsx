@@ -30,10 +30,9 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
 
   const rosterPlayers = rosterData[0].map((player, index) => {
     return (
-
       <ul key={index}>
-        {cardView && <StatsSlim id={player} />}
-        {!cardView && <StatsCard id={player} />}
+        {cardView && <StatsSlim player={player} />}
+        {!cardView && <StatsCard player={player} />}
       </ul>
     )
 
