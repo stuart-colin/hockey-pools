@@ -10,10 +10,10 @@ const StatsCard = ({ player }) => {
   let stats;
   let points;
   if (player.position === 'G') {
-    stats = [player.stats.wins, 'W', player.stats.shutouts, 'SO', player.stats.otl, 'OTL'];
+    stats = [player.stats.wins, 'Wins', player.stats.shutouts, 'Shutouts', player.stats.otl, 'OT Losses'];
     points = stats[0] * 2 + stats[2] * 2 + stats[4];
   } else {
-    stats = [player.stats.goals, 'G', player.stats.assists, 'A', player.stats.overTimeGoals, 'OT']
+    stats = [player.stats.goals, 'Goals', player.stats.assists, 'Assists', player.stats.overTimeGoals, 'OT Goals']
     points = stats[0] + stats[2] + stats[4];
   }
 
