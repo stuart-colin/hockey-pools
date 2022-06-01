@@ -13,7 +13,7 @@ const StatsSlim = ({ player }) => {
     stats = [player.stats.wins, 'W', player.stats.shutouts, 'SO', player.stats.otl, 'OTL'];
     points = stats[0] * 2 + stats[2] * 2 + stats[4];
   } else {
-    stats = [player.stats.goals, 'G', player.stats.assists, 'A', player.stats.overTimeGoals, 'OT']
+    stats = [player.stats.goals, 'G', player.stats.assists, 'A', player.stats.overTimeGoals, 'OTG']
     points = stats[0] + stats[2] + stats[4];
   }
 

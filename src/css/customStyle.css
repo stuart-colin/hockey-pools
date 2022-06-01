@@ -78,8 +78,8 @@
   bottom: 0em;
   position: absolute;
   pointer-events: none;
-  -webkit-filter: blur(4px);
-  filter: blur(4px);
+  -webkit-filter: blur(3px);
+  filter: blur(3px);
 }
 
 .playersRemaining0 {
