@@ -1,5 +1,4 @@
 import React from 'react';
-import useScores from '../hooks/useScores';
 
 const Header = () => {
   return (
