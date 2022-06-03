@@ -163,10 +163,16 @@ const Insights = ({ users }) => {
                 {mostCommonPlayers}
               </Statistic.Group>
             </div>
-            {/* <div className='four wide center aligned column'>
-              <h4>Perfect team</h4>
+          </div>
+          <Divider />
+          <div className='row'>
+            <div className='eight wide center aligned column'>
+              <h4>Perfect Team</h4>
             </div>
-            <div className='four wide center aligned column'>
+            <div className='eight wide center aligned column'>
+              <h4>Most Common Team</h4>
+            </div>
+            {/* <div className='four wide center aligned column'>
               <h4>Team</h4>
               <p>Most players picked</p>
               <p>Fewest players picked</p>
@@ -175,10 +181,90 @@ const Insights = ({ users }) => {
           <Divider />
           <div className='row'>
             <div className='four wide center aligned column'>
-              <h4>Most Undervalued Pick</h4>
+              <h4>Best Picks</h4>
+              <Statistic.Group size='tiny' widths='three' color='blue'>
+                <Statistic
+                  value='30'
+                  label='Connor McDavid'
+                />
+                <Statistic
+                  value='28'
+                  label='Leon Draisaitl'
+                />
+                <Statistic>
+                  <Statistic.Value>
+                    21
+                  </Statistic.Value>
+                  <Statistic.Label>
+                    Mika Zibanejad
+                    <br></br>
+                    Mike Smith
+                  </Statistic.Label>
+                </Statistic>
+              </Statistic.Group>
+              <h6>Highest individual points</h6>
             </div>
             <div className='four wide center aligned column'>
-              <h4>Most Overvalued Pick</h4>
+              <h4>Worst Picks</h4>
+              <Statistic.Group size='tiny' widths='three' color='red'>
+                <Statistic
+                  value='0'
+                  label='Frederik Andersen'
+                />
+                <Statistic
+                  value='0'
+                  label='Mike Reilly'
+                />
+                <Statistic>
+                  <Statistic.Value>
+                    1
+                  </Statistic.Value>
+                  <Statistic.Label>
+                    Mason Marchment
+                    <br></br>
+                    Mackenzie Weegar
+                    <br></br>
+                    Tristan Jarry
+                  </Statistic.Label>
+                </Statistic>
+              </Statistic.Group>
+              <h6>Lowest individual points</h6>
+            </div>
+            <div className='four wide center aligned column'>
+              <h4>Most Undervalued Picks</h4>
+              <Statistic.Group size='tiny' widths='three' color='teal'>
+                <Statistic
+                  value='TBD'
+                  label='Player'
+                />
+                <Statistic
+                  value='TBD'
+                  label='Player'
+                />
+                <Statistic
+                  value='TBD'
+                  label='Player'
+                />
+              </Statistic.Group>
+              <h6>top of points / times picked</h6>
+            </div>
+            <div className='four wide center aligned column'>
+              <h4>Most Overvalued Picks</h4>
+              <Statistic.Group size='tiny' widths='three' color='purple'>
+                <Statistic
+                  value='TBD'
+                  label='Player'
+                />
+                <Statistic
+                  value='TBD'
+                  label='Player'
+                />
+                <Statistic
+                  value='TBD'
+                  label='Player'
+                />
+              </Statistic.Group>
+              <h6>bottom of points / times picked</h6>
             </div>
           </div>
           <Divider />
