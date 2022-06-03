@@ -20,22 +20,22 @@ const Scoreboard = () => {
     <div className='item' key={index}>
       <div className='ui small label'>
         <div className='ui image label' style={{ cursor: 'default' }} >
-          <img src={logoUrl + game.teams.away.team.id + '.svg'} />
+          <img src={logoUrl + game.teams.away.team.id + '.svg'} alt={game.teams.away.team.name + ' Logo'} />
           {/* {game.teams.away.team.name} */}
           {/* {`: `} */}
           {game.teams.away.score}
         </div>
         <div className='ui image label' style={{ cursor: 'default' }} >
-          <img src={logoUrl + game.teams.home.team.id + '.svg'} />
+          <img src={logoUrl + game.teams.home.team.id + '.svg'} alt={game.teams.home.team.name + ' Logo'} />
           {/* {game.teams.home.team.name} */}
           {/* {`: `} */}
           {game.teams.home.score}
         </div>
 
         <div className='ui label' style={{ cursor: 'default', verticalAlign: 'middle' }} >
-          {game.status.abstractGameState == 'Final'
+          {game.status.abstractGameState === 'Final'
             ? game.status.abstractGameState
-            : game.status.abstractGameState == 'Preview'
+            : game.status.abstractGameState === 'Preview'
               ? localDate(game.gameDate)
               : game.linescore.currentPeriodTimeRemaining + ` ` + game.linescore.currentPeriodOrdinal}
         </div>
@@ -50,7 +50,7 @@ const Scoreboard = () => {
       <div className='ui large horizontal list'>
         <div className='item'>
           <div className='extra content'>
-            <a className='ui large blue label' style={{ cursor: 'default' }}>{scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}</a>
+            <div className='ui large blue label'>{scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}</div>
           </div>
         </div>
         {games}

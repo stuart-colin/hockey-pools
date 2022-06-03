@@ -33,32 +33,35 @@ const StandingsList = ({ users, onRosterSelect }) => {
   })
 
   return (
-    <div className='ui vertical segment'>
-      <div>
-        <div className='ui top blue centered attached header'>
-          <div className='left aligned column' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer', position: 'absolute' }}>
-            <h3>
-              {visible &&
-                <i className='window minimize outline icon'></i>
-              }
-              {!visible &&
-                <i className='window maximize outline icon'></i>
-              }
-            </h3>
-          </div>
-          <div className='middle aligned column'>
-            <h2>Standings</h2>
+    <div className='ui segments'>
+      <div className='ui top blue centered attached header'>
+        <div className='left aligned column' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer', position: 'absolute' }}>
+          <h3>
+            {visible &&
+              <i className='window minimize outline icon'></i>
+            }
+            {!visible &&
+              <i className='window maximize outline icon'></i>
+            }
+          </h3>
+        </div>
+        <div className='middle aligned column'>
+          <h2>
+            Standings
+          </h2>
+        </div>
+      </div>
+      <div className={
+        `ui bottom attached segment
+        ${!visible ? 'collapsedStandingsStyle' : 'expandedStandingsStyle'}`
+      }>
+        <div className='ui active inverted dimmer' style={loadedStyle()}>
+          <div className='ui text loader'>
+            Loading Standings...
           </div>
         </div>
-        <div className={`ui attached segment ${!visible ? 'collapsedStandingsStyle' : 'expandedStandingsStyle'}`}>
-          <div className='ui active inverted dimmer' style={loadedStyle()}>
-            <div className='ui text loader'>
-              Loading Standings...
-            </div>
-          </div>
-          <div className='ui middle aligned selection list' >
-            {renderedList}
-          </div>
+        <div className='ui middle aligned selection list' >
+          {renderedList}
         </div>
       </div>
     </div>

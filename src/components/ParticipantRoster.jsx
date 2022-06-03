@@ -3,28 +3,35 @@ import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import '../css/customStyle.css';
 
-const headerStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-}
-
-const statStyle = {
-  flexWrap: 'wrap',
-}
-
 const ParticipantRoster = ({ selectedRoster, rosterData }) => {
   const [visible, setVisible] = useState('false');
   const [cardView, setCardView] = useState('true');
 
   if (!selectedRoster) {
     return (
-      <div className='ui vertical segment'>
+      <div className='ui vertical segments'>
         <div className='ui top blue centered attached header'>
-          <h2>
-            Select a roster...
-          </h2>
+          <div className='ui stackable grid'>
+            <div className='three column row'>
+              <div className='left aligned column'>
+                <h3 style={{ position: 'absolute', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
+                  {visible &&
+                    <i className='window minimize outline icon'></i>
+                  }
+                  {!visible &&
+                    <i className='window maximize outline icon'></i>
+                  }
+                </h3>
+              </div>
+              <div className='middle aligned column'>
+                <h2>
+                  Select a roster...
+                </h2>
+              </div>
+            </div >
+          </div>
         </div>
-      </div >
+      </div>
     )
   };
 
@@ -39,62 +46,61 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
   }
   )
   return (
-    <div className='ui vertical segment'>
-      <div>
-        <div className='ui top blue centered attached header' >
-          <div className='ui stackable grid'>
-            <div className='three column row' style={headerStyle}>
-              <div className='left aligned column'>
-                <h3 style={{ position: 'absolute', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
-                  {visible &&
-                    <i className='window minimize outline icon'></i>
-                  }
-                  {!visible &&
-                    <i className='window maximize outline icon'></i>
-                  }
-                </h3>
-                <h3 style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setCardView(!cardView)}>
-                  {cardView &&
-                    <i className='id badge outline icon'></i>
-                  }
-                  {!cardView &&
-                    <i className='id card outline icon'></i>
-                  }
-                </h3>
-              </div>
-              <div className='middle aligned column'>
-                <h2>
-                  {selectedRoster.owner.name}
-                </h2>
-                <i className={`${selectedRoster.owner.country.toLowerCase()} flag`} />{selectedRoster.owner.region}
-              </div>
-              <div className='right aligned column'>
-                <div className='ui right floated small blue statistic' style={statStyle}>
-                  <div className='value'>
-                    {rosterData[1]}
-                  </div>
-                  <div className='label'>
-                    Pool Points
-                  </div>
+    <div className='ui segments'>
+      <div className='ui top blue centered attached header'>
+        <div className='ui stackable grid'>
+          <div className='three column row'>
+            <div className='left aligned column'>
+              <h3 style={{ position: 'absolute', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
+                {visible &&
+                  <i className='window minimize outline icon'></i>
+                }
+                {!visible &&
+                  <i className='window maximize outline icon'></i>
+                }
+              </h3>
+              <h3 style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setCardView(!cardView)}>
+                {cardView &&
+                  <i className='id badge outline icon'></i>
+                }
+                {!cardView &&
+                  <i className='id card outline icon'></i>
+                }
+              </h3>
+            </div>
+            <div className='middle aligned column'>
+              <h2>
+                {selectedRoster.owner.name}
+              </h2>
+              <i className={`${selectedRoster.owner.country.toLowerCase()} flag`} />{selectedRoster.owner.region}
+            </div>
+            <div className='right aligned column'>
+              <div className='ui tiny blue statistic'>
+                <div className='value'>
+                  {rosterData[1]}
                 </div>
-                <div className='ui right floated small blue statistic'>
-                  <div className='value'>
-                    {rosterData[2]}/16
-                  </div>
-                  <div className='label'>
-                    Players Remaining
-                  </div>
+                <div className='label'>
+                  Pool Points
+                </div>
+              </div>
+              <div className='ui tiny blue statistic'>
+                <div className='value'>
+                  {rosterData[2]}/16
+                </div>
+                <div className='label'>
+                  Players Remaining
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className={`ui attached segment' ${!visible ? 'collapsedRosterStyle' : 'expandedRosterStyle'}`}>
-          <div className='ui stackable grid'>
-            <div className='row'>
-              {rosterPlayers}
-            </div>
-            {/* <div className='row'>
+      </div>
+      <div className={`ui bottom attached segment ${!visible ? 'collapsedRosterStyle' : 'expandedRosterStyle'}`}>
+        <div className='ui stackable grid'>
+          <div className='row'>
+            {rosterPlayers}
+          </div>
+          {/* <div className='row'>
             <ul key={'left 1 stats'}><StatsCard id={rosterData[2][0]} /></ul>
             <ul key={'left 2 stats'}><StatsCard id={rosterData[2][1]} /></ul>
             <ul key={'left 3 stats'}><StatsCard id={rosterData[2][2]} /></ul>
@@ -120,7 +126,6 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
             <ul key={'goalie 2 stats'}><StatsCard id={rosterData[2][14]} /></ul>
             <ul key={'utility stats'}><StatsCard id={rosterData[2][15]} /></ul>
           </div> */}
-          </div>
         </div>
       </div>
     </div>

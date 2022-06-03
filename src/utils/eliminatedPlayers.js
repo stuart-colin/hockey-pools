@@ -26,6 +26,7 @@ function eliminatedPlayers(roster) {
     if (eliminatedTeams.includes(team)) {
       playersRemaining--;
     }
+    return playersRemaining;
   })
 
   return playersRemaining;
