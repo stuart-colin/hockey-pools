@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Placeholder, Statistic } from 'semantic-ui-react';
-// import positions from '../constants/positions';
+import { Divider, List, Statistic } from 'semantic-ui-react';
+import positions from '../constants/positions';
 import '../css/customStyle.css';
 
 const Insights = ({ users }) => {
@@ -33,7 +33,7 @@ const Insights = ({ users }) => {
     playersRemaining.push(user.playersRemaining)
     points.push(user.points)
     // for (let i = 0; i < positions.length; i++) {
-    //   console.log(user.user[positions[i]].name)
+    //   console.log(user.user[positions[i]])
     // }
     players.push(
       user.user.utility.name,
@@ -55,23 +55,37 @@ const Insights = ({ users }) => {
     )
   })
 
-  const average = (array) => array.length && array.reduce((a, b) => a + b) / (array.length);
   const max = (array) => array.length && array.reduce((a, b) => a > b ? a : b);
+  const average = (array) => array.length && array.reduce((a, b) => a + b) / (array.length);
   const min = (array) => array.length && array.reduce((a, b) => a < b ? a : b);
-  const mode = (array) => array.length && array.sort((a, b) =>
-    array.filter(v => v === a).length - array.filter(v => v === b).length).pop();
+  // const mode = (array) => array.length && array.sort((a, b) =>
+  //   array.filter(v => v === a).length - array.filter(v => v === b).length).pop();
+  const pickFrequency = (array, index) => {
+    let hash = {};
+    for (let i of array) {
+      if (!hash[i]) hash[i] = 0;
+      hash[i]++;
+    }
+    const hashToArray = Object.entries(hash);
+    const sortedArray = hashToArray.sort((a, b) => b[1] - a[1]);
+    return sortedArray;
+  }
   const averagePlayersRemaining = average(playersRemaining).toFixed(0);
   const mostPlayersRemaining = max(playersRemaining);
   const fewestPlayersRemaining = min(playersRemaining);
   const averagePoints = average(points).toFixed(0)
   const mostPoints = max(points);
   const fewestPoints = min(points);
-  const mostCommonPlayer = mode(players);
-  const counts = {};
-  for (const player of players) {
-    counts[player] = counts[player] ? counts[player] + 1 : 1;
-  }
-  const commonPlayerSelections = counts[mostCommonPlayer];
+  const mostCommonPlayers = pickFrequency(players).slice(0, 3).map((player) => {
+    return <Statistic color='blue' value={player[1] + '/' + users.rosters.length
+      // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
+    }
+      label={player[0]}
+    />;
+  });
+  const allPlayersFrequency = pickFrequency(players).map((player) => {
+    return <List.Item> | {player[0]}: {player[1]} | </List.Item>
+  });
 
   return (
     <div className='ui segments'>
@@ -88,7 +102,7 @@ const Insights = ({ users }) => {
         </div>
         <div className='middle aligned column'>
           <h2>
-            Insights
+            Quick Insights
           </h2>
         </div>
       </div>
@@ -103,7 +117,7 @@ const Insights = ({ users }) => {
         </div>
         <div className='ui stackable grid' style={loadingStyle()}>
           <div className='row'>
-            <div className='four wide center aligned column'>
+            <div className='five wide center aligned column'>
               <h4>Players Remaining</h4>
               <Statistic.Group size='tiny' widths='three'>
                 <Statistic
@@ -123,7 +137,7 @@ const Insights = ({ users }) => {
                 />
               </Statistic.Group>
             </div>
-            <div className='four wide center aligned column'>
+            <div className='five wide center aligned column'>
               <h4>Pool Points</h4>
               <Statistic.Group size='tiny' widths='three'>
                 <Statistic
@@ -143,16 +157,11 @@ const Insights = ({ users }) => {
                 />
               </Statistic.Group>
             </div>
-            <div className='four wide center aligned column'>
-              <h4>Most Selected Player</h4>
-              <Statistic.Group size='tiny' widths='one'>
-                <Statistic
-                  color='blue'
-                  value={commonPlayerSelections + '/' + users.rosters.length + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'}
-                  label={mostCommonPlayer}
-                />
+            <div className='six wide center aligned column'>
+              <h4>Most Picked Players</h4>
+              <Statistic.Group size='tiny' widths='three'>
+                {mostCommonPlayers}
               </Statistic.Group>
-              {/* <p>Times Picked</p> */}
             </div>
             {/* <div className='four wide center aligned column'>
               <h4>Perfect team</h4>
@@ -162,6 +171,24 @@ const Insights = ({ users }) => {
               <p>Most players picked</p>
               <p>Fewest players picked</p>
             </div> */}
+          </div>
+          <Divider />
+          <div className='row'>
+            <div className='four wide center aligned column'>
+              <h4>Most Undervalued Pick</h4>
+            </div>
+            <div className='four wide center aligned column'>
+              <h4>Most Overvalued Pick</h4>
+            </div>
+          </div>
+          <Divider />
+          <div className='row'>
+            <div className='sixteen wide center aligned column'>
+              <h4>Overall Pick Frequency</h4>
+              <List horizontal>
+                {allPlayersFrequency}
+              </List>
+            </div>
           </div>
         </div>
       </div>
