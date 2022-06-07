@@ -106,26 +106,28 @@ const Insights = ({ users }) => {
       label={player[0]}
     />;
   });
-  const playersByFrequency = playerList.map((player) => {
+  const playersByFrequency = playerList.map((player, index) => {
     return (
-      <Table.Body>
+      <Table.Row>
+        <Table.Cell>{index + 1}</Table.Cell>
         <Table.Cell>{player[0]}</Table.Cell>
         <Table.Cell>{player[1]}</Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
-      </Table.Body>
+      </Table.Row>
     )
   });
 
   const sortByPoints = [].concat(playerList)
     .sort((a, b) => a[1] > b[1] ? -1 : 1);
 
-  const playersByPoints = sortByPoints.map((player) => {
+  const playersByPoints = sortByPoints.map((player, index) => {
     return (
-      <Table.Body>
+      <Table.Row>
+        <Table.Cell>{index + 1}</Table.Cell>
         <Table.Cell>{player[0]}</Table.Cell>
         <Table.Cell>{player[1]}</Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
-      </Table.Body>
+      </Table.Row>
     )
   });
 
@@ -317,16 +319,20 @@ const Insights = ({ users }) => {
               <h4>
                 Player Details
               </h4>
-              <Table color='blue' sortable>
+              <Table color='blue' striped compact>
                 <Table.Header>
                   <Table.Row>
+                    <Table.HeaderCell>Rank</Table.HeaderCell>
                     <Table.HeaderCell>Player</Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points</Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
-                {sortOption && playersByFrequency}
-                {!sortOption && playersByPoints}
+                <Table.Body>
+                  {sortOption && playersByFrequency}
+                  {!sortOption && playersByPoints}
+                </Table.Body>
+
               </Table>
             </div>
           </div>
