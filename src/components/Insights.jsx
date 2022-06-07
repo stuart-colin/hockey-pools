@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, List, Statistic } from 'semantic-ui-react';
+import { Divider, Table, Statistic } from 'semantic-ui-react';
 import positions from '../constants/positions';
 import '../css/customStyle.css';
 
 const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
+  const [sortOption, setSortOption] = useState(false);
 
   useEffect(() => {
     if (!users.loading) {
@@ -27,7 +28,9 @@ const Insights = ({ users }) => {
 
   let playersRemaining = [];
   let points = [];
+  let playerData = [];
   let players = [];
+  let playerList = [];
 
   users.rosters.forEach((user) => {
     playersRemaining.push(user.playersRemaining)
@@ -35,25 +38,40 @@ const Insights = ({ users }) => {
     // for (let i = 0; i < positions.length; i++) {
     //   console.log(user.user[positions[i]])
     // }
-    players.push(
-      user.user.utility.name,
-      user.user.left[0].name,
-      user.user.left[1].name,
-      user.user.left[2].name,
-      user.user.center[0].name,
-      user.user.center[1].name,
-      user.user.center[2].name,
-      user.user.right[0].name,
-      user.user.right[1].name,
-      user.user.right[2].name,
-      user.user.defense[0].name,
-      user.user.defense[1].name,
-      user.user.defense[2].name,
-      user.user.defense[3].name,
-      user.user.goalie[0].name,
-      user.user.goalie[1].name,
+    playerData.push(
+      user.user.utility,
+      user.user.left[0],
+      user.user.left[1],
+      user.user.left[2],
+      user.user.center[0],
+      user.user.center[1],
+      user.user.center[2],
+      user.user.right[0],
+      user.user.right[1],
+      user.user.right[2],
+      user.user.defense[0],
+      user.user.defense[1],
+      user.user.defense[2],
+      user.user.defense[3],
+      user.user.goalie[0],
+      user.user.goalie[1],
     )
   })
+
+  playerData.forEach((player) => {
+    let playerPoints;
+    if (player.position === 'G') {
+      playerPoints = player.stats.wins * 2 + player.stats.shutouts * 2 + player.stats.otl;
+    } else {
+      playerPoints = player.stats.goals + player.stats.assists + player.stats.overTimeGoals;
+    }
+    // console.log(playerPoints)
+    players.push([player.name, playerPoints])
+  })
+
+  // console.log(playerData)
+  // console.log(players)
+  // console.log(playerList)
 
   const max = (array) => array.length && array.reduce((a, b) => a > b ? a : b);
   const average = (array) => array.length && array.reduce((a, b) => a + b) / (array.length);
@@ -76,15 +94,55 @@ const Insights = ({ users }) => {
   const averagePoints = average(points).toFixed(0)
   const mostPoints = max(points);
   const fewestPoints = min(points);
-  const mostCommonPlayers = pickFrequency(players).slice(0, 3).map((player) => {
-    return <Statistic color='blue' value={player[1] + '/' + users.rosters.length
+  pickFrequency(players).map((player) => {
+    playerList.push([player[0].split(',')[0], parseFloat(player[0].split(',')[1]), player[1]])
+  })
+
+  const mostCommonPlayers = playerList.slice(0, 3).map((player) => {
+    // console.log(player)
+    return <Statistic value={player[2] + '/' + users.rosters.length
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
     }
       label={player[0]}
     />;
   });
-  const allPlayersFrequency = pickFrequency(players).map((player) => {
-    return <List.Item> | {player[0]}: {player[1]} | </List.Item>
+  const playersByFrequency = playerList.map((player) => {
+    return (
+      <Table.Body>
+        <Table.Cell>{player[0]}</Table.Cell>
+        <Table.Cell>{player[1]}</Table.Cell>
+        <Table.Cell>{player[2]}</Table.Cell>
+      </Table.Body>
+    )
+  });
+
+  const sortByPoints = [].concat(playerList)
+    .sort((a, b) => a[1] > b[1] ? -1 : 1);
+
+  const playersByPoints = sortByPoints.map((player) => {
+    return (
+      <Table.Body>
+        <Table.Cell>{player[0]}</Table.Cell>
+        <Table.Cell>{player[1]}</Table.Cell>
+        <Table.Cell>{player[2]}</Table.Cell>
+      </Table.Body>
+    )
+  });
+
+  const topPlayers = sortByPoints.slice(0, 3).map((player) => {
+    // console.log(player)
+    return <Statistic value={player[1]
+    }
+      label={player[0]}
+    />;
+  });
+
+  const bottomPlayers = sortByPoints.slice(-3).map((player) => {
+    // console.log(player)
+    return <Statistic value={player[1]
+    }
+      label={player[0]}
+    />;
   });
 
   return (
@@ -159,7 +217,7 @@ const Insights = ({ users }) => {
             </div>
             <div className='six wide center aligned column'>
               <h4>Most Picked Players</h4>
-              <Statistic.Group size='tiny' widths='three'>
+              <Statistic.Group size='tiny' color='blue' widths='three'>
                 {mostCommonPlayers}
               </Statistic.Group>
             </div>
@@ -182,31 +240,17 @@ const Insights = ({ users }) => {
           <div className='row'>
             <div className='four wide center aligned column'>
               <h4>Best Picks</h4>
-              <Statistic.Group size='tiny' widths='three' color='blue'>
-                <Statistic
-                  value='30'
-                  label='Connor McDavid'
-                />
-                <Statistic
-                  value='28'
-                  label='Leon Draisaitl'
-                />
-                <Statistic>
-                  <Statistic.Value>
-                    21
-                  </Statistic.Value>
-                  <Statistic.Label>
-                    Mika Zibanejad
-                    <br></br>
-                    Mike Smith
-                  </Statistic.Label>
-                </Statistic>
+              <Statistic.Group size='tiny' color='blue' widths='three'>
+                {topPlayers}
               </Statistic.Group>
               <h6>Highest individual points</h6>
             </div>
             <div className='four wide center aligned column'>
               <h4>Worst Picks</h4>
-              <Statistic.Group size='tiny' widths='three' color='red'>
+              <Statistic.Group size='tiny' color='red' widths='three'>
+                {bottomPlayers}
+              </Statistic.Group>
+              {/* <Statistic.Group size='tiny' widths='three' color='red'>
                 <Statistic
                   value='0'
                   label='Frederik Andersen'
@@ -227,7 +271,7 @@ const Insights = ({ users }) => {
                     Tristan Jarry
                   </Statistic.Label>
                 </Statistic>
-              </Statistic.Group>
+              </Statistic.Group> */}
               <h6>Lowest individual points</h6>
             </div>
             <div className='four wide center aligned column'>
@@ -270,10 +314,20 @@ const Insights = ({ users }) => {
           <Divider />
           <div className='row'>
             <div className='sixteen wide center aligned column'>
-              <h4>Overall Pick Frequency</h4>
-              <List horizontal>
-                {allPlayersFrequency}
-              </List>
+              <h4>
+                Player Details
+              </h4>
+              <Table color='blue' sortable>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Player</Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points</Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                {sortOption && playersByFrequency}
+                {!sortOption && playersByPoints}
+              </Table>
             </div>
           </div>
         </div>

@@ -27,12 +27,12 @@ const App = () => {
           />
         </div>
         <div className='twelve wide column'>
-          <Insights
-            users={users}
-          />
           <ParticipantRoster
             selectedRoster={selectedRoster[0]}
             rosterData={selectedRoster[1]}
+          />
+          <Insights
+            users={users}
           />
         </div>
         {/* <div><PlayerLookup onPlayerLookup={updatePlayerData}/></div> */}
