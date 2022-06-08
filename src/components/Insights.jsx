@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Grid, Statistic, Table } from 'semantic-ui-react';
+import { Divider, Icon, Grid, Statistic, Table } from 'semantic-ui-react';
 // import positions from '../constants/positions';
 import '../css/customStyle.css';
 
@@ -482,8 +482,8 @@ const Insights = ({ users }) => {
                     <Table.HeaderCell>Player</Table.HeaderCell>
                     <Table.HeaderCell>Position</Table.HeaderCell>
                     <Table.HeaderCell>Team</Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points</Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked</Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points <Icon name='sort'></Icon></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort'></Icon></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
