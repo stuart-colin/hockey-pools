@@ -460,7 +460,6 @@ const Insights = ({ users }) => {
                     })}
                   </Grid.Column>
                 </Grid.Row>
-                <Divider vertical></Divider>
               </Grid>
             </div>
             {/* <div className='two wide center aligned column'>
