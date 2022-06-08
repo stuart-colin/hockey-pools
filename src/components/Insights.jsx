@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Table, Statistic } from 'semantic-ui-react';
-import positions from '../constants/positions';
+import { Divider, Grid, Statistic, Table } from 'semantic-ui-react';
+// import positions from '../constants/positions';
 import '../css/customStyle.css';
 
 const Insights = ({ users }) => {
@@ -65,8 +65,7 @@ const Insights = ({ users }) => {
     } else {
       playerPoints = player.stats.goals + player.stats.assists + player.stats.overTimeGoals;
     }
-    // console.log(playerPoints)
-    players.push([player.name, playerPoints])
+    players.push([player.name, player.position, player.team.name, playerPoints])
   })
 
   // console.log(playerData)
@@ -78,29 +77,32 @@ const Insights = ({ users }) => {
   const min = (array) => array.length && array.reduce((a, b) => a < b ? a : b);
   // const mode = (array) => array.length && array.sort((a, b) =>
   //   array.filter(v => v === a).length - array.filter(v => v === b).length).pop();
-  const pickFrequency = (array, index) => {
+  const frequency = (array, index) => {
     let hash = {};
     for (let i of array) {
       if (!hash[i]) hash[i] = 0;
       hash[i]++;
     }
     const hashToArray = Object.entries(hash);
-    const sortedArray = hashToArray.sort((a, b) => b[1] - a[1]);
+    const sortedArray = hashToArray.sort((a, b) => a[1] > b[1] ? -1 : 1);
     return sortedArray;
   }
-  const averagePlayersRemaining = average(playersRemaining).toFixed(0);
+
   const mostPlayersRemaining = max(playersRemaining);
+  const averagePlayersRemaining = average(playersRemaining).toFixed(0);
   const fewestPlayersRemaining = min(playersRemaining);
-  const averagePoints = average(points).toFixed(0)
+
   const mostPoints = max(points);
+  const averagePoints = average(points).toFixed(0)
   const fewestPoints = min(points);
-  pickFrequency(players).map((player) => {
-    playerList.push([player[0].split(',')[0], parseFloat(player[0].split(',')[1]), player[1]])
+
+  frequency(players).map((player) => {
+    playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], parseFloat(player[0].split(',')[3]), player[1]])
   })
 
   const mostCommonPlayers = playerList.slice(0, 3).map((player) => {
     // console.log(player)
-    return <Statistic value={player[2] + '/' + users.rosters.length
+    return <Statistic value={player[4] + '/' + users.rosters.length
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
     }
       label={player[0]}
@@ -109,39 +111,63 @@ const Insights = ({ users }) => {
   const playersByFrequency = playerList.map((player, index) => {
     return (
       <Table.Row>
-        <Table.Cell>{index + 1}</Table.Cell>
+        <Table.Cell collapsing>{index + 1}</Table.Cell>
         <Table.Cell>{player[0]}</Table.Cell>
         <Table.Cell>{player[1]}</Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
+        <Table.Cell>{player[3]}</Table.Cell>
+        <Table.Cell>{player[4]}</Table.Cell>
       </Table.Row>
     )
   });
 
   const sortByPoints = [].concat(playerList)
-    .sort((a, b) => a[1] > b[1] ? -1 : 1);
+    .sort((a, b) => a[3] > b[3] ? -1 : 1);
 
   const playersByPoints = sortByPoints.map((player, index) => {
     return (
       <Table.Row>
-        <Table.Cell>{index + 1}</Table.Cell>
+        <Table.Cell collapsing>{index + 1}</Table.Cell>
         <Table.Cell>{player[0]}</Table.Cell>
         <Table.Cell>{player[1]}</Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
+        <Table.Cell>{player[3]}</Table.Cell>
+        <Table.Cell>{player[4]}</Table.Cell>
       </Table.Row>
     )
   });
 
+  const topL = sortByPoints.filter(player => player[1] === 'L').slice(0, 3);
+  const topC = sortByPoints.filter(player => player[1] === 'C').slice(0, 3);
+  const topR = sortByPoints.filter(player => player[1] === 'R').slice(0, 3);
+  const topD = sortByPoints.filter(player => player[1] === 'D').slice(0, 4);
+  const topG = sortByPoints.filter(player => player[1] === 'G').slice(0, 2);
+  const topByPosition = [topL, topC, topR, topD, topG].flat();
+  const topU = sortByPoints.filter(player => !topByPosition.includes(player)).slice(0, 1);
+  // const bestTeam = topByPosition.concat(topU);
+  // const bestTeam = topByPosition.concat(topU).map((player, index) => {
+  //   return <div>{player[0]}: {player[3]}</div>
+  // });
+
+  const commonL = playerList.filter(player => player[1] === 'L').slice(0, 3);
+  const commonC = playerList.filter(player => player[1] === 'C').slice(0, 3);
+  const commonR = playerList.filter(player => player[1] === 'R').slice(0, 3);
+  const commonD = playerList.filter(player => player[1] === 'D').slice(0, 4);
+  const commonG = playerList.filter(player => player[1] === 'G').slice(0, 2);
+  const commonByPosition = [commonL, commonC, commonR, commonD, commonG].flat();
+  const commonU = playerList.filter(player => !commonByPosition.includes(player)).slice(0, 1);
+
   const topPlayers = sortByPoints.slice(0, 3).map((player) => {
     // console.log(player)
-    return <Statistic value={player[1]
+    return <Statistic value={player[3]
     }
       label={player[0]}
     />;
   });
 
-  const bottomPlayers = sortByPoints.slice(-3).map((player) => {
+  const bottomPlayers = sortByPoints.slice(-3).reverse().map((player) => {
     // console.log(player)
-    return <Statistic value={player[1]
+    return <Statistic value={player[3]
     }
       label={player[0]}
     />;
@@ -177,9 +203,9 @@ const Insights = ({ users }) => {
         </div>
         <div className='ui stackable grid' style={loadingStyle()}>
           <div className='row'>
-            <div className='five wide center aligned column'>
+            <div className='two wide center aligned column'>
               <h4>Players Remaining</h4>
-              <Statistic.Group size='tiny' widths='three'>
+              <Statistic.Group size='tiny' widths='one'>
                 <Statistic
                   color='blue'
                   value={mostPlayersRemaining}
@@ -197,9 +223,9 @@ const Insights = ({ users }) => {
                 />
               </Statistic.Group>
             </div>
-            <div className='five wide center aligned column'>
+            <div className='two wide center aligned column'>
               <h4>Pool Points</h4>
-              <Statistic.Group size='tiny' widths='three'>
+              <Statistic.Group size='tiny' widths='one'>
                 <Statistic
                   color='blue'
                   value={mostPoints}
@@ -217,42 +243,25 @@ const Insights = ({ users }) => {
                 />
               </Statistic.Group>
             </div>
-            <div className='six wide center aligned column'>
+            <div className='two wide center aligned column'>
               <h4>Most Picked Players</h4>
-              <Statistic.Group size='tiny' color='blue' widths='three'>
+              <Statistic.Group size='tiny' color='blue' widths='one'>
                 {mostCommonPlayers}
               </Statistic.Group>
             </div>
-          </div>
-          <Divider />
-          <div className='row'>
-            <div className='eight wide center aligned column'>
-              <h4>Perfect Team</h4>
-            </div>
-            <div className='eight wide center aligned column'>
-              <h4>Most Common Team</h4>
-            </div>
-            {/* <div className='four wide center aligned column'>
-              <h4>Team</h4>
-              <p>Most players picked</p>
-              <p>Fewest players picked</p>
-            </div> */}
-          </div>
-          <Divider />
-          <div className='row'>
-            <div className='four wide center aligned column'>
+            <div className='two wide center aligned column'>
               <h4>Best Picks</h4>
-              <Statistic.Group size='tiny' color='blue' widths='three'>
+              <Statistic.Group size='tiny' color='blue' widths='one'>
                 {topPlayers}
               </Statistic.Group>
               <h6>Highest individual points</h6>
             </div>
-            <div className='four wide center aligned column'>
+            <div className='two wide center aligned column'>
               <h4>Worst Picks</h4>
-              <Statistic.Group size='tiny' color='red' widths='three'>
+              <Statistic.Group size='tiny' color='red' widths='one'>
                 {bottomPlayers}
               </Statistic.Group>
-              {/* <Statistic.Group size='tiny' widths='three' color='red'>
+              {/* <Statistic.Group size='tiny' widths='one' color='red'>
                 <Statistic
                   value='0'
                   label='Frederik Andersen'
@@ -276,9 +285,9 @@ const Insights = ({ users }) => {
               </Statistic.Group> */}
               <h6>Lowest individual points</h6>
             </div>
-            <div className='four wide center aligned column'>
+            <div className='two wide center aligned column'>
               <h4>Most Undervalued Picks</h4>
-              <Statistic.Group size='tiny' widths='three' color='teal'>
+              <Statistic.Group size='tiny' widths='one' color='teal'>
                 <Statistic
                   value='TBD'
                   label='Player'
@@ -294,9 +303,9 @@ const Insights = ({ users }) => {
               </Statistic.Group>
               <h6>top of points / times picked</h6>
             </div>
-            <div className='four wide center aligned column'>
+            <div className='two wide center aligned column'>
               <h4>Most Overvalued Picks</h4>
-              <Statistic.Group size='tiny' widths='three' color='purple'>
+              <Statistic.Group size='tiny' widths='one' color='purple'>
                 <Statistic
                   value='TBD'
                   label='Player'
@@ -315,15 +324,164 @@ const Insights = ({ users }) => {
           </div>
           <Divider />
           <div className='row'>
+            <div className='eight wide center aligned column'>
+              <h4>Perfect Team</h4>
+              <Grid>
+                <Grid.Row columns={3}>
+                  <Grid.Column>
+                    <h5>Left</h5>
+                    {topL.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[3]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Center</h5>
+                    {topC.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[3]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Right</h5>
+                    {topR.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[3]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={3}>
+                  <Grid.Column>
+                    <h5>Defense</h5>
+                    {topD.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[3]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Goalie</h5>
+                    {topG.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[3]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Utility</h5>
+                    {topU.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[3]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </div>
+            <div className='eight wide center aligned column'>
+              <h4>Most Common Team</h4>
+              <Grid>
+                <Grid.Row columns={3}>
+                  <Grid.Column>
+                    <h5>Left</h5>
+                    {commonL.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[4]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Center</h5>
+                    {commonC.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[4]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Right</h5>
+                    {commonR.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[4]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={3}>
+                  <Grid.Column>
+                    <h5>Defense</h5>
+                    {commonD.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[4]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Goalie</h5>
+                    {commonG.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[4]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                  <Grid.Column>
+                    <h5>Utility</h5>
+                    {commonU.map((player) => {
+                      return (
+                        <div>
+                          {player[0] + ': ' + player[4]}
+                        </div>
+                      )
+                    })}
+                  </Grid.Column>
+                </Grid.Row>
+                <Divider vertical></Divider>
+              </Grid>
+            </div>
+            {/* <div className='two wide center aligned column'>
+              <h4>Team</h4>
+              <p>Most players picked</p>
+              <p>Fewest players picked</p>
+            </div> */}
+          </div>
+          <Divider />
+          <div className='row'>
             <div className='sixteen wide center aligned column'>
               <h4>
                 Player Details
               </h4>
-              <Table color='blue' striped compact>
+              <Table basic='very' unstackable selectable>
                 <Table.Header>
                   <Table.Row>
-                    <Table.HeaderCell>Rank</Table.HeaderCell>
+                    <Table.HeaderCell></Table.HeaderCell>
                     <Table.HeaderCell>Player</Table.HeaderCell>
+                    <Table.HeaderCell>Position</Table.HeaderCell>
+                    <Table.HeaderCell>Team</Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points</Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked</Table.HeaderCell>
                   </Table.Row>

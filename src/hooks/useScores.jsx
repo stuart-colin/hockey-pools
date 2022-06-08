@@ -11,8 +11,10 @@ const useScores = () => {
     const getScoreData = async () => {
       const res = await fetch(scoreDetailsEndpointNHL);
       const json = await res.json();
-      setDate(json.dates[0].date);
-      setGames(json.dates[0].games);
+      if (json.dates[0]) {
+        setDate(json.dates[0].date);
+        setGames(json.dates[0].games);
+      }
     };
     getScoreData();
     const interval = setInterval(() => {
