@@ -82,7 +82,6 @@ const Insights = ({ users }) => {
   const averagePoints = mean(points).toFixed(0)
   const fewestPoints = min(points);
 
-
   const mostCommonPlayers = playerList.slice(0, 3).map((player) => {
     return <Statistic value={player[4]
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
@@ -90,38 +89,9 @@ const Insights = ({ users }) => {
       label={player[0]}
     />;
   });
-  const playersByFrequency = playerList.map((player, index) => {
-    return (
-      <Table.Row
-        negative={eliminatedTeams.includes(player[2]) ? true : false}
-      >
-        <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{player[0]}</Table.Cell>
-        <Table.Cell>{player[1]}</Table.Cell>
-        <Table.Cell>{player[2]}</Table.Cell>
-        <Table.Cell>{player[3]}</Table.Cell>
-        <Table.Cell>{player[4]}</Table.Cell>
-      </Table.Row>
-    )
-  });
 
   const sortByPoints = [].concat(playerList)
     .sort((a, b) => a[3] > b[3] ? -1 : 1);
-
-  const playersByPoints = sortByPoints.map((player, index) => {
-    return (
-      <Table.Row
-        negative={eliminatedTeams.includes(player[2]) ? true : false}
-      >
-        <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{player[0]}</Table.Cell>
-        <Table.Cell>{player[1]}</Table.Cell>
-        <Table.Cell>{player[2]}</Table.Cell>
-        <Table.Cell>{player[3]}</Table.Cell>
-        <Table.Cell>{player[4]}</Table.Cell>
-      </Table.Row>
-    )
-  });
 
   const topL = sortByPoints.filter(player => player[1] === 'L').slice(0, 3);
   const topC = sortByPoints.filter(player => player[1] === 'C').slice(0, 3);
@@ -132,15 +102,14 @@ const Insights = ({ users }) => {
   const topU = sortByPoints.filter(player => !topByPosition.includes(player)).slice(0, 1);
   const bestTeam = topByPosition.concat(topU);
   let bestRemaining = 16;
+  let bestPoints = 0;
   bestTeam.map((player) => {
     if (eliminatedTeams.includes(player[2])) {
       bestRemaining--
     }
-    return bestRemaining
+    bestPoints = bestPoints + player[3];
+    return bestRemaining, bestPoints;
   });
-  // const bestTeam = topByPosition.concat(topU).map((player, index) => {
-  //   return <div>{player[0]}: {player[3]}</div>
-  // });
 
   const commonL = playerList.filter(player => player[1] === 'L').slice(0, 3);
   const commonC = playerList.filter(player => player[1] === 'C').slice(0, 3);
@@ -151,11 +120,13 @@ const Insights = ({ users }) => {
   const commonU = playerList.filter(player => !commonByPosition.includes(player)).slice(0, 1);
   const commonTeam = commonByPosition.concat(commonU);
   let commonRemaining = 16;
+  let commonPoints = 0;
   commonTeam.map((player) => {
     if (eliminatedTeams.includes(player[2])) {
       commonRemaining--
     }
-    return commonRemaining
+    commonPoints = commonPoints + player[3]
+    return commonRemaining, commonPoints;
   });
 
   const topPlayers = sortByPoints.slice(0, 3).map((player) => {
@@ -172,6 +143,36 @@ const Insights = ({ users }) => {
     }
       label={player[0]}
     />;
+  });
+
+  const playersByFrequency = playerList.map((player, index) => {
+    return (
+      <Table.Row
+        negative={eliminatedTeams.includes(player[2]) ? true : false}
+      >
+        <Table.Cell collapsing>{index + 1}</Table.Cell>
+        <Table.Cell>{player[0]}</Table.Cell>
+        <Table.Cell>{player[1]}</Table.Cell>
+        <Table.Cell>{player[2]}</Table.Cell>
+        <Table.Cell>{player[3]}</Table.Cell>
+        <Table.Cell>{player[4]}</Table.Cell>
+      </Table.Row>
+    )
+  });
+
+  const playersByPoints = sortByPoints.map((player, index) => {
+    return (
+      <Table.Row
+        negative={eliminatedTeams.includes(player[2]) ? true : false}
+      >
+        <Table.Cell collapsing>{index + 1}</Table.Cell>
+        <Table.Cell>{player[0]}</Table.Cell>
+        <Table.Cell>{player[1]}</Table.Cell>
+        <Table.Cell>{player[2]}</Table.Cell>
+        <Table.Cell>{player[3]}</Table.Cell>
+        <Table.Cell>{player[4]}</Table.Cell>
+      </Table.Row>
+    )
   });
 
   return (
@@ -327,14 +328,14 @@ const Insights = ({ users }) => {
           <Divider />
           <div className='row'>
             <div className='eight wide center aligned column'>
-              <h4>Perfect Team - {bestRemaining}/16</h4>
+              <h4>Perfect Team - {bestPoints} Points, {bestRemaining}/16 Players</h4>
               <Grid>
                 <Grid.Row columns={3}>
                   <Grid.Column>
                     <h5>Left</h5>
                     {topL.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -344,7 +345,7 @@ const Insights = ({ users }) => {
                     <h5>Center</h5>
                     {topC.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -354,7 +355,7 @@ const Insights = ({ users }) => {
                     <h5>Right</h5>
                     {topR.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -366,7 +367,7 @@ const Insights = ({ users }) => {
                     <h5>Defense</h5>
                     {topD.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -376,7 +377,7 @@ const Insights = ({ users }) => {
                     <h5>Goalie</h5>
                     {topG.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -386,7 +387,7 @@ const Insights = ({ users }) => {
                     <h5>Utility</h5>
                     {topU.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -396,14 +397,14 @@ const Insights = ({ users }) => {
               </Grid>
             </div>
             <div className='eight wide center aligned column'>
-              <h4>Most Common Team - {commonRemaining}/16</h4>
+              <h4>Most Common Team - {commonPoints} Points, {commonRemaining}/16 Players</h4>
               <Grid>
                 <Grid.Row columns={3}>
                   <Grid.Column>
                     <h5>Left</h5>
                     {commonL.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -413,7 +414,7 @@ const Insights = ({ users }) => {
                     <h5>Center</h5>
                     {commonC.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -423,7 +424,7 @@ const Insights = ({ users }) => {
                     <h5>Right</h5>
                     {commonR.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -435,7 +436,7 @@ const Insights = ({ users }) => {
                     <h5>Defense</h5>
                     {commonD.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -445,7 +446,7 @@ const Insights = ({ users }) => {
                     <h5>Goalie</h5>
                     {commonG.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -455,7 +456,7 @@ const Insights = ({ users }) => {
                     <h5>Utility</h5>
                     {commonU.map((player) => {
                       return (
-                        <div>
+                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
