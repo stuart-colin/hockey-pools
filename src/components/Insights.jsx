@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Divider, Icon, Grid, Statistic, Table } from 'semantic-ui-react';
+import { min, max, mean, mode, frequency } from '../utils/stats';
+import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
 import '../css/customStyle.css';
 
@@ -68,41 +70,21 @@ const Insights = ({ users }) => {
     players.push([player.name, player.position, player.team.name, playerPoints])
   })
 
-  // console.log(playerData)
-  // console.log(players)
-  // console.log(playerList)
-
-  const max = (array) => array.length && array.reduce((a, b) => a > b ? a : b);
-  const average = (array) => array.length && array.reduce((a, b) => a + b) / (array.length);
-  const min = (array) => array.length && array.reduce((a, b) => a < b ? a : b);
-  // const mode = (array) => array.length && array.sort((a, b) =>
-  //   array.filter(v => v === a).length - array.filter(v => v === b).length).pop();
-  const frequency = (array, index) => {
-    let hash = {};
-    for (let i of array) {
-      if (!hash[i]) hash[i] = 0;
-      hash[i]++;
-    }
-    const hashToArray = Object.entries(hash);
-    const sortedArray = hashToArray.sort((a, b) => a[1] > b[1] ? -1 : 1);
-    return sortedArray;
-  }
-
-  const mostPlayersRemaining = max(playersRemaining);
-  const averagePlayersRemaining = average(playersRemaining).toFixed(0);
-  const fewestPlayersRemaining = min(playersRemaining);
-
-  const mostPoints = max(points);
-  const averagePoints = average(points).toFixed(0)
-  const fewestPoints = min(points);
-
   frequency(players).map((player) => {
     playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], parseFloat(player[0].split(',')[3]), player[1]])
   })
 
+  const mostPlayersRemaining = max(playersRemaining);
+  const averagePlayersRemaining = mean(playersRemaining).toFixed(0);
+  const fewestPlayersRemaining = min(playersRemaining);
+
+  const mostPoints = max(points);
+  const averagePoints = mean(points).toFixed(0)
+  const fewestPoints = min(points);
+
+
   const mostCommonPlayers = playerList.slice(0, 3).map((player) => {
-    // console.log(player)
-    return <Statistic value={player[4] + '/' + users.rosters.length
+    return <Statistic value={player[4]
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
     }
       label={player[0]}
@@ -110,7 +92,9 @@ const Insights = ({ users }) => {
   });
   const playersByFrequency = playerList.map((player, index) => {
     return (
-      <Table.Row>
+      <Table.Row
+        negative={eliminatedTeams.includes(player[2]) ? true : false}
+      >
         <Table.Cell collapsing>{index + 1}</Table.Cell>
         <Table.Cell>{player[0]}</Table.Cell>
         <Table.Cell>{player[1]}</Table.Cell>
@@ -126,7 +110,9 @@ const Insights = ({ users }) => {
 
   const playersByPoints = sortByPoints.map((player, index) => {
     return (
-      <Table.Row>
+      <Table.Row
+        negative={eliminatedTeams.includes(player[2]) ? true : false}
+      >
         <Table.Cell collapsing>{index + 1}</Table.Cell>
         <Table.Cell>{player[0]}</Table.Cell>
         <Table.Cell>{player[1]}</Table.Cell>
@@ -144,7 +130,14 @@ const Insights = ({ users }) => {
   const topG = sortByPoints.filter(player => player[1] === 'G').slice(0, 2);
   const topByPosition = [topL, topC, topR, topD, topG].flat();
   const topU = sortByPoints.filter(player => !topByPosition.includes(player)).slice(0, 1);
-  // const bestTeam = topByPosition.concat(topU);
+  const bestTeam = topByPosition.concat(topU);
+  let bestRemaining = 16;
+  bestTeam.map((player) => {
+    if (eliminatedTeams.includes(player[2])) {
+      bestRemaining--
+    }
+    return bestRemaining
+  });
   // const bestTeam = topByPosition.concat(topU).map((player, index) => {
   //   return <div>{player[0]}: {player[3]}</div>
   // });
@@ -156,6 +149,14 @@ const Insights = ({ users }) => {
   const commonG = playerList.filter(player => player[1] === 'G').slice(0, 2);
   const commonByPosition = [commonL, commonC, commonR, commonD, commonG].flat();
   const commonU = playerList.filter(player => !commonByPosition.includes(player)).slice(0, 1);
+  const commonTeam = commonByPosition.concat(commonU);
+  let commonRemaining = 16;
+  commonTeam.map((player) => {
+    if (eliminatedTeams.includes(player[2])) {
+      commonRemaining--
+    }
+    return commonRemaining
+  });
 
   const topPlayers = sortByPoints.slice(0, 3).map((player) => {
     // console.log(player)
@@ -248,6 +249,7 @@ const Insights = ({ users }) => {
               <Statistic.Group size='tiny' color='blue' widths='one'>
                 {mostCommonPlayers}
               </Statistic.Group>
+              <h6>Number of times selected</h6>
             </div>
             <div className='two wide center aligned column'>
               <h4>Best Picks</h4>
@@ -325,7 +327,7 @@ const Insights = ({ users }) => {
           <Divider />
           <div className='row'>
             <div className='eight wide center aligned column'>
-              <h4>Perfect Team</h4>
+              <h4>Perfect Team - {bestRemaining}/16</h4>
               <Grid>
                 <Grid.Row columns={3}>
                   <Grid.Column>
@@ -394,7 +396,7 @@ const Insights = ({ users }) => {
               </Grid>
             </div>
             <div className='eight wide center aligned column'>
-              <h4>Most Common Team</h4>
+              <h4>Most Common Team - {commonRemaining}/16</h4>
               <Grid>
                 <Grid.Row columns={3}>
                   <Grid.Column>
