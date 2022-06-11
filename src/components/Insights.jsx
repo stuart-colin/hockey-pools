@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Divider, Icon, Grid, Statistic, Table } from 'semantic-ui-react';
-import { min, max, mean, mode, frequency } from '../utils/stats';
+import { min, max, mean, frequency } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
 import '../css/customStyle.css';
@@ -108,7 +108,7 @@ const Insights = ({ users }) => {
       bestRemaining--
     }
     bestPoints = bestPoints + player[3];
-    return bestRemaining, bestPoints;
+    return null;
   });
 
   const commonL = playerList.filter(player => player[1] === 'L').slice(0, 3);
@@ -126,11 +126,10 @@ const Insights = ({ users }) => {
       commonRemaining--
     }
     commonPoints = commonPoints + player[3]
-    return commonRemaining, commonPoints;
+    return null;
   });
 
   const topPlayers = sortByPoints.slice(0, 3).map((player) => {
-    // console.log(player)
     return <Statistic value={player[3]
     }
       label={player[0]}
@@ -138,7 +137,20 @@ const Insights = ({ users }) => {
   });
 
   const bottomPlayers = sortByPoints.slice(-3).reverse().map((player) => {
-    // console.log(player)
+    return <Statistic value={player[3]
+    }
+      label={player[0]}
+    />;
+  });
+
+  const bestByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) <= 0.25).slice(0, 3).map((player) => {
+    return <Statistic value={player[3]
+    }
+      label={player[0]}
+    />;
+  });
+
+  const worstByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) >= 0.5).slice(-3).reverse().map((player) => {
     return <Statistic value={player[3]
     }
       label={player[0]}
@@ -156,6 +168,7 @@ const Insights = ({ users }) => {
         <Table.Cell>{player[2]}</Table.Cell>
         <Table.Cell>{player[3]}</Table.Cell>
         <Table.Cell>{player[4]}</Table.Cell>
+        <Table.Cell>{(player[4] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
       </Table.Row>
     )
   });
@@ -171,6 +184,7 @@ const Insights = ({ users }) => {
         <Table.Cell>{player[2]}</Table.Cell>
         <Table.Cell>{player[3]}</Table.Cell>
         <Table.Cell>{player[4]}</Table.Cell>
+        <Table.Cell>{(player[4] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
       </Table.Row>
     )
   });
@@ -264,65 +278,38 @@ const Insights = ({ users }) => {
               <Statistic.Group size='tiny' color='red' widths='one'>
                 {bottomPlayers}
               </Statistic.Group>
-              {/* <Statistic.Group size='tiny' widths='one' color='red'>
-                <Statistic
-                  value='0'
-                  label='Frederik Andersen'
-                />
-                <Statistic
-                  value='0'
-                  label='Mike Reilly'
-                />
-                <Statistic>
-                  <Statistic.Value>
-                    1
-                  </Statistic.Value>
-                  <Statistic.Label>
-                    Mason Marchment
-                    <br></br>
-                    Mackenzie Weegar
-                    <br></br>
-                    Tristan Jarry
-                  </Statistic.Label>
-                </Statistic>
-              </Statistic.Group> */}
               <h6>Lowest individual points</h6>
             </div>
             <div className='two wide center aligned column'>
               <h4>Most Undervalued Picks</h4>
               <Statistic.Group size='tiny' widths='one' color='teal'>
-                <Statistic
-                  value='TBD'
-                  label='Player'
-                />
-                <Statistic
-                  value='TBD'
-                  label='Player'
-                />
-                <Statistic
-                  value='TBD'
-                  label='Player'
-                />
+                {bestByPickThreshold}
               </Statistic.Group>
-              <h6>top of points / times picked</h6>
+              <h6>Highest points under 25% selection rate</h6>
             </div>
             <div className='two wide center aligned column'>
               <h4>Most Overvalued Picks</h4>
               <Statistic.Group size='tiny' widths='one' color='purple'>
+                {worstByPickThreshold}
+              </Statistic.Group>
+              <h6>Lowest points over 50% selection rate</h6>
+            </div>
+            <div className='two wide center aligned column'>
+              <h4>Best Players No One Took</h4>
+              <Statistic.Group size='tiny' widths='one' color='green'>
                 <Statistic
-                  value='TBD'
-                  label='Player'
+                  value='14'
+                  label='Pavel Francouz'
                 />
                 <Statistic
-                  value='TBD'
-                  label='Player'
+                  value='14'
+                  label='Antti Raanta'
                 />
                 <Statistic
-                  value='TBD'
-                  label='Player'
+                  value='14'
+                  label='Carter Verhaeghe'
                 />
               </Statistic.Group>
-              <h6>bottom of points / times picked</h6>
             </div>
           </div>
           <Divider />
@@ -486,6 +473,7 @@ const Insights = ({ users }) => {
                     <Table.HeaderCell>Team</Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points <Icon name='sort'></Icon></Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort'></Icon></Table.HeaderCell>
+                    <Table.HeaderCell>Pick Rate</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>

@@ -19,8 +19,7 @@
 .expandedRosterStyle {
   transition: all 1s;
   max-height: 60vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
   -webkit-filter: opacity(1);
   filter: opacity(1);
 }
