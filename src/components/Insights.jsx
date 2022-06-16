@@ -289,16 +289,17 @@ const Insights = ({ users }) => {
               </Statistic.Group>
               <br></br>
               <Input
-                label={{ basic: true, content: '%' }}
+                // label={{ basic: true, content: '%' }}
                 labelPosition='right'
                 value={highThresh}
                 size='mini'
-                type='number'
+                type='range'
+                fluid
                 min='1'
                 max='100'
                 onChange={(e) => setHighThresh(e.target.value)}
               />
-              <h6>Highest points under selection rate</h6>
+              <h6>Highest points under {highThresh}% selection rate</h6>
             </div>
             <div className='two wide center aligned column'>
               <h4>Most Overvalued Picks</h4>
@@ -306,17 +307,23 @@ const Insights = ({ users }) => {
                 {worstByPickThreshold}
               </Statistic.Group>
               <br></br>
-              <Input
-                label={{ basic: true, content: '%' }}
-                labelPosition='right'
-                value={lowThresh}
-                size='mini'
-                type='number'
-                min='1'
-                max='100'
-                onChange={(e) => setLowThresh(e.target.value)}
-              />
-              <h6>Lowest points over selection rate</h6>
+              <div>
+                {/* <Icon name='angle down' /> */}
+                <Input
+                  // label={{ basic: true, content: '%' }}
+                  labelPosition='right'
+                  value={lowThresh}
+                  size='mini'
+                  type='range'
+                  fluid
+                  min='1'
+                  max='100'
+                  onChange={(e) => setLowThresh(e.target.value)}
+                />
+                {/* <Icon name='angle up' /> */}
+              </div>
+
+              <h6>Lowest points over {lowThresh}% selection rate</h6>
             </div>
             <div className='two wide center aligned column'>
               <h4>Best Players No One Took</h4>
