@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Icon, Grid, Statistic, Table } from 'semantic-ui-react';
+import { Divider, Icon, Input, Grid, Statistic, Table } from 'semantic-ui-react';
 import { min, max, mean, frequency } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
@@ -9,6 +9,8 @@ const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
   const [sortOption, setSortOption] = useState(false);
+  const [highThresh, setHighThresh] = useState(25);
+  const [lowThresh, setLowThresh] = useState(50);
 
   useEffect(() => {
     if (!users.loading) {
@@ -143,14 +145,14 @@ const Insights = ({ users }) => {
     />;
   });
 
-  const bestByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) <= 0.25).slice(0, 3).map((player) => {
+  const bestByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) <= highThresh / 100).slice(0, 3).map((player) => {
     return <Statistic value={player[3]
     }
       label={player[0]}
     />;
   });
 
-  const worstByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) >= 0.5).slice(-3).reverse().map((player) => {
+  const worstByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) >= lowThresh / 100).slice(-3).reverse().map((player) => {
     return <Statistic value={player[3]
     }
       label={player[0]}
@@ -285,14 +287,36 @@ const Insights = ({ users }) => {
               <Statistic.Group size='tiny' widths='one' color='teal'>
                 {bestByPickThreshold}
               </Statistic.Group>
-              <h6>Highest points under 25% selection rate</h6>
+              <br></br>
+              <Input
+                label={{ basic: true, content: '%' }}
+                labelPosition='right'
+                value={highThresh}
+                size='mini'
+                type='number'
+                min='1'
+                max='100'
+                onChange={(e) => setHighThresh(e.target.value)}
+              />
+              <h6>Highest points under selection rate</h6>
             </div>
             <div className='two wide center aligned column'>
               <h4>Most Overvalued Picks</h4>
               <Statistic.Group size='tiny' widths='one' color='purple'>
                 {worstByPickThreshold}
               </Statistic.Group>
-              <h6>Lowest points over 50% selection rate</h6>
+              <br></br>
+              <Input
+                label={{ basic: true, content: '%' }}
+                labelPosition='right'
+                value={lowThresh}
+                size='mini'
+                type='number'
+                min='1'
+                max='100'
+                onChange={(e) => setLowThresh(e.target.value)}
+              />
+              <h6>Lowest points over selection rate</h6>
             </div>
             <div className='two wide center aligned column'>
               <h4>Best Players No One Took</h4>
