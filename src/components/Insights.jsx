@@ -9,7 +9,7 @@ const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
   const [sortOption, setSortOption] = useState(false);
-  const [highThresh, setHighThresh] = useState(25);
+  const [highThresh, setHighThresh] = useState(15);
   const [lowThresh, setLowThresh] = useState(50);
 
   useEffect(() => {
@@ -131,33 +131,45 @@ const Insights = ({ users }) => {
     return null;
   });
 
-  const topPlayers = sortByPoints.slice(0, 3).map((player) => {
-    return <Statistic value={player[3]
-    }
-      label={player[0]}
-    />;
-  });
+  const topPlayers = sortByPoints
+    .slice(0, 3)
+    .map((player) => {
+      return <Statistic value={player[3]
+      }
+        label={player[0]}
+      />;
+    });
 
-  const bottomPlayers = sortByPoints.slice(-3).reverse().map((player) => {
-    return <Statistic value={player[3]
-    }
-      label={player[0]}
-    />;
-  });
+  const bottomPlayers = sortByPoints
+    .slice(-3)
+    .reverse()
+    .map((player) => {
+      return <Statistic value={player[3]
+      }
+        label={player[0]}
+      />;
+    });
 
-  const bestByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) <= highThresh / 100).slice(0, 3).map((player) => {
-    return <Statistic value={player[3]
-    }
-      label={player[0]}
-    />;
-  });
+  const bestByPickThreshold = sortByPoints
+    .filter(player => Math.round(player[4] / users.rosters.length * 100) <= highThresh)
+    .slice(0, 3)
+    .map((player) => {
+      return <Statistic value={player[3]
+      }
+        label={player[0]}
+      />;
+    });
 
-  const worstByPickThreshold = sortByPoints.filter(player => (player[4] / users.rosters.length) >= lowThresh / 100).slice(-3).reverse().map((player) => {
-    return <Statistic value={player[3]
-    }
-      label={player[0]}
-    />;
-  });
+  const worstByPickThreshold = sortByPoints
+    .filter(player => (player[4] / users.rosters.length * 100) >= lowThresh)
+    .slice(-3)
+    .reverse()
+    .map((player) => {
+      return <Statistic value={player[3]
+      }
+        label={player[0]}
+      />;
+    });
 
   const playersByFrequency = playerList.map((player, index) => {
     return (
@@ -194,7 +206,9 @@ const Insights = ({ users }) => {
   return (
     <div className='ui segments'>
       <div className='ui top blue centered attached header' >
-        <div className='left aligned column' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer', position: 'absolute' }}>
+        <div className='left aligned column'
+          onClick={() => setVisible(!visible)}
+          style={{ cursor: 'pointer', position: 'absolute' }}>
           <h3>
             {visible &&
               <i className='window minimize outline icon'></i>
@@ -210,11 +224,14 @@ const Insights = ({ users }) => {
           </h2>
         </div>
       </div>
-      <div className={
-        `ui bottom attached segment
+      <div
+        className={
+          `ui bottom attached segment
         ${!visible ? 'collapsedRosterStyle' : 'expandedRosterStyle'}`
-      }>
-        <div className='ui active inverted dimmer' style={loadedStyle()}>
+        }>
+        <div
+          className='ui active inverted dimmer'
+          style={loadedStyle()}>
           <div className='ui text loader'>
             Loading Insights...
           </div>
@@ -283,7 +300,7 @@ const Insights = ({ users }) => {
               <h6>Lowest individual points</h6>
             </div>
             <div className='two wide center aligned column'>
-              <h4>Most Undervalued Picks</h4>
+              <h4>Most Undervalued Picks </h4>
               <Statistic.Group size='tiny' widths='one' color='teal'>
                 {bestByPickThreshold}
               </Statistic.Group>
@@ -295,8 +312,8 @@ const Insights = ({ users }) => {
                 size='mini'
                 type='range'
                 fluid
-                min='1'
-                max='100'
+                min={playerList.length ? (playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0) : null}
+                max={playerList.length ? (playerList[0][4] / users.rosters.length * 100).toFixed(0) : null}
                 onChange={(e) => setHighThresh(e.target.value)}
               />
               <h6>Highest points under {highThresh}% selection rate</h6>
@@ -316,8 +333,9 @@ const Insights = ({ users }) => {
                   size='mini'
                   type='range'
                   fluid
-                  min='1'
-                  max='100'
+                  min={playerList.length ? (playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0) : null}
+                  max={playerList.length ? (playerList[2][4] / users.rosters.length * 100).toFixed(0) : null}
+                  // max='100'
                   onChange={(e) => setLowThresh(e.target.value)}
                 />
                 {/* <Icon name='angle up' /> */}
