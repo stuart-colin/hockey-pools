@@ -5,12 +5,17 @@ import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
 import '../css/customStyle.css';
 
+const smallStep = 1;
+const bigStep = 10;
+const defaultHighThresh = 15;
+const defaultLowThresh = 45;
+
 const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
   const [sortOption, setSortOption] = useState(false);
-  const [highThresh, setHighThresh] = useState(15);
-  const [lowThresh, setLowThresh] = useState(50);
+  const [highThresh, setHighThresh] = useState(defaultHighThresh);
+  const [lowThresh, setLowThresh] = useState(defaultLowThresh);
 
   useEffect(() => {
     if (!users.loading) {
@@ -74,6 +79,7 @@ const Insights = ({ users }) => {
 
   frequency(players).map((player) => {
     playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], parseFloat(player[0].split(',')[3]), player[1]])
+    return null;
   })
 
   const mostPlayersRemaining = max(playersRemaining);
@@ -88,6 +94,7 @@ const Insights = ({ users }) => {
     return <Statistic value={player[4]
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
     }
+      key={player[0]}
       label={player[0]}
     />;
   });
@@ -136,6 +143,7 @@ const Insights = ({ users }) => {
     .map((player) => {
       return <Statistic value={player[3]
       }
+        key={player[0]}
         label={player[0]}
       />;
     });
@@ -146,6 +154,7 @@ const Insights = ({ users }) => {
     .map((player) => {
       return <Statistic value={player[3]
       }
+        key={player[0]}
         label={player[0]}
       />;
     });
@@ -156,9 +165,13 @@ const Insights = ({ users }) => {
     .map((player) => {
       return <Statistic value={player[3]
       }
+        key={player[0]}
         label={player[0]}
       />;
     });
+
+  const highThreshMin = playerList.length ? parseFloat((playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0)) : null;
+  const highThreshMax = playerList.length ? parseFloat((playerList[0][4] / users.rosters.length * 100).toFixed(0)) : null;
 
   const worstByPickThreshold = sortByPoints
     .filter(player => (player[4] / users.rosters.length * 100) >= lowThresh)
@@ -167,13 +180,18 @@ const Insights = ({ users }) => {
     .map((player) => {
       return <Statistic value={player[3]
       }
+        key={player[0]}
         label={player[0]}
       />;
     });
 
+  const lowThreshMin = playerList.length ? parseFloat((playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0)) : null;
+  const lowThreshMax = playerList.length ? parseFloat((playerList[2][4] / users.rosters.length * 100).toFixed(0)) : null;
+
   const playersByFrequency = playerList.map((player, index) => {
     return (
       <Table.Row
+        key={player[0]}
         negative={eliminatedTeams.includes(player[2]) ? true : false}
       >
         <Table.Cell collapsing>{index + 1}</Table.Cell>
@@ -190,6 +208,7 @@ const Insights = ({ users }) => {
   const playersByPoints = sortByPoints.map((player, index) => {
     return (
       <Table.Row
+        key={player[0]}
         negative={eliminatedTeams.includes(player[2]) ? true : false}
       >
         <Table.Cell collapsing>{index + 1}</Table.Cell>
@@ -227,7 +246,7 @@ const Insights = ({ users }) => {
       <div
         className={
           `ui bottom attached segment
-        ${!visible ? 'collapsedRosterStyle' : 'expandedRosterStyle'}`
+        ${!visible ? 'collapsedInsightsStyle' : 'expandedInsightsStyle'}`
         }>
         <div
           className='ui active inverted dimmer'
@@ -305,17 +324,54 @@ const Insights = ({ users }) => {
                 {bestByPickThreshold}
               </Statistic.Group>
               <br></br>
+              <div key='highThreshold'>
+                <Icon
+                  disabled={highThresh <= highThreshMin && true}
+                  link={highThresh > highThreshMin && true}
+                  name='angle down'
+                  onClick={() => highThresh > highThreshMin && setHighThresh(highThresh - smallStep)}
+                  size='large'
+                />
+                <Icon
+                  disabled={highThresh <= highThreshMin && true}
+                  link={highThresh > highThreshMin && true}
+                  name='angle double down'
+                  onClick={() => highThresh - bigStep > highThreshMin ? setHighThresh(highThresh - bigStep) : setHighThresh(highThreshMin)}
+                  size='large'
+                />
+                <Icon
+                  disabled={highThresh >= highThreshMax && true}
+                  link={highThresh < highThreshMax && true}
+                  name='angle double up'
+                  onClick={() => highThresh + bigStep < highThreshMax ? setHighThresh(highThresh + bigStep) : setHighThresh(highThreshMax)}
+                  size='large'
+                />
+                <Icon
+                  disabled={highThresh >= highThreshMax && true}
+                  link={highThresh < highThreshMax && true}
+                  name='angle up'
+                  onClick={() => highThresh < highThreshMax && setHighThresh(highThresh + smallStep)}
+                  size='large'
+                />
+                <Icon
+                  disabled={highThresh === defaultHighThresh && true}
+                  link={highThresh !== defaultHighThresh && true}
+                  name='undo alternate'
+                  onClick={() => setHighThresh(defaultHighThresh)}
+                  size='large'
+                />
+                {/* <br></br>
               <Input
-                // label={{ basic: true, content: '%' }}
+                style={{ position: 'relative', top: '1em' }}
                 labelPosition='right'
                 value={highThresh}
                 size='mini'
                 type='range'
-                fluid
-                min={playerList.length ? (playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0) : null}
-                max={playerList.length ? (playerList[0][4] / users.rosters.length * 100).toFixed(0) : null}
+                min={highThreshMin}
+                max={highThreshMax}
                 onChange={(e) => setHighThresh(e.target.value)}
-              />
+              /> */}
+              </div>
               <h6>Highest points under {highThresh}% selection rate</h6>
             </div>
             <div className='two wide center aligned column'>
@@ -324,21 +380,52 @@ const Insights = ({ users }) => {
                 {worstByPickThreshold}
               </Statistic.Group>
               <br></br>
-              <div>
-                {/* <Icon name='angle down' /> */}
-                <Input
-                  // label={{ basic: true, content: '%' }}
-                  labelPosition='right'
-                  value={lowThresh}
-                  size='mini'
-                  type='range'
-                  fluid
-                  min={playerList.length ? (playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0) : null}
-                  max={playerList.length ? (playerList[2][4] / users.rosters.length * 100).toFixed(0) : null}
-                  // max='100'
-                  onChange={(e) => setLowThresh(e.target.value)}
+              <div style={{ alignItems: 'center' }}>
+                <Icon
+                  disabled={lowThresh <= lowThreshMin && true}
+                  link={lowThresh > lowThreshMin && true}
+                  name='angle down'
+                  onClick={() => lowThresh > lowThreshMin && setLowThresh(lowThresh - smallStep)}
+                  size='large'
                 />
-                {/* <Icon name='angle up' /> */}
+                <Icon
+                  disabled={lowThresh <= lowThreshMin && true}
+                  link={lowThresh > lowThreshMin && true}
+                  name='angle double down'
+                  onClick={() => lowThresh - bigStep > lowThreshMin ? setLowThresh(lowThresh - bigStep) : setLowThresh(lowThreshMin)}
+                  size='large'
+                />
+                <Icon
+                  disabled={lowThresh >= lowThreshMax && true}
+                  link={lowThresh < lowThreshMax && true}
+                  name='angle double up'
+                  onClick={() => lowThresh + bigStep < lowThreshMax ? setLowThresh(lowThresh + bigStep) : setLowThresh(lowThreshMax)}
+                  size='large'
+                />
+                <Icon
+                  disabled={lowThresh >= lowThreshMax && true}
+                  link={lowThresh < lowThreshMax && true}
+                  name='angle up'
+                  onClick={() => lowThresh < lowThreshMax && setLowThresh(lowThresh + smallStep)}
+                  size='large'
+                />
+                <Icon
+                  disabled={lowThresh === defaultLowThresh && true}
+                  link={lowThresh !== defaultLowThresh && true}
+                  name='undo alternate'
+                  onClick={() => setLowThresh(defaultLowThresh)}
+                  size='large'
+                />
+                {/* <br></br>
+                <Input
+                  labelPosition='right'
+                  max={lowThreshMax}
+                  min={lowThreshMin}
+                  onChange={(e) => setLowThresh(parseFloat(e.target.value))}
+                  style={{ position: 'relative', top: '1em' }}
+                  type='range'
+                  value={lowThresh}
+                /> */}
               </div>
 
               <h6>Lowest points over {lowThresh}% selection rate</h6>
@@ -347,16 +434,16 @@ const Insights = ({ users }) => {
               <h4>Best Players No One Took</h4>
               <Statistic.Group size='tiny' widths='one' color='green'>
                 <Statistic
-                  value='14'
                   label='Pavel Francouz'
+                  value='14'
                 />
                 <Statistic
-                  value='14'
                   label='Antti Raanta'
+                  value='14'
                 />
                 <Statistic
-                  value='14'
                   label='Carter Verhaeghe'
+                  value='14'
                 />
               </Statistic.Group>
             </div>
@@ -371,7 +458,7 @@ const Insights = ({ users }) => {
                     <h5>Left</h5>
                     {topL.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -381,7 +468,7 @@ const Insights = ({ users }) => {
                     <h5>Center</h5>
                     {topC.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -391,7 +478,7 @@ const Insights = ({ users }) => {
                     <h5>Right</h5>
                     {topR.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -403,7 +490,7 @@ const Insights = ({ users }) => {
                     <h5>Defense</h5>
                     {topD.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -413,7 +500,7 @@ const Insights = ({ users }) => {
                     <h5>Goalie</h5>
                     {topG.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -423,7 +510,7 @@ const Insights = ({ users }) => {
                     <h5>Utility</h5>
                     {topU.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[3]}
                         </div>
                       )
@@ -440,7 +527,7 @@ const Insights = ({ users }) => {
                     <h5>Left</h5>
                     {commonL.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -450,7 +537,7 @@ const Insights = ({ users }) => {
                     <h5>Center</h5>
                     {commonC.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -460,7 +547,7 @@ const Insights = ({ users }) => {
                     <h5>Right</h5>
                     {commonR.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -472,7 +559,7 @@ const Insights = ({ users }) => {
                     <h5>Defense</h5>
                     {commonD.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -482,7 +569,7 @@ const Insights = ({ users }) => {
                     <h5>Goalie</h5>
                     {commonG.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -492,7 +579,7 @@ const Insights = ({ users }) => {
                     <h5>Utility</h5>
                     {commonU.map((player) => {
                       return (
-                        <div style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
+                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
                           {player[0] + ': ' + player[4]}
                         </div>
                       )
@@ -514,15 +601,15 @@ const Insights = ({ users }) => {
                 Player Details
               </h4>
               <Table basic='very' unstackable selectable>
-                <Table.Header>
+                <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
                   <Table.Row>
                     <Table.HeaderCell></Table.HeaderCell>
                     <Table.HeaderCell>Player</Table.HeaderCell>
                     <Table.HeaderCell>Position</Table.HeaderCell>
                     <Table.HeaderCell>Team</Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points <Icon name='sort'></Icon></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort'></Icon></Table.HeaderCell>
-                    <Table.HeaderCell>Pick Rate</Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points <Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Pick Rate <Icon name='sort' /></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>

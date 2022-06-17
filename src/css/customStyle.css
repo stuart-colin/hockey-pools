@@ -8,14 +8,6 @@
   filter: opacity(1);
 }
 
-.collapsedStandingsStyle {
-  transition: all 1s;
-  max-height: 0em;
-  overflow: hidden;
-  -webkit-filter: opacity(0);
-  filter: opacity(0);
-}
-
 .expandedRosterStyle {
   transition: all 1s;
   max-height: 60vh;
@@ -24,12 +16,12 @@
   filter: opacity(1);
 }
 
-.collapsedRosterStyle {
+.expandedInsightsStyle {
   transition: all 1s;
-  max-height: 0em;
-  overflow: hidden;
-  -webkit-filter: opacity(0);
-  filter: opacity(0);
+  max-height: 70vh;
+  overflow: auto;
+  -webkit-filter: opacity(1);
+  filter: opacity(1);
 }
 
 @media screen and (max-width: 767px) {
@@ -40,6 +32,14 @@
   .expandedRosterStyle {
     max-height: 40vh;
   }
+}
+
+.collapsedStyle {
+  transition: all 1s;
+  max-height: 0em;
+  overflow: hidden;
+  -webkit-filter: opacity(0);
+  filter: opacity(0);
 }
 
 .eliminated {

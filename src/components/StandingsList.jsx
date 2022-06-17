@@ -53,7 +53,7 @@ const StandingsList = ({ users, onRosterSelect }) => {
       </div>
       <div className={
         `ui bottom attached segment
-        ${!visible ? 'collapsedStandingsStyle' : 'expandedStandingsStyle'}`
+        ${!visible ? 'collapsedStyle' : 'expandedStandingsStyle'}`
       }>
         <div className='ui active inverted dimmer' style={loadedStyle()}>
           <div className='ui text loader'>

@@ -95,7 +95,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
           </div>
         </div>
       </div>
-      <div className={`ui bottom attached segment ${!visible ? 'collapsedRosterStyle' : 'expandedRosterStyle'}`}>
+      <div className={`ui bottom attached segment ${!visible ? 'collapsedStyle' : 'expandedRosterStyle'}`}>
         <div className='ui stackable grid'>
           <div className='row'>
             {rosterPlayers}
