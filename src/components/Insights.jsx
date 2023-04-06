@@ -7,8 +7,8 @@ import '../css/customStyle.css';
 
 const smallStep = 1;
 const bigStep = 10;
-const defaultHighThresh = 15;
-const defaultLowThresh = 45;
+const defaultHighThresh = 50;
+const defaultLowThresh = 50;
 
 const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
@@ -84,11 +84,11 @@ const Insights = ({ users }) => {
 
   const mostPlayersRemaining = max(playersRemaining);
   const averagePlayersRemaining = mean(playersRemaining).toFixed(0);
-  const fewestPlayersRemaining = min(playersRemaining);
+  const LeastPlayersRemaining = min(playersRemaining);
 
   const mostPoints = max(points);
   const averagePoints = mean(points).toFixed(0)
-  const fewestPoints = min(points);
+  const LeastPoints = min(points);
 
   const mostCommonPlayers = playerList.slice(0, 3).map((player) => {
     return <Statistic value={player[4]
@@ -272,8 +272,8 @@ const Insights = ({ users }) => {
                 />
                 <Statistic
                   color='red'
-                  value={fewestPlayersRemaining}
-                  label='Fewest'
+                  value={LeastPlayersRemaining}
+                  label='Least'
                 />
               </Statistic.Group>
             </div>
@@ -292,13 +292,13 @@ const Insights = ({ users }) => {
                 />
                 <Statistic
                   color='red'
-                  value={fewestPoints}
-                  label='Fewest'
+                  value={LeastPoints}
+                  label='Least'
                 />
               </Statistic.Group>
             </div>
             <div className='two wide center aligned column'>
-              <h4>Most Picked Players</h4>
+              <h4>Most Picks</h4>
               <Statistic.Group size='tiny' color='blue' widths='one'>
                 {mostCommonPlayers}
               </Statistic.Group>
@@ -319,7 +319,7 @@ const Insights = ({ users }) => {
               <h6>Lowest individual points</h6>
             </div>
             <div className='two wide center aligned column'>
-              <h4>Most Undervalued Picks </h4>
+              <h4>Most Advantageous Picks </h4>
               <Statistic.Group size='tiny' widths='one' color='teal'>
                 {bestByPickThreshold}
               </Statistic.Group>
@@ -375,7 +375,7 @@ const Insights = ({ users }) => {
               <h6>Highest points under {highThresh}% selection rate</h6>
             </div>
             <div className='two wide center aligned column'>
-              <h4>Most Overvalued Picks</h4>
+              <h4>Least Advantageous Picks</h4>
               <Statistic.Group size='tiny' widths='one' color='purple'>
                 {worstByPickThreshold}
               </Statistic.Group>
@@ -591,7 +591,7 @@ const Insights = ({ users }) => {
             {/* <div className='two wide center aligned column'>
               <h4>Team</h4>
               <p>Most players picked</p>
-              <p>Fewest players picked</p>
+              <p>Least players picked</p>
             </div> */}
           </div>
           <Divider />
