@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+// import useSWR from 'swr';
 import countPoints from '../utils/countPoints';
 import eliminatedPlayers from '../utils/eliminatedPlayers';
 
@@ -13,9 +14,15 @@ const useUsers = () => {
 
   useEffect(() => {
     const getUserList = async () => {
-      const res = await fetch(rosterEndpoint + '?limit=100');
+      const res = await fetch(rosterEndpoint + '?limit=1');
+      // const res = await fetch(rosterEndpoint + '?limit=10');
       const users = await res.json();
-      setUserList(users.results);
+      const userCount = users.totalResults
+      for (let i = 0; i < userCount; i++) {
+        const res2 = await fetch(rosterEndpoint + '?limit=1&page=' + i)
+        const users2 = await res2.json();
+        setUserList(users2.results);
+      }
     };
     getUserList();
   }, []);
