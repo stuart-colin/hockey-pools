@@ -18,22 +18,39 @@ const StandingsList = ({ users, onRosterSelect }) => {
     }
   }
 
+  function setRanks(roster) {
+    let currentCount = -1, currentRank = 0, stack = 1;
+    for (let i = 0; i < roster.length; i++) {
+      const result = roster[i];
+      if (currentCount !== result['points']) {
+        currentRank += stack;
+        stack = 1;
+      } else {
+        stack++;
+      }
+      result['rank'] = currentRank;
+      currentCount = result['points'];
+    }
+  }
+
   const sortedRosters = [].concat(users.rosters)
     .sort((a, b) => a.points > b.points ? -1 : 1);
+
+  setRanks(sortedRosters);
 
   const renderedList = sortedRosters.map((user, index) => {
     return (
       <StandingsItem
-        index={index}
         user={user}
         onRosterSelect={onRosterSelect}
         key={index}
+        poolSize={sortedRosters.length}
       />
     )
   })
 
   return (
-    <div className='ui segments'>
+    <div className='ui segments' >
       <div className='ui top blue centered attached header'>
         <div className='left aligned column' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer', position: 'absolute' }}>
           <h3>

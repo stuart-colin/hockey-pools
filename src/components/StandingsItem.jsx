@@ -3,17 +3,18 @@ import '../css/customStyle.css';
 
 const URL = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
 const top6 = ['#66b36650', '#7cbe7c50', '#92c99250', '#a7d3a850', '#bddebe50', '#d3e9d350'];
-const pot = 84 * 20;
-const winnings = [
-  ' — $' + (pot * 0.65).toFixed(2),
-  ' — $' + (pot * 0.15).toFixed(2),
-  ' — $' + (pot * 0.09).toFixed(2),
-  ' — $' + (pot * 0.06).toFixed(2),
-  ' — $' + (pot * 0.03).toFixed(2),
-  ' — $' + (pot * 0.02).toFixed(2),
-];
 
-const StandingsItem = ({ user, onRosterSelect, index }) => {
+const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
+
+  const pot = poolSize * 20;
+  const winnings = [
+    ' — $' + (pot * 0.65).toFixed(2),
+    ' — $' + (pot * 0.15).toFixed(2),
+    ' — $' + (pot * 0.09).toFixed(2),
+    ' — $' + (pot * 0.06).toFixed(2),
+    ' — $' + (pot * 0.03).toFixed(2),
+    ' — $' + (pot * 0.02).toFixed(2),
+  ];
 
   const roster = [
     user.user.left[0],
@@ -42,14 +43,14 @@ const StandingsItem = ({ user, onRosterSelect, index }) => {
     <div
       onClick={() => onRosterSelect([user.user, rosterData])}
       className='item'
-      style={{ backgroundColor: index <= 5 ? top6[index] : '' }}
+      style={{ backgroundColor: user.rank <= 6 ? top6[user.rank - 1] : '' }}
     >
-      <div className='left floated content'>{index + 1}</div>
+      <div className='left floated content'>{user.rank}</div>
       <img
         className='ui left floated avatar image'
         src={URL} alt='participant avatar'></img>
       <div className='item'>
-        <div className='header'>{user.user.owner.name} {index <= 5 ? winnings[index] : ''}</div>
+        <div className='header'>{user.user.owner.name} {user.rank <= 6 ? winnings[user.rank - 1] : ''}</div>
         <div className={`left floated content playersRemaining${playersRemaining}`}>{playersRemaining}/16</div>
         <div className='right floated content'>{points} Points</div>
       </div>

@@ -17,8 +17,7 @@ const useUsers = () => {
       const res = await fetch(rosterEndpoint + '?limit=1');
       // const res = await fetch(rosterEndpoint + '?limit=10');
       const users = await res.json();
-      const userCount = users.totalResults
-      for (let i = 0; i < userCount; i++) {
+      for (let i = 0; i < users.totalResults; i++) {
         const res2 = await fetch(rosterEndpoint + '?limit=1&page=' + i)
         const users2 = await res2.json();
         setUserList(users2.results);

@@ -25,7 +25,7 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
               </div>
               <div className='middle aligned column'>
                 <h2>
-                  Select a roster...
+                  Roster Details
                 </h2>
               </div>
             </div >
@@ -42,9 +42,8 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
         {!cardView && <StatsCard player={player} />}
       </ul>
     )
+  })
 
-  }
-  )
   return (
     <div className='ui segments'>
       <div className='ui top blue centered attached header'>
