@@ -8,7 +8,7 @@ const Header = () => {
         <em className='ui blue header'>BP's Annual Hockey Pool</em>
       </div>
       <div className='ui horizontal divider'>
-        17th
+        18th
       </div>
     </h1>
   )
