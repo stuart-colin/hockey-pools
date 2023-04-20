@@ -50,7 +50,8 @@ const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
         className='ui left floated avatar image'
         src={URL} alt='participant avatar'></img>
       <div className='item'>
-        <div className='header'>{user.user.owner.name} {user.rank <= 6 ? winnings[user.rank - 1] : ''}</div>
+        {/* <div className='header'>{user.user.owner.name} {user.rank <= 6 ? winnings[user.rank - 1] : ''}</div> */}
+        <div className='header'>{user.user.owner.name}</div>
         <div className={`left floated content playersRemaining${playersRemaining}`}>{playersRemaining}/16</div>
         <div className='right floated content'>{points} Points</div>
       </div>
