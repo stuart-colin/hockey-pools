@@ -434,16 +434,22 @@ const Insights = ({ users }) => {
               <h4>Best Players No One Took</h4>
               <Statistic.Group size='tiny' widths='one' color='green'>
                 <Statistic
-                  label='Pavel Francouz'
-                  value='14'
+                  // label='Pavel Francouz'
+                  // value='14'
+                  label='Coming Soon'
+                  value='0'
                 />
                 <Statistic
-                  label='Antti Raanta'
-                  value='14'
+                  // label='Antti Raanta'
+                  // value='14'
+                  label='Coming Soon'
+                  value='0'
                 />
                 <Statistic
-                  label='Carter Verhaeghe'
-                  value='14'
+                  // label='Carter Verhaeghe'
+                  // value='14'
+                  label='Coming Soon'
+                  value='0'
                 />
               </Statistic.Group>
             </div>
