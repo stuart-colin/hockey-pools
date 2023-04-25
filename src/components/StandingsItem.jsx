@@ -2,17 +2,26 @@ import React from 'react';
 import '../css/customStyle.css';
 
 const URL = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
-const top6 = ['#66b36650', '#7cbe7c50', '#92c99250', '#a7d3a850', '#bddebe50', '#d3e9d350'];
-
+// const top6 = ['#66b36650', '#7cbe7c50', '#92c99250', '#a7d3a850', '#bddebe50', '#d3e9d350'];
+const top7 = ['#66b36650', '#79bc7850', '#8bc58a50', '#9dce9c50', '#afd7ae50', '#c1e0c150', '#d3e9d350'];
 const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
 
   const pot = poolSize * 20;
+  // const winnings = [
+  //   ' — $' + (pot * 0.65).toFixed(2),
+  //   ' — $' + (pot * 0.15).toFixed(2),
+  //   ' — $' + (pot * 0.09).toFixed(2),
+  //   ' — $' + (pot * 0.06).toFixed(2),
+  //   ' — $' + (pot * 0.03).toFixed(2),
+  //   ' — $' + (pot * 0.02).toFixed(2),
+  // ];
   const winnings = [
     ' — $' + (pot * 0.65).toFixed(2),
-    ' — $' + (pot * 0.15).toFixed(2),
-    ' — $' + (pot * 0.09).toFixed(2),
-    ' — $' + (pot * 0.06).toFixed(2),
-    ' — $' + (pot * 0.03).toFixed(2),
+    ' — $' + (pot * 0.14).toFixed(2),
+    ' — $' + (pot * 0.08).toFixed(2),
+    ' — $' + (pot * 0.05).toFixed(2),
+    ' — $' + (pot * 0.04).toFixed(2),
+    ' — $' + (pot * 0.02).toFixed(2),
     ' — $' + (pot * 0.02).toFixed(2),
   ];
 
@@ -43,7 +52,7 @@ const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
     <div
       onClick={() => onRosterSelect([user.user, rosterData])}
       className='item'
-      style={{ backgroundColor: user.rank <= 6 ? top6[user.rank - 1] : '' }}
+      style={{ backgroundColor: user.rank <= 7 ? top7[user.rank - 1] : '' }}
     >
       <div className='left floated content'>{user.rank}</div>
       <img

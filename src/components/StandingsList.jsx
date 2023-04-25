@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Search from './Search';
 import StandingsItem from './StandingsItem';
 import '../css/customStyle.css'
 
@@ -66,6 +67,10 @@ const StandingsList = ({ users, onRosterSelect }) => {
           <h2>
             Standings
           </h2>
+          <Search
+            users={users}
+            placeholder={"Search Rosters"}
+          />
         </div>
       </div>
       <div className={
