@@ -13,7 +13,7 @@ const Search = ({ users, placeholder }) => {
   }, [searchTerm]);
 
   const searchedUser = filteredUsers.map(user => (
-    <div key={user.id}>{user.user.owner.name} - {user.rank}{getOrdinal(user.rank)} place, {user.points} points </div>
+    <div key={user.user.owner.id}>{user.user.owner.name} - {user.rank}{getOrdinal(user.rank)} place, {user.points} points </div>
   ));
 
   const labelDisplay = () => {
