@@ -1,8 +1,8 @@
-import season2021 from '../seasons/2021.json';
+// import season2021 from '../seasons/2021.json';
 import season2022 from '../seasons/2022.json'
 
 const seasons = {
-  season2021,
+  // season2021,
   season2022,
 };
 
