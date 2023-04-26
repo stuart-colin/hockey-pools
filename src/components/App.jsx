@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
 
+import Seasons from './Seasons';
 import Announcement from './Announcement';
 import Header from './Header';
 import Insights from './Insights';
 import ParticipantRoster from './ParticipantRoster';
-// import PlayerLookup from './PlayerLookup';
 import Scoreboard from './Scoreboard';
 import StandingsList from './StandingsList';
-
 import useUsers from '../hooks/useUsers';
+// import PlayerLookup from './PlayerLookup';
+// import useUsersNew from '../hooks/useUsersNew';
+// import useRoster from '../hooks/useRoster';
+
 
 const App = () => {
+  const [season, setSeason] = useState('2023');
   const [selectedRoster, setSelectedRoster] = useState([]);
-  const users = useUsers();
+  const users = useUsers(season);
+  // const usersNew = useUsersNew();
+  // const users = useRoster(usersNew.userList);
 
   return (
     <div>
+      <Seasons
+        onSeasonSelect={setSeason}
+      />
       <Announcement />
-      <Header />
+      <Header
+        season={season}
+      />
       <Scoreboard />
       <div className='ui stackable grid'>
         <div className='four wide column item'>
