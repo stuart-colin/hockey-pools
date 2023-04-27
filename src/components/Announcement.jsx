@@ -19,14 +19,14 @@ const Announcement = () => {
           or leave a comment on the <a href='https://discord.gg/GZQ4AWnv39'>Discord</a> and we will do our best
           to make this fun to use.
         </p>
-        New Feature!
+        New Features!
         <ul>
+          <li>Site loading has been speed up ~20x - no more waiting for standings to populate.</li>
           <li>Quickly find your team's place and point total in the standings with the new search feature in the standings list.</li>
         </ul>
-        Known Issues:
+        {/* Known Issues:
         <ul>
-          <li>Slow loading - working to improve this as soon as possible!</li>
-        </ul>
+        </ul> */}
         Planned:
         <ul>
           <li>More frequent stat updates. Currently stats are refreshed ~every hr.</li>
