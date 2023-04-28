@@ -5,7 +5,7 @@ import getOrdinal from '../utils/getOrdinals';
 
 const Header = ({ season }) => {
 
-  const seasonIndex = seasons.seasonList.indexOf(season) + 1;
+  const seasonIndex = seasons.seasonList.slice(0).reverse().indexOf(season) + 1;
   const seasonOrdinal = getOrdinal(seasonIndex);
 
   return (
