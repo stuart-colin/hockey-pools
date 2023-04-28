@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Icon, Input, Grid, Statistic, Table } from 'semantic-ui-react';
+import { Divider, Icon, Input, Grid, Statistic, Table, TableRow } from 'semantic-ui-react';
 import { min, max, mean, frequency } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
@@ -13,7 +13,8 @@ const defaultLowThresh = 50;
 const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
-  const [sortOption, setSortOption] = useState(false);
+  const [sortTeamOption, setSortTeamOption] = useState('unique-picks');
+  const [sortPlayerOption, setSortPlayerOption] = useState(false);
   const [highThresh, setHighThresh] = useState(defaultHighThresh);
   const [lowThresh, setLowThresh] = useState(defaultLowThresh);
 
@@ -98,6 +99,27 @@ const Insights = ({ users }) => {
       label={player[0]}
     />;
   });
+
+  const playerTeamCount = playerList.map((team) => {
+    return team[2];
+  })
+  const selectionsPerTeam = frequency(playerTeamCount).sort();
+
+  const teamCount = players.map((team) => {
+    return team[2];
+  })
+  const totalSelectionsPerTeam = frequency(teamCount).sort();
+
+  selectionsPerTeam.map((team, index) => {
+    team.push(totalSelectionsPerTeam[index][1])
+    return team;
+  })
+
+  const sortUniquePicks = [].concat(selectionsPerTeam)
+    .sort((a, b) => a[1] > b[1] ? -1 : 1);
+
+  const sortTotalPicks = [].concat(selectionsPerTeam)
+    .sort((a, b) => a[2] > b[2] ? -1 : 1);
 
   const sortByPoints = [].concat(playerList)
     .sort((a, b) => a[3] > b[3] ? -1 : 1);
@@ -187,6 +209,48 @@ const Insights = ({ users }) => {
 
   const lowThreshMin = playerList.length ? parseFloat((playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0)) : null;
   const lowThreshMax = playerList.length ? parseFloat((playerList[2][4] / users.rosters.length * 100).toFixed(0)) : null;
+
+  const teamsAlphabetical = selectionsPerTeam.map((team, index) => {
+    return (
+      <Table.Row
+        key={team[0]}
+        negative={eliminatedTeams.includes(team[0]) ? true : false}
+      >
+        <Table.Cell collapsing>{index + 1}</Table.Cell>
+        <Table.Cell>{team[0]}</Table.Cell>
+        <Table.Cell>{team[1]}</Table.Cell>
+        <Table.Cell>{team[2]}</Table.Cell>
+      </Table.Row>
+    )
+  });
+
+  const teamsUniquePicks = sortUniquePicks.map((team, index) => {
+    return (
+      <Table.Row
+        key={team[0]}
+        negative={eliminatedTeams.includes(team[0]) ? true : false}
+      >
+        <Table.Cell collapsing>{index + 1}</Table.Cell>
+        <Table.Cell>{team[0]}</Table.Cell>
+        <Table.Cell>{team[1]}</Table.Cell>
+        <Table.Cell>{team[2]}</Table.Cell>
+      </Table.Row>
+    )
+  });
+
+  const teamsTotalPicks = sortTotalPicks.map((team, index) => {
+    return (
+      <Table.Row
+        key={team[0]}
+        negative={eliminatedTeams.includes(team[0]) ? true : false}
+      >
+        <Table.Cell collapsing>{index + 1}</Table.Cell>
+        <Table.Cell>{team[0]}</Table.Cell>
+        <Table.Cell>{team[1]}</Table.Cell>
+        <Table.Cell>{team[2]}</Table.Cell>
+      </Table.Row>
+    )
+  });
 
   const playersByFrequency = playerList.map((player, index) => {
     return (
@@ -604,6 +668,31 @@ const Insights = ({ users }) => {
           <div className='row'>
             <div className='sixteen wide center aligned column'>
               <h4>
+                Team Details
+              </h4>
+              <div className='eight wide center aligned column'>
+                <Table basic='very' unstackable selectable>
+                  <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
+                    <Table.Row>
+                      <Table.HeaderCell></Table.HeaderCell>
+                      <Table.HeaderCell onClick={() => setSortTeamOption('alphabetical')} style={{ cursor: 'pointer' }}>Team<Icon name='sort' /></Table.HeaderCell>
+                      <Table.HeaderCell onClick={() => setSortTeamOption('unique-picks')} style={{ cursor: 'pointer' }}>Unique Players Picked<Icon name='sort' /></Table.HeaderCell>
+                      <Table.HeaderCell onClick={() => setSortTeamOption('total-picks')} style={{ cursor: 'pointer' }}>Total Players Picked<Icon name='sort' /></Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {sortTeamOption === 'alphabetical' ? teamsAlphabetical : null}
+                    {sortTeamOption === 'unique-picks' ? teamsUniquePicks : null}
+                    {sortTeamOption === 'total-picks' ? teamsTotalPicks : null}
+                  </Table.Body>
+                </Table>
+              </div>
+            </div>
+          </div>
+          <Divider />
+          <div className='row'>
+            <div className='sixteen wide center aligned column'>
+              <h4>
                 Player Details
               </h4>
               <Table basic='very' unstackable selectable>
@@ -613,14 +702,14 @@ const Insights = ({ users }) => {
                     <Table.HeaderCell>Player</Table.HeaderCell>
                     <Table.HeaderCell>Position</Table.HeaderCell>
                     <Table.HeaderCell>Team</Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortOption(false)} style={{ cursor: 'pointer' }}>Points <Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortOption(true)} style={{ cursor: 'pointer' }}>Pick Rate <Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortPlayerOption(false)} style={{ cursor: 'pointer' }}>Points <Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortPlayerOption(true)} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortPlayerOption(true)} style={{ cursor: 'pointer' }}>Pick Rate <Icon name='sort' /></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {sortOption && playersByFrequency}
-                  {!sortOption && playersByPoints}
+                  {sortPlayerOption && playersByFrequency}
+                  {!sortPlayerOption && playersByPoints}
                 </Table.Body>
 
               </Table>
