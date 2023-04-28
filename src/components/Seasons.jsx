@@ -6,18 +6,16 @@ const Seasons = ({ onSeasonSelect }) => {
 
   const renderedSeasons = seasons.seasonList.map((season, index) => {
     return (
-      <div>
-        {season === '2023' || '2022' ?
-          <List.Item
-            onClick={() => onSeasonSelect(season.slice())}
-            key={index}
-          >
-            <List.Header as='a'>
-              {season}
-            </List.Header>
-          </List.Item>
+      <List.Item
+        onClick={() => onSeasonSelect(season.slice())}
+        key={index}
+      >
+        {season === '2023' || season === '2022' ?
+          <List.Header as='a'>
+            {season}
+          </List.Header>
           : null}
-      </div>
+      </List.Item>
 
     )
   }
