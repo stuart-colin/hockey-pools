@@ -115,6 +115,9 @@ const Insights = ({ users }) => {
     return team;
   })
 
+  selectionsPerTeam.push(['Seattle Kraken', 0, 0]);
+  selectionsPerTeam.sort()
+
   const sortUniquePicks = [].concat(selectionsPerTeam)
     .sort((a, b) => a[1] > b[1] ? -1 : 1);
 
