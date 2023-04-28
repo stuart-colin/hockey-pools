@@ -30,7 +30,7 @@ const eliminatedTeams = [
   'Vancouver Canucks',
   // 'Vegas Golden Knights',
   'Washington Capitals',
-  // 'Winnipeg Jets'
+  'Winnipeg Jets'
 ];
 
 export default eliminatedTeams;
