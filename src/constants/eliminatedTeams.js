@@ -17,7 +17,7 @@ const eliminatedTeams = [
   'Montreal Canadiens',
   'Nashville Predators',
   // 'New Jersey Devils',
-  // 'New York Islanders',
+  'New York Islanders',
   // 'New York Rangers',
   'Ottawa Senators',
   'Philadelphia Flyers',
