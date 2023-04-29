@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-// import useSWR from 'swr';
 import countPoints from '../utils/countPoints';
 import eliminatedPlayers from '../utils/eliminatedPlayers';
 import seasons from '../constants/seasons';
 
 const rosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters';
 // const rosterEndpoint = 'http://localhost:5000/v1/rosters';
-
 
 const useUsers = (season) => {
   const [userList, setUserList] = useState([]);
@@ -16,7 +14,6 @@ const useUsers = (season) => {
   useEffect(() => {
     setRosters([]);
     const getUserList = async () => {
-      setLoading(true);
       switch (season) {
         default:
           const res = await fetch(rosterEndpoint + '?limit=1000');
@@ -33,10 +30,6 @@ const useUsers = (season) => {
           setUserList(seasons.seasons.season2022.results);
           setLoading(false);
           break;
-        case '2021':
-          setUserList((seasons.seasons.season2021.results))
-          setLoading(false);
-          break;
       }
       return () => { setUserList([]) };
     };
@@ -48,7 +41,6 @@ const useUsers = (season) => {
       const points = countPoints(user);
       const playersRemaining = eliminatedPlayers(user);
       setRosters(rosters => [...rosters, { user, points, playersRemaining }])
-      // setLoading(false);
     })
   }, [userList])
 

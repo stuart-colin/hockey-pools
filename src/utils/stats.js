@@ -17,3 +17,6 @@ export const frequency = (array, index) => {
   const sortedArray = hashToArray.sort((a, b) => a[1] > b[1] ? -1 : 1);
   return sortedArray;
 }
+
+export const customSort = (array, index) => [].concat(array)
+  .sort((a, b) => a[index] > b[index] ? -1 : 1);

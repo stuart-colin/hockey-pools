@@ -50,7 +50,7 @@ const Scoreboard = () => {
       <div className='ui large horizontal list'>
         <div className='item'>
           <div className='extra content'>
-            <div className='ui large blue label'>{scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}</div>
+            <div className='ui large blue label' style={{ padding: '12px' }}>{scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}</div>
           </div>
         </div>
         {games}

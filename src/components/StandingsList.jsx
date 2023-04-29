@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Icon } from 'semantic-ui-react';
 import Search from './Search';
 import StandingsItem from './StandingsItem';
 import '../css/customStyle.css'
@@ -53,13 +54,25 @@ const StandingsList = ({ users, onRosterSelect }) => {
   return (
     <div className='ui segments' >
       <div className='ui top blue centered attached header'>
-        <div className='left aligned column' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer', position: 'absolute' }}>
+        <div
+          className='left aligned column'
+          onClick={() => setVisible(!visible)}
+          style={{ cursor: 'pointer', position: 'absolute' }}
+        >
           <h3>
             {visible &&
-              <i className='window minimize outline icon'></i>
+              <Icon
+                circular
+                color='blue'
+                name='chevron up'
+              />
             }
             {!visible &&
-              <i className='window maximize outline icon'></i>
+              <Icon
+                circular
+                color='blue'
+                name='chevron down'
+              />
             }
           </h3>
         </div>

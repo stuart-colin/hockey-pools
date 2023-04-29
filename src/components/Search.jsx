@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Label, Message } from 'semantic-ui-react';
+import { Input, Message } from 'semantic-ui-react';
 import getOrdinal from '../utils/getOrdinals';
 
 const Search = ({ users, placeholder }) => {

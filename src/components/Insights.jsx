@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Icon, Input, Grid, Statistic, Table, TableRow } from 'semantic-ui-react';
-import { min, max, mean, frequency } from '../utils/stats';
+import { Divider, Icon, Grid, Statistic } from 'semantic-ui-react';
+import { min, max, mean, frequency, customSort } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
 import '../css/customStyle.css';
@@ -13,8 +13,6 @@ const defaultLowThresh = 50;
 const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
-  const [sortTeamOption, setSortTeamOption] = useState('unique-picks');
-  const [sortPlayerOption, setSortPlayerOption] = useState(false);
   const [highThresh, setHighThresh] = useState(defaultHighThresh);
   const [lowThresh, setLowThresh] = useState(defaultLowThresh);
 
@@ -118,22 +116,13 @@ const Insights = ({ users }) => {
   selectionsPerTeam.push(['Seattle Kraken', 0, 0]);
   selectionsPerTeam.sort()
 
-  const sortUniquePicks = [].concat(selectionsPerTeam)
-    .sort((a, b) => a[1] > b[1] ? -1 : 1);
-
-  const sortTotalPicks = [].concat(selectionsPerTeam)
-    .sort((a, b) => a[2] > b[2] ? -1 : 1);
-
-  const sortByPoints = [].concat(playerList)
-    .sort((a, b) => a[3] > b[3] ? -1 : 1);
-
-  const topL = sortByPoints.filter(player => player[1] === 'L').slice(0, 3);
-  const topC = sortByPoints.filter(player => player[1] === 'C').slice(0, 3);
-  const topR = sortByPoints.filter(player => player[1] === 'R').slice(0, 3);
-  const topD = sortByPoints.filter(player => player[1] === 'D').slice(0, 4);
-  const topG = sortByPoints.filter(player => player[1] === 'G').slice(0, 2);
+  const topL = customSort(playerList, 3).filter(player => player[1] === 'L').slice(0, 3);
+  const topC = customSort(playerList, 3).filter(player => player[1] === 'C').slice(0, 3);
+  const topR = customSort(playerList, 3).filter(player => player[1] === 'R').slice(0, 3);
+  const topD = customSort(playerList, 3).filter(player => player[1] === 'D').slice(0, 4);
+  const topG = customSort(playerList, 3).filter(player => player[1] === 'G').slice(0, 2);
   const topByPosition = [topL, topC, topR, topD, topG].flat();
-  const topU = sortByPoints.filter(player => !topByPosition.includes(player)).slice(0, 1);
+  const topU = customSort(playerList, 3).filter(player => !topByPosition.includes(player)).slice(0, 1);
   const bestTeam = topByPosition.concat(topU);
   let bestRemaining = 16;
   let bestPoints = 0;
@@ -163,7 +152,7 @@ const Insights = ({ users }) => {
     return null;
   });
 
-  const topPlayers = sortByPoints
+  const topPlayers = customSort(playerList, 3)
     .slice(0, 3)
     .map((player) => {
       return <Statistic value={player[3]
@@ -173,7 +162,7 @@ const Insights = ({ users }) => {
       />;
     });
 
-  const bottomPlayers = sortByPoints
+  const bottomPlayers = customSort(playerList, 3)
     .slice(-3)
     .reverse()
     .map((player) => {
@@ -184,7 +173,7 @@ const Insights = ({ users }) => {
       />;
     });
 
-  const bestByPickThreshold = sortByPoints
+  const bestByPickThreshold = customSort(playerList, 3)
     .filter(player => Math.round(player[4] / users.rosters.length * 100) <= highThresh)
     .slice(0, 3)
     .map((player) => {
@@ -198,7 +187,7 @@ const Insights = ({ users }) => {
   const highThreshMin = playerList.length ? parseFloat((playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0)) : null;
   const highThreshMax = playerList.length ? parseFloat((playerList[0][4] / users.rosters.length * 100).toFixed(0)) : null;
 
-  const worstByPickThreshold = sortByPoints
+  const worstByPickThreshold = customSort(playerList, 3)
     .filter(player => (player[4] / users.rosters.length * 100) >= lowThresh)
     .slice(-3)
     .reverse()
@@ -213,82 +202,6 @@ const Insights = ({ users }) => {
   const lowThreshMin = playerList.length ? parseFloat((playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0)) : null;
   const lowThreshMax = playerList.length ? parseFloat((playerList[2][4] / users.rosters.length * 100).toFixed(0)) : null;
 
-  const teamsAlphabetical = selectionsPerTeam.map((team, index) => {
-    return (
-      <Table.Row
-        key={team[0]}
-        negative={eliminatedTeams.includes(team[0]) ? true : false}
-      >
-        <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{team[0]}</Table.Cell>
-        <Table.Cell>{team[1]}</Table.Cell>
-        <Table.Cell>{team[2]}</Table.Cell>
-      </Table.Row>
-    )
-  });
-
-  const teamsUniquePicks = sortUniquePicks.map((team, index) => {
-    return (
-      <Table.Row
-        key={team[0]}
-        negative={eliminatedTeams.includes(team[0]) ? true : false}
-      >
-        <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{team[0]}</Table.Cell>
-        <Table.Cell>{team[1]}</Table.Cell>
-        <Table.Cell>{team[2]}</Table.Cell>
-      </Table.Row>
-    )
-  });
-
-  const teamsTotalPicks = sortTotalPicks.map((team, index) => {
-    return (
-      <Table.Row
-        key={team[0]}
-        negative={eliminatedTeams.includes(team[0]) ? true : false}
-      >
-        <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{team[0]}</Table.Cell>
-        <Table.Cell>{team[1]}</Table.Cell>
-        <Table.Cell>{team[2]}</Table.Cell>
-      </Table.Row>
-    )
-  });
-
-  const playersByFrequency = playerList.map((player, index) => {
-    return (
-      <Table.Row
-        key={player[0]}
-        negative={eliminatedTeams.includes(player[2]) ? true : false}
-      >
-        <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{player[0]}</Table.Cell>
-        <Table.Cell>{player[1]}</Table.Cell>
-        <Table.Cell>{player[2]}</Table.Cell>
-        <Table.Cell>{player[3]}</Table.Cell>
-        <Table.Cell>{player[4]}</Table.Cell>
-        <Table.Cell>{(player[4] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
-      </Table.Row>
-    )
-  });
-
-  const playersByPoints = sortByPoints.map((player, index) => {
-    return (
-      <Table.Row
-        key={player[0]}
-        negative={eliminatedTeams.includes(player[2]) ? true : false}
-      >
-        <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{player[0]}</Table.Cell>
-        <Table.Cell>{player[1]}</Table.Cell>
-        <Table.Cell>{player[2]}</Table.Cell>
-        <Table.Cell>{player[3]}</Table.Cell>
-        <Table.Cell>{player[4]}</Table.Cell>
-        <Table.Cell>{(player[4] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
-      </Table.Row>
-    )
-  });
-
   return (
     <div className='ui segments'>
       <div className='ui top blue centered attached header' >
@@ -297,10 +210,18 @@ const Insights = ({ users }) => {
           style={{ cursor: 'pointer', position: 'absolute' }}>
           <h3>
             {visible &&
-              <i className='window minimize outline icon'></i>
+              <Icon
+                circular
+                color='blue'
+                name='chevron up'
+              />
             }
             {!visible &&
-              <i className='window maximize outline icon'></i>
+              <Icon
+                circular
+                color='blue'
+                name='chevron down'
+              />
             }
           </h3>
         </div>
@@ -313,7 +234,7 @@ const Insights = ({ users }) => {
       <div
         className={
           `ui bottom attached segment
-        ${!visible ? 'collapsedInsightsStyle' : 'expandedInsightsStyle'}`
+        ${!visible ? 'collapsedStyle' : 'expandedInsightsStyle'}`
         }>
         <div
           className='ui active inverted dimmer'
@@ -503,20 +424,20 @@ const Insights = ({ users }) => {
                 <Statistic
                   // label='Pavel Francouz'
                   // value='14'
-                  label='Coming Soon'
-                  value='0'
+                  label='Akira Schmid'
+                  value='8'
                 />
                 <Statistic
                   // label='Antti Raanta'
                   // value='14'
-                  label='Coming Soon'
-                  value='0'
+                  label='Neal Pionk'
+                  value='7'
                 />
                 <Statistic
                   // label='Carter Verhaeghe'
                   // value='14'
-                  label='Coming Soon'
-                  value='0'
+                  label='Philipp Grubauer'
+                  value='6'
                 />
               </Statistic.Group>
             </div>
@@ -666,57 +587,6 @@ const Insights = ({ users }) => {
               <p>Most players picked</p>
               <p>Least players picked</p>
             </div> */}
-          </div>
-          <Divider />
-          <div className='row'>
-            <div className='sixteen wide center aligned column'>
-              <h4>
-                Team Details
-              </h4>
-              <div className='eight wide center aligned column'>
-                <Table basic='very' unstackable selectable>
-                  <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
-                    <Table.Row>
-                      <Table.HeaderCell></Table.HeaderCell>
-                      <Table.HeaderCell onClick={() => setSortTeamOption('alphabetical')} style={{ cursor: 'pointer' }}>Team<Icon name='sort' /></Table.HeaderCell>
-                      <Table.HeaderCell onClick={() => setSortTeamOption('unique-picks')} style={{ cursor: 'pointer' }}>Unique Players Picked<Icon name='sort' /></Table.HeaderCell>
-                      <Table.HeaderCell onClick={() => setSortTeamOption('total-picks')} style={{ cursor: 'pointer' }}>Total Players Picked<Icon name='sort' /></Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {sortTeamOption === 'alphabetical' ? teamsAlphabetical : null}
-                    {sortTeamOption === 'unique-picks' ? teamsUniquePicks : null}
-                    {sortTeamOption === 'total-picks' ? teamsTotalPicks : null}
-                  </Table.Body>
-                </Table>
-              </div>
-            </div>
-          </div>
-          <Divider />
-          <div className='row'>
-            <div className='sixteen wide center aligned column'>
-              <h4>
-                Player Details
-              </h4>
-              <Table basic='very' unstackable selectable>
-                <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
-                  <Table.Row>
-                    <Table.HeaderCell></Table.HeaderCell>
-                    <Table.HeaderCell>Player</Table.HeaderCell>
-                    <Table.HeaderCell>Position</Table.HeaderCell>
-                    <Table.HeaderCell>Team</Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption(false)} style={{ cursor: 'pointer' }}>Points <Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption(true)} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption(true)} style={{ cursor: 'pointer' }}>Pick Rate <Icon name='sort' /></Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {sortPlayerOption && playersByFrequency}
-                  {!sortPlayerOption && playersByPoints}
-                </Table.Body>
-
-              </Table>
-            </div>
           </div>
         </div>
       </div>

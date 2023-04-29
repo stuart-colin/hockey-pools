@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from 'semantic-ui-react';
 import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import '../css/customStyle.css';
@@ -16,10 +17,18 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
               <div className='left aligned column'>
                 <h3 style={{ position: 'absolute', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
                   {visible &&
-                    <i className='window minimize outline icon'></i>
+                    <Icon
+                      circular
+                      color='blue'
+                      name='chevron up'
+                    />
                   }
                   {!visible &&
-                    <i className='window maximize outline icon'></i>
+                    <Icon
+                      circular
+                      color='blue'
+                      name='chevron down'
+                    />
                   }
                 </h3>
               </div>
@@ -47,25 +56,26 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
   return (
     <div className='ui segments'>
       <div className='ui top blue centered attached header'>
-        <div className='ui stackable grid'>
+        <div className='ui grid'>
           <div className='three column row'>
             <div className='left aligned column'>
               <h3 style={{ position: 'absolute', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
                 {visible &&
-                  <i className='window minimize outline icon'></i>
+                  <Icon
+                    circular
+                    color='blue'
+                    name='chevron up'
+                  />
                 }
                 {!visible &&
-                  <i className='window maximize outline icon'></i>
+                  <Icon
+                    circular
+                    color='blue'
+                    name='chevron down'
+                  />
                 }
               </h3>
-              <h3 style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setCardView(!cardView)}>
-                {cardView &&
-                  <i className='id badge outline icon'></i>
-                }
-                {!cardView &&
-                  <i className='id card outline icon'></i>
-                }
-              </h3>
+
             </div>
             <div className='middle aligned column'>
               <h2>
@@ -95,6 +105,14 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
         </div>
       </div>
       <div className={`ui bottom attached segment ${!visible ? 'collapsedStyle' : 'expandedRosterStyle'}`}>
+        <h4 className='ui blue header' style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setCardView(!cardView)}>
+          {cardView &&
+            <i className='id badge outline icon'></i>
+          }
+          {!cardView &&
+            <i className='id card outline icon'></i>
+          }
+        </h4>
         <div className='ui stackable grid'>
           <div className='row'>
             {rosterPlayers}
