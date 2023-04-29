@@ -110,6 +110,7 @@ const Insights = ({ users, season }) => {
         <Table.Cell>{team[0]}</Table.Cell>
         <Table.Cell>{team[1]}</Table.Cell>
         <Table.Cell>{team[2]}</Table.Cell>
+        <Table.Cell>{((team[2] / (users.rosters.length * 16)) * 100).toFixed(2)}%</Table.Cell>
       </Table.Row>
     )
   });
@@ -165,6 +166,7 @@ const Insights = ({ users, season }) => {
                     <Table.HeaderCell onClick={() => setSortTeamOption('alphabetical')} style={{ cursor: 'pointer' }}>Team<Icon name='sort' /></Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortTeamOption('unique-picks')} style={{ cursor: 'pointer' }}>Unique Players Picked<Icon name='sort' /></Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortTeamOption('total-picks')} style={{ cursor: 'pointer' }}>Total Players Picked<Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortTeamOption('total-picks')} style={{ cursor: 'pointer' }}>Percent of Pool<Icon name='sort' /></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>

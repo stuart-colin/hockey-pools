@@ -19,7 +19,7 @@ import useUsers from '../hooks/useUsers';
 const App = () => {
   const [activeItem, setActiveItem] = useState('');
   const [season, setSeason] = useState('2023');
-  const [selectedRoster, setSelectedRoster] = useState([0]);
+  const [selectedRoster, setSelectedRoster] = useState([]);
   const users = useUsers(season);
   // const usersNew = useUsersNew();
   // const users = useRoster(usersNew.userList);
