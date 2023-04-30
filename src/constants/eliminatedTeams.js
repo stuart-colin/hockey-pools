@@ -12,7 +12,7 @@ const eliminatedTeams = [
   'Detroit Red Wings',
   // 'Edmonton Oilers',
   // 'Florida Panthers',
-  // 'Los Angeles Kings',
+  'Los Angeles Kings',
   'Minnesota Wild',
   'Montreal Canadiens',
   'Nashville Predators',
