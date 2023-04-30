@@ -25,7 +25,7 @@ const eliminatedTeams = [
   'San Jose Sharks',
   // 'Seattle Kraken',
   'St. Louis Blues',
-  // 'Tampa Bay Lightning',
+  'Tampa Bay Lightning',
   // 'Toronto Maple Leafs',
   'Vancouver Canucks',
   // 'Vegas Golden Knights',
