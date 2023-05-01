@@ -1,7 +1,7 @@
 const eliminatedTeams = [
   'Anaheim Ducks',
   'Arizona Coyotes',
-  // 'Boston Bruins',
+  'Boston Bruins',
   'Buffalo Sabres',
   'Calgary Flames',
   // 'Carolina Hurricanes',
