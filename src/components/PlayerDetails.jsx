@@ -8,7 +8,8 @@ import '../css/customStyle.css';
 const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
-  const [sortPlayerOption, setSortPlayerOption] = useState('points');
+  const [sortPlayerOption, setSortPlayerOption] = useState('Points');
+  const [reverse, setReverse] = useState(false);
 
   useEffect(() => {
     if (!users.loading) {
@@ -20,13 +21,13 @@ const Insights = ({ users }) => {
     if (!loading) {
       return { display: 'none' }
     }
-  }
+  };
 
   const loadingStyle = () => {
     if (loading) {
       return { opacity: 0 }
     }
-  }
+  };
 
   let playersRemaining = [];
   let points = [];
@@ -58,7 +59,7 @@ const Insights = ({ users }) => {
       user.user.goalie[0],
       user.user.goalie[1],
     )
-  })
+  });
 
   playerData.forEach((player) => {
     let playerPoints;
@@ -68,19 +69,53 @@ const Insights = ({ users }) => {
       playerPoints = player.stats.goals + player.stats.assists + player.stats.overTimeGoals;
     }
     players.push([player.name, player.position, player.team.name, playerPoints])
-  })
+  });
 
   frequency(players).map((player) => {
     playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], parseFloat(player[0].split(',')[3]), player[1]])
     return null;
-  })
+  });
+
+  const headers = [
+    'Player',
+    'Position',
+    'Team',
+    'Points',
+    'Times Picked',
+    'Pick Rate',
+  ];
 
   let playerSort;
-  sortPlayerOption === 'frequency' ? playerSort = playerList
-    : sortPlayerOption === 'player' ? playerSort = customSort(playerList, 0).reverse()
-      : sortPlayerOption === 'position' ? playerSort = customSort(playerList, 1).reverse()
-        : sortPlayerOption === 'team' ? playerSort = customSort(playerList, 2).reverse()
-          : playerSort = customSort(playerList, 3);
+  sortPlayerOption === 'Player' ? playerSort = customSort(playerList, 0).reverse()
+    : sortPlayerOption === 'Position' ? playerSort = customSort(playerList, 1).reverse()
+      : sortPlayerOption === 'Team' ? playerSort = customSort(playerList, 2).reverse()
+        : sortPlayerOption === 'Points' ? playerSort = customSort(playerList, 3)
+          : sortPlayerOption === 'Times Picked' ? playerSort = playerList
+            : playerSort = playerList;
+
+  reverse && playerSort.reverse();
+
+  const playerHeaders = headers.map((header) => {
+    return (
+      <Table.HeaderCell
+        onClick={
+          () => {
+            setSortPlayerOption(header);
+            sortPlayerOption === header && setReverse(!reverse)
+          }
+        }
+        style={{ cursor: 'pointer' }}>
+        {header}
+        {
+          sortPlayerOption === header && !reverse ?
+            <Icon name='sort down' /> :
+            sortPlayerOption === header && reverse ?
+              <Icon name='sort up' /> :
+              <Icon name='sort' />
+        }
+      </Table.HeaderCell>
+    );
+  });
 
   const playerDetails = playerSort.map((player, index) => {
     return (
@@ -147,12 +182,7 @@ const Insights = ({ users }) => {
                 <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
                   <Table.Row>
                     <Table.HeaderCell></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption('player')} style={{ cursor: 'pointer' }}>Player<Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption('position')} style={{ cursor: 'pointer' }}>Position<Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption('team')} style={{ cursor: 'pointer' }}>Team<Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption('points')} style={{ cursor: 'pointer' }}>Points <Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption('frequency')} style={{ cursor: 'pointer' }}>Times Picked <Icon name='sort' /></Table.HeaderCell>
-                    <Table.HeaderCell onClick={() => setSortPlayerOption('frequency')} style={{ cursor: 'pointer' }}>Pick Rate <Icon name='sort' /></Table.HeaderCell>
+                    {playerHeaders}
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -165,7 +195,7 @@ const Insights = ({ users }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Insights;
