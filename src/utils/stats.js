@@ -18,5 +18,24 @@ export const frequency = (array, index) => {
   return sortedArray;
 }
 
+export const sumArrayIndex = (array, teamIndex, pointIndex) => {
+  let hash = {};
+  for (let i of array) {
+    if (!hash[i[teamIndex]]) hash[i[teamIndex]] = 0;
+    hash[i[teamIndex]] = hash[i[teamIndex]] + i[pointIndex];
+  }
+  const hashToArray = Object.entries(hash);
+  const sortedArray = hashToArray.sort((a, b) => a[0] > b[0] ? 1 : -1);
+  return sortedArray;
+}
+
+export const sumNestedArray = (array, index) => {
+  let sum = 0;
+  for (let i of array) {
+    sum = i[index] + sum;
+  }
+  return sum;
+}
+
 export const customSort = (array, index) => [].concat(array)
   .sort((a, b) => a[index] > b[index] ? -1 : 1);

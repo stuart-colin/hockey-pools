@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Icon, Table } from 'semantic-ui-react';
-import { frequency, customSort } from '../utils/stats';
+import { frequency, customSort, sumArrayIndex, sumNestedArray } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
 import '../css/customStyle.css';
@@ -85,20 +85,26 @@ const Insights = ({ users, season }) => {
   })
   const totalSelectionsPerTeam = frequency(teamCount).sort();
 
+  const teamPoints = sumArrayIndex(playerList, 2, 3)
+  const teamPoolPoints = sumArrayIndex(players, 2, 3)
+  const totalPoolPoints = sumNestedArray(teamPoolPoints, 1)
+
   selectionsPerTeam.map((team, index) => {
-    team.push(totalSelectionsPerTeam[index][1])
+    team.push(totalSelectionsPerTeam[index][1], teamPoints[index][1], teamPoolPoints[index][1])
     return team;
   })
   // season === '2023' ? selectionsPerTeam.push(['Seattle Kraken', 0, 0])
   //   : season === '2022' ? selectionsPerTeam.push(['Dallas Stars', 0, 0], ['Los Angeles Kings', 0, 0], ['Nashville Predators', 0, 0])
   //     : null;
 
-  selectionsPerTeam.sort()
+  selectionsPerTeam.sort();
 
   let teams;
   sortTeamOption === 'alphabetical' ? teams = selectionsPerTeam
     : sortTeamOption === 'unique-picks' ? teams = customSort(selectionsPerTeam, 1)
-      : teams = customSort(selectionsPerTeam, 2);
+      : sortTeamOption === 'team-points' ? teams = customSort(selectionsPerTeam, 3)
+        : sortTeamOption === 'pool-points' ? teams = customSort(selectionsPerTeam, 4)
+          : teams = customSort(selectionsPerTeam, 2);
 
   const teamDetails = teams.map((team, index) => {
     return (
@@ -111,6 +117,9 @@ const Insights = ({ users, season }) => {
         <Table.Cell>{team[1]}</Table.Cell>
         <Table.Cell>{team[2]}</Table.Cell>
         <Table.Cell>{((team[2] / (users.rosters.length * 16)) * 100).toFixed(2)}%</Table.Cell>
+        <Table.Cell>{team[3]}</Table.Cell>
+        <Table.Cell>{team[4]}</Table.Cell>
+        <Table.Cell>{((team[4] / totalPoolPoints) * 100).toFixed(2)}%</Table.Cell>
       </Table.Row>
     )
   });
@@ -167,6 +176,11 @@ const Insights = ({ users, season }) => {
                     <Table.HeaderCell onClick={() => setSortTeamOption('unique-picks')} style={{ cursor: 'pointer' }}>Unique Players Picked<Icon name='sort' /></Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortTeamOption('total-picks')} style={{ cursor: 'pointer' }}>Total Players Picked<Icon name='sort' /></Table.HeaderCell>
                     <Table.HeaderCell onClick={() => setSortTeamOption('total-picks')} style={{ cursor: 'pointer' }}>Percent of Pool<Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortTeamOption('team-points')} style={{ cursor: 'pointer' }}>Raw Team Points<Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortTeamOption('pool-points')} style={{ cursor: 'pointer' }}>Total Pool Points<Icon name='sort' /></Table.HeaderCell>
+                    <Table.HeaderCell onClick={() => setSortTeamOption('pool-points')} style={{ cursor: 'pointer' }}>Pool Contribution<Icon name='sort' /></Table.HeaderCell>
+
+
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
