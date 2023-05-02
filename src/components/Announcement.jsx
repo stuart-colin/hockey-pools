@@ -47,6 +47,22 @@ const Announcement = () => {
           verticalAlign='top'
         />
         <h4>
+          📢 5/2/23 - End of Quarterfinals
+        </h4>
+        <p>
+          2 Weeks in and we have witnessed some incredible hockey... Charles Barkley was one to admit the NHL is putting on more entertaining games than the NBA, and he sure as right... With 3, 7 game series' and a few 6 game series' most of the action was close.... But best of all is the upsets! This is what makes NHL playoffs exciting. This is what separates the NHL playoffs from other major pro sports... At this period of hockey any team can win. We witnessed this over the last two days where two of the heavy underdogs took out the 65 win Boston Bruins and defending Stanley Cup champions.
+        </p>
+        <p>
+          No one expected this... Ok maybe according to a couple people in our pool they may have expected Florida to get by, but no one expected Seattle (0 Seattle players selected amongst the 123 entries from the pool). Along with these upsets we witnessed the "Over-Underdog," New Jersey Devils and Toronto Maple Leafs take out Stanley Cup favorites NYR and TBL. Much of this came to surprise the group and we now enter into the semi finals with only 2/123 entries having all 16 of their players! This is the least number of full rosters entering into the semis in 18 years. Gotta love playoff hockey. Average number of players remaining per an entry is now at 6/16... Wow...
+        </p>
+        <p>
+          Congratulations to Mike Johnson who closed out the quarterfinals as the leader (128 pts), followed right behind Jim Veysey (127 pts) and Alan Shields (125 pts). Watch for Justin Denis and Tristan Burnette who are the two remaining competitors who have all 16 of their players still competing.
+        </p>
+        <p>
+          Who would have thought Akira Schmid would be the MVP of the Devils and arguably the entire first round? No one in our pool. This is where the in-depth stats on the webpage will begin to get interesting.
+        </p>
+        <Divider />
+        <h4>
           📢 4/20/23 - WELCOME all new competitors!
         </h4>
         <p>
