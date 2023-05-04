@@ -10,26 +10,26 @@ import Scoreboard from './Scoreboard';
 import StandingsList from './StandingsList';
 import TeamDetails from './TeamDetails';
 
+import useRosters from '../hooks/useRosters';
+import useStandings from '../hooks/useStandings';
 import useUsers from '../hooks/useUsers';
+import TeamBuilder from './TeamBuilder';
+import { Checkbox } from 'semantic-ui-react';
 // import PlayerLookup from './PlayerLookup';
 // import useUsersNew from '../hooks/useUsersNew';
-// import useRoster from '../hooks/useRoster';
 
 
 const App = () => {
   const [activeItem, setActiveItem] = useState('');
   const [season, setSeason] = useState('2023');
   const [selectedRoster, setSelectedRoster] = useState([]);
+  const [beta, setBeta] = useState(false);
+  const playoffTeams = useStandings();
+  const rosters = useRosters(playoffTeams)
   const users = useUsers(season);
-  // const usersNew = useUsersNew();
-  // const users = useRoster(usersNew.userList);
 
   return (
     <Fragment>
-      {/* <Seasons
-        onSeasonSelect={setSeason}
-      /> */}
-      {/* <Announcement /> */}
       <Header
         season={season}
       />
@@ -45,12 +45,20 @@ const App = () => {
           <Navigation
             onMenuSelect={setActiveItem}
             onSeasonSelect={setSeason}
+            beta={beta}
           />
           {/* </div>
         <div className='twelve wide column'> */}
           {activeItem === 'commissioners-corner' ?
             <Announcement
               selectedRoster={selectedRoster[0]}
+            />
+            : null
+          }
+          {activeItem === 'roster-view' ?
+            <ParticipantRoster
+              selectedRoster={selectedRoster[0]}
+              rosterData={selectedRoster[1]}
             />
             : null
           }
@@ -73,18 +81,23 @@ const App = () => {
             />
             : null
           }
-          {activeItem === 'roster-view' ?
-            <ParticipantRoster
-              selectedRoster={selectedRoster[0]}
-              rosterData={selectedRoster[1]}
+          {beta && activeItem === 'team-builder' ?
+            <TeamBuilder
+              rosters={rosters}
             />
-            : null
-          }
+            : null}
         </div>
         {/* <div><PlayerLookup onPlayerLookup={updatePlayerData}/></div> */}
         {/* <div><Player onPlayerLookup={updatePlayerData}/></div> */}
         {/* <div><Stats playerId={playerId} playerName={playerName}/></div> */}
         {/* <div><Teams /></div> */}
+      </div>
+      <div style={{ position: 'absolute', bottom: 10, right: 10, zoom: 0.65, mozTransform: 'scale(0.65)' }}>
+        <Checkbox
+          onChange={() => setBeta(!beta)}
+          toggle
+          label='Beta'
+        />
       </div>
     </Fragment>
   );

@@ -9,9 +9,7 @@ const StandingsList = ({ users, onRosterSelect }) => {
   const [visible, setVisible] = useState('false');
 
   useEffect(() => {
-    if (!users.loading) {
-      setLoading(false);
-    }
+    if (!users.loading) setLoading(false);
   }, [users]);
 
   const loadedStyle = () => {

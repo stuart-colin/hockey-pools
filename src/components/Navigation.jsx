@@ -1,8 +1,8 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { Dropdown, Menu } from 'semantic-ui-react';
+import { Dropdown, Label, Menu } from 'semantic-ui-react';
 import seasons from "../constants/seasons";
 
-const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
+const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
   const [activeItem, setActiveItem] = useState('insights');
 
   useEffect(() => {
@@ -64,6 +64,22 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
         Team Details
       </Menu.Item>
       <Menu.Menu position='right'>
+        {beta ?
+          <Menu.Item
+            name='team-builder'
+            active={activeItem === 'team-builder'}
+            onClick={() => { setActiveItem('team-builder') }}
+          >
+            Team Builder
+            <Label
+              color='red'
+              mini
+              floating
+            >
+              Beta
+            </Label>
+          </Menu.Item>
+          : null}
         <Dropdown item text='Season Select'>
           <Dropdown.Menu>
             {renderedSeasons}
