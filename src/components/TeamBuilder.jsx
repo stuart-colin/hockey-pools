@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Grid, Icon, Segment, Table } from "semantic-ui-react";
 
+import { customSort } from "../utils/stats";
+
 const TeamBuilder = ({ rosters }) => {
   const [myTeam, setMyTeam] = useState([]);
   const [left, setLeft] = useState([]);
@@ -31,10 +33,9 @@ const TeamBuilder = ({ rosters }) => {
     counts['G'] === 3
     ? limitBonus = 0
     : limitBonus = 1;
+  const sortedTeam = customSort(myTeam, 0).reverse()
 
   const rosterIndicator = rosterPositions.map((position, index) => {
-    // console.log(position + ': ' + rosterPositions.indexOf(position, index + counts[position]))
-    console.log(position + ': ' + counts[position] + ', ' + rosterPositions.indexOf(position, rosterPositions.indexOf(position) + counts[position]) + ', ' + index)
     return (
       <Button
         style={{ cursor: 'default' }}
@@ -87,7 +88,7 @@ const TeamBuilder = ({ rosters }) => {
     })
   })
 
-  const myRoster = myTeam.map(team => {
+  const myRoster = sortedTeam.map(team => {
     return (
       <Table.Row>
         <Table.Cell>
