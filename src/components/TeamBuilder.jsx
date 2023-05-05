@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Icon, Segment, Table } from "semantic-ui-react";
+import { Button, Grid, Icon, Segment, Table } from "semantic-ui-react";
 
 const TeamBuilder = ({ rosters }) => {
   const [myTeam, setMyTeam] = useState([]);
@@ -12,6 +12,7 @@ const TeamBuilder = ({ rosters }) => {
   const [utility, setUtility] = useState([]);
 
   const rosterLimits = { R: 3, L: 3, C: 3, D: 4, G: 2 };
+  const rosterPositions = ['L', 'L', 'L', 'C', 'C', 'C', 'R', 'R', 'R', 'D', 'D', 'D', 'D', 'G', 'G', 'U']
   let limitBonus;
 
   const position = myTeam.map(player => {
@@ -30,6 +31,22 @@ const TeamBuilder = ({ rosters }) => {
     counts['G'] === 3
     ? limitBonus = 0
     : limitBonus = 1;
+
+  const rosterIndicator = rosterPositions.map((position, index) => {
+    // console.log(position + ': ' + rosterPositions.indexOf(position, index + counts[position]))
+    console.log(position + ': ' + counts[position] + ', ' + rosterPositions.indexOf(position, rosterPositions.indexOf(position) + counts[position]) + ', ' + index)
+    return (
+      <Button
+        style={{ cursor: 'default' }}
+        compact
+        color={rosterPositions.indexOf(position, rosterPositions.indexOf(position) + counts[position]) > index
+          || rosterLimits[position] <= counts[position]
+          ? 'green' : limitBonus === 0 && index === 15 ? 'green' : null}
+      >
+        {position}
+      </Button>
+    )
+  })
 
   const teamRosters = rosters.rosters.map(team => {
     return team[2].map(roster => {
@@ -101,51 +118,80 @@ const TeamBuilder = ({ rosters }) => {
 
   return (
     <Segment>
+      <Grid columns={2} stackable>
+        <Grid.Row>
 
-      <h3>
-        Team Builder
-      </h3>
-      This is currently in development for next season.
-      If you've discovered it please feel free to try it out and let me know what you think!
-      This won't affect any current rosters.
-      Mobile view is currently pretty nasty, desktop is much nicer.
-      <Segment.Group horizontal>
-        <Segment style={{ maxHeight: '72vh', overflow: 'auto' }}>
-          <h4>
-            Available Players
-          </h4>
-          <Table basic='very' compact>
-            <Table.Header style={{ position: 'sticky', top: '0px', background: 'white' }}>
-              <Table.Row>
-                <Table.HeaderCell>Select</Table.HeaderCell>
-                <Table.HeaderCell>Position</Table.HeaderCell>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Team</Table.HeaderCell>
-                <Table.HeaderCell>Stats</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            {/* {renderedTeams} */}
-            {teamRosters}
-          </Table>
-        </Segment>
-        <Segment style={{ maxHeight: '80vh', overflow: 'auto' }}>
-          <h4>
-            My Team
-          </h4>
-          <Table basic='very' compact>
-            <Table.Header style={{ position: 'sticky', top: '0px', background: 'white' }}>
-              <Table.Row>
-                <Table.HeaderCell>Remove</Table.HeaderCell>
-                <Table.HeaderCell>Position</Table.HeaderCell>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Team</Table.HeaderCell>
-                <Table.HeaderCell>Stats</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            {myRoster}
-          </Table>
-        </Segment>
-      </Segment.Group>
+          <Grid.Column>
+            <h3>
+              Team Builder
+            </h3>
+            This is currently in development for next season.
+            If you've discovered it please feel free to try it out and let me know what you think!
+            This won't affect any current rosters.
+            Mobile view is currently pretty nasty, desktop is much nicer.
+          </Grid.Column>
+          <Grid.Column textAlign="center">
+            {/* <Button.Group floated='right' widths='16' fluid> */}
+            {rosterIndicator}
+            <Button
+              compact
+              color='red'
+              disabled={myTeam.length === 0}
+              onClick={() => setMyTeam([])}
+            >
+              Clear All
+            </Button>
+            <Button
+              compact
+              color='blue'
+              disabled={myTeam.length < 16}
+              onClick={() => alert('GET SOME')}
+            >
+              Submit
+            </Button>
+            {/* </Button.Group> */}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+      <Grid columns={2} stackable>
+        <Grid.Row>
+          <Grid.Column style={{ maxHeight: '72vh', overflow: 'auto' }}>
+            <h4>
+              Available Players
+            </h4>
+            <Table basic='very' compact>
+              <Table.Header style={{ position: 'sticky', top: '0px', background: 'white' }}>
+                <Table.Row>
+                  <Table.HeaderCell>Select</Table.HeaderCell>
+                  <Table.HeaderCell>Position</Table.HeaderCell>
+                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Team</Table.HeaderCell>
+                  <Table.HeaderCell>Stats</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              {/* {renderedTeams} */}
+              {teamRosters}
+            </Table>
+          </Grid.Column>
+          <Grid.Column style={{ maxHeight: '72vh', overflow: 'auto' }}>
+            <h4>
+              My Team
+            </h4>
+            <Table basic='very' compact='very'>
+              <Table.Header style={{ position: 'sticky', top: '0px', background: 'white' }}>
+                <Table.Row>
+                  <Table.HeaderCell>Remove</Table.HeaderCell>
+                  <Table.HeaderCell>Position</Table.HeaderCell>
+                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Team</Table.HeaderCell>
+                  <Table.HeaderCell>Stats</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              {myRoster}
+            </Table>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </Segment>
   )
 }
