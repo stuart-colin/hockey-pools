@@ -431,13 +431,13 @@ const Insights = ({ users }) => {
                   // label='Antti Raanta'
                   // value='14'
                   label='Philipp Grubauer'
-                  value='8'
+                  value='12'
                 />
                 <Statistic
                   // label='Carter Verhaeghe'
                   // value='14'
                   label='Carter Verhaeghe'
-                  value='8'
+                  value='11'
                 />
               </Statistic.Group>
             </div>
