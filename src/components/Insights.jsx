@@ -425,7 +425,7 @@ const Insights = ({ users }) => {
                   // label='Pavel Francouz'
                   // value='14'
                   label='Akira Schmid'
-                  value='12'
+                  value='13'
                 />
                 <Statistic
                   // label='Antti Raanta'
@@ -436,8 +436,8 @@ const Insights = ({ users }) => {
                 <Statistic
                   // label='Carter Verhaeghe'
                   // value='14'
-                  label='Carter Verhaeghe'
-                  value='11'
+                  label='Sergei Bobrovsky'
+                  value='12'
                 />
               </Statistic.Group>
             </div>
