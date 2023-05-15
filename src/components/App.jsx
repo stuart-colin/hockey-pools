@@ -92,7 +92,7 @@ const App = () => {
         {/* <div><Stats playerId={playerId} playerName={playerName}/></div> */}
         {/* <div><Teams /></div> */}
       </div>
-      <div style={{ position: 'absolute', bottom: 10, right: 10, zoom: 0.65, mozTransform: 'scale(0.65)' }}>
+      <div style={{ position: 'fixed', bottom: 10, right: 10, zoom: 0.65, mozTransform: 'scale(0.65)' }}>
         <Checkbox
           onChange={() => setBeta(!beta)}
           toggle
