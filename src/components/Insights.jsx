@@ -425,13 +425,13 @@ const Insights = ({ users }) => {
                   // label='Pavel Francouz'
                   // value='14'
                   label='Sergei Bobrovsky'
-                  value='22'
+                  value='24'
                 />
                 <Statistic
                   // label='Antti Raanta'
                   // value='14'
                   label='Carter Verhaeghe'
-                  value='15'
+                  value='16'
                 />
                 <Statistic
                   // label='Carter Verhaeghe'
