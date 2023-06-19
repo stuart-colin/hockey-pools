@@ -424,20 +424,20 @@ const Insights = ({ users }) => {
                 <Statistic
                   // label='Pavel Francouz'
                   // value='14'
-                  label='Sergei Bobrovsky'
-                  value='24'
+                  label='Adin Hill'
+                  value='26'
                 />
                 <Statistic
                   // label='Antti Raanta'
                   // value='14'
-                  label='Carter Verhaeghe'
-                  value='16'
+                  label='Sergei Bobrovsky'
+                  value='26'
                 />
                 <Statistic
                   // label='Carter Verhaeghe'
                   // value='14'
-                  label='Philipp Grubauer'
-                  value='14'
+                  label='Carter Verhaeghe'
+                  value='19'
                 />
               </Statistic.Group>
             </div>
