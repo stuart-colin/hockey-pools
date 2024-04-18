@@ -1,8 +1,6 @@
 import React from 'react';
 import useScores from '../hooks/useScores';
 
-const logoUrl = 'https://www-league.nhlstatic.com/images/logos/teams-current-primary-light/';
-
 const Scoreboard = () => {
   const scoreboard = useScores();
 
@@ -20,24 +18,24 @@ const Scoreboard = () => {
     <div className='item' key={index}>
       <div className='ui small label'>
         <div className='ui image label' style={{ cursor: 'default' }} >
-          <img src={logoUrl + game.teams.away.team.id + '.svg'} alt={game.teams.away.team.name + ' Logo'} />
+          <img src={game.awayTeam.logo} alt={game.awayTeam.name.default + ' Logo'} />
           {/* {game.teams.away.team.name} */}
           {/* {`: `} */}
-          {game.teams.away.score}
+          {game.awayTeam.score}
         </div>
         <div className='ui image label' style={{ cursor: 'default' }} >
-          <img src={logoUrl + game.teams.home.team.id + '.svg'} alt={game.teams.home.team.name + ' Logo'} />
+          <img src={game.homeTeam.logo} alt={game.homeTeam.name.default + ' Logo'} />
           {/* {game.teams.home.team.name} */}
           {/* {`: `} */}
-          {game.teams.home.score}
+          {game.homeTeam.score}
         </div>
 
         <div className='ui label' style={{ cursor: 'default', verticalAlign: 'middle' }} >
-          {game.status.abstractGameState === 'Final'
-            ? game.status.abstractGameState
-            : game.status.abstractGameState === 'Preview'
-              ? localDate(game.gameDate)
-              : game.linescore.currentPeriodTimeRemaining + ` ` + game.linescore.currentPeriodOrdinal}
+          {game.gameState === 'OFF'
+            ? game.gameState
+            : game.gameState === 'FUT'
+              ? localDate(game.startTimeUTC)
+              : game.clock.timeRemaining + ` ` + game.period}
         </div>
         {/* <br></br> */}
         {/* <br></br>Series: {game.teams.away.leagueRecord.wins} - {game.teams.home.leagueRecord.wins} */}

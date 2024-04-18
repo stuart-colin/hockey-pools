@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 
 // const date = new Date().toLocaleDateString().split('/');
 // const scoreDetailsEndpoint = 'https://nhl-score-api.herokuapp.com/api/scores?startDate=' + date[2] + '-' + date[0] + '-' + date[1] - 1;
-const scoreDetailsEndpointNHL = 'https://statsapi.web.nhl.com/api/v1/schedule?expand=schedule.linescore'
+// const scoreDetailsEndpointNHL = 'https://cors-anywhere.herokuapp.com/https://api-web.nhle.com/v1/score/now'
+const scoreDetailsEndpointNHL = 'https://api-web.nhle.com/v1/score/now'
 const useScores = () => {
   const [date, setDate] = useState('');
   const [games, setGames] = useState([]);
@@ -11,9 +12,9 @@ const useScores = () => {
     const getScoreData = async () => {
       const res = await fetch(scoreDetailsEndpointNHL);
       const json = await res.json();
-      if (json.dates[0]) {
-        setDate(json.dates[0].date);
-        setGames(json.dates[0].games);
+      if (json.currentDate) {
+        setDate(json.currentDate);
+        setGames(json.games);
       }
     };
     getScoreData();
