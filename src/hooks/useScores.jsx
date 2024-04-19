@@ -7,13 +7,17 @@ import { useState, useEffect } from 'react';
 const scoreDetailsEndpointNHL = 'https://api-web.nhle.com/v1/score/now'
 // const scoreDetailsEndpointNHL = 'https://api-web.nhle.comcd/v1/score/now'
 
+const PROXY = window.location.hostname === "localhost"
+  ? "https://cors-anywhere.herokuapp.com"
+  : "/cors-proxy";
+
 const useScores = () => {
   const [date, setDate] = useState('');
   const [games, setGames] = useState([]);
 
   useEffect(() => {
     const getScoreData = async () => {
-      const res = await fetch(`/cors-proxy/${scoreDetailsEndpointNHL}`);
+      const res = await fetch(`${PROXY}/${scoreDetailsEndpointNHL}`);
       const json = await res.json();
       if (json.currentDate) {
         setDate(json.currentDate);
