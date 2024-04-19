@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 // const date = new Date().toLocaleDateString().split('/');
 // const scoreDetailsEndpoint = 'https://nhl-score-api.herokuapp.com/api/scores?startDate=' + date[2] + '-' + date[0] + '-' + date[1] - 1;
-const scoreDetailsEndpointNHL = 'https://cors-anywhere.herokuapp.com/https://api-web.nhle.com/v1/score/now'
+const scoreDetailsEndpointNHL = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api-web.nhle.com/v1/score/now'
 // const scoreDetailsEndpointNHL = 'http://localhost:8080/https://api-web.nhle.com/v1/score/now'
 // const scoreDetailsEndpointNHL = 'https://api-web.nhle.comcd/v1/score/now'
 
