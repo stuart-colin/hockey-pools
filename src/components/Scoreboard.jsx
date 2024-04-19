@@ -14,6 +14,30 @@ const Scoreboard = () => {
     return newDate.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' });
   }
 
+  function getOrdinal(number) {
+    if (typeof number !== 'number' || isNaN(number)) {
+      return 'Invalid input. Please provide a valid number.';
+    }
+
+    const lastDigit = number % 10;
+    const secondLastDigit = Math.floor((number % 100) / 10);
+
+    if (secondLastDigit === 1) {
+      return `${number}th`;
+    } else {
+      switch (lastDigit) {
+        case 1:
+          return `${number}st`;
+        case 2:
+          return `${number}nd`;
+        case 3:
+          return `${number}rd`;
+        default:
+          return `${number}th`;
+      }
+    }
+  }
+
   const games = scoreboard.games.map((game, index) => (
     <div className='item' key={index}>
       <div className='ui small label'>
@@ -32,10 +56,10 @@ const Scoreboard = () => {
 
         <div className='ui label' style={{ cursor: 'default', verticalAlign: 'middle' }} >
           {game.gameState === 'OFF'
-            ? game.gameState
-            : game.gameState === 'FUT'
+            ? 'Final'
+            : game.gameState === 'FUT' || game.gameState === 'PRE'
               ? localDate(game.startTimeUTC)
-              : game.clock.timeRemaining + ` ` + game.period}
+              : game.clock.timeRemaining + ` ` + getOrdinal(game.period)}
         </div>
         {/* <br></br> */}
         {/* <br></br>Series: {game.teams.away.leagueRecord.wins} - {game.teams.home.leagueRecord.wins} */}
