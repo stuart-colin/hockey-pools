@@ -18,14 +18,13 @@ import { Checkbox } from 'semantic-ui-react';
 // import PlayerLookup from './PlayerLookup';
 // import useUsersNew from '../hooks/useUsersNew';
 
-
 const App = () => {
   const [activeItem, setActiveItem] = useState('');
   const [season, setSeason] = useState('2023');
   const [selectedRoster, setSelectedRoster] = useState([]);
-  const [beta, setBeta] = useState(false);
-  const playoffTeams = useStandings();
-  const rosters = useRosters(playoffTeams)
+  const [beta, setBeta] = useState(true);
+  // const playoffTeams = useStandings();
+  // const rosters = useRosters(playoffTeams)
   const users = useUsers(season);
 
   return (
@@ -45,7 +44,7 @@ const App = () => {
           <Navigation
             onMenuSelect={setActiveItem}
             onSeasonSelect={setSeason}
-            beta={beta}
+          // beta={beta}
           />
           {/* </div>
         <div className='twelve wide column'> */}
@@ -81,24 +80,24 @@ const App = () => {
             />
             : null
           }
-          {beta && activeItem === 'team-builder' ?
+          {/* {beta && activeItem === 'team-builder' ?
             <TeamBuilder
               rosters={rosters}
             />
-            : null}
+            : null} */}
         </div>
         {/* <div><PlayerLookup onPlayerLookup={updatePlayerData}/></div> */}
         {/* <div><Player onPlayerLookup={updatePlayerData}/></div> */}
         {/* <div><Stats playerId={playerId} playerName={playerName}/></div> */}
         {/* <div><Teams /></div> */}
       </div>
-      <div style={{ position: 'fixed', bottom: 10, right: 10, zoom: 0.65, mozTransform: 'scale(0.65)' }}>
+      {/* <div style={{ position: 'fixed', bottom: 10, right: 10, zoom: 0.65 }}>
         <Checkbox
           onChange={() => setBeta(!beta)}
           toggle
           label='Beta'
         />
-      </div>
+      </div> */}
     </Fragment>
   );
 }
