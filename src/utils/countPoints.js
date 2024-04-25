@@ -1,7 +1,7 @@
 function countPoints(roster) {
   return (
     (roster.utility.position === 'G'
-      ? (roster.utility.stats.featuredStats.playoffs.subSeason.wins * 2) + (roster.utility.stats.featuredStats.playoffs.subSeason.shutouts * 2) + roster.utility.stats.otl
+      ? (roster.utility.stats.featuredStats.playoffs.subSeason.wins * 2) + (roster.utility.stats.featuredStats.playoffs.subSeason.shutouts * 2) + roster.utility.stats.featuredStats.playoffs.subSeason.otLosses
       : roster.utility.stats.featuredStats.playoffs.subSeason.goals + roster.utility.stats.featuredStats.playoffs.subSeason.assists + roster.utility.stats.featuredStats.playoffs.subSeason.otGoals)
     + roster.left[0].stats.featuredStats.playoffs.subSeason.goals + roster.left[0].stats.featuredStats.playoffs.subSeason.assists + roster.left[0].stats.featuredStats.playoffs.subSeason.otGoals
     + roster.left[1].stats.featuredStats.playoffs.subSeason.goals + roster.left[1].stats.featuredStats.playoffs.subSeason.assists + roster.left[1].stats.featuredStats.playoffs.subSeason.otGoals
@@ -16,8 +16,8 @@ function countPoints(roster) {
     + roster.defense[1].stats.featuredStats.playoffs.subSeason.goals + roster.defense[1].stats.featuredStats.playoffs.subSeason.assists + roster.defense[1].stats.featuredStats.playoffs.subSeason.otGoals
     + roster.defense[2].stats.featuredStats.playoffs.subSeason.goals + roster.defense[2].stats.featuredStats.playoffs.subSeason.assists + roster.defense[2].stats.featuredStats.playoffs.subSeason.otGoals
     + roster.defense[3].stats.featuredStats.playoffs.subSeason.goals + roster.defense[3].stats.featuredStats.playoffs.subSeason.assists + roster.defense[3].stats.featuredStats.playoffs.subSeason.otGoals
-    + (roster.goalie[0].stats.featuredStats.playoffs.subSeason.wins * 2) + (roster.goalie[0].stats.featuredStats.playoffs.subSeason.shutouts * 2) + roster.goalie[0].stats.otl
-    + (roster.goalie[1].stats.featuredStats.playoffs.subSeason.wins * 2) + (roster.goalie[1].stats.featuredStats.playoffs.subSeason.shutouts * 2) + roster.goalie[1].stats.otl
+    + (roster.goalie[0].stats.featuredStats.playoffs.subSeason.wins * 2) + (roster.goalie[0].stats.featuredStats.playoffs.subSeason.shutouts * 2) + roster.goalie[0].stats.featuredStats.playoffs.subSeason.otLosses
+    + (roster.goalie[1].stats.featuredStats.playoffs.subSeason.wins * 2) + (roster.goalie[1].stats.featuredStats.playoffs.subSeason.shutouts * 2) + roster.goalie[1].stats.featuredStats.playoffs.subSeason.otLosses
   )
 }
 

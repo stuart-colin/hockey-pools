@@ -109,7 +109,7 @@ const StatsCard = ({ player }) => {
   let stats;
   let points;
   if (player.position === 'G') {
-    stats = [player.stats.featuredStats.playoffs.subSeason.wins, 'Wins', player.stats.featuredStats.playoffs.subSeason.shutouts, 'Shutouts', player.stats.featuredStats.playoffs.subSeason.otl, 'OT Losses'];
+    stats = [player.stats.featuredStats.playoffs.subSeason.wins, 'Wins', player.stats.featuredStats.playoffs.subSeason.shutouts, 'Shutouts', player.stats.featuredStats.playoffs.subSeason.otLosses, 'OT Losses'];
     points = stats[0] * 2 + stats[2] * 2 + stats[4];
   } else {
     stats = [player.stats.featuredStats.playoffs.subSeason.goals, 'Goals', player.stats.featuredStats.playoffs.subSeason.assists, 'Assists', player.stats.featuredStats.playoffs.subSeason.otGoals, 'OT Goals']

@@ -69,7 +69,7 @@ const Insights = ({ users }) => {
   playerData.forEach((player) => {
     let playerPoints;
     if (player.position === 'G') {
-      playerPoints = player.stats.featuredStats.playoffs.subSeason.wins * 2 + player.stats.featuredStats.playoffs.subSeason.shutouts * 2 + player.stats.otl;
+      playerPoints = player.stats.featuredStats.playoffs.subSeason.wins * 2 + player.stats.featuredStats.playoffs.subSeason.shutouts * 2 + player.stats.featuredStats.playoffs.subSeason.otLosses;
     } else {
       playerPoints = player.stats.featuredStats.playoffs.subSeason.goals + player.stats.featuredStats.playoffs.subSeason.assists + player.stats.featuredStats.playoffs.subSeason.otGoals;
     }
@@ -424,20 +424,21 @@ const Insights = ({ users }) => {
                 <Statistic
                   // label='Pavel Francouz'
                   // value='14'
-                  label='Adin Hill'
-                  value='26'
+                  // label='Adin Hill'
+                  // value='26'
+                  label='Coming Soon'
                 />
                 <Statistic
-                  // label='Antti Raanta'
-                  // value='14'
-                  label='Sergei Bobrovsky'
-                  value='26'
+                // label='Antti Raanta'
+                // value='14'
+                // label='Sergei Bobrovsky'
+                // value='26'
                 />
                 <Statistic
-                  // label='Carter Verhaeghe'
-                  // value='14'
-                  label='Carter Verhaeghe'
-                  value='19'
+                // label='Carter Verhaeghe'
+                // value='14'
+                // label='Carter Verhaeghe'
+                // value='19'
                 />
               </Statistic.Group>
             </div>
