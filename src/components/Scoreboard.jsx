@@ -1,5 +1,6 @@
 import React from 'react';
 import useScores from '../hooks/useScores';
+import getOrdinal from '../utils/getOrdinals';
 
 const Scoreboard = () => {
   const scoreboard = useScores();
@@ -12,30 +13,6 @@ const Scoreboard = () => {
   function prettyDate(date) {
     let newDate = new Date(date);
     return newDate.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' });
-  }
-
-  function getOrdinal(number) {
-    if (typeof number !== 'number' || isNaN(number)) {
-      return 'Invalid input. Please provide a valid number.';
-    }
-
-    const lastDigit = number % 10;
-    const secondLastDigit = Math.floor((number % 100) / 10);
-
-    if (secondLastDigit === 1) {
-      return `${number}th`;
-    } else {
-      switch (lastDigit) {
-        case 1:
-          return `${number}st`;
-        case 2:
-          return `${number}nd`;
-        case 3:
-          return `${number}rd`;
-        default:
-          return `${number}th`;
-      }
-    }
   }
 
   const games = scoreboard.games.map((game, index) => (

@@ -7,7 +7,7 @@ const photoUrl = 'https://cms.nhl.bamgrid.com/images/headshots/current/168x168/'
 
 const StatsCard = ({ player }) => {
 
-  switch (player.team.name) {
+  switch (player.stats.teamName) {
     case 'Anaheim Ducks':
       var teamAbbrev = 'ANA';
       break;
@@ -109,17 +109,17 @@ const StatsCard = ({ player }) => {
   let stats;
   let points;
   if (player.position === 'G') {
-    stats = [player.stats.wins, 'Wins', player.stats.shutouts, 'Shutouts', player.stats.otl, 'OT Losses'];
+    stats = [player.stats.featuredStats.playoffs.subSeason.wins, 'Wins', player.stats.featuredStats.playoffs.subSeason.shutouts, 'Shutouts', player.stats.featuredStats.playoffs.subSeason.otl, 'OT Losses'];
     points = stats[0] * 2 + stats[2] * 2 + stats[4];
   } else {
-    stats = [player.stats.goals, 'Goals', player.stats.assists, 'Assists', player.stats.overTimeGoals, 'OT Goals']
+    stats = [player.stats.featuredStats.playoffs.subSeason.goals, 'Goals', player.stats.featuredStats.playoffs.subSeason.assists, 'Assists', player.stats.featuredStats.playoffs.subSeason.otGoals, 'OT Goals']
     points = stats[0] + stats[2] + stats[4];
   }
 
   return (
-    <div key={player.name} className={`ui blue card ${eliminatedTeams.includes(player.team.name) ? 'eliminated' : ''}`} alt={`${player.team.name} logo`}>
+    <div key={player.name} className={`ui blue card ${eliminatedTeams.includes(player.stats.teamName) ? 'eliminated' : ''}`} alt={`${player.stats.teamName} logo`}>
       <div className='logoBox'>
-        <img className='teamLogo' src={logoUrl + teamAbbrev + '_light.svg'} alt={`${player.team.name} Logo`} />
+        <img className='teamLogo' src={logoUrl + teamAbbrev + '_light.svg'} alt={`${player.stats.teamName} Logo`} />
       </div>
       <div className='content'>
         <div className='left floated meta'>
@@ -127,7 +127,7 @@ const StatsCard = ({ player }) => {
         </div>
         <div className='right floated meta'>{player.position}</div>
         <div className='sub header'>{player.name}</div>
-        {player.team.name}
+        {player.stats.teamName}
       </div>
       <div className='content'>
         <div className='ui two column relaxed stackable grid'>

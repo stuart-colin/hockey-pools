@@ -9,19 +9,19 @@ const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
     onMenuSelect(activeItem);
   }, [activeItem]);
 
-  const renderedSeasons = seasons.seasonList.map((season, index) => {
-    return (
-      <Fragment key={index}>
-        {season === '2023' || season === '2022' ?
-          <Dropdown.Item
-            onClick={() => onSeasonSelect(season)}
-            key={index}
-            text={season}
-          />
-          : null}
-      </Fragment>
-    );
-  });
+  // const renderedSeasons = seasons.seasonList.map((season, index) => {
+  //   return (
+  //     <Fragment key={index}>
+  //       {season === '2024' || season === '2023' || season === '2022' ?
+  //         <Dropdown.Item
+  //           onClick={() => onSeasonSelect(season)}
+  //           key={index}
+  //           text={season}
+  //         />
+  //         : null}
+  //     </Fragment>
+  //   );
+  // });
 
   return (
     <Menu stackable>
@@ -73,14 +73,13 @@ const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
             Team Builder
             <Label
               color='red'
-              mini
               floating
             >
               Beta
             </Label>
           </Menu.Item>
           : null}
-        <Dropdown item text='Season Select'>
+        {/* <Dropdown item text='Season Select'>
           <Dropdown.Menu>
             {renderedSeasons}
             <Dropdown.Item
@@ -88,7 +87,7 @@ const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
               text={'More to come!'}
             />
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown> */}
       </Menu.Menu>
     </Menu>
   )

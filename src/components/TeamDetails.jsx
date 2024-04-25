@@ -64,11 +64,11 @@ const Insights = ({ users, season }) => {
   playerData.forEach((player) => {
     let playerPoints;
     if (player.position === 'G') {
-      playerPoints = player.stats.wins * 2 + player.stats.shutouts * 2 + player.stats.otl;
+      playerPoints = player.stats.featuredStats.playoffs.subSeason.wins * 2 + player.stats.featuredStats.playoffs.subSeason.shutouts * 2 + player.stats.otl;
     } else {
-      playerPoints = player.stats.goals + player.stats.assists + player.stats.overTimeGoals;
+      playerPoints = player.stats.featuredStats.playoffs.subSeason.goals + player.stats.featuredStats.playoffs.subSeason.assists + player.stats.featuredStats.playoffs.subSeason.otGoals;
     }
-    players.push([player.name, player.position, player.team.name, playerPoints])
+    players.push([player.name, player.position, player.stats.teamName, playerPoints])
   });
 
   frequency(players).map((player) => {
