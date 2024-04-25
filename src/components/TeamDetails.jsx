@@ -64,7 +64,7 @@ const Insights = ({ users, season }) => {
   playerData.forEach((player) => {
     let playerPoints;
     if (player.position === 'G') {
-      playerPoints = player.stats.featuredStats.playoffs.subSeason.wins * 2 + player.stats.featuredStats.playoffs.subSeason.shutouts * 2 + player.stats.otl;
+      playerPoints = player.stats.featuredStats.playoffs.subSeason.wins * 2 + player.stats.featuredStats.playoffs.subSeason.shutouts * 2 + player.stats.featuredStats.playoffs.subSeason.otLosses;
     } else {
       playerPoints = player.stats.featuredStats.playoffs.subSeason.goals + player.stats.featuredStats.playoffs.subSeason.assists + player.stats.featuredStats.playoffs.subSeason.otGoals;
     }
