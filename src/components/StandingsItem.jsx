@@ -5,20 +5,22 @@ import RosterView from './RosterView';
 
 const URL = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
 // const top6 = ['#66b36650', '#7cbe7c50', '#92c99250', '#a7d3a850', '#bddebe50', '#d3e9d350'];
-const top7 = ['#66b36650', '#79bc7850', '#8bc58a50', '#9dce9c50', '#afd7ae50', '#c1e0c150', '#d3e9d350'];
+// const top7 = ['#66b36650', '#79bc7850', '#8bc58a50', '#9dce9c50', '#afd7ae50', '#c1e0c150', '#d3e9d350'];
+const top10 = ['#66b36650', '#66b36650', '#73b97250', '#7fbf7e50', '#8bc58a50', '#97cb9650', '#afd7af50', '#bbddbb50', '#c7e3c750', '#d3e9d350'];
 
-const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
+
+const StandingsItem = ({ index, user, onRosterSelect, poolSize }) => {
   const [activeRoster, setActiveRoster] = useState({});
   const [visible, setVisible] = useState(false);
 
-  // console.log(activeRoster)
+  // const noramalizedRank = ((user.rank / poolSize) * 100).toFixed(0);
 
   const toggleRoster = () => {
     setActiveRoster((activeRoster) => !activeRoster)
     setVisible((visible) => !visible)
   }
 
-  const pot = poolSize * 20;
+  // const pot = poolSize * 20;
   // const winnings = [
   //   ' — $' + (pot * 0.65).toFixed(2),
   //   ' — $' + (pot * 0.15).toFixed(2),
@@ -27,15 +29,15 @@ const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
   //   ' — $' + (pot * 0.03).toFixed(2),
   //   ' — $' + (pot * 0.02).toFixed(2),
   // ];
-  const winnings = [
-    ' — $' + (pot * 0.65).toFixed(2),
-    ' — $' + (pot * 0.14).toFixed(2),
-    ' — $' + (pot * 0.08).toFixed(2),
-    ' — $' + (pot * 0.05).toFixed(2),
-    ' — $' + (pot * 0.04).toFixed(2),
-    ' — $' + (pot * 0.02).toFixed(2),
-    ' — $' + (pot * 0.02).toFixed(2),
-  ];
+  // const winnings = [
+  //   ' — $' + (pot * 0.65).toFixed(2),
+  //   ' — $' + (pot * 0.14).toFixed(2),
+  //   ' — $' + (pot * 0.08).toFixed(2),
+  //   ' — $' + (pot * 0.05).toFixed(2),
+  //   ' — $' + (pot * 0.04).toFixed(2),
+  //   ' — $' + (pot * 0.02).toFixed(2),
+  //   ' — $' + (pot * 0.02).toFixed(2),
+  // ];
 
   const roster = [
     user.user.left[0],
@@ -66,7 +68,7 @@ const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
         onRosterSelect([user.user, rosterData]);
       }}
       className='item'
-      style={{ backgroundColor: user.rank <= 7 ? top7[user.rank - 1] : '' }}
+      style={{ backgroundColor: user.rank <= 10 ? top10[user.rank - 1] : '' }}
     >
       <div className='left floated content'>{user.rank}</div>
       <img
@@ -84,7 +86,7 @@ const StandingsItem = ({ user, onRosterSelect, poolSize }) => {
           size='large'
           className='ui right floated avatar image'
         />
-        {/* <div className='header'>{user.user.owner.name} {user.rank <= 6 ? winnings[user.rank - 1] : ''}</div> */}
+        {/* <div className='header'>{user.user.owner.name} {user.rank <= 7 ? winnings[user.rank - 1] : ''}</div> */}
         <div className='header'>
           {user.user.owner.name}
         </div>
