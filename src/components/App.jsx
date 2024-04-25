@@ -20,7 +20,7 @@ import { Checkbox } from 'semantic-ui-react';
 
 const App = () => {
   const [activeItem, setActiveItem] = useState('');
-  const [season, setSeason] = useState('2023');
+  const [season, setSeason] = useState('2024');
   const [selectedRoster, setSelectedRoster] = useState([]);
   const [beta, setBeta] = useState(true);
   // const playoffTeams = useStandings();
