@@ -81,7 +81,6 @@ const Insights = ({ users }) => {
     'Position',
     'Team',
     'Points',
-    'Times Picked',
     'Pick Rate',
   ];
 
@@ -90,8 +89,7 @@ const Insights = ({ users }) => {
     : sortPlayerOption === 'Position' ? playerSort = customSort(playerList, 1).reverse()
       : sortPlayerOption === 'Team' ? playerSort = customSort(playerList, 2).reverse()
         : sortPlayerOption === 'Points' ? playerSort = customSort(playerList, 3)
-          : sortPlayerOption === 'Times Picked' ? playerSort = playerList
-            : playerSort = playerList;
+          : playerSort = playerList;
 
   reverse && playerSort.reverse();
 
@@ -119,7 +117,7 @@ const Insights = ({ users }) => {
 
   const playerDetails = playerSort.map((player, index) => {
     return (
-      <Table.Row
+      <Table.Row align='center'
         key={player[0]}
         negative={eliminatedTeams.includes(player[2]) ? true : false}
       >
@@ -128,8 +126,7 @@ const Insights = ({ users }) => {
         <Table.Cell>{player[1]}</Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
         <Table.Cell>{player[3]}</Table.Cell>
-        <Table.Cell>{player[4]}</Table.Cell>
-        <Table.Cell>{(player[4] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
+        <Table.Cell>{player[4] + `/` + users.rosters.length + ` -- ` + (player[4] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
       </Table.Row>
     )
   });
@@ -180,7 +177,7 @@ const Insights = ({ users }) => {
             <div className='sixteen wide center aligned column'>
               <Table basic='very' unstackable selectable>
                 <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
-                  <Table.Row>
+                  <Table.Row align='center'>
                     <Table.HeaderCell></Table.HeaderCell>
                     {playerHeaders}
                   </Table.Row>

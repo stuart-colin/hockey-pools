@@ -102,11 +102,9 @@ const Insights = ({ users, season }) => {
 
   const headers = [
     'Team',
-    'Unique Players Picked',
-    'Total Players Picked',
-    'Percent of Pool',
-    'Raw Team Points',
-    'Total Pool Points',
+    'Unique Players',
+    'Total Players',
+    'Per Player Points',
     'Pool Contribution',
     'Points/Pick (Average)',
     'Points/Pick (Weighted)',
@@ -114,14 +112,12 @@ const Insights = ({ users, season }) => {
 
   let teams;
   sortTeamOption === 'Team' ? teams = selectionsPerTeam
-    : sortTeamOption === 'Unique Players Picked' ? teams = customSort(selectionsPerTeam, 1)
-      : sortTeamOption === 'Total Players Picked' ? teams = customSort(selectionsPerTeam, 2)
-        : sortTeamOption === 'Percent of Pool' ? teams = customSort(selectionsPerTeam, 2)
-          : sortTeamOption === 'Raw Team Points' ? teams = customSort(selectionsPerTeam, 3)
-            : sortTeamOption === 'Total Pool Points' ? teams = customSort(selectionsPerTeam, 4)
-              : sortTeamOption === 'Pool Contribution' ? teams = customSort(selectionsPerTeam, 4)
-                : sortTeamOption === 'Points/Pick (Average)' ? teams = customSort(selectionsPerTeam, 5)
-                  : teams = customSort(selectionsPerTeam, 6);
+    : sortTeamOption === 'Unique Players' ? teams = customSort(selectionsPerTeam, 1)
+      : sortTeamOption === 'Total Players' ? teams = customSort(selectionsPerTeam, 2)
+        : sortTeamOption === 'Per Player Points' ? teams = customSort(selectionsPerTeam, 3)
+          : sortTeamOption === 'Pool Contribution' ? teams = customSort(selectionsPerTeam, 4)
+            : sortTeamOption === 'Points/Pick (Average)' ? teams = customSort(selectionsPerTeam, 5)
+              : teams = customSort(selectionsPerTeam, 6);
 
   reverse && teams.reverse();
 
@@ -156,11 +152,9 @@ const Insights = ({ users, season }) => {
         <Table.Cell collapsing>{index + 1}</Table.Cell>
         <Table.Cell>{team[0]}</Table.Cell>
         <Table.Cell>{team[1]}</Table.Cell>
-        <Table.Cell>{team[2]}</Table.Cell>
-        <Table.Cell>{((team[2] / (users.rosters.length * 16)) * 100).toFixed(2)}%</Table.Cell>
+        <Table.Cell>{team[2] + ` -- ` + ((team[2] / (users.rosters.length * 16)) * 100).toFixed(2)}%</Table.Cell>
         <Table.Cell>{team[3]}</Table.Cell>
-        <Table.Cell>{team[4]}</Table.Cell>
-        <Table.Cell>{((team[4] / totalPoolPoints) * 100).toFixed(2)}%</Table.Cell>
+        <Table.Cell>{team[4] + ` -- ` + ((team[4] / totalPoolPoints) * 100).toFixed(2)}%</Table.Cell>
         <Table.Cell>{team[5].toFixed(2)}</Table.Cell>
         <Table.Cell>{team[6].toFixed(2)}</Table.Cell>
       </Table.Row>
