@@ -26,6 +26,10 @@ const useUsers = (season) => {
           setUserList(users.results);
           setLoading(false);
           break;
+        case '2023':
+          setUserList(seasons.seasons.season2023.results);
+          setLoading(false);
+          break;
         case '2022':
           setUserList(seasons.seasons.season2022.results);
           setLoading(false);
@@ -34,6 +38,10 @@ const useUsers = (season) => {
       return () => { setUserList([]) };
     };
     getUserList();
+    const interval = setInterval(() => {
+      getUserList();
+    }, 900000);
+    return () => clearInterval(interval);
   }, [season]);
 
   useEffect(() => {
