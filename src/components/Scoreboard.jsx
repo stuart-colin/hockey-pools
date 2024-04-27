@@ -1,6 +1,6 @@
 import React from 'react';
 import useScores from '../hooks/useScores';
-import getOrdinal from '../utils/getOrdinals';
+import getOrdinals from '../utils/getOrdinals';
 
 const Scoreboard = () => {
   const scoreboard = useScores();
@@ -32,11 +32,11 @@ const Scoreboard = () => {
         </div>
 
         <div className='ui label' style={{ cursor: 'default', verticalAlign: 'middle' }} >
-          {game.gameState === 'OFF'
+          {game.gameState === 'OFF' || game.gameState === 'FINAL'
             ? 'Final'
             : game.gameState === 'FUT' || game.gameState === 'PRE'
               ? localDate(game.startTimeUTC)
-              : game.clock.timeRemaining + ` ` + getOrdinal(game.period)}
+              : game.clock.timeRemaining + ` ` + game.period + getOrdinals(game.period)}
         </div>
         {/* <br></br> */}
         {/* <br></br>Series: {game.teams.away.leagueRecord.wins} - {game.teams.home.leagueRecord.wins} */}
