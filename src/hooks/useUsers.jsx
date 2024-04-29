@@ -38,10 +38,6 @@ const useUsers = (season) => {
       return () => { setUserList([]) };
     };
     getUserList();
-    const interval = setInterval(() => {
-      getUserList();
-    }, 900000);
-    return () => clearInterval(interval);
   }, [season]);
 
   useEffect(() => {
