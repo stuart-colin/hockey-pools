@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Table } from 'semantic-ui-react';
+import { Icon, Table, Image } from 'semantic-ui-react';
 import { frequency, customSort } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
@@ -68,11 +68,11 @@ const Insights = ({ users }) => {
     } else {
       playerPoints = player.stats.featuredStats.playoffs.subSeason.goals + player.stats.featuredStats.playoffs.subSeason.assists + player.stats.featuredStats.playoffs.subSeason.otGoals;
     }
-    players.push([player.name, player.position, player.stats.teamName, playerPoints])
+    players.push([player.headshot, player.name, player.position, player.stats.teamLogo, player.stats.teamName, playerPoints])
   });
 
   frequency(players).map((player) => {
-    playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], parseFloat(player[0].split(',')[3]), player[1]])
+    playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], player[0].split(',')[3], player[0].split(',')[4], parseFloat(player[0].split(',')[5]), player[1]])
     return null;
   });
 
@@ -85,10 +85,10 @@ const Insights = ({ users }) => {
   ];
 
   let playerSort;
-  sortPlayerOption === 'Player' ? playerSort = customSort(playerList, 0).reverse()
-    : sortPlayerOption === 'Position' ? playerSort = customSort(playerList, 1).reverse()
-      : sortPlayerOption === 'Team' ? playerSort = customSort(playerList, 2).reverse()
-        : sortPlayerOption === 'Points' ? playerSort = customSort(playerList, 3)
+  sortPlayerOption === 'Player' ? playerSort = customSort(playerList, 1).reverse()
+    : sortPlayerOption === 'Position' ? playerSort = customSort(playerList, 2).reverse()
+      : sortPlayerOption === 'Team' ? playerSort = customSort(playerList, 4).reverse()
+        : sortPlayerOption === 'Points' ? playerSort = customSort(playerList, 5)
           : playerSort = playerList;
 
   reverse && playerSort.reverse();
@@ -117,17 +117,21 @@ const Insights = ({ users }) => {
 
   const playerDetails = playerSort.map((player, index) => {
     return (
-      <Table.Row align='center'
-        key={player[0]}
-        negative={eliminatedTeams.includes(player[2]) ? true : false}
+      <Table.Row
+        key={player[1]}
+        negative={eliminatedTeams.includes(player[4]) ? true : false}
       >
         <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>{player[0]}</Table.Cell>
-        <Table.Cell>{player[1]}</Table.Cell>
+        <Table.Cell>
+          <Image src={player[0]} avatar alt={`${player[1]} Headshot`} /> {player[1]}
+        </Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
-        <Table.Cell>{player[3]}</Table.Cell>
-        <Table.Cell>{player[4] + `/` + users.rosters.length + ` -- ` + (player[4] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
-      </Table.Row>
+        <Table.Cell>
+          <Image src={player[3]} avatar size='mini' alt={`${player[4]} Logo`} /> {player[4]}
+        </Table.Cell>
+        <Table.Cell>{player[5]}</Table.Cell>
+        <Table.Cell>{player[6] + `/` + users.rosters.length + ` -- ` + (player[6] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
+      </Table.Row >
     )
   });
 
@@ -177,7 +181,7 @@ const Insights = ({ users }) => {
             <div className='sixteen wide center aligned column'>
               <Table basic='very' unstackable selectable>
                 <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
-                  <Table.Row align='center'>
+                  <Table.Row>
                     <Table.HeaderCell></Table.HeaderCell>
                     {playerHeaders}
                   </Table.Row>
