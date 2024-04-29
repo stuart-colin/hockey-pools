@@ -88,7 +88,7 @@ const Insights = ({ users, season }) => {
   const totalSelectionsPerTeam = frequency(teamCount).sort();
 
   const teamLogos = playerList.map((team) => {
-    return team[2];
+    return [team[3], team[2]];
   });
   const sortedLogos = frequency(teamLogos).sort();
 
@@ -97,7 +97,7 @@ const Insights = ({ users, season }) => {
   const totalPoolPoints = sumNestedArray(teamPoolPoints, 1);
 
   selectionsPerTeam.map((team, index) => {
-    team.push(sortedLogos[index][0], totalSelectionsPerTeam[index][1], teamPoints[index][1], teamPoolPoints[index][1], (teamPoints[index][1] / selectionsPerTeam[index][1]), (teamPoolPoints[index][1] / totalSelectionsPerTeam[index][1]))
+    team.push(sortedLogos[index][0].split(',')[1], totalSelectionsPerTeam[index][1], teamPoints[index][1], teamPoolPoints[index][1], (teamPoints[index][1] / selectionsPerTeam[index][1]), (teamPoolPoints[index][1] / totalSelectionsPerTeam[index][1]))
     return team;
   })
 
@@ -105,7 +105,7 @@ const Insights = ({ users, season }) => {
   //   : season === '2022' ? selectionsPerTeam.push(['Dallas Stars', 0, 0], ['Los Angeles Kings', 0, 0], ['Nashville Predators', 0, 0])
   //     : null;
 
-  // selectionsPerTeam.sort();
+  selectionsPerTeam.sort();
 
   const headers = [
     'Team',
