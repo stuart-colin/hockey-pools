@@ -7,7 +7,7 @@ const StatsSlim = ({ player }) => {
   let stats;
   let points;
   if (player.position === 'G') {
-    stats = [player.stats.featuredStats.playoffs.subSeason.wins, 'W', player.stats.featuredStats.playoffs.subSeason.shutouts, 'SO', player.stats.featuredStats.playoffs.subSeason.otLosses, 'OTL'];
+    stats = [player.stats.featuredStats.playoffs.subSeason.wins, 'W', player.stats.featuredStats.playoffs.subSeason.shutouts, 'SO', player.stats.otl, 'OTL'];
     points = stats[0] * 2 + stats[2] * 2 + stats[4];
   } else {
     stats = [player.stats.featuredStats.playoffs.subSeason.goals, 'G', player.stats.featuredStats.playoffs.subSeason.assists, 'A', player.stats.featuredStats.playoffs.subSeason.otGoals, 'OTG']
