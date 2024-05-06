@@ -28,7 +28,7 @@ const eliminatedTeams = [
   'Tampa Bay Lightning',
   'Toronto Maple Leafs',
   // 'Vancouver Canucks',
-  // 'Vegas Golden Knights',
+  'Vegas Golden Knights',
   'Washington Capitals',
   'Winnipeg Jets'
 ];
