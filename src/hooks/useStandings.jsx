@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const standingsEndpointNHL = 'https://statsapi.web.nhl.com/api/v1/standings/regularSeason'
+// const standingsEndpointNHL = 'https://statsapi.web.nhl.com/api/v1/standings/regularSeason'
+const standingsEndpointNHL = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api-web.nhle.com/v1/standings/now'
 
 const useStandings = () => {
   const [playoffTeams, setPlayoffTeams] = useState([]);
@@ -9,14 +10,15 @@ const useStandings = () => {
     const getStandingsData = async () => {
       const res = await fetch(standingsEndpointNHL);
       const json = await res.json();
-      for (let i = 0; i < json.records.length; i++) {
-        for (let j = 0; j < json.records[i].teamRecords.length; j++) {
-          if (json.records[i].teamRecords[j].clinchIndicator) {
-            setPlayoffTeams([
-              json.records[i].teamRecords[j].team.name,
-              json.records[i].teamRecords[j].team.id,
-            ])
-          }
+      for (let i = 0; i < json.standings.length; i++) {
+        if (
+          json.standings[i].clinchIndicator &&
+          json.standings[i].clinchIndicator !== 'e'
+        ) {
+          setPlayoffTeams([
+            json.standings[i].teamName.default,
+            json.standings[i].teamAbbrev.default,
+          ])
         }
       }
     }

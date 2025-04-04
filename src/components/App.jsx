@@ -10,7 +10,8 @@ import Scoreboard from './Scoreboard';
 import StandingsList from './StandingsList';
 import TeamDetails from './TeamDetails';
 
-import useRosters from '../hooks/useRosters';
+// import useRosters from '../hooks/useRosters';
+import useRegularSeasonStats from '../hooks/useRegularSeasonStats';
 import useStandings from '../hooks/useStandings';
 import useUsers from '../hooks/useUsers';
 import TeamBuilder from './TeamBuilder';
@@ -18,14 +19,17 @@ import { Checkbox } from 'semantic-ui-react';
 // import PlayerLookup from './PlayerLookup';
 // import useUsersNew from '../hooks/useUsersNew';
 
+const currentYear = new Date().getFullYear().toString();
+
 const App = () => {
   const [activeItem, setActiveItem] = useState('');
-  const [season, setSeason] = useState('2024');
+  const [season, setSeason] = useState(currentYear);
   const [selectedRoster, setSelectedRoster] = useState([]);
   const [beta, setBeta] = useState(true);
-  // const playoffTeams = useStandings();
-  // const rosters = useRosters(playoffTeams)
+  const playoffTeams = useStandings();
+  const regularSeasonStats = useRegularSeasonStats(playoffTeams);
   const users = useUsers(season);
+  // const rosters = useRosters(playoffTeams)
 
   return (
     <Fragment>
@@ -38,13 +42,14 @@ const App = () => {
           <StandingsList
             users={users}
             onRosterSelect={setSelectedRoster}
+            season={season}
           />
         </div>
         <div className='twelve wide column'>
           <Navigation
             onMenuSelect={setActiveItem}
             onSeasonSelect={setSeason}
-          // beta={beta}
+            beta={beta}
           />
           {/* </div>
         <div className='twelve wide column'> */}
@@ -80,11 +85,11 @@ const App = () => {
             />
             : null
           }
-          {/* {beta && activeItem === 'team-builder' ?
+          {beta && activeItem === 'team-builder' ?
             <TeamBuilder
-              rosters={rosters}
+              regularSeasonStats={regularSeasonStats}
             />
-            : null} */}
+            : null}
         </div>
         {/* <div><PlayerLookup onPlayerLookup={updatePlayerData}/></div> */}
         {/* <div><Player onPlayerLookup={updatePlayerData}/></div> */}

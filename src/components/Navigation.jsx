@@ -73,7 +73,6 @@ const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
             Team Builder
             <Label
               color='red'
-              floating
             >
               Beta
             </Label>

@@ -4,7 +4,7 @@ import Search from './Search';
 import StandingsItem from './StandingsItem';
 import '../css/customStyle.css'
 
-const StandingsList = ({ users, onRosterSelect }) => {
+const StandingsList = ({ users, onRosterSelect, season }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState('false');
 
@@ -38,12 +38,31 @@ const StandingsList = ({ users, onRosterSelect }) => {
 
   setRanks(sortedRosters);
 
+  // const pot = sortedRosters.length * 20;
+
+  // const winnings = [
+  //   ' — $' + (pot * 0.65).toFixed(2),
+  //   ' — $' + (pot * 0.14).toFixed(2),
+  //   ' — $' + (pot * 0.08).toFixed(2),
+  //   ' — $' + (pot * 0.05).toFixed(2),
+  //   ' — $' + (pot * 0.04).toFixed(2),
+  //   ' — $' + (pot * 0.02).toFixed(2),
+  //   ' — $' + (pot * 0.02).toFixed(2),
+  // ];
+
+  // const winningsDistro = sortedRosters.map((user, index) => {
+  //   return (
+  //     user.rank <= 7 ? winnings[user.rank - 1] : ''
+  //   )
+  // })
+
   const renderedList = sortedRosters.map((user, index) => {
     return (
       <StandingsItem
         user={user}
         onRosterSelect={onRosterSelect}
         key={index}
+        index={index}
         poolSize={sortedRosters.length}
       />
     )
@@ -76,7 +95,7 @@ const StandingsList = ({ users, onRosterSelect }) => {
         </div>
         <div className='middle aligned column'>
           <h2>
-            Standings
+            {season} Standings
           </h2>
           <Search
             users={users}
