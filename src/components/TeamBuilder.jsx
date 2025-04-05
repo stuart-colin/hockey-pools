@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 
-import { Button, Dropdown, Grid, Icon, Image, Menu, Segment, Table } from "semantic-ui-react";
+import { Button, Dropdown, Grid, Icon, Image, Label, Menu, Segment, Table } from "semantic-ui-react";
 
 
 const teamLogoURL = `https://assets.nhle.com/logos/nhl/svg/`;
@@ -27,6 +27,21 @@ const TeamBuilder = ({ regularSeasonStats }) => {
   for (const num of position) {
     positionLimit[num] = positionLimit[num] ? positionLimit[num] + 1 : 1;
   };
+
+  const teamCounts = myTeam.map(player => {
+    return player.teamAbbrevs.split(/[,]+/).pop()
+  })
+
+  function countTeams(array) {
+    return array.reduce((acc, item) => {
+      acc[item] = (acc[item] || 0) + 1;
+      return acc;
+    }, {});
+  }
+
+  const teamCount = countTeams(teamCounts);
+
+  // console.log(teamCount);
 
   positionLimit['L'] === 4 ||
     positionLimit['R'] === 4 ||
@@ -96,7 +111,7 @@ const TeamBuilder = ({ regularSeasonStats }) => {
     "utility": utilityIds,
   };
 
-  const rosterIndicator = rosterPositions.map((position, index) => {
+  const rosterPositionBadge = rosterPositions.map((position, index) => {
     return (
       <Button
         style={{ cursor: 'default' }}
@@ -108,6 +123,22 @@ const TeamBuilder = ({ regularSeasonStats }) => {
       >
         {position}
       </Button>
+    )
+  })
+
+  const teamCountBadge = Object.entries(teamCount).map((team, value) => {
+    return (
+      <Fragment>
+        <Label
+        >
+          <Image
+            avatar size='mini'
+            src={teamLogoURL + team[0] + `_light.svg`}
+          >
+          </Image>
+          {team[1]}
+        </Label>
+      </Fragment>
     )
   })
 
@@ -426,11 +457,11 @@ const TeamBuilder = ({ regularSeasonStats }) => {
     )
   })
 
-  const rosterIndicators = rosterPositions.map((position, index) => {
+  const rosterPositionBadges = rosterPositions.map((position, index) => {
     return (
       <Table.Row>
         <Table.Cell>
-          {rosterIndicator[index]}
+          {rosterPositionBadge[index]}
         </Table.Cell>
         {position === 'C' ? myCenters[index] :
           position === 'L' ? myLefts[index - 3] :
@@ -469,25 +500,7 @@ const TeamBuilder = ({ regularSeasonStats }) => {
               </Dropdown>
             </Menu> */}
           </Grid.Column>
-          <Grid.Column textAlign="right">
-            {/* <Button.Group floated='right' widths='16' fluid> */}
-            {/* {rosterIndicator} */}
-            <Button
-              color='red'
-              disabled={myTeam.length === 0}
-              onClick={() => setMyTeam([])}
-            >
-              Clear
-            </Button>
-            <Button
-              color='green'
-              disabled={myTeam.length < 16}
-              onClick={() => console.log(submittedTeam)}
-            >
-              Submit
-            </Button>
-            {/* </Button.Group> */}
-          </Grid.Column>
+
         </Grid.Row>
       </Grid>
       <Grid columns={2} stackable>
@@ -512,9 +525,12 @@ const TeamBuilder = ({ regularSeasonStats }) => {
             </Table>
           </Grid.Column>
           <Grid.Column style={{ maxHeight: '72vh', overflow: 'auto' }}>
-            <h4>
-              My Team
-            </h4>
+            <Grid.Row textAlign="left">
+              <h4>
+                My Team
+              </h4>
+              {teamCountBadge}
+            </Grid.Row>
             <Table singleLine unstackable basic='very' compact='very'>
               <Table.Header style={{ position: 'sticky', top: '0px', background: 'white' }}>
                 <Table.Row>
@@ -526,9 +542,29 @@ const TeamBuilder = ({ regularSeasonStats }) => {
                   <Table.HeaderCell>Stats</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
-              {rosterIndicators}
+              {rosterPositionBadges}
             </Table>
+            <Grid.Row textAlign="right">
+              {/* <Button.Group floated='right' widths='16' fluid> */}
+
+              <Button
+                color='red'
+                disabled={myTeam.length === 0}
+                onClick={() => setMyTeam([])}
+              >
+                Clear
+              </Button>
+              <Button
+                color='green'
+                disabled={myTeam.length < 16}
+                onClick={() => console.log(submittedTeam)}
+              >
+                Submit
+              </Button>
+              {/* </Button.Group> */}
+            </Grid.Row>
           </Grid.Column>
+
         </Grid.Row>
       </Grid>
     </Segment>
