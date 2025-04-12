@@ -1,540 +1,444 @@
-import React, { Fragment, useState } from "react";
-
-import { Button, Dropdown, Grid, Icon, Image, Label, Menu, Segment, Table } from "semantic-ui-react";
-
+import React, { useState, useMemo } from 'react';
+import { Button, Grid, Icon, Image, Input, Loader, Segment, Table, Dropdown } from 'semantic-ui-react';
+import useSubmitRoster from '../hooks/useSubmitRoster';
 
 const teamLogoURL = `https://assets.nhle.com/logos/nhl/svg/`;
 const playerHeadshotURL = `https://assets.nhle.com/mugs/nhl/20242025/`;
 
 const TeamBuilder = ({ regularSeasonStats }) => {
   const [myTeam, setMyTeam] = useState([]);
-  // const [left, setLeft] = useState([]);
-  // const [center, setCenter] = useState([]);
-  // const [right, setRight] = useState([]);
-  // const [defense, setDefense] = useState([]);
-  // const [goalie, setGoalie] = useState([]);
-  // const [utility, setUtility] = useState([]);
+  const [userId, setUserId] = useState('');
+  const [positionFilter, setPositionFilter] = useState([]);
+  const [teamFilter, setTeamFilter] = useState([]);
+  const [nameSearch, setNameSearch] = useState('');
 
   const positionCounts = { R: 3, L: 3, C: 3, D: 4, G: 2 };
-  const rosterPositions = ['C', 'C', 'C', 'L', 'L', 'L', 'R', 'R', 'R', 'D', 'D', 'D', 'D', 'G', 'G', 'U']
-  let utilityBonus;
+  const rosterPositions = ['C', 'C', 'C', 'L', 'L', 'L', 'R', 'R', 'R', 'D', 'D', 'D', 'D', 'G', 'G', 'U'];
 
-  const position = myTeam.map(player => {
-    return player.positionCode
-  })
-  const positionLimit = {};
+  const { postData } = useSubmitRoster();
 
-  for (const num of position) {
-    positionLimit[num] = positionLimit[num] ? positionLimit[num] + 1 : 1;
-  };
-
-  const teamCounts = myTeam.map(player => {
-    return player.teamAbbrevs.split(/[,]+/).pop()
-  })
-
-  function countTeams(array) {
-    return array.reduce((acc, item) => {
-      acc[item] = (acc[item] || 0) + 1;
+  // Derived data using useMemo
+  const positionLimit = useMemo(() => {
+    return myTeam.reduce((acc, player) => {
+      acc[player.positionCode] = (acc[player.positionCode] || 0) + 1;
       return acc;
     }, {});
-  }
+  }, [myTeam]);
 
-  const teamCount = countTeams(teamCounts);
+  const teamCount = useMemo(() => {
+    return myTeam.reduce((acc, player) => {
+      const team = player.teamAbbrevs.split(/[,]+/).pop();
+      acc[team] = (acc[team] || 0) + 1;
+      return acc;
+    }, {});
+  }, [myTeam]);
 
-  // console.log(teamCount);
+  const utilityBonus = useMemo(() => {
+    return positionLimit['L'] === 4 ||
+      positionLimit['R'] === 4 ||
+      positionLimit['C'] === 4 ||
+      positionLimit['D'] === 5 ||
+      positionLimit['G'] === 3
+      ? 0
+      : 1;
+  }, [positionLimit]);
 
-  positionLimit['L'] === 4 ||
-    positionLimit['R'] === 4 ||
-    positionLimit['C'] === 4 ||
-    positionLimit['D'] === 5 ||
-    positionLimit['G'] === 3
-    ? utilityBonus = 0
-    : utilityBonus = 1;
+  // Filtered and sorted data
+  const filteredGoalies = useMemo(() => {
+    return regularSeasonStats.goalieStats
+      .filter((player) => {
+        const matchesPosition = positionFilter.length
+          ? positionFilter.includes(player.positionCode)
+          : true;
+        const matchesTeam = teamFilter.length
+          ? teamFilter.includes(player.teamAbbrevs.split(/[,]+/).pop())
+          : true;
+        const matchesName = nameSearch
+          ? player.goalieFullName.toLowerCase().includes(nameSearch.toLowerCase())
+          : true;
+        return matchesPosition && matchesTeam && matchesName;
+      })
+      .sort((a, b) => b.wins - a.wins); // Sort by wins in descending order
+  }, [regularSeasonStats.goalieStats, positionFilter, teamFilter, nameSearch]);
 
-  const rankedGoalies = regularSeasonStats.goalieStats.sort((a, b) =>
-    (a.wins > b.wins)
-      ? -1 : ((b.wins > a.wins)
-        ? 1 : 0));
+  const filteredSkaters = useMemo(() => {
+    return regularSeasonStats.skaterStats
+      .filter((player) => {
+        const matchesPosition = positionFilter.length
+          ? positionFilter.includes(player.positionCode)
+          : true;
+        const matchesTeam = teamFilter.length
+          ? teamFilter.includes(player.teamAbbrevs.split(/[,]+/).pop())
+          : true;
+        const matchesName = nameSearch
+          ? player.skaterFullName.toLowerCase().includes(nameSearch.toLowerCase())
+          : true;
+        return matchesPosition && matchesTeam && matchesName;
+      })
+      .sort((a, b) => b.points - a.points); // Sort by points in descending order
+  }, [regularSeasonStats.skaterStats, positionFilter, teamFilter, nameSearch]);
 
-  const rankedSkaters = regularSeasonStats.skaterStats.sort((a, b) =>
-    (a.points > b.points)
-      ? -1 : ((b.points > a.points)
-        ? 1 : 0));
-
-  let center = [];
-  let left = [];
-  let right = [];
-  let defense = [];
-  let goalie = [];
-  let utility = [];
-
-  let centerIds = [];
-  let leftIds = [];
-  let rightIds = [];
-  let defenseIds = [];
-  let goalieIds = [];
-  let utilityIds = [];
-
-  myTeam.map(player => {
-    player.positionCode === 'C' && center.length < positionCounts[player.positionCode]
-      ? center.push(player) && centerIds.push(player.playerId)
-      : player.positionCode === 'L' && left.length < positionCounts[player.positionCode]
-        ? left.push(player) && leftIds.push(player.playerId)
-        : player.positionCode === 'R' && right.length < positionCounts[player.positionCode]
-          ? right.push(player) && rightIds.push(player.playerId)
-          : player.positionCode === 'D' && defense.length < positionCounts[player.positionCode]
-            ? defense.push(player) && defenseIds.push(player.playerId)
-            : player.positionCode === 'G' && goalie.length < positionCounts[player.positionCode]
-              ? goalie.push(player) && goalieIds.push(player.playerId)
-              : utility.push(player) && utilityIds.push(player.playerId);
-  });
-
-  // const sortedTeam = myTeam.sort(function (a, b) {
-  //   return rosterPositions.indexOf(a.positionCode) - rosterPositions.indexOf(b.positionCode)
-  // });
-
-  const sortedTeam = center.concat(
-    left.concat(
-      right.concat(
-        defense.concat(
-          goalie.concat(
-            utility
-          )))))
-
-  let submittedTeam = {
-    "owner": 'peepee poopoo lover',
-    "center": centerIds,
-    "left": leftIds,
-    "right": rightIds,
-    "defense": defenseIds,
-    "goalie": goalieIds,
-    "utility": utilityIds,
+  const handleSubmit = () => {
+    const teamIds = {
+      owner: userId,
+      center: myTeam.filter((p) => p.positionCode === 'C').map((p) => p.playerId),
+      left: myTeam.filter((p) => p.positionCode === 'L').map((p) => p.playerId),
+      right: myTeam.filter((p) => p.positionCode === 'R').map((p) => p.playerId),
+      defense: myTeam.filter((p) => p.positionCode === 'D').map((p) => p.playerId),
+      goalie: myTeam.filter((p) => p.positionCode === 'G').map((p) => p.playerId),
+      utility: myTeam.filter((p) => !['C', 'L', 'R', 'D', 'G'].includes(p.positionCode)).map((p) => p.playerId),
+    };
+    console.log('Team IDs:', teamIds);
+    postData(teamIds);
   };
 
-  const rosterPositionBadge = rosterPositions.map((position, index) => {
-    return (
-      <Button
-        style={{ cursor: 'default' }}
-        color={
-          rosterPositions.indexOf(position, rosterPositions.indexOf(position)
-            + positionLimit[position]) > index
-            || positionCounts[position] <= positionLimit[position]
-            ? 'blue' : utilityBonus === 0 && index === 15 ? 'blue' : null}
-      >
-        {position}
-      </Button>
-    )
-  })
+  const togglePlayer = (player) => {
+    setMyTeam((prevTeam) =>
+      prevTeam.includes(player) ? prevTeam.filter((p) => p !== player) : [...prevTeam, player]
+    );
+  };
 
-  const teamCountBadge = Object.entries(teamCount).map((team, value) => {
-    return (
-      <Fragment>
-        <Label
+  const renderPlayerRow = (player, isDisabled) => (
+    <Table.Row key={player.playerId}>
+      <Table.Cell>
+        <Button
+          icon
+          disabled={isDisabled}
+          color={myTeam.includes(player) ? 'blue' : null}
+          onClick={() => togglePlayer(player)}
         >
-          <Image
-            avatar size='mini'
-            src={teamLogoURL + team[0] + `_light.svg`}
-          >
-          </Image>
-          {team[1]}
-        </Label>
-      </Fragment>
-    )
-  })
+          <Icon name='check' />
+        </Button>
+      </Table.Cell>
+      <Table.Cell>{player.positionCode}</Table.Cell>
+      <Table.Cell>
+        <Image
+          avatar
+          size='mini'
+          src={`${playerHeadshotURL}${player.teamAbbrevs.split(/[,]+/).pop()}/${player.playerId}.png`}
+          alt={player.positionCode === 'G'
+            ? `${player.goalieFullName} Headshot`
+            : `${player.skaterFullName} Headshot`}
+        />
+        {player.positionCode === 'G'
+          ? player.goalieFullName
+          : player.skaterFullName}
+      </Table.Cell>
+      <Table.Cell>
+        <Image
+          avatar
+          size='mini'
+          src={`${teamLogoURL}${player.teamAbbrevs.split(/[,]+/).pop()}_light.svg`}
+          alt={`${player.teamAbbrevs} Logo`}
+        />
+        {player.teamAbbrevs.split(/[,]+/).pop()}
+      </Table.Cell>
+      <Table.Cell>
+        {player.positionCode === 'G'
+          ? `GP: ${player.gamesPlayed} W: ${player.wins} L: ${player.losses} OTL: ${player.otLosses}`
+          : `GP: ${player.gamesPlayed} G: ${player.goals} A: ${player.assists} P: ${player.points}`}
+      </Table.Cell>
+    </Table.Row>
+  );
 
-  const goalieStats = rankedGoalies.map(goalie => {
-    return (
-      <Table.Row>
-        <Table.Cell>
-          <Button
-            icon
-            disabled={positionLimit[goalie.positionCode] >= positionCounts[goalie.positionCode] + utilityBonus
-              && !JSON.stringify(myTeam).includes(JSON.stringify(goalie))
-              ? true : false}
-            color={JSON.stringify(myTeam).includes(JSON.stringify(goalie)) ? 'blue' : null}
-            onClick={() => setMyTeam(
-              JSON.stringify(myTeam).includes(JSON.stringify(goalie))
-                ? JSON.parse(JSON.stringify(myTeam).replace((JSON.stringify(goalie)), null)).filter(e => e)
-                : positionLimit[goalie.positionCode] >= positionCounts[goalie.positionCode] + utilityBonus ? myTeam
-                  : player => [...player, goalie]
-            )}
-          >
-            <Icon name='check' />
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {goalie.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + goalie.teamAbbrevs.split(/[,]+/).pop() + `/` + goalie.playerId + `.png`} alt={`${goalie.goalieFullname} Headshot`} />
-          {goalie.goalieFullName}
-          {/* <div>{goalie.playerId}</div> */}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + goalie.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${goalie.teamAbbrevs.split(/[,]+/).pop()} Logo`} />
-          {goalie.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          GP: {goalie.gamesPlayed} W: {goalie.wins} L: {goalie.losses} OTL: {goalie.otLosses}
-        </Table.Cell>
-      </Table.Row>
-    )
-  })
+  const rosterPlayerRows = (() => {
+    const remainingPlayers = [...myTeam]; // Copy of myTeam to track unassigned players
 
-  const skaterStats = rankedSkaters.map(skater => {
-    return (
-      <Table.Row>
-        <Table.Cell>
-          <Button
-            icon
-            disabled={positionLimit[skater.positionCode] >= positionCounts[skater.positionCode] + utilityBonus
-              && !JSON.stringify(myTeam).includes(JSON.stringify(skater))
-              ? true : false}
-            color={JSON.stringify(myTeam).includes(JSON.stringify(skater)) ? 'blue' : null}
-            onClick={() => setMyTeam(
-              JSON.stringify(myTeam).includes(JSON.stringify(skater))
-                ? JSON.parse(JSON.stringify(myTeam).replace((JSON.stringify(skater)), null)).filter(e => e)
-                : positionLimit[skater.positionCode] >= positionCounts[skater.positionCode] + utilityBonus ? myTeam
-                  : player => [...player, skater]
-            )}
-          >
-            <Icon name='check' />
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {skater.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + skater.teamAbbrevs.split(/[,]+/).pop() + `/` + skater.playerId + `.png`} alt={`${skater.skaterFullname} Headshot`} />
-          {skater.skaterFullName}
-          {/* <div>{skater.playerId}</div> */}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + skater.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${skater.teamAbbrevs.split(/[,]+/).pop()} Logo`} />
-          {skater.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          GP: {skater.gamesPlayed} G: {skater.goals} A: {skater.assists} P: {skater.points}
-        </Table.Cell>
-      </Table.Row>
-    )
-  })
+    return rosterPositions.map((position, index) => {
+      // Handle utility ('U') position separately
+      if (position === 'U') {
+        // Find the first player who has hit the position limit
+        const utilityPlayerIndex = remainingPlayers.findIndex(
+          (p) => positionLimit[p.positionCode] >= positionCounts[p.positionCode]
+        );
+        const utilityPlayer =
+          utilityPlayerIndex !== -1 ? remainingPlayers.splice(utilityPlayerIndex, 1)[0] : null;
 
-  const myRoster = sortedTeam.map((team, index) => {
-    return (
-      <Table.Row>
-        <Table.Cell>
-          <Button
-            icon
-            color='red'
-            onClick={() => setMyTeam(myTeam.filter(player => player !== team)
-            )}
-          >
-            <Icon name='trash'></Icon>
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {team.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + team.teamAbbrevs.split(/[,]+/).pop() + `/` + team.playerId + `.png`} alt={`${team.playerFullname} Headshot`} />
-          {team.positionCode != 'G' ? team.skaterFullName : team.goalieFullName}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + team.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${team.teamAbbrevs} Logo`} />
-          {team.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          {`GP: ` + team.gamesPlayed}
-          {team.positionCode != 'G' ? ` G: ` + team.goals : ` W: ` + team.wins}
-          {team.positionCode != 'G' ? ` A: ` + team.assists : ` L: ` + team.losses}
-          {team.positionCode != 'G' ? ` P: ` + team.points : ` OTL: ` + team.otLosses}
-        </Table.Cell>
-      </Table.Row>
-    )
-  })
+        return (
+          <Table.Row key={index}>
+            <Table.Cell>
+              <Button
+                icon
+                color={!utilityPlayer ? 'grey' : 'red'}
+                onClick={() => setMyTeam(myTeam.filter((p) => p !== utilityPlayer))}
+                disabled={!utilityPlayer} // Disable button if no utility player exists
+              >
+                <Icon name='trash' />
+              </Button>
+            </Table.Cell>
+            <Table.Cell>U</Table.Cell>
+            <Table.Cell>
+              {utilityPlayer ? (
+                <Image
+                  avatar
+                  size='mini'
+                  src={`${playerHeadshotURL}${utilityPlayer.teamAbbrevs.split(/[,]+/).pop()}/${utilityPlayer.playerId
+                    }.png`}
+                  alt={
+                    utilityPlayer.positionCode === 'G'
+                      ? `${utilityPlayer.goalieFullName} Headshot`
+                      : `${utilityPlayer.skaterFullName} Headshot`
+                  }
+                />
+              ) : null}
+              {utilityPlayer
+                ? utilityPlayer.positionCode === 'G'
+                  ? utilityPlayer.goalieFullName
+                  : utilityPlayer.skaterFullName
+                : ''}
+            </Table.Cell>
+            <Table.Cell>
+              {utilityPlayer ? (
+                <Image
+                  avatar
+                  size='mini'
+                  src={`${teamLogoURL}${utilityPlayer.teamAbbrevs.split(/[,]+/).pop()}_light.svg`}
+                  alt={`${utilityPlayer.teamAbbrevs} Logo`}
+                />
+              ) : null}
+              {utilityPlayer ? utilityPlayer.teamAbbrevs.split(/[,]+/).pop() : ''}
+            </Table.Cell>
+            <Table.Cell>
+              {utilityPlayer
+                ? utilityPlayer.positionCode === 'G'
+                  ? `GP: ${utilityPlayer.gamesPlayed} W: ${utilityPlayer.wins} L: ${utilityPlayer.losses} OTL: ${utilityPlayer.otLosses}`
+                  : `GP: ${utilityPlayer.gamesPlayed} G: ${utilityPlayer.goals} A: ${utilityPlayer.assists} P: ${utilityPlayer.points}`
+                : ''}
+            </Table.Cell>
+          </Table.Row>
+        );
+      }
 
-  const myCenters = center.map((team, index) => {
-    return (
-      <Fragment>
-        <Table.Cell>
-          <Button
-            icon
-            color='red'
-            onClick={() => setMyTeam(myTeam.filter(player => player !== team)
-            )}
-          >
-            <Icon name='trash'></Icon>
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {team.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + team.teamAbbrevs.split(/[,]+/).pop() + `/` + team.playerId + `.png`} alt={`${team.playerFullname} Headshot`} />
-          {team.positionCode != 'G' ? team.skaterFullName : team.goalieFullName}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + team.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${team.teamAbbrevs} Logo`} />
-          {team.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          {`GP: ` + team.gamesPlayed}
-          {team.positionCode != 'G' ? ` G: ` + team.goals : ` W: ` + team.wins}
-          {team.positionCode != 'G' ? ` A: ` + team.assists : ` L: ` + team.losses}
-          {team.positionCode != 'G' ? ` P: ` + team.points : ` OTL: ` + team.otLosses}
-        </Table.Cell>
-      </Fragment>
-    )
-  })
+      // Handle regular positions
+      const playerIndex = remainingPlayers.findIndex((p) => p.positionCode === position);
+      const player = playerIndex !== -1 ? remainingPlayers.splice(playerIndex, 1)[0] : null;
 
-  const myLefts = left.map((team, index) => {
-    return (
-      <Fragment>
-        <Table.Cell>
-          <Button
-            icon
-            color='red'
-            onClick={() => setMyTeam(myTeam.filter(player => player !== team)
-            )}
-          >
-            <Icon name='trash'></Icon>
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {team.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + team.teamAbbrevs.split(/[,]+/).pop() + `/` + team.playerId + `.png`} alt={`${team.playerFullname} Headshot`} />
-          {team.positionCode != 'G' ? team.skaterFullName : team.goalieFullName}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + team.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${team.teamAbbrevs} Logo`} />
-          {team.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          {`GP: ` + team.gamesPlayed}
-          {team.positionCode != 'G' ? ` G: ` + team.goals : ` W: ` + team.wins}
-          {team.positionCode != 'G' ? ` A: ` + team.assists : ` L: ` + team.losses}
-          {team.positionCode != 'G' ? ` P: ` + team.points : ` OTL: ` + team.otLosses}
-        </Table.Cell>
-      </Fragment>
-    )
-  })
-  const myRights = right.map((team, index) => {
-    return (
-      <Fragment>
-        <Table.Cell>
-          <Button
-            icon
-            color='red'
-            onClick={() => setMyTeam(myTeam.filter(player => player !== team)
-            )}
-          >
-            <Icon name='trash'></Icon>
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {team.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + team.teamAbbrevs.split(/[,]+/).pop() + `/` + team.playerId + `.png`} alt={`${team.playerFullname} Headshot`} />
-          {team.positionCode != 'G' ? team.skaterFullName : team.goalieFullName}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + team.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${team.teamAbbrevs} Logo`} />
-          {team.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          {`GP: ` + team.gamesPlayed}
-          {team.positionCode != 'G' ? ` G: ` + team.goals : ` W: ` + team.wins}
-          {team.positionCode != 'G' ? ` A: ` + team.assists : ` L: ` + team.losses}
-          {team.positionCode != 'G' ? ` P: ` + team.points : ` OTL: ` + team.otLosses}
-        </Table.Cell>
-      </Fragment>
-    )
-  })
+      return (
+        <Table.Row key={index}>
+          <Table.Cell>
+            <Button
+              icon
+              color={!player ? 'grey' : 'red'}
+              onClick={() => setMyTeam(myTeam.filter((p) => p !== player))}
+              disabled={!player} // Disable button if no player exists for this position
+            >
+              <Icon name='trash' />
+            </Button>
+          </Table.Cell>
+          <Table.Cell>{position}</Table.Cell>
+          <Table.Cell>
+            {player ? (
+              <Image
+                avatar
+                size='mini'
+                src={`${playerHeadshotURL}${player.teamAbbrevs.split(/[,]+/).pop()}/${player.playerId}.png`}
+                alt={
+                  player.positionCode === 'G'
+                    ? `${player.goalieFullName} Headshot`
+                    : `${player.skaterFullName} Headshot`
+                }
+              />
+            ) : null}
+            {player && player.positionCode === 'G'
+              ? player.goalieFullName
+              : player
+                ? player.skaterFullName
+                : ''}
+          </Table.Cell>
+          <Table.Cell>
+            {player ? (
+              <Image
+                avatar
+                size='mini'
+                src={`${teamLogoURL}${player.teamAbbrevs.split(/[,]+/).pop()}_light.svg`}
+                alt={`${player.teamAbbrevs} Logo`}
+              />
+            ) : null}
+            {player ? player.teamAbbrevs.split(/[,]+/).pop() : ''}
+          </Table.Cell>
+          <Table.Cell>
+            {player
+              ? player.positionCode === 'G'
+                ? `GP: ${player.gamesPlayed} W: ${player.wins} L: ${player.losses} OTL: ${player.otLosses}`
+                : `GP: ${player.gamesPlayed} G: ${player.goals} A: ${player.assists} P: ${player.points}`
+              : ''}
+          </Table.Cell>
+        </Table.Row>
+      );
+    });
+  })();
 
-  const myDefense = defense.map((team, index) => {
-    return (
-      <Fragment>
-        <Table.Cell>
-          <Button
-            icon
-            color='red'
-            onClick={() => setMyTeam(myTeam.filter(player => player !== team)
-            )}
-          >
-            <Icon name='trash'></Icon>
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {team.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + team.teamAbbrevs.split(/[,]+/).pop() + `/` + team.playerId + `.png`} alt={`${team.playerFullname} Headshot`} />
-          {team.positionCode != 'G' ? team.skaterFullName : team.goalieFullName}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + team.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${team.teamAbbrevs} Logo`} />
-          {team.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          {`GP: ` + team.gamesPlayed}
-          {team.positionCode != 'G' ? ` G: ` + team.goals : ` W: ` + team.wins}
-          {team.positionCode != 'G' ? ` A: ` + team.assists : ` L: ` + team.losses}
-          {team.positionCode != 'G' ? ` P: ` + team.points : ` OTL: ` + team.otLosses}
-        </Table.Cell>
-      </Fragment>
-    )
-  })
+  // Dropdown options for filters
+  const positionOptions = [
+    { key: 'C', text: 'C', value: 'C' },
+    { key: 'L', text: 'L', value: 'L' },
+    { key: 'R', text: 'R', value: 'R' },
+    { key: 'D', text: 'D', value: 'D' },
+    { key: 'G', text: 'G', value: 'G' },
+  ];
 
-  const myGoalies = goalie.map((team, index) => {
-    return (
-      <Fragment>
-        <Table.Cell>
-          <Button
-            icon
-            color='red'
-            onClick={() => setMyTeam(myTeam.filter(player => player !== team)
-            )}
-          >
-            <Icon name='trash'></Icon>
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {team.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + team.teamAbbrevs.split(/[,]+/).pop() + `/` + team.playerId + `.png`} alt={`${team.playerFullname} Headshot`} />
-          {team.positionCode != 'G' ? team.skaterFullName : team.goalieFullName}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + team.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${team.teamAbbrevs} Logo`} />
-          {team.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          {`GP: ` + team.gamesPlayed}
-          {team.positionCode != 'G' ? ` G: ` + team.goals : ` W: ` + team.wins}
-          {team.positionCode != 'G' ? ` A: ` + team.assists : ` L: ` + team.losses}
-          {team.positionCode != 'G' ? ` P: ` + team.points : ` OTL: ` + team.otLosses}
-        </Table.Cell>
-      </Fragment>
-    )
-  })
-
-  const myUtility = utility.map((team, index) => {
-    return (
-      <Fragment>
-        <Table.Cell>
-          <Button
-            icon
-            color='red'
-            onClick={() => setMyTeam(myTeam.filter(player => player !== team)
-            )}
-          >
-            <Icon name='trash'></Icon>
-          </Button>
-        </Table.Cell>
-        <Table.Cell>
-          {team.positionCode}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={playerHeadshotURL + team.teamAbbrevs.split(/[,]+/).pop() + `/` + team.playerId + `.png`} alt={`${team.playerFullname} Headshot`} />
-          {team.positionCode != 'G' ? team.skaterFullName : team.goalieFullName}
-        </Table.Cell>
-        <Table.Cell>
-          <Image avatar size='mini' src={teamLogoURL + team.teamAbbrevs.split(/[,]+/).pop() + `_light.svg`} alt={`${team.teamAbbrevs} Logo`} />
-          {team.teamAbbrevs.split(/[,]+/).pop()}
-        </Table.Cell>
-        <Table.Cell>
-          {`GP: ` + team.gamesPlayed}
-          {team.positionCode != 'G' ? ` G: ` + team.goals : ` W: ` + team.wins}
-          {team.positionCode != 'G' ? ` A: ` + team.assists : ` L: ` + team.losses}
-          {team.positionCode != 'G' ? ` P: ` + team.points : ` OTL: ` + team.otLosses}
-        </Table.Cell>
-      </Fragment>
-    )
-  })
-
-  const rosterPositionBadges = rosterPositions.map((position, index) => {
-    return (
-      <Table.Row>
-        <Table.Cell>
-          {rosterPositionBadge[index]}
-        </Table.Cell>
-        {position === 'C' ? myCenters[index] :
-          position === 'L' ? myLefts[index - 3] :
-            position === 'R' ? myRights[index - 6] :
-              position === 'D' ? myDefense[index - 9] :
-                position === 'G' ? myGoalies[index - 13] :
-                  myUtility[index - 15]}
-      </Table.Row>
-    )
-  })
+  const teamOptions = useMemo(() => {
+    const teams = Array.from(
+      new Set([
+        ...regularSeasonStats.goalieStats.map((player) => player.teamAbbrevs.split(/[,]+/).pop()),
+        ...regularSeasonStats.skaterStats.map((player) => player.teamAbbrevs.split(/[,]+/).pop()),
+      ])
+    );
+    return teams.map((team) => ({
+      key: team,
+      text: team,
+      value: team,
+      image: { avatar: true, src: `${teamLogoURL}${team}_light.svg` }, // Add team logo
+    }));
+  }, [regularSeasonStats]);
 
   return (
     <Segment>
-      <Grid columns={2} stackable>
+      <Grid columns={2} stackable >
         <Grid.Row>
           <Grid.Column>
-            <h3>
-              Team Builder
-            </h3>
-            {/* This is currently in development for next season.
-            If you've discovered it please feel free to try it out and let me know what you think!
-            This won't affect any current rosters.
-            Mobile view is currently pretty nasty, desktop is much nicer. */}
-            Work In Progress
-            {/* <Menu vertical>
-              <Dropdown item text='Filter' icon='sliders horizontal'>
-                Filter
-                <Menu.Menu >
-                  <Dropdown.Item text='Team'>
-                    <Dropdown.Menu >
-                      <Dropdown.Item>Carolina Hurricanes</Dropdown.Item>
-                      <Dropdown.Item>Dallas Stars</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown.Item>
-                </Menu.Menu>
-              </Dropdown>
-            </Menu> */}
+            <h3>Team Builder</h3>
           </Grid.Column>
-
         </Grid.Row>
       </Grid>
       <Grid columns={2} stackable>
         <Grid.Row>
+          {/* Available Players */}
           <Grid.Column style={{ maxHeight: '72vh', overflow: 'auto' }}>
-            <h4>
-              Available Players
-            </h4>
-            <Table singleLine unstackable basic='very' compact='very'>
-              <Table.Header style={{ position: 'sticky', top: '0px', background: 'white' }}>
-                <Table.Row>
-                  <Table.HeaderCell>Select</Table.HeaderCell>
-                  <Table.HeaderCell>Position</Table.HeaderCell>
-                  <Table.HeaderCell>Name</Table.HeaderCell>
-                  <Table.HeaderCell>Team</Table.HeaderCell>
-                  <Table.HeaderCell>Stats</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
-              {/* {renderedTeams} */}
-              {goalieStats}
-              {skaterStats}
-            </Table>
+            <Grid stackable style={{ position: 'sticky', top: 0, zIndex: 10, background: 'white', marginBottom: '10px' }}>
+              <h4>Available Players </h4>
+              <Grid.Row columns={3}>
+                <Grid.Column>
+                  <Input
+                    placeholder="Name"
+                    fluid
+                    value={nameSearch}
+                    onChange={(e) => setNameSearch(e.target.value)}
+                  />
+                </Grid.Column>
+                <Grid.Column>
+                  <Dropdown
+                    placeholder="Team"
+                    fluid
+                    multiple
+                    search
+                    selection
+                    clearable
+                    options={teamOptions}
+                    onChange={(e, { value }) => setTeamFilter(value)}
+                    value={teamFilter}
+                    renderLabel={(item) => ({
+                      content: (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <Image
+                            src={item.image.src}
+                            avatar
+                            style={{ width: '16px', height: '16px', marginRight: '5px' }} // Smaller size for the chip
+                          />
+                          <span>{item.text}</span>
+                        </div>
+                      ),
+                      style: {
+                        display: 'inline-flex', // Ensure chips are inline
+                        alignItems: 'center',
+                        margin: '2px', // Add spacing between chips
+                        padding: '4px 8px', // Compact padding for the chip
+                        borderRadius: '4px', // Rounded corners for the chip
+                        background: '#f1f1f1', // Optional: Light background for better visibility
+                      },
+                    })}
+                  />
+                </Grid.Column>
+                <Grid.Column>
+                  <Dropdown
+                    placeholder="Position"
+                    fluid
+                    multiple
+                    search
+                    selection
+                    clearable
+                    options={positionOptions}
+                    onChange={(e, { value }) => setPositionFilter(value)}
+                    value={positionFilter}
+                  />
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+            {regularSeasonStats.loading ? (
+              <Loader active inline="centered" size="medium">
+                Loading Available Players...
+              </Loader>
+            ) : (
+              <Table singleLine unstackable basic='very' compact='very'>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Select</Table.HeaderCell>
+                    <Table.HeaderCell>Position</Table.HeaderCell>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Team</Table.HeaderCell>
+                    <Table.HeaderCell>Stats</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {filteredGoalies.map((goalie) =>
+                    renderPlayerRow(
+                      goalie,
+                      positionLimit[goalie.positionCode] >= positionCounts[goalie.positionCode] + utilityBonus &&
+                      !myTeam.includes(goalie)
+                    )
+                  )}
+                  {filteredSkaters.map((skater) =>
+                    renderPlayerRow(
+                      skater,
+                      positionLimit[skater.positionCode] >= positionCounts[skater.positionCode] + utilityBonus &&
+                      !myTeam.includes(skater)
+                    )
+                  )}
+                </Table.Body>
+              </Table>
+            )}
           </Grid.Column>
+          {/* My Team */}
           <Grid.Column style={{ maxHeight: '72vh', overflow: 'auto' }}>
-            <Grid.Row textAlign="left">
-              <h4>
-                My Team
-              </h4>
-              {teamCountBadge}
-            </Grid.Row>
+            <Grid stackable style={{ position: 'sticky', top: 0, zIndex: 10, background: 'white', marginBottom: '10px' }}>
+              <h4>My Team</h4>
+              <Grid.Row>
+                <Grid.Column>
+                  <Input
+                    placeholder='User ID'
+                    style={{ maxWidth: '40vw' }}
+                    onChange={(e) => setUserId(e.target.value)}
+                    value={userId}
+                  />
+                  <Button.Group size='small' floated='right'>
+                    <Button color='red' disabled={myTeam.length === 0} onClick={() => setMyTeam([])}>
+                      Clear
+                    </Button>
+                    <Button color='green' disabled={myTeam.length < 16} onClick={handleSubmit}>
+                      Submit
+                    </Button>
+                  </Button.Group>
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column>
+                  <Button.Group size='small'>
+                    <Button color='blue'>
+                      {myTeam.length} / 16 Players
+                    </Button>
+                    {Object.entries(teamCount).map(([team, count]) => (
+                      <Button key={team}>
+                        <Image avatar src={`${teamLogoURL}${team}_light.svg`} />
+                        {count}
+                      </Button>
+                    ))}
+                  </Button.Group>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
             <Table singleLine unstackable basic='very' compact='very'>
-              <Table.Header style={{ position: 'sticky', top: '0px', background: 'white' }}>
+              <Table.Header>
                 <Table.Row>
-                  <Table.HeaderCell></Table.HeaderCell>
                   <Table.HeaderCell>Remove</Table.HeaderCell>
                   <Table.HeaderCell>Position</Table.HeaderCell>
                   <Table.HeaderCell>Name</Table.HeaderCell>
@@ -542,33 +446,14 @@ const TeamBuilder = ({ regularSeasonStats }) => {
                   <Table.HeaderCell>Stats</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
-              {rosterPositionBadges}
+              <Table.Body>{rosterPlayerRows}</Table.Body>
             </Table>
-            <Grid.Row textAlign="right">
-              {/* <Button.Group floated='right' widths='16' fluid> */}
 
-              <Button
-                color='red'
-                disabled={myTeam.length === 0}
-                onClick={() => setMyTeam([])}
-              >
-                Clear
-              </Button>
-              <Button
-                color='green'
-                disabled={myTeam.length < 16}
-                onClick={() => console.log(submittedTeam)}
-              >
-                Submit
-              </Button>
-              {/* </Button.Group> */}
-            </Grid.Row>
           </Grid.Column>
-
         </Grid.Row>
       </Grid>
     </Segment>
-  )
-}
+  );
+};
 
 export default TeamBuilder;
