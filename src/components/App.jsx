@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
-import LoginButton from './LoginButton';
-import LogoutButton from './LogoutButton';
+// import LoginButton from './LoginButton';
+// import LogoutButton from './LogoutButton';
 import Announcement from './Announcement';
 import Header from './Header';
 import Insights from './Insights';
@@ -61,14 +61,14 @@ const App = () => {
 
   return (
     <Fragment>
-      {error && <div>Authentication Error: {error.message}</div>}
+      {/* {error && <div>Authentication Error: {error.message}</div>}
       {!error && isLoading && <div>Loading...</div>}
       {!error && !isLoading && (
         <Fragment>
           <LoginButton />
           <LogoutButton />
         </Fragment>
-      )}
+      )} */}
       <Header season={season} />
       <Scoreboard />
       <div className="ui stackable grid" style={{ padding: '10px' }}>
