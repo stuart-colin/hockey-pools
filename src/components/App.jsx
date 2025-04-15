@@ -86,9 +86,9 @@ const App = () => {
             beta={beta}
           />
           {renderContent()}
-          {isAuthenticated && user.email === 'stuart.colin@gmail.com' && (
+          {/* {isAuthenticated && user.email === 'stuart.colin@gmail.com' && (
             <PlayerCreator regularSeasonStats={regularSeasonStats} />
-          )}
+          )} */}
         </div>
       </div>
     </Fragment>
