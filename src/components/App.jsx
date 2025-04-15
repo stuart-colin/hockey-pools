@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+// import { useAuth0 } from '@auth0/auth0-react';
 
 // import LoginButton from './LoginButton';
 // import LogoutButton from './LogoutButton';
@@ -22,7 +22,7 @@ import useUsers from '../hooks/useUsers';
 const currentYear = new Date().getFullYear().toString();
 
 const App = () => {
-  const { isLoading, error, user, isAuthenticated } = useAuth0();
+  // const { isLoading, error, user, isAuthenticated } = useAuth0();
   const [activeItem, setActiveItem] = useState('');
   const [season, setSeason] = useState(currentYear);
   const [selectedRoster, setSelectedRoster] = useState([]);
