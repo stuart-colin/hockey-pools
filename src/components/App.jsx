@@ -12,7 +12,7 @@ import PlayerDetails from './PlayerDetails';
 import Scoreboard from './Scoreboard';
 import StandingsList from './StandingsList';
 import TeamDetails from './TeamDetails';
-import PlayerCreator from './PlayerCreator';
+// import PlayerCreator from './PlayerCreator';
 import TeamBuilder from './TeamBuilder';
 
 import useRegularSeasonStats from '../hooks/useRegularSeasonStats';
