@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Button, Grid, Icon, Image, Input, Loader, Segment, Table, Dropdown } from 'semantic-ui-react';
+import { Button, Grid, Icon, Image, Input, Loader, Message, Segment, Table, Dropdown } from 'semantic-ui-react';
 import useSubmitRoster from '../hooks/useSubmitRoster';
 
 const teamLogoURL = `https://assets.nhle.com/logos/nhl/svg/`;
@@ -8,6 +8,8 @@ const playerHeadshotURL = `https://assets.nhle.com/mugs/nhl/20242025/`;
 const TeamBuilder = ({ regularSeasonStats }) => {
   const [myTeam, setMyTeam] = useState([]);
   const [userId, setUserId] = useState('');
+  const [teamIds, setTeamIds] = useState(null);
+  const [submissionStatus, setSubmissionStatus] = useState('idle');
   const [positionFilter, setPositionFilter] = useState([]);
   const [teamFilter, setTeamFilter] = useState([]);
   const [nameSearch, setNameSearch] = useState('');
@@ -15,7 +17,7 @@ const TeamBuilder = ({ regularSeasonStats }) => {
   const positionCounts = { R: 3, L: 3, C: 3, D: 4, G: 2 };
   const rosterPositions = ['C', 'C', 'C', 'L', 'L', 'L', 'R', 'R', 'R', 'D', 'D', 'D', 'D', 'G', 'G', 'U'];
 
-  const { postData } = useSubmitRoster();
+  const { loading, error, response, postData } = useSubmitRoster();
 
   // Derived data using useMemo
   const positionLimit = useMemo(() => {
@@ -78,18 +80,91 @@ const TeamBuilder = ({ regularSeasonStats }) => {
       .sort((a, b) => b.points - a.points); // Sort by points in descending order
   }, [regularSeasonStats.skaterStats, positionFilter, teamFilter, nameSearch]);
 
-  const handleSubmit = () => {
-    const teamIds = {
+  const updateTeamIds = () => {
+    const remainingPlayers = [...myTeam]; // Copy of myTeam to track unassigned players
+    const utilityPlayerIndex = [...remainingPlayers]
+      .reverse() // Reverse the array to prioritize the last player added
+      .findIndex((p) => {
+        // Check if the player exceeds the position limit
+        const positionCount = remainingPlayers.filter((player) => player.positionCode === p.positionCode).length;
+        return positionCount > positionCounts[p.positionCode];
+      });
+
+    const utilityPlayer =
+      utilityPlayerIndex !== -1
+        ? remainingPlayers.splice(remainingPlayers.length - 1 - utilityPlayerIndex, 1)[0]
+        : null;
+
+    const newTeamIds = {
       owner: userId,
-      center: myTeam.filter((p) => p.positionCode === 'C').map((p) => p.playerId),
-      left: myTeam.filter((p) => p.positionCode === 'L').map((p) => p.playerId),
-      right: myTeam.filter((p) => p.positionCode === 'R').map((p) => p.playerId),
-      defense: myTeam.filter((p) => p.positionCode === 'D').map((p) => p.playerId),
-      goalie: myTeam.filter((p) => p.positionCode === 'G').map((p) => p.playerId),
-      utility: myTeam.filter((p) => !['C', 'L', 'R', 'D', 'G'].includes(p.positionCode)).map((p) => p.playerId),
+      center: remainingPlayers
+        .filter((p) => p.positionCode === 'C')
+        .map((p) => p.playerId),
+      left: remainingPlayers
+        .filter((p) => p.positionCode === 'L')
+        .map((p) => p.playerId),
+      right: remainingPlayers
+        .filter((p) => p.positionCode === 'R')
+        .map((p) => p.playerId),
+      defense: remainingPlayers
+        .filter((p) => p.positionCode === 'D')
+        .map((p) => p.playerId),
+      goalie: remainingPlayers
+        .filter((p) => p.positionCode === 'G')
+        .map((p) => p.playerId),
+      utility: utilityPlayer ? [utilityPlayer.playerId] : [], // Add only the utility player
     };
-    console.log('Team IDs:', teamIds);
-    postData(teamIds);
+
+    setTeamIds(newTeamIds); // Update the teamIds state
+  };
+
+  useMemo(() => {
+    updateTeamIds();
+  }, [myTeam, userId]);
+
+  const handleSubmit = async () => {
+    setSubmissionStatus('processing'); // Set status to processing
+    try {
+      await postData(teamIds); // Submit the teamIds
+      setSubmissionStatus('success'); // Set status to success
+    } catch (error) {
+      console.error('Submission failed:', error);
+      setSubmissionStatus('error'); // Set status to error
+    }
+  };
+
+  const renderFeedback = () => {
+    if (submissionStatus === 'processing') {
+      return (
+        <Message icon>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Submitting...</Message.Header>
+            Your roster is being submitted. Please wait.
+          </Message.Content>
+        </Message>
+      );
+    }
+
+    if (submissionStatus === 'success') {
+      return (
+        <Message positive>
+          <Message.Header>Submission Successful</Message.Header>
+          Your roster has been submitted successfully!
+        </Message>
+      );
+    }
+
+    if (submissionStatus === 'error') {
+      return (
+        <Message negative>
+          <Message.Header>Submission Failed</Message.Header>
+          There was an error submitting your roster. Please ensure your User ID matches the provided ID.
+        </Message>
+      );
+    }
+
+    return null; // No feedback when idle
   };
 
   const togglePlayer = (player) => {
@@ -409,15 +484,17 @@ const TeamBuilder = ({ regularSeasonStats }) => {
                     style={{ maxWidth: '40vw' }}
                     onChange={(e) => setUserId(e.target.value)}
                     value={userId}
+                    maxLength='24'
                   />
                   <Button.Group size='small' floated='right'>
                     <Button color='red' disabled={myTeam.length === 0} onClick={() => setMyTeam([])}>
                       Clear
                     </Button>
-                    <Button color='green' disabled={myTeam.length < 16} onClick={handleSubmit}>
+                    <Button color='green' disabled={myTeam.length < 16 || userId.length < 24} onClick={handleSubmit}>
                       Submit
                     </Button>
                   </Button.Group>
+                  {renderFeedback()}
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row>

@@ -2,12 +2,12 @@ import { useState } from 'react';
 
 const submitRosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/'
 
-const useSubmitRoster = (rosterData) => {
+const useSubmitRoster = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
 
-  const postData = async () => {
+  const postData = async (rosterData) => {
     setLoading(true);
     setError(null);
 
@@ -19,6 +19,7 @@ const useSubmitRoster = (rosterData) => {
         },
         body: JSON.stringify(rosterData),
       });
+      console.log('Posting data:', rosterData); // Log the data being posted
 
       if (!res.ok) {
         throw new Error(`Error: ${res.status}`);

@@ -7,89 +7,63 @@ const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
 
   useEffect(() => {
     onMenuSelect(activeItem);
-  }, [activeItem]);
+  }, [activeItem, onMenuSelect]);
 
-  // const renderedSeasons = seasons.seasonList.map((season, index) => {
-  //   return (
-  //     <Fragment key={index}>
-  //       {season === '2024' || season === '2023' || season === '2022' ?
-  //         <Dropdown.Item
-  //           onClick={() => onSeasonSelect(season)}
-  //           key={index}
-  //           text={season}
-  //         />
-  //         : null}
-  //     </Fragment>
-  //   );
-  // });
+  // Menu items configuration
+  const menuItems = [
+    { name: 'commissioners-corner', label: "Commissioner's Corner" },
+    { name: 'roster-view', label: 'Roster View' },
+    { name: 'insights', label: 'Insights' },
+    { name: 'player-details', label: 'Player Details' },
+    { name: 'team-details', label: 'Team Details' },
+  ];
 
   return (
     <Menu stackable>
       <Menu.Item header>
-        <img alt='logo' src='https://upload.wikimedia.org/wikipedia/commons/6/6a/Ice_hockey_puck.svg' />
+        <img
+          alt="logo"
+          src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Ice_hockey_puck.svg"
+        />
       </Menu.Item>
-      <Menu.Item
-        name='commissioners-corner'
-        active={activeItem === 'commissioners-corner'}
-        onClick={() => { setActiveItem('commissioners-corner') }}
-      >
-        Commissioner's Corner
-      </Menu.Item>
-      <Menu.Item
-        name='roster-view'
-        active={activeItem === 'roster-view'}
-        onClick={() => { setActiveItem('roster-view') }}
-      >
-        Roster View
-      </Menu.Item>
-      <Menu.Item
-        name='insights'
-        active={activeItem === 'insights'}
-        onClick={() => { setActiveItem('insights') }}
-      >
-        Insights
-      </Menu.Item>
-      <Menu.Item
-        name='player-details'
-        active={activeItem === 'player-details'}
-        onClick={() => { setActiveItem('player-details') }}
-      >
-        Player Details
-      </Menu.Item>
-      <Menu.Item
-        name='team-details'
-        active={activeItem === 'team-details'}
-        onClick={() => { setActiveItem('team-details') }}
-      >
-        Team Details
-      </Menu.Item>
-      <Menu.Menu position='right'>
-        {beta ?
+
+      {/* Render standard menu items */}
+      {menuItems.map((item) => (
+        <Menu.Item
+          key={item.name}
+          name={item.name}
+          active={activeItem === item.name}
+          onClick={() => setActiveItem(item.name)}
+        >
+          {item.label}
+        </Menu.Item>
+      ))}
+
+
+
+      {/* Right-aligned menu */}
+      <Menu.Menu position="right">
+        {/* Render beta-specific menu item */}
+        {beta && (
           <Menu.Item
-            name='team-builder'
+            name="team-builder"
             active={activeItem === 'team-builder'}
-            onClick={() => { setActiveItem('team-builder') }}
+            onClick={() => setActiveItem('team-builder')}
           >
             Team Builder
-            <Label
-              color='red'
-            >
-              Beta
-            </Label>
+            <Label color="red">Beta</Label>
           </Menu.Item>
-          : null}
-        {/* <Dropdown item text='Season Select'>
+        )}
+        {/* Uncommented dropdown for future use */}
+        {/* <Dropdown item text="Season Select">
           <Dropdown.Menu>
             {renderedSeasons}
-            <Dropdown.Item
-              key={'coming-soon'}
-              text={'More to come!'}
-            />
+            <Dropdown.Item key="coming-soon" text="More to come!" />
           </Dropdown.Menu>
         </Dropdown> */}
       </Menu.Menu>
     </Menu>
-  )
-}
+  );
+};
 
 export default Navigation;
