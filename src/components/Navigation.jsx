@@ -1,9 +1,12 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { Dropdown, Label, Menu } from 'semantic-ui-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import seasons from "../constants/seasons";
 
-const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
+
+const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
   const [activeItem, setActiveItem] = useState('insights');
+  const { isAuthenticated } = useAuth0();
 
   useEffect(() => {
     onMenuSelect(activeItem);
@@ -44,7 +47,7 @@ const Navigation = ({ onMenuSelect, onSeasonSelect, beta }) => {
       {/* Right-aligned menu */}
       <Menu.Menu position="right">
         {/* Render beta-specific menu item */}
-        {beta && (
+        {isAuthenticated && (
           <Menu.Item
             name="team-builder"
             active={activeItem === 'team-builder'}

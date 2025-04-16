@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import eliminatedTeams from '../constants/eliminatedTeams';
 
-// const playerDetailsEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/players/';
-const playerDetailsEndpoint = 'http://localhost:5000/v1/players/'
+const playerDetailsEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/players/';
+// const playerDetailsEndpoint = 'http://localhost:5000/v1/players/'
 const playerDetailsEndpointOld = 'https://statsapi.web.nhl.com/api/v1/people/';
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs'; // use for current year only
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs&season=20212022';

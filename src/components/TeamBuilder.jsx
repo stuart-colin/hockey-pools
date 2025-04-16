@@ -480,7 +480,7 @@ const TeamBuilder = ({ regularSeasonStats }) => {
               <Grid.Row>
                 <Grid.Column>
                   <Input
-                    placeholder='User ID'
+                    placeholder='Enter User ID'
                     style={{ maxWidth: '40vw' }}
                     onChange={(e) => setUserId(e.target.value)}
                     value={userId}

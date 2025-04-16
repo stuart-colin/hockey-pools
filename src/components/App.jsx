@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react';
-// import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0 } from '@auth0/auth0-react';
 
-// import LoginButton from './LoginButton';
-// import LogoutButton from './LogoutButton';
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
 import Announcement from './Announcement';
 import Header from './Header';
 import Insights from './Insights';
@@ -12,7 +12,7 @@ import PlayerDetails from './PlayerDetails';
 import Scoreboard from './Scoreboard';
 import StandingsList from './StandingsList';
 import TeamDetails from './TeamDetails';
-// import PlayerCreator from './PlayerCreator';
+import PlayerCreator from './PlayerCreator';
 import TeamBuilder from './TeamBuilder';
 
 import useRegularSeasonStats from '../hooks/useRegularSeasonStats';
@@ -22,7 +22,7 @@ import useUsers from '../hooks/useUsers';
 const currentYear = new Date().getFullYear().toString();
 
 const App = () => {
-  // const { isLoading, error, user, isAuthenticated } = useAuth0();
+  const { isLoading, error, user, isAuthenticated } = useAuth0();
   const [activeItem, setActiveItem] = useState('');
   const [season, setSeason] = useState(currentYear);
   const [selectedRoster, setSelectedRoster] = useState([]);
@@ -61,14 +61,14 @@ const App = () => {
 
   return (
     <Fragment>
-      {/* {error && <div>Authentication Error: {error.message}</div>}
+      {error && <div>Authentication Error: {error.message}</div>}
       {!error && isLoading && <div>Loading...</div>}
       {!error && !isLoading && (
         <Fragment>
           <LoginButton />
           <LogoutButton />
         </Fragment>
-      )} */}
+      )}
       <Header season={season} />
       <Scoreboard />
       <div className="ui stackable grid" style={{ padding: '10px' }}>
@@ -86,9 +86,9 @@ const App = () => {
             beta={beta}
           />
           {renderContent()}
-          {/* {isAuthenticated && user.email === 'stuart.colin@gmail.com' && (
+          {isAuthenticated && user.email === 'stuart.colin@gmail.com' && (
             <PlayerCreator regularSeasonStats={regularSeasonStats} />
-          )} */}
+          )}
         </div>
       </div>
     </Fragment>

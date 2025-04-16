@@ -66,15 +66,25 @@ const Insights = ({ users }) => {
     )
   })
 
-  playerData.forEach((player) => {
-    let playerPoints;
+  const calculatePlayerPoints = (player) => {
     if (player.position === 'G') {
-      playerPoints = player.stats.featuredStats.playoffs.subSeason.wins * 2 + player.stats.featuredStats.playoffs.subSeason.shutouts * 2 + player.stats.otl;
-    } else {
-      playerPoints = player.stats.featuredStats.playoffs.subSeason.goals + player.stats.featuredStats.playoffs.subSeason.assists + player.stats.featuredStats.playoffs.subSeason.otGoals;
+      return (
+        player.stats.featuredStats.playoffs.subSeason.wins * 2 +
+        player.stats.featuredStats.playoffs.subSeason.shutouts * 2 +
+        player.stats.otl
+      );
     }
-    players.push([player.name, player.position, player.stats.teamName, playerPoints])
-  })
+    return (
+      player.stats.featuredStats.playoffs.subSeason.goals +
+      player.stats.featuredStats.playoffs.subSeason.assists +
+      player.stats.featuredStats.playoffs.subSeason.otGoals
+    );
+  };
+
+  playerData.forEach((player) => {
+    const playerPoints = calculatePlayerPoints(player);
+    players.push([player.name, player.position, player.stats.teamName, playerPoints]);
+  });
 
   frequency(players).map((player) => {
     playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], parseFloat(player[0].split(',')[3]), player[1]])
@@ -123,6 +133,7 @@ const Insights = ({ users }) => {
   const topG = customSort(playerList, 3).filter(player => player[1] === 'G').slice(0, 2);
   const topByPosition = [topL, topC, topR, topD, topG].flat();
   const topU = customSort(playerList, 3).filter(player => !topByPosition.includes(player)).slice(0, 1);
+
   const bestTeam = topByPosition.concat(topU);
   let bestRemaining = 16;
   let bestPoints = 0;
@@ -141,6 +152,7 @@ const Insights = ({ users }) => {
   const commonG = playerList.filter(player => player[1] === 'G').slice(0, 2);
   const commonByPosition = [commonL, commonC, commonR, commonD, commonG].flat();
   const commonU = playerList.filter(player => !commonByPosition.includes(player)).slice(0, 1);
+
   const commonTeam = commonByPosition.concat(commonU);
   let commonRemaining = 16;
   let commonPoints = 0;

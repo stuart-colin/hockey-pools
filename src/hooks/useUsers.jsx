@@ -3,8 +3,8 @@ import countPoints from '../utils/countPoints';
 import eliminatedPlayers from '../utils/eliminatedPlayers';
 import seasons from '../constants/seasons';
 
-const rosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters';
-// const rosterEndpoint = 'http://localhost:5000/v1/rosters';
+// const rosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters';
+const rosterEndpoint = 'http://localhost:5000/v1/rosters';
 
 const useUsers = (season) => {
   const [userList, setUserList] = useState([]);
