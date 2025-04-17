@@ -1,40 +1,58 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
-const submitRosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/'
+// const submitRosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/'
+const submitRosterEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`;
 
 const useSubmitRoster = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
 
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+
   const postData = async (rosterData) => {
     setLoading(true);
     setError(null);
 
-    try {
-      const res = await fetch(submitRosterEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(rosterData),
-      });
-      console.log('Posting data:', rosterData); // Log the data being posted
-
-      if (!res.ok) {
-        throw new Error(`Error: ${res.status}`);
-      }
-
-      const result = await res.json();
-      setResponse(result);
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    if (!isAuthenticated) {
+      setError("User is not authenticated");
       setLoading(false);
+      return;
+    } else {
+      try {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: `https://${domain}/api/v2/`,
+            scope: "read:current_user",
+          },
+        });
+
+        const res = await fetch(submitRosterEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(rosterData),
+        });
+        console.log("Posting data:", rosterData); // Log the data being posted
+
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status}`);
+        }
+        const result = await res.json();
+        setResponse(result);
+      } catch (e) {
+        console.log(e.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  return { loading, error, response, postData }
-}
+  return { loading, error, response, postData };
+};
 
 export default useSubmitRoster;

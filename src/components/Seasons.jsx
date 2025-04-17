@@ -10,7 +10,7 @@ const Seasons = ({ onSeasonSelect }) => {
         onClick={() => onSeasonSelect(season.slice())}
         key={index}
       >
-        {season === '2023' || season === '2022' ?
+        {season === '2024' || season === '2023' || season === '2022' ?
           <List.Header as='a'>
             {season}
           </List.Header>
