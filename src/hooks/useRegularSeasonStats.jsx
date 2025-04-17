@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const skaterStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
-const goalieStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
+const goalieStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/goalieStats`;
 
 const useRegularSeasonStats = ({ playoffTeams }) => {
   const [skaterStats, setSkaterStats] = useState([]);

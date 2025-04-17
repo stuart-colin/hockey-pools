@@ -66,7 +66,7 @@ const App = () => {
         </Fragment>
       )}
       <Header season={season} />
-      {/* <Scoreboard /> */}
+      <Scoreboard />
       <div className="ui stackable grid" style={{ padding: "10px" }}>
         <div className="four wide column">
           <StandingsList

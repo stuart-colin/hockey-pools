@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import eliminatedTeams from "../constants/eliminatedTeams";
 
 const playerDetailsEndpoint = `${process.env.BASE_URL}/v1/players/`;
-console.log(process.env.BASE_URL);
 
 const playerDetailsEndpointOld = "https://statsapi.web.nhl.com/api/v1/people/";
 // const playoffStatsEndpoint = '/stats?stats=statsSingleSeasonPlayoffs'; // use for current year only
