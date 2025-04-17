@@ -47,16 +47,16 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
       {/* Right-aligned menu */}
       <Menu.Menu position="right">
         {/* Render beta-specific menu item */}
-        {/* {isAuthenticated && ( */}
-        <Menu.Item
-          name="team-builder"
-          active={activeItem === 'team-builder'}
-          onClick={() => setActiveItem('team-builder')}
-        >
-          Team Builder
-          <Label color="red">Beta</Label>
-        </Menu.Item>
-        {/* )} */}
+        {isAuthenticated && (
+          <Menu.Item
+            name="team-builder"
+            active={activeItem === 'team-builder'}
+            onClick={() => setActiveItem('team-builder')}
+          >
+            Team Builder
+            <Label color="red">Beta</Label>
+          </Menu.Item>
+        )}
         {/* Uncommented dropdown for future use */}
         {/* <Dropdown item text="Season Select">
           <Dropdown.Menu>
