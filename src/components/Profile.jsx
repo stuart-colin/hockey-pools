@@ -1,7 +1,7 @@
-import React, { useEffect, Fragment } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import React, { useEffect, Fragment } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
-import { Image } from 'semantic-ui-react';
+import { Image } from "semantic-ui-react";
 
 const Profile = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -9,12 +9,13 @@ const Profile = () => {
 
   useEffect(() => {
     const getUserMetadata = async () => {
+      console.log("Trying to get user Access Token");
 
       try {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: {
             audience: `https://${domain}/api/v2/`,
-            scope: "read:current_user",
+            scope: "read:current_user ",
           },
         });
 
@@ -30,11 +31,11 @@ const Profile = () => {
 
         // setUserMetadata(user_metadata);
         console.log(user_metadata);
-        console.log(accessToken);
       } catch (e) {
         console.log(e.message);
       }
     };
+    console.log("User:", user);
 
     getUserMetadata();
   }, [getAccessTokenSilently, user && user.sub]);
@@ -42,20 +43,20 @@ const Profile = () => {
   return (
     isAuthenticated && (
       <Fragment>
-        {user.picture &&
+        {user.picture && (
           <Image
             avatar
-            size='mini'
-            floated='right'
+            size="mini"
+            floated="right"
             src={user.picture}
             alt={user.name}
           />
-        }
+        )}
         {/* {user.name && <span>{user.name}</span>} */}
         {JSON.stringify(user)}
       </Fragment>
     )
   );
-}
+};
 
 export default Profile;

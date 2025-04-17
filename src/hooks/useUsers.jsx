@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import countPoints from '../utils/countPoints';
-import eliminatedPlayers from '../utils/eliminatedPlayers';
-import seasons from '../constants/seasons';
+import { useState, useEffect } from "react";
+import countPoints from "../utils/countPoints";
+import eliminatedPlayers from "../utils/eliminatedPlayers";
+import seasons from "../constants/seasons";
 
 // const rosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters';
-const rosterEndpoint = 'http://localhost:5000/v1/rosters';
+
+const rosterEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters`;
 
 const useUsers = (season) => {
   const [userList, setUserList] = useState([]);
@@ -16,7 +17,7 @@ const useUsers = (season) => {
     const getUserList = async () => {
       switch (season) {
         default:
-          const res = await fetch(rosterEndpoint + '?limit=1000');
+          const res = await fetch(rosterEndpoint + "?limit=1000");
           const users = await res.json();
           // for (let i = 1; i <= users.totalResults; i++) {
           //   const res2 = await fetch(rosterEndpoint + '?limit=1&page=' + i)
@@ -26,16 +27,18 @@ const useUsers = (season) => {
           setUserList(users.results);
           setLoading(false);
           break;
-        case '2023':
+        case "2023":
           setUserList(seasons.seasons.season2023.results);
           setLoading(false);
           break;
-        case '2022':
+        case "2022":
           setUserList(seasons.seasons.season2022.results);
           setLoading(false);
           break;
       }
-      return () => { setUserList([]) };
+      return () => {
+        setUserList([]);
+      };
     };
     getUserList();
   }, [season]);
@@ -44,15 +47,14 @@ const useUsers = (season) => {
     userList.forEach((user) => {
       const points = countPoints(user);
       const playersRemaining = eliminatedPlayers(user);
-      setRosters(rosters => [...rosters, { user, points, playersRemaining }])
-    })
-  }, [userList])
+      setRosters((rosters) => [...rosters, { user, points, playersRemaining }]);
+    });
+  }, [userList]);
 
   return {
     rosters: rosters,
     loading: loading,
-  }
-}
+  };
+};
 
 export default useUsers;
-

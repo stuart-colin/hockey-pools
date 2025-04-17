@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 // const submitRosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/'
-const submitRosterEndpoint = 'http://localhost:5000/v1/rosters/'
+const submitRosterEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`;
 
 const useSubmitRoster = () => {
   const [loading, setLoading] = useState(false);
@@ -16,38 +16,43 @@ const useSubmitRoster = () => {
     setLoading(true);
     setError(null);
 
-    try {
-      const accessToken = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: `https://${domain}/api/v2/`,
-          scope: "read:current_user",
-        },
-
-      });
-
-      const res = await fetch(submitRosterEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(rosterData),
-      });
-      console.log('Posting data:', rosterData); // Log the data being posted
-
-      if (!res.ok) {
-        throw new Error(`Error: ${res.status}`);
-      }
-      const result = await res.json();
-      setResponse(result);
-    } catch (e) {
-      console.log(e.message);
-    } finally {
+    if (!isAuthenticated) {
+      setError("User is not authenticated");
       setLoading(false);
+      return;
+    } else {
+      try {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: `https://${domain}/api/v2/`,
+            scope: "read:current_user",
+          },
+        });
+
+        const res = await fetch(submitRosterEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(rosterData),
+        });
+        console.log("Posting data:", rosterData); // Log the data being posted
+
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status}`);
+        }
+        const result = await res.json();
+        setResponse(result);
+      } catch (e) {
+        console.log(e.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  return { loading, error, response, postData }
-}
+  return { loading, error, response, postData };
+};
 
 export default useSubmitRoster;

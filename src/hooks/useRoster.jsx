@@ -1,11 +1,10 @@
 // this is currently unused
 
-import { useState, useEffect } from 'react';
-import countPoints from '../utils/countPoints';
-import eliminatedPlayers from '../utils/eliminatedPlayers';
+import { useState, useEffect } from "react";
+import countPoints from "../utils/countPoints";
+import eliminatedPlayers from "../utils/eliminatedPlayers";
 
-// const rosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters';
-const rosterEndpoint = 'http://localhost:5000/v1/rosters';
+const rosterEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters`;
 
 const useRoster = (users) => {
   const [userList, setUserList] = useState([]);
@@ -15,13 +14,13 @@ const useRoster = (users) => {
   useEffect(() => {
     users.forEach((user) => {
       const getUserList = async () => {
-        const res = await fetch(rosterEndpoint + '/' + user.id);
+        const res = await fetch(rosterEndpoint + "/" + user.id);
         const roster = await res.json();
         setUserList([{ ...roster }]);
       };
       setLoading(false);
       getUserList();
-    })
+    });
   }, [users]);
 
   // console.log(rosters)
@@ -31,15 +30,15 @@ const useRoster = (users) => {
     userList.forEach((user) => {
       const points = countPoints(user);
       const playersRemaining = eliminatedPlayers(user);
-      setRosters(rosters => [...rosters, { user, points, playersRemaining }])
+      setRosters((rosters) => [...rosters, { user, points, playersRemaining }]);
       // setLoading(false);
-    })
-  }, [userList])
+    });
+  }, [userList]);
 
   return {
     rosters: rosters,
     loading: loading,
-  }
-}
+  };
+};
 
 export default useRoster;
