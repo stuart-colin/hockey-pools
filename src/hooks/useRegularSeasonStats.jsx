@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const skaterStatsEndpoint = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api.nhle.com/stats/rest/en/skater/summary?limit=-1&sort=points&gameType=2&cayenneExp=seasonId=20242025';
-const goalieStatsEndpoint = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api.nhle.com/stats/rest/en/goalie/summary?limit=-1&sort=wins&gameType=2&cayenneExp=seasonId=20242025';
+const skaterStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
+const goalieStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
 
 const useRegularSeasonStats = ({ playoffTeams }) => {
   const [skaterStats, setSkaterStats] = useState([]);
@@ -18,7 +18,10 @@ const useRegularSeasonStats = ({ playoffTeams }) => {
         const json = await res.json();
         for (let i = 0; i < json.data.length; i++) {
           if (
-            json.data[i].teamAbbrevs.split(/[,]+/).pop().includes(playoffTeams[1])
+            json.data[i].teamAbbrevs
+              .split(/[,]+/)
+              .pop()
+              .includes(playoffTeams[1])
           ) {
             setSkaterStats((skater) => [...skater, json.data[i]]);
           }
@@ -37,9 +40,12 @@ const useRegularSeasonStats = ({ playoffTeams }) => {
         const json = await res.json();
         for (let i = 0; i < json.data.length; i++) {
           if (
-            json.data[i].teamAbbrevs.split(/[,]+/).pop().includes(playoffTeams[1])
+            json.data[i].teamAbbrevs
+              .split(/[,]+/)
+              .pop()
+              .includes(playoffTeams[1])
           ) {
-            json.data[i].positionCode = 'G';
+            json.data[i].positionCode = "G";
             setGoalieStats((goalie) => [...goalie, json.data[i]]);
           }
         }

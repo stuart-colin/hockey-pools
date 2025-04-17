@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 // const date = new Date().toLocaleDateString().split('/');
 // const scoreDetailsEndpoint = 'https://nhl-score-api.herokuapp.com/api/scores?startDate=' + date[2] + '-' + date[0] + '-' + date[1] - 1;
-const scoreDetailsEndpointNHL = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api-web.nhle.com/v1/score/now'
+const scoreDetailsEndpointNHL = `${process.env.REACT_APP_BASE_URL}/v1/nhl/scores`;
 // const scoreDetailsEndpointNHL = 'http://localhost:8080/https://api-web.nhle.com/v1/score/now'
 // const scoreDetailsEndpointNHL = 'https://api-web.nhle.comcd/v1/score/now'
 
 const useScores = () => {
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState("");
   const [games, setGames] = useState([]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const useScores = () => {
   return {
     date: date,
     games: games,
-  }
-}
+  };
+};
 
 export default useScores;
