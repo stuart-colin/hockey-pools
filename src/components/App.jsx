@@ -1,29 +1,29 @@
-import React, { Fragment, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import React, { Fragment, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
-import LoginButton from './LoginButton';
-import LogoutButton from './LogoutButton';
-import Announcement from './Announcement';
-import Header from './Header';
-import Insights from './Insights';
-import Navigation from './Navigation';
-import ParticipantRoster from './ParticipantRoster';
-import PlayerDetails from './PlayerDetails';
-import Scoreboard from './Scoreboard';
-import StandingsList from './StandingsList';
-import TeamDetails from './TeamDetails';
-import PlayerCreator from './PlayerCreator';
-import TeamBuilder from './TeamBuilder';
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
+import Announcement from "./Announcement";
+import Header from "./Header";
+import Insights from "./Insights";
+import Navigation from "./Navigation";
+import ParticipantRoster from "./ParticipantRoster";
+import PlayerDetails from "./PlayerDetails";
+import Scoreboard from "./Scoreboard";
+import StandingsList from "./StandingsList";
+import TeamDetails from "./TeamDetails";
+import PlayerCreator from "./PlayerCreator";
+import TeamBuilder from "./TeamBuilder";
 
-import useRegularSeasonStats from '../hooks/useRegularSeasonStats';
-import useStandings from '../hooks/useStandings';
-import useUsers from '../hooks/useUsers';
+import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
+import useStandings from "../hooks/useStandings";
+import useUsers from "../hooks/useUsers";
 
 const currentYear = new Date().getFullYear().toString();
 
 const App = () => {
   const { isLoading, error, user, isAuthenticated } = useAuth0();
-  const [activeItem, setActiveItem] = useState('');
+  const [activeItem, setActiveItem] = useState("");
   const [season, setSeason] = useState(currentYear);
   const [selectedRoster, setSelectedRoster] = useState([]);
   const [beta, setBeta] = useState(true);
@@ -35,23 +35,19 @@ const App = () => {
   // Map activeItem to components
   const renderContent = () => {
     const components = {
-      'commissioners-corner': (
+      "commissioners-corner": (
         <Announcement selectedRoster={selectedRoster[0]} />
       ),
-      'roster-view': (
+      "roster-view": (
         <ParticipantRoster
           selectedRoster={selectedRoster[0]}
           rosterData={selectedRoster[1]}
         />
       ),
-      'insights': (
-        <Insights users={users} />
-      ),
-      'player-details': <PlayerDetails users={users} />,
-      'team-details': (
-        <TeamDetails users={users} season={season} />
-      ),
-      'team-builder': beta && (
+      insights: <Insights users={users} />,
+      "player-details": <PlayerDetails users={users} />,
+      "team-details": <TeamDetails users={users} season={season} />,
+      "team-builder": beta && (
         <TeamBuilder regularSeasonStats={regularSeasonStats} />
       ),
     };
@@ -70,8 +66,8 @@ const App = () => {
         </Fragment>
       )}
       <Header season={season} />
-      <Scoreboard />
-      <div className="ui stackable grid" style={{ padding: '10px' }}>
+      {/* <Scoreboard /> */}
+      <div className="ui stackable grid" style={{ padding: "10px" }}>
         <div className="four wide column">
           <StandingsList
             users={users}
@@ -86,7 +82,7 @@ const App = () => {
             beta={beta}
           />
           {renderContent()}
-          {isAuthenticated && user.email === 'stuart.colin@gmail.com' && (
+          {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
             <PlayerCreator regularSeasonStats={regularSeasonStats} />
           )}
         </div>
