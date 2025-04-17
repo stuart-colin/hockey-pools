@@ -47,6 +47,23 @@ const Announcement = () => {
           verticalAlign='top'
         />
         <h4>
+          <span role='img' aria-label='loudspeaker'>📢</span> 4/17/2025 - Finishing Touches Being Applied to the App!
+        </h4>
+        <h5>
+          Hi all,
+        </h5>
+        <p>
+          Thanks for your patience while the TeamBuilder module and sign up service is finalized. Expect to see this live later today, and you can begin creating your roster!
+        </p>
+        <p>
+          Also be sure to carry your trash talk over to the Discord group:https://discord.gg/GZQ4AWnv39
+          <br></br>
+          Discord works on Iphone and Android through their respective App Stores as well as PC and Mac via website ( https://discord.com/ )
+        </p>
+        <p>
+          Thanks - Colin
+        </p>
+        {/* <h4>
           <span role='img' aria-label='loudspeaker'>📢</span> 6/8/2024 - Week 6 Update - End of Conference Finals/Start of Stanley Cup Finals
         </h4>
         <h5>
@@ -170,7 +187,7 @@ const Announcement = () => {
         </p>
         <p>
           Cheers! -BP
-        </p>
+        </p> */}
         {/* <h4>
           <span role='img' aria-label='loudspeaker'>📢</span> 5/2/23 - End of Quarterfinals
         </h4>
@@ -227,7 +244,7 @@ const Announcement = () => {
         </div> */}
         {/* </div > */}
       </div>
-    </div>
+    </div >
 
   );
 };

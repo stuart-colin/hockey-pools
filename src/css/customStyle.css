@@ -1,3 +1,26 @@
+/* Default: Fixed to the top-right corner */
+.fixed-auth-buttons {
+  position: fixed;
+  top: 10px;
+  /* Distance from the top */
+  right: 10px;
+  /* Distance from the right */
+  z-index: 1000;
+  /* Ensure it stays above other elements */
+}
+
+/* On smaller screens (mobile), move to the bottom-right corner */
+@media (max-width: 768px) {
+  .fixed-auth-buttons {
+    top: auto;
+    /* Reset top positioning */
+    bottom: 10px;
+    /* Distance from the bottom */
+    right: 10px;
+    /* Distance from the right */
+  }
+}
+
 .expandedStandingsStyle {
   transition: all 1s;
   max-height: 75.25vh;

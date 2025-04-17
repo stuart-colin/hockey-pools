@@ -45,11 +45,11 @@ const Scoreboard = () => {
   ))
 
   return (
-    <div className='ui center aligned header' style={{ paddingTop: 5 }}>
-      <div className='ui large horizontal list'>
+    <div className='ui center aligned header' style={{ margin: 5, overflow: 'auto', whiteSpace: 'nowrap', scrollbarWidth: 'thin' }}>
+      <div className='ui small horizontal list '>
         <div className='item'>
           <div className='extra content'>
-            <div className='ui large blue label' style={{ padding: '12px' }}>{scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}</div>
+            <div className='ui small blue label' style={{ padding: '14px' }}>{scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}</div>
           </div>
         </div>
         {games}

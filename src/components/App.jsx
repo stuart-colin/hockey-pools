@@ -57,17 +57,19 @@ const App = () => {
 
   return (
     <Fragment>
-      {error && <div>Authentication Error: {error.message}</div>}
-      {!error && isLoading && <div>Loading...</div>}
-      {!error && !isLoading && (
-        <Fragment>
-          <LoginButton />
-          <LogoutButton />
-        </Fragment>
-      )}
-      <Header season={season} />
+      <div className="fixed-auth-buttons">
+        {error && <div>Authentication Error: {error.message}</div>}
+        {!error && isLoading && <div>Loading login button...</div>}
+        {!error && !isLoading && (
+          <Fragment>
+            <LoginButton />
+            <LogoutButton />
+          </Fragment>
+        )}
+      </div>
       <Scoreboard />
-      <div className="ui stackable grid" style={{ padding: "10px" }}>
+      <Header season={season} />
+      <div className="ui stackable grid" style={{ padding: "10px", scrollbarWidth: 'thin' }}>
         <div className="four wide column">
           <StandingsList
             users={users}
