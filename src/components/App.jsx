@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
+import Alert from "./Alert";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import Announcement from "./Announcement";
@@ -27,6 +28,7 @@ const App = () => {
   const [season, setSeason] = useState(currentYear);
   const [selectedRoster, setSelectedRoster] = useState([]);
   const [beta, setBeta] = useState(true);
+  const [showAlert, setShowAlert] = useState(true);
 
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams);
@@ -57,6 +59,13 @@ const App = () => {
 
   return (
     <Fragment>
+      {showAlert && (
+        <Alert
+          messageHeading="📢 Welcome to BP's 20th Annual Hockey Pool!"
+          message="You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday."
+          onClose={() => setShowAlert(false)}
+        />
+      )}
       <div className="fixed-auth-buttons">
         {error && <div>Authentication Error: {error.message}</div>}
         {!error && isLoading && <div>Loading login button...</div>}
