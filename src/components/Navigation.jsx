@@ -12,7 +12,6 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
     onMenuSelect(activeItem);
   }, [activeItem, onMenuSelect]);
 
-  // Menu items configuration
   const menuItems = [
     { name: 'commissioners-corner', label: "Commissioner's Corner" },
     { name: 'roster-view', label: 'Roster View' },
@@ -30,7 +29,6 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
         />
       </Menu.Item>
 
-      {/* Render standard menu items */}
       {menuItems.map((item) => (
         <Menu.Item
           key={item.name}
@@ -42,11 +40,7 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
         </Menu.Item>
       ))}
 
-
-
-      {/* Right-aligned menu */}
       <Menu.Menu position="right">
-        {/* Render beta-specific menu item */}
         {isAuthenticated && (
           <Menu.Item
             name="team-builder"
@@ -57,7 +51,7 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
             <Label color="red">Beta</Label>
           </Menu.Item>
         )}
-        {/* Uncommented dropdown for future use */}
+        {/* Dropdown for future season selection */}
         {/* <Dropdown item text="Season Select">
           <Dropdown.Menu>
             {renderedSeasons}
