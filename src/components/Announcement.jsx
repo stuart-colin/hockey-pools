@@ -47,6 +47,18 @@ const Announcement = () => {
           verticalAlign='top'
         />
         <h4>
+          <span role='img' aria-label='loudspeaker'>📢</span> 4/18/2025 - Signup and TeamBuilder is live!
+        </h4>
+        <p>
+          You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday.
+        </p>
+        <p>
+          If anyone has and trouble submitting their team, please reach out to us as soon as possible. Any other feedback is very welcome.
+        </p>
+        <p>
+          Thank you! - The pool team
+        </p>
+        <h4>
           <span role='img' aria-label='loudspeaker'>📢</span> 4/17/2025 - Finishing Touches Being Applied to the App!
         </h4>
         <h5>
