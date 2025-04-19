@@ -8,6 +8,8 @@ const ParticipantRoster = ({ selectedRoster, rosterData }) => {
   const [visible, setVisible] = useState('false');
   const [cardView, setCardView] = useState('true');
 
+  console.log('selectedRoster', selectedRoster);
+
   if (!selectedRoster) {
     return (
       <div className='ui vertical segments'>
