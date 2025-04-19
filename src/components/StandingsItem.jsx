@@ -88,7 +88,9 @@ const StandingsItem = ({ index, user, onRosterSelect, poolSize }) => {
         />
         {/* <div className='header'>{user.user.owner.name} {user.rank <= 7 ? winnings[user.rank - 1] : ''}</div> */}
         <div className='header'>
-          {user.user.owner.name}{'  '}<Flag name={user.user.owner.country.toLowerCase()} />
+          <Flag name={user.user.owner.country.toLowerCase()} />
+          {'  '}
+          {user.user.owner.name}
         </div>
         <div className={`left floated content playersRemaining${playersRemaining}`}>
           {playersRemaining}/16

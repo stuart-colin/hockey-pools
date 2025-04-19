@@ -58,6 +58,7 @@ const Announcement = () => {
         <p>
           Thank you! - The pool team
         </p>
+        <Divider />
         <h4>
           <span role='img' aria-label='loudspeaker'>📢</span> 4/17/2025 - Finishing Touches Being Applied to the App!
         </h4>
