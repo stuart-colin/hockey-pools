@@ -41,7 +41,7 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
       ))}
 
       <Menu.Menu position="right">
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <Menu.Item
             name="team-builder"
             active={activeItem === 'team-builder'}
@@ -50,7 +50,7 @@ const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
             Team Builder
             <Label color="red">Beta</Label>
           </Menu.Item>
-        )}
+        )} */}
         {/* Dropdown for future season selection */}
         {/* <Dropdown item text="Season Select">
           <Dropdown.Menu>
