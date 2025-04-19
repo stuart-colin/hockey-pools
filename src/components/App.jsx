@@ -2,20 +2,20 @@ import React, { Fragment, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Alert from "./Alert";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
 import Announcement from "./Announcement";
+import CountdownTimer from "./CountdownTimer";
 import Header from "./Header";
 import Insights from "./Insights";
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
 import Navigation from "./Navigation";
 import ParticipantRoster from "./ParticipantRoster";
+import PlayerCreator from "./PlayerCreator";
 import PlayerDetails from "./PlayerDetails";
 import Scoreboard from "./Scoreboard";
 import StandingsList from "./StandingsList";
-import TeamDetails from "./TeamDetails";
-import PlayerCreator from "./PlayerCreator";
 import TeamBuilder from "./TeamBuilder";
-import CountdownTimer from "./CountdownTimer";
+import TeamDetails from "./TeamDetails";
 
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useStandings from "../hooks/useStandings";
@@ -39,7 +39,7 @@ const App = () => {
   const renderContent = () => {
     const components = {
       "commissioners-corner": (
-        <Announcement selectedRoster={selectedRoster[0]} />
+        <Announcement />
       ),
       "roster-view": (
         <ParticipantRoster
@@ -75,7 +75,8 @@ const App = () => {
       {showAlert && (
         <Alert
           messageHeading="📢 Welcome to BP's 20th Annual Hockey Pool!"
-          message="You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday."
+          message="Team submissions through the team builder are now closed. There are a handful of teams that were emailed in prior to close that will trickle in over the next few minutes, please be assured that these were submitted prior to game time.
+          Standings are refreshed roughly every hour, and depend on the NHL updating their data so expect a small delay after a game ends to see changes in the standings. Good luck to all!"
           onClose={() => setShowAlert(false)}
         />
       )}
