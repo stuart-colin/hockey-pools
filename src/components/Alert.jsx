@@ -17,12 +17,7 @@ const Alert = ({ messageHeading, message, onClose }) => {
     <Message
       warning
       style={{
-        position: "fixed",
-        top: "50px",
-        zIndex: 999,
-        maxWidth: "100%",
         margin: '10px',
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
       }}
     >
       <Icon

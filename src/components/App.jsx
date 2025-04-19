@@ -15,6 +15,7 @@ import StandingsList from "./StandingsList";
 import TeamDetails from "./TeamDetails";
 import PlayerCreator from "./PlayerCreator";
 import TeamBuilder from "./TeamBuilder";
+import CountdownTimer from "./CountdownTimer";
 
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useStandings from "../hooks/useStandings";
@@ -46,7 +47,7 @@ const App = () => {
           rosterData={selectedRoster[1]}
         />
       ),
-      insights: <Insights users={users} />,
+      "insights": <Insights users={users} />,
       "player-details": <PlayerDetails users={users} />,
       "team-details": <TeamDetails users={users} season={season} />,
       "team-builder": beta && (
@@ -59,13 +60,6 @@ const App = () => {
 
   return (
     <Fragment>
-      {showAlert && (
-        <Alert
-          messageHeading="📢 Welcome to BP's 20th Annual Hockey Pool!"
-          message="You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday."
-          onClose={() => setShowAlert(false)}
-        />
-      )}
       <div className="fixed-auth-buttons">
         {error && <div>Authentication Error: {error.message}</div>}
         {!error && isLoading && <div>Loading login button...</div>}
@@ -78,7 +72,15 @@ const App = () => {
       </div>
       <Scoreboard />
       <Header season={season} />
-      <div className="ui stackable grid" style={{ padding: "10px", scrollbarWidth: 'thin' }}>
+      {showAlert && (
+        <Alert
+          messageHeading="📢 Welcome to BP's 20th Annual Hockey Pool!"
+          message="You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday."
+          onClose={() => setShowAlert(false)}
+        />
+      )}
+      <CountdownTimer />
+      <div className="ui stackable grid">
         <div className="four wide column">
           <StandingsList
             users={users}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Transition, Icon } from 'semantic-ui-react';
+import { Transition, Icon, Flag } from 'semantic-ui-react';
 import '../css/customStyle.css';
 import RosterView from './RosterView';
 
@@ -88,7 +88,7 @@ const StandingsItem = ({ index, user, onRosterSelect, poolSize }) => {
         />
         {/* <div className='header'>{user.user.owner.name} {user.rank <= 7 ? winnings[user.rank - 1] : ''}</div> */}
         <div className='header'>
-          {user.user.owner.name}
+          {user.user.owner.name}{'  '}<Flag name={user.user.owner.country.toLowerCase()} />
         </div>
         <div className={`left floated content playersRemaining${playersRemaining}`}>
           {playersRemaining}/16

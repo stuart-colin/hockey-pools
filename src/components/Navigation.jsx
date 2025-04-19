@@ -5,7 +5,7 @@ import seasons from "../constants/seasons";
 
 
 const Navigation = ({ onMenuSelect, onSeasonSelect }) => {
-  const [activeItem, setActiveItem] = useState('insights');
+  const [activeItem, setActiveItem] = useState('commissioners-corner');
   const { isAuthenticated } = useAuth0();
 
   useEffect(() => {

@@ -38,7 +38,7 @@ const StandingsList = ({ users, onRosterSelect, season }) => {
 
   setRanks(sortedRosters);
 
-  // const pot = sortedRosters.length * 20;
+  const pot = sortedRosters.length * 20;
 
   // const winnings = [
   //   ' — $' + (pot * 0.65).toFixed(2),
@@ -97,6 +97,7 @@ const StandingsList = ({ users, onRosterSelect, season }) => {
           <h2>
             {season} Standings
           </h2>
+          <p>Pot: ${pot}</p>
           <Search
             users={users}
             placeholder={"Search Rosters"}
