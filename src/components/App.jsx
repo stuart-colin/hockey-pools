@@ -35,8 +35,6 @@ const App = () => {
   const regularSeasonStats = useRegularSeasonStats(playoffTeams);
   const users = useUsers(season);
 
-  console.log("user", user);
-
   // Map activeItem to components
   const renderContent = () => {
     const components = {
