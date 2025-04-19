@@ -53,7 +53,7 @@ const Announcement = () => {
           You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday.
         </p>
         <p>
-          If anyone has and trouble submitting their team, please reach out to us as soon as possible. Any other feedback is very welcome.
+          If anyone has any trouble submitting their team, please reach out to us as soon as possible. Any other feedback is very welcome.
         </p>
         <p>
           Thank you! - The pool team
