@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Flag, Icon } from 'semantic-ui-react';
 import Search from './Search';
 import StandingsItem from './StandingsItem';
 import '../css/customStyle.css'
@@ -97,7 +97,7 @@ const StandingsList = ({ users, onRosterSelect, season }) => {
           <h2>
             {season} Standings
           </h2>
-          <p>Pot: ${pot}</p>
+          <p>Pot: ${pot} <Flag name='canada' /></p>
           <Search
             users={users}
             placeholder={"Search Rosters"}
