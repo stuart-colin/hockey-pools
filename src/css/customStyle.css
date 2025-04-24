@@ -1,3 +1,19 @@
+/* Default styles (light mode) */
+svg,
+img {
+  filter: none;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+
+  svg,
+  img {
+    filter: none;
+    /* Prevent inversion */
+  }
+}
+
 /* Default: Fixed to the top-right corner */
 .fixed-auth-buttons {
   position: fixed;
