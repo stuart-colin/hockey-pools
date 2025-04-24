@@ -3,7 +3,8 @@ import { Message } from "semantic-ui-react";
 
 const CountdownTimer = () => {
   // Target date: Saturday, April 19th at 6 PM EST
-  const targetDate = new Date("2025-04-19T18:00:00-04:00").getTime();
+  const targetDate = new Date("2025-04-14T18:00:00-04:00").getTime();
+  const twoDaysAfterTarget = targetDate + 2 * 24 * 60 * 60 * 1000; // Add 2 days in milliseconds
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -32,6 +33,12 @@ const CountdownTimer = () => {
 
     return () => clearInterval(timer); // Cleanup on component unmount
   }, []);
+
+  // Check if the current time is more than 2 days after the target date
+  const now = new Date().getTime();
+  if (now > twoDaysAfterTarget) {
+    return null; // Stop rendering the component
+  }
 
   if (!timeLeft) {
     return <Message color='red' style={{ textAlign: "center", margin: "10px" }}>Rosters submissions are locked!</Message>;

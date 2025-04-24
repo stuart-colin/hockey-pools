@@ -81,7 +81,7 @@ const App = () => {
           onClose={() => setShowAlert(false)}
         />
       )}
-      {/* <CountdownTimer /> */}
+      <CountdownTimer />
       <div className="ui stackable grid">
         <div className="four wide column">
           <StandingsList
