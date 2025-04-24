@@ -22,6 +22,8 @@ import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
 
 const currentYear = new Date().getFullYear().toString();
+const alertMessageHeading = "📢 Welcome to BP's 20th Annual Hockey Pool!"
+const alertMessage = "Reminder: Standings in the app are refreshed roughly every hour, and depend on the NHL updating their data - expect a delay after a game ends to see changes in the standings. Goalie overtime losses are manually added since the NHL does not tally those in the playoffs, so you may see those tracked as soon as immediately after the game ends or later depending on when I am able to get to a computer. Please let us know if you see any discrepancies!";
 
 const App = () => {
   const { isLoading, error, user, isAuthenticated } = useAuth0();
@@ -74,13 +76,12 @@ const App = () => {
       <Header season={season} />
       {showAlert && (
         <Alert
-          messageHeading="📢 Welcome to BP's 20th Annual Hockey Pool!"
-          message="Team submissions through the team builder are now closed. There are a handful of teams that were emailed in prior to close that will trickle in over the next few minutes, please be assured that these were submitted prior to game time.
-          Standings are refreshed roughly every hour, and depend on the NHL updating their data so expect a small delay after a game ends to see changes in the standings. Good luck to all!"
+          messageHeading={alertMessageHeading}
+          message={alertMessage}
           onClose={() => setShowAlert(false)}
         />
       )}
-      <CountdownTimer />
+      {/* <CountdownTimer /> */}
       <div className="ui stackable grid">
         <div className="four wide column">
           <StandingsList
