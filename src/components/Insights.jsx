@@ -104,7 +104,7 @@ const Insights = ({ users }) => {
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
     }
       key={player[0]}
-      label={player[0] + ' (' + player[4] + ')'}
+      label={player[0]}
     />;
   });
 
@@ -258,7 +258,7 @@ const Insights = ({ users }) => {
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header as="h3">Best Picks</Header>
-                <Statistic.Group size='mini' widths='one' color="blue">
+                <Statistic.Group size='mini' widths='one' color="green">
                   {topPlayers}
                 </Statistic.Group>
               </Grid.Column>
@@ -492,7 +492,7 @@ const Insights = ({ users }) => {
                   <Grid.Row columns={3}>
                     <Grid.Column>
                       <Header as='h4'>Left</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
+                      <Statistic.Group size='mini' widths='one' color='purple'>
                         {commonL.map((player) => {
                           return (
                             <Statistic
@@ -507,7 +507,7 @@ const Insights = ({ users }) => {
                     </Grid.Column>
                     <Grid.Column>
                       <Header as='h4'>Center</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
+                      <Statistic.Group size='mini' widths='one' color='purple'>
                         {commonC.map((player) => {
                           return (
                             <Statistic
@@ -522,7 +522,7 @@ const Insights = ({ users }) => {
                     </Grid.Column>
                     <Grid.Column>
                       <Header as='h4'>Right</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
+                      <Statistic.Group size='mini' widths='one' color='purple'>
                         {commonR.map((player) => {
                           return (
                             <Statistic
@@ -541,7 +541,7 @@ const Insights = ({ users }) => {
                   <Grid.Row columns={3}>
                     <Grid.Column>
                       <Header as='h4'>Defense</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
+                      <Statistic.Group size='mini' widths='one' color='purple'>
                         {commonD.map((player) => {
                           return (
                             <Statistic
@@ -556,7 +556,7 @@ const Insights = ({ users }) => {
                     </Grid.Column>
                     <Grid.Column>
                       <Header as='h4'>Goalie</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
+                      <Statistic.Group size='mini' widths='one' color='purple'>
                         {commonG.map((player) => {
                           return (
                             <Statistic
@@ -571,7 +571,7 @@ const Insights = ({ users }) => {
                     </Grid.Column>
                     <Grid.Column>
                       <Header as='h4'>Utility</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
+                      <Statistic.Group size='mini' widths='one' color='purple'>
                         {commonU.map((player) => {
                           return (
                             <Statistic
