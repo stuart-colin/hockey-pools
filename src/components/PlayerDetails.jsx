@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Table, Image } from 'semantic-ui-react';
+import { Icon, Table, Image, Segment, Grid, Loader, Header } from 'semantic-ui-react';
 import { frequency, customSort } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
@@ -84,118 +84,99 @@ const Insights = ({ users }) => {
     'Pick Rate',
   ];
 
-  let playerSort;
-  sortPlayerOption === 'Player' ? playerSort = customSort(playerList, 1).reverse()
-    : sortPlayerOption === 'Position' ? playerSort = customSort(playerList, 2).reverse()
-      : sortPlayerOption === 'Team' ? playerSort = customSort(playerList, 4).reverse()
-        : sortPlayerOption === 'Points' ? playerSort = customSort(playerList, 5)
-          : playerSort = playerList;
+  const sortOptions = {
+    Player: () => customSort(playerList, 1).reverse(),
+    Position: () => customSort(playerList, 2).reverse(),
+    Team: () => customSort(playerList, 4).reverse(),
+    Points: () => customSort(playerList, 5),
+  };
 
-  reverse && playerSort.reverse();
+  // Default to the original list if no valid sort option is selected
+  let playerSort = sortOptions[sortPlayerOption]
+    ? sortOptions[sortPlayerOption]()
+    : playerList;
+
+  // Reverse the sort order if `reverse` is true
+  if (reverse) {
+    playerSort.reverse();
+  }
 
   const playerHeaders = headers.map((header) => {
     return (
       <Table.HeaderCell
-        onClick={
-          () => {
-            setSortPlayerOption(header);
-            sortPlayerOption === header && setReverse(!reverse)
-          }
-        }
-        style={{ cursor: 'pointer' }}>
+        onClick={() => {
+          setSortPlayerOption(header);
+          sortPlayerOption === header && setReverse(!reverse);
+        }}
+        style={{ cursor: 'pointer' }}
+      >
         {header}
-        {
-          sortPlayerOption === header && !reverse ?
-            <Icon name='sort down' /> :
-            sortPlayerOption === header && reverse ?
-              <Icon name='sort up' /> :
-              <Icon name='sort' />
-        }
+        {sortPlayerOption === header && !reverse ? (
+          <Icon name="sort down" />
+        ) : sortPlayerOption === header && reverse ? (
+          <Icon name="sort up" />
+        ) : (
+          <Icon name="sort" />
+        )}
       </Table.HeaderCell>
     );
   });
 
   const playerDetails = playerSort.map((player, index) => {
     return (
-      <Table.Row
-        key={player[1]}
-        negative={eliminatedTeams.includes(player[4]) ? true : false}
-      >
+      <Table.Row key={player[1]} negative={eliminatedTeams.includes(player[4])}>
         <Table.Cell collapsing>{index + 1}</Table.Cell>
         <Table.Cell>
           <Image src={player[0]} avatar alt={`${player[1]} Headshot`} /> {player[1]}
         </Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
         <Table.Cell>
-          <Image src={player[3]} avatar size='mini' alt={`${player[4]} Logo`} /> {player[4]}
+          <Image src={player[3]} avatar size="mini" alt={`${player[4]} Logo`} /> {player[4]}
         </Table.Cell>
         <Table.Cell>{player[5]}</Table.Cell>
-        <Table.Cell>{player[6] + `/` + users.rosters.length + ` -- ` + (player[6] / users.rosters.length * 100).toFixed(0)}%</Table.Cell>
-      </Table.Row >
-    )
+        <Table.Cell>
+          {player[6] + `/` + users.rosters.length + ` -- ` + ((player[6] / users.rosters.length) * 100).toFixed(0)}%
+        </Table.Cell>
+      </Table.Row>
+    );
   });
 
   return (
-    <div className='ui segments'>
-      <div className='ui top blue centered attached header' >
-        <div className='left aligned column'
-          onClick={() => setVisible(!visible)}
-          style={{ cursor: 'pointer', position: 'absolute' }}>
-          <h3>
-            {visible &&
-              <Icon
-                circular
-                color='blue'
-                name='chevron up'
-              />
-            }
-            {!visible &&
-              <Icon
-                circular
-                color='blue'
-                name='chevron down'
-              />
-            }
-          </h3>
-        </div>
-        <div className='middle aligned column'>
-          <h2>
-            Player Details
-          </h2>
-        </div>
-      </div>
-      <div
-        className={
-          `ui bottom attached segment
-        ${!visible ? 'collapsedStyle' : 'expandedInsightsStyle'}`
-        }>
-        <div
-          className='ui active inverted dimmer'
-          style={loadedStyle()}>
-          <div className='ui text loader'>
+    <Segment.Group>
+      <Segment attached="top" >
+        <Grid>
+          <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+            <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
+          </Grid.Column>
+          <Grid.Column textAlign="center" width={12}>
+            <Header color="blue" as="h2">Player Details</Header>
+          </Grid.Column>
+        </Grid>
+      </Segment>
+      <Segment attached="bottom" className={visible ? 'expandedInsightsStyle' : 'collapsedStyle'}>
+        {loading ? (
+          <Loader active inline="centered" size="large">
             Loading Player Details...
-          </div>
-        </div>
-        <div className='ui stackable grid' style={loadingStyle()}>
-          <div className='row'>
-            <div className='sixteen wide center aligned column'>
-              <Table basic='very' unstackable selectable>
-                <Table.Header style={{ position: 'sticky', top: '-14px', background: 'white' }}>
-                  <Table.Row>
-                    <Table.HeaderCell></Table.HeaderCell>
-                    {playerHeaders}
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {playerDetails}
-                </Table.Body>
-
-              </Table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Loader>
+        ) : (
+          <Grid>
+            <Grid.Row>
+              <Grid.Column width={16}>
+                <Table basic="very" singleLine unstackable selectable>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell></Table.HeaderCell>
+                      {playerHeaders}
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>{playerDetails}</Table.Body>
+                </Table>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        )}
+      </Segment>
+    </Segment.Group>
   );
 };
 

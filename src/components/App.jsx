@@ -52,9 +52,7 @@ const App = () => {
       "insights": <Insights users={users} />,
       "player-details": <PlayerDetails users={users} />,
       "team-details": <TeamDetails users={users} season={season} />,
-      "team-builder": beta && (
-        <TeamBuilder regularSeasonStats={regularSeasonStats} />
-      ),
+      "team-builder": <TeamBuilder regularSeasonStats={regularSeasonStats} />,
     };
 
     return components[activeItem] || null;

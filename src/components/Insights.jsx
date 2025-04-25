@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Icon, Grid, Statistic } from 'semantic-ui-react';
+import { Divider, Icon, Grid, Statistic, Segment, Header, Loader } from 'semantic-ui-react';
 import { min, max, mean, frequency, customSort } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
@@ -93,18 +93,18 @@ const Insights = ({ users }) => {
 
   const mostPlayersRemaining = max(playersRemaining);
   const averagePlayersRemaining = mean(playersRemaining).toFixed(0);
-  const LeastPlayersRemaining = min(playersRemaining);
+  const leastPlayersRemaining = min(playersRemaining);
 
   const mostPoints = max(points);
   const averagePoints = mean(points).toFixed(0)
-  const LeastPoints = min(points);
+  const leastPoints = min(points);
 
   const mostCommonPlayers = playerList.slice(0, 3).map((player) => {
-    return <Statistic value={player[4]
+    return <Statistic horizontal value={player[4]
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
     }
       key={player[0]}
-      label={player[0]}
+      label={player[0] + ' (' + player[4] + ')'}
     />;
   });
 
@@ -167,10 +167,10 @@ const Insights = ({ users }) => {
   const topPlayers = customSort(playerList, 3)
     .slice(0, 3)
     .map((player) => {
-      return <Statistic value={player[3]
+      return <Statistic horizontal value={player[3]
       }
         key={player[0]}
-        label={player[0]}
+        label={player[0] + ' (' + player[4] + ')'}
       />;
     });
 
@@ -178,10 +178,10 @@ const Insights = ({ users }) => {
     .slice(-3)
     .reverse()
     .map((player) => {
-      return <Statistic value={player[3]
+      return <Statistic horizontal value={player[3]
       }
         key={player[0]}
-        label={player[0]}
+        label={player[0] + ' (' + player[4] + ')'}
       />;
     });
 
@@ -189,10 +189,10 @@ const Insights = ({ users }) => {
     .filter(player => Math.round(player[4] / users.rosters.length * 100) <= highThresh)
     .slice(0, 3)
     .map((player) => {
-      return <Statistic value={player[3]
+      return <Statistic horizontal value={player[3]
       }
         key={player[0]}
-        label={player[0]}
+        label={player[0] + ' (' + player[4] + ')'}
       />;
     });
 
@@ -204,10 +204,10 @@ const Insights = ({ users }) => {
     .slice(-3)
     .reverse()
     .map((player) => {
-      return <Statistic value={player[3]
+      return <Statistic horizontal value={player[3]
       }
         key={player[0]}
-        label={player[0]}
+        label={player[0] + ' (' + player[4] + ')'}
       />;
     });
 
@@ -215,396 +215,392 @@ const Insights = ({ users }) => {
   const lowThreshMax = playerList.length ? parseFloat((playerList[2][4] / users.rosters.length * 100).toFixed(0)) : null;
 
   return (
-    <div className='ui segments'>
-      <div className='ui top blue centered attached header' >
-        <div className='left aligned column'
-          onClick={() => setVisible(!visible)}
-          style={{ cursor: 'pointer', position: 'absolute' }}>
-          <h3>
-            {visible &&
-              <Icon
-                circular
-                color='blue'
-                name='chevron up'
-              />
-            }
-            {!visible &&
-              <Icon
-                circular
-                color='blue'
-                name='chevron down'
-              />
-            }
-          </h3>
-        </div>
-        <div className='middle aligned column'>
-          <h2>
-            Quick Insights
-          </h2>
-        </div>
-      </div>
-      <div
-        className={
-          `ui bottom attached segment
-        ${!visible ? 'collapsedStyle' : 'expandedInsightsStyle'}`
-        }>
-        <div
-          className='ui active inverted dimmer'
-          style={loadedStyle()}>
-          <div className='ui text loader'>
+    <Segment.Group>
+      <Segment attached="top">
+        <Grid>
+          <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+            <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
+          </Grid.Column>
+          <Grid.Column textAlign="center" width={12}>
+            <Header as="h2" color="blue">Quick Insights</Header>
+          </Grid.Column>
+        </Grid>
+      </Segment>
+      <Segment attached="bottom" className={visible ? 'expandedInsightsStyle' : 'collapsedStyle'}>
+        {loading ? (
+          <Loader active inline="centered" size="large">
             Loading Insights...
-          </div>
-        </div>
-        <div className='ui stackable grid' style={loadingStyle()}>
-          <div className='row'>
-            <div className='two wide center aligned column'>
-              <h4>Players Remaining</h4>
-              <Statistic.Group size='tiny' widths='one'>
-                <Statistic
-                  color='blue'
-                  value={mostPlayersRemaining}
-                  label='Most'
-                />
-                <Statistic
-                  color='purple'
-                  value={averagePlayersRemaining}
-                  label='Average'
-                />
-                <Statistic
-                  color='red'
-                  value={LeastPlayersRemaining}
-                  label='Least'
-                />
-              </Statistic.Group>
-            </div>
-            <div className='two wide center aligned column'>
-              <h4>Pool Points</h4>
-              <Statistic.Group size='tiny' widths='one'>
-                <Statistic
-                  color='blue'
-                  value={mostPoints}
-                  label='Most'
-                />
-                <Statistic
-                  color='purple'
-                  value={averagePoints}
-                  label='Average'
-                />
-                <Statistic
-                  color='red'
-                  value={LeastPoints}
-                  label='Least'
-                />
-              </Statistic.Group>
-            </div>
-            <div className='two wide center aligned column'>
-              <h4>Most Picks</h4>
-              <Statistic.Group size='tiny' color='blue' widths='one'>
-                {mostCommonPlayers}
-              </Statistic.Group>
-              <h6>Number of times selected</h6>
-            </div>
-            <div className='two wide center aligned column'>
-              <h4>Best Picks</h4>
-              <Statistic.Group size='tiny' color='blue' widths='one'>
-                {topPlayers}
-              </Statistic.Group>
-              <h6>Highest individual points</h6>
-            </div>
-            <div className='two wide center aligned column'>
-              <h4>Worst Picks</h4>
-              <Statistic.Group size='tiny' color='red' widths='one'>
-                {bottomPlayers}
-              </Statistic.Group>
-              <h6>Lowest individual points</h6>
-            </div>
-            <div className='two wide center aligned column'>
-              <h4>Most Advantageous Picks </h4>
-              <Statistic.Group size='tiny' widths='one' color='teal'>
-                {bestByPickThreshold}
-              </Statistic.Group>
-              <br></br>
-              <div key='highThreshold'>
-                <Icon
-                  disabled={highThresh <= highThreshMin && true}
-                  link={highThresh > highThreshMin && true}
-                  name='angle down'
-                  onClick={() => highThresh > highThreshMin && setHighThresh(highThresh - smallStep)}
-                  size='large'
-                />
-                <Icon
-                  disabled={highThresh <= highThreshMin && true}
-                  link={highThresh > highThreshMin && true}
-                  name='angle double down'
-                  onClick={() => highThresh - bigStep > highThreshMin ? setHighThresh(highThresh - bigStep) : setHighThresh(highThreshMin)}
-                  size='large'
-                />
-                <Icon
-                  disabled={highThresh >= highThreshMax && true}
-                  link={highThresh < highThreshMax && true}
-                  name='angle double up'
-                  onClick={() => highThresh + bigStep < highThreshMax ? setHighThresh(highThresh + bigStep) : setHighThresh(highThreshMax)}
-                  size='large'
-                />
-                <Icon
-                  disabled={highThresh >= highThreshMax && true}
-                  link={highThresh < highThreshMax && true}
-                  name='angle up'
-                  onClick={() => highThresh < highThreshMax && setHighThresh(highThresh + smallStep)}
-                  size='large'
-                />
-                <Icon
-                  disabled={highThresh === defaultHighThresh && true}
-                  link={highThresh !== defaultHighThresh && true}
-                  name='undo alternate'
-                  onClick={() => setHighThresh(defaultHighThresh)}
-                  size='large'
-                />
-                {/* <br></br>
-              <Input
-                style={{ position: 'relative', top: '1em' }}
-                labelPosition='right'
-                value={highThresh}
-                size='mini'
-                type='range'
-                min={highThreshMin}
-                max={highThreshMax}
-                onChange={(e) => setHighThresh(e.target.value)}
-              /> */}
-              </div>
-              <h6>Highest points under {highThresh}% selection rate</h6>
-            </div>
-            <div className='two wide center aligned column'>
-              <h4>Least Advantageous Picks</h4>
-              <Statistic.Group size='tiny' widths='one' color='purple'>
-                {worstByPickThreshold}
-              </Statistic.Group>
-              <br></br>
-              <div style={{ alignItems: 'center' }}>
-                <Icon
-                  disabled={lowThresh <= lowThreshMin && true}
-                  link={lowThresh > lowThreshMin && true}
-                  name='angle down'
-                  onClick={() => lowThresh > lowThreshMin && setLowThresh(lowThresh - smallStep)}
-                  size='large'
-                />
-                <Icon
-                  disabled={lowThresh <= lowThreshMin && true}
-                  link={lowThresh > lowThreshMin && true}
-                  name='angle double down'
-                  onClick={() => lowThresh - bigStep > lowThreshMin ? setLowThresh(lowThresh - bigStep) : setLowThresh(lowThreshMin)}
-                  size='large'
-                />
-                <Icon
-                  disabled={lowThresh >= lowThreshMax && true}
-                  link={lowThresh < lowThreshMax && true}
-                  name='angle double up'
-                  onClick={() => lowThresh + bigStep < lowThreshMax ? setLowThresh(lowThresh + bigStep) : setLowThresh(lowThreshMax)}
-                  size='large'
-                />
-                <Icon
-                  disabled={lowThresh >= lowThreshMax && true}
-                  link={lowThresh < lowThreshMax && true}
-                  name='angle up'
-                  onClick={() => lowThresh < lowThreshMax && setLowThresh(lowThresh + smallStep)}
-                  size='large'
-                />
-                <Icon
-                  disabled={lowThresh === defaultLowThresh && true}
-                  link={lowThresh !== defaultLowThresh && true}
-                  name='undo alternate'
-                  onClick={() => setLowThresh(defaultLowThresh)}
-                  size='large'
-                />
-                {/* <br></br>
-                <Input
-                  labelPosition='right'
-                  max={lowThreshMax}
-                  min={lowThreshMin}
-                  onChange={(e) => setLowThresh(parseFloat(e.target.value))}
-                  style={{ position: 'relative', top: '1em' }}
-                  type='range'
-                  value={lowThresh}
-                /> */}
-              </div>
-
-              <h6>Lowest points over {lowThresh}% selection rate</h6>
-            </div>
-            <div className='two wide center aligned column'>
-              <h4>Best Players No One Took</h4>
-              <Statistic.Group size='tiny' widths='one' color='green'>
-                <Statistic
-                  // label='Pavel Francouz'
+          </Loader>
+        ) : (
+          <Grid stackable>
+            <Grid.Row>
+              <Grid.Column width={2} >
+                <Header as="h3">Players Remaining</Header>
+                <Statistic.Group size='mini' widths='one'>
+                  <Statistic horizontal color="blue" value={mostPlayersRemaining} label="Most" />
+                  <Statistic horizontal color="purple" value={averagePlayersRemaining} label="Average" />
+                  <Statistic horizontal color="red" value={leastPlayersRemaining} label="Least" />
+                </Statistic.Group>
+              </Grid.Column>
+              <Grid.Column width={2}>
+                <Header as="h3">Pool Points</Header>
+                <Statistic.Group size='mini' widths='one'>
+                  <Statistic horizontal color="blue" value={mostPoints} label="Most" />
+                  <Statistic horizontal color="purple" value={averagePoints} label="Average" />
+                  <Statistic horizontal color="red" value={leastPoints} label="Least" />
+                </Statistic.Group>
+              </Grid.Column>
+              <Grid.Column width={2}>
+                <Header as="h3">Most Picks</Header>
+                <Statistic.Group size='mini' widths='one' color="blue">
+                  {mostCommonPlayers}
+                </Statistic.Group>
+              </Grid.Column>
+              <Grid.Column width={2}>
+                <Header as="h3">Best Picks</Header>
+                <Statistic.Group size='mini' widths='one' color="blue">
+                  {topPlayers}
+                </Statistic.Group>
+              </Grid.Column>
+              <Grid.Column width={2}>
+                <Header as="h3">Worst Picks</Header>
+                <Statistic.Group size='mini' widths='one' color="red">
+                  {bottomPlayers}
+                </Statistic.Group>
+              </Grid.Column>
+              <Grid.Column width={2}>
+                <Header as="h3">Most Advantageous Picks</Header>
+                <Statistic.Group size='mini' widths='one' color="teal">
+                  {bestByPickThreshold}
+                </Statistic.Group>
+                <br></br>
+                <div key='highThreshold'>
+                  <Icon
+                    disabled={highThresh <= highThreshMin && true}
+                    link={highThresh > highThreshMin && true}
+                    name='angle down'
+                    onClick={() => highThresh > highThreshMin && setHighThresh(highThresh - smallStep)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={highThresh <= highThreshMin && true}
+                    link={highThresh > highThreshMin && true}
+                    name='angle double down'
+                    onClick={() => highThresh - bigStep > highThreshMin ? setHighThresh(highThresh - bigStep) : setHighThresh(highThreshMin)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={highThresh >= highThreshMax && true}
+                    link={highThresh < highThreshMax && true}
+                    name='angle double up'
+                    onClick={() => highThresh + bigStep < highThreshMax ? setHighThresh(highThresh + bigStep) : setHighThresh(highThreshMax)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={highThresh >= highThreshMax && true}
+                    link={highThresh < highThreshMax && true}
+                    name='angle up'
+                    onClick={() => highThresh < highThreshMax && setHighThresh(highThresh + smallStep)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={highThresh === defaultHighThresh && true}
+                    link={highThresh !== defaultHighThresh && true}
+                    name='undo alternate'
+                    onClick={() => setHighThresh(defaultHighThresh)}
+                    size='large'
+                  />
+                </div>
+                <h6>Highest points under {highThresh}% selection rate</h6>
+              </Grid.Column>
+              <Grid.Column width={2}>
+                <Header as="h3">Least Advantageous Picks</Header>
+                <Statistic.Group size='mini' widths='one' color="purple">
+                  {worstByPickThreshold}
+                </Statistic.Group>
+                <br></br>
+                <div style={{ alignItems: 'center' }}>
+                  <Icon
+                    disabled={lowThresh <= lowThreshMin && true}
+                    link={lowThresh > lowThreshMin && true}
+                    name='angle down'
+                    onClick={() => lowThresh > lowThreshMin && setLowThresh(lowThresh - smallStep)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={lowThresh <= lowThreshMin && true}
+                    link={lowThresh > lowThreshMin && true}
+                    name='angle double down'
+                    onClick={() => lowThresh - bigStep > lowThreshMin ? setLowThresh(lowThresh - bigStep) : setLowThresh(lowThreshMin)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={lowThresh >= lowThreshMax && true}
+                    link={lowThresh < lowThreshMax && true}
+                    name='angle double up'
+                    onClick={() => lowThresh + bigStep < lowThreshMax ? setLowThresh(lowThresh + bigStep) : setLowThresh(lowThreshMax)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={lowThresh >= lowThreshMax && true}
+                    link={lowThresh < lowThreshMax && true}
+                    name='angle up'
+                    onClick={() => lowThresh < lowThreshMax && setLowThresh(lowThresh + smallStep)}
+                    size='large'
+                  />
+                  <Icon
+                    disabled={lowThresh === defaultLowThresh && true}
+                    link={lowThresh !== defaultLowThresh && true}
+                    name='undo alternate'
+                    onClick={() => setLowThresh(defaultLowThresh)}
+                    size='large'
+                  />
+                </div>
+                <h6>Lowest points over {lowThresh}% selection rate</h6>
+              </Grid.Column>
+              <Grid.Column width={2}>
+                <Header as="h3">Best Players No One Took</Header>
+                <Statistic.Group size='tiny' widths='one' color='green'>
+                  <Statistic
+                    horizontal
+                    // label='Pavel Francouz'
+                    // value='14'
+                    // label='Adin Hill'
+                    // value='26'
+                    label='Coming Soon'
+                  />
+                  <Statistic
+                    horizontal
+                  // label='Antti Raanta'
                   // value='14'
-                  // label='Adin Hill'
+                  // label='Sergei Bobrovsky'
                   // value='26'
-                  label='Coming Soon'
-                />
-                <Statistic
-                // label='Antti Raanta'
-                // value='14'
-                // label='Sergei Bobrovsky'
-                // value='26'
-                />
-                <Statistic
-                // label='Carter Verhaeghe'
-                // value='14'
-                // label='Carter Verhaeghe'
-                // value='19'
-                />
-              </Statistic.Group>
-            </div>
-          </div>
-          <Divider />
-          <div className='row'>
-            <div className='eight wide center aligned column'>
-              <h4>Perfect Team - {bestPoints} Points, {bestRemaining}/16 Players</h4>
-              <Grid>
-                <Grid.Row columns={3}>
-                  <Grid.Column>
-                    <h5>Left</h5>
-                    {topL.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[3]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Center</h5>
-                    {topC.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[3]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Right</h5>
-                    {topR.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[3]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row columns={3}>
-                  <Grid.Column>
-                    <h5>Defense</h5>
-                    {topD.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[3]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Goalie</h5>
-                    {topG.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[3]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Utility</h5>
-                    {topU.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[3]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
-            </div>
-            <div className='eight wide center aligned column'>
-              <h4>Most Common Team - {commonPoints} Points, {commonRemaining}/16 Players</h4>
-              <Grid>
-                <Grid.Row columns={3}>
-                  <Grid.Column>
-                    <h5>Left</h5>
-                    {commonL.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[4]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Center</h5>
-                    {commonC.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[4]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Right</h5>
-                    {commonR.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[4]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row columns={3}>
-                  <Grid.Column>
-                    <h5>Defense</h5>
-                    {commonD.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[4]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Goalie</h5>
-                    {commonG.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[4]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                  <Grid.Column>
-                    <h5>Utility</h5>
-                    {commonU.map((player) => {
-                      return (
-                        <div key={player[0]} style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }}>
-                          {player[0] + ': ' + player[4]}
-                        </div>
-                      )
-                    })}
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
-            </div>
-            {/* <div className='two wide center aligned column'>
+                  />
+                  <Statistic
+                    horizontal
+                  // label='Carter Verhaeghe'
+                  // value='14'
+                  // label='Carter Verhaeghe'
+                  // value='19'
+                  />
+                </Statistic.Group>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={2}>
+              <Grid.Column>
+                <Header as="h3">Perfect Team - {bestPoints} Points, {bestRemaining}/16 Players</Header>
+                <Grid>
+                  <Grid.Row columns={3}>
+                    <Grid.Column>
+                      <Header as='h4'>Left</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {topL.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Center</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {topC.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Right</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {topR.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row columns={3}>
+                    <Grid.Column>
+                      <Header as='h4'>Defense</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {topD.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Goalie</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {topG.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Utility</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {topU.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </Grid.Column>
+              <Grid.Column>
+                <Header as="h3">Most Common Team - {commonPoints} Points, {commonRemaining}/16 Players</Header>
+                <Grid>
+                  <Grid.Row columns={3}>
+                    <Grid.Column>
+                      <Header as='h4'>Left</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {commonL.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Center</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {commonC.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Right</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {commonR.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+                <Grid>
+                  <Grid.Row columns={3}>
+                    <Grid.Column>
+                      <Header as='h4'>Defense</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {commonD.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Goalie</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {commonG.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Header as='h4'>Utility</Header>
+                      <Statistic.Group size='mini' widths='one' color='green'>
+                        {commonU.map((player) => {
+                          return (
+                            <Statistic
+                              horizontal
+                              key={player[0]}
+                              label={player[0] + ' (' + player[4] + ')'}
+                              value={player[3]}
+                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
+                          )
+                        })}
+                      </Statistic.Group>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid >
+        )
+        }
+      </Segment >
+
+
+      {/* <div className='two wide center aligned column'>
               <h4>Team</h4>
               <p>Most players picked</p>
               <p>Least players picked</p>
             </div> */}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+    </Segment.Group >
+  );
+};
 
 export default Insights;
