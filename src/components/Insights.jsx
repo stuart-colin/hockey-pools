@@ -222,7 +222,7 @@ const Insights = ({ users }) => {
             <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
           </Grid.Column>
           <Grid.Column textAlign="center" width={12}>
-            <Header as="h2" color="blue">Quick Insights</Header>
+            <Header as="h3" color="blue">Quick Insights</Header>
           </Grid.Column>
         </Grid>
       </Segment>

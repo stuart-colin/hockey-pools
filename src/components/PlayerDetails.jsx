@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Icon, Table, Image, Segment, Grid, Loader, Header } from 'semantic-ui-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Button, Dropdown, Icon, Input, Table, Image, Segment, Grid, Loader, Header } from 'semantic-ui-react';
 import { frequency, customSort } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
 import '../css/customStyle.css';
+
+const teamLogoURL = `https://assets.nhle.com/logos/nhl/svg/`;
 
 const Insights = ({ users }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
   const [sortPlayerOption, setSortPlayerOption] = useState('Points');
   const [reverse, setReverse] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [nameSearch, setNameSearch] = useState('');
+  const [teamFilter, setTeamFilter] = useState([]);
+  const [positionFilter, setPositionFilter] = useState([]);
 
   useEffect(() => {
     if (!users.loading) {
@@ -101,6 +107,52 @@ const Insights = ({ users }) => {
     playerSort.reverse();
   }
 
+  // Filtered and sorted data
+  const filteredPlayers = useMemo(() => {
+    return playerSort
+      .filter((player) => {
+        const matchesPosition = positionFilter.length
+          ? positionFilter.includes(player[2])
+          : true;
+        const matchesTeam = teamFilter.length
+          ? teamFilter.includes(player[4])
+          : true;
+        const matchesName = nameSearch
+          ? player[1]
+            .toLowerCase()
+            .includes(nameSearch.toLowerCase())
+          : true;
+        return matchesPosition && matchesTeam && matchesName;
+      })
+      .sort((a, b) => b.wins - a.wins); // Sort by wins in descending order
+  }, [playerSort, positionFilter, teamFilter, nameSearch]);
+
+  // Dropdown options for filters
+  const positionOptions = [
+    { key: 'C', text: 'C', value: 'C' },
+    { key: 'L', text: 'L', value: 'L' },
+    { key: 'R', text: 'R', value: 'R' },
+    { key: 'D', text: 'D', value: 'D' },
+    { key: 'G', text: 'G', value: 'G' },
+  ];
+
+  const teamOptions = useMemo(() => {
+    const teams = new Map(); // Use a Map to ensure uniqueness based on team name
+    playerSort.forEach((player) => {
+      const teamLogo = player[3];
+      const teamName = player[4];
+      if (!teams.has(teamName)) {
+        teams.set(teamName, {
+          key: teamName,
+          text: teamName,
+          value: teamName,
+          image: { avatar: true, src: teamLogo }
+        });
+      }
+    });
+    return Array.from(teams.values()); // Convert the Map values to an array
+  }, [playerSort]);
+
   const playerHeaders = headers.map((header) => {
     return (
       <Table.HeaderCell
@@ -122,7 +174,7 @@ const Insights = ({ users }) => {
     );
   });
 
-  const playerDetails = playerSort.map((player, index) => {
+  const playerDetails = filteredPlayers.map((player, index) => {
     return (
       <Table.Row key={player[1]} negative={eliminatedTeams.includes(player[4])}>
         <Table.Cell collapsing>{index + 1}</Table.Cell>
@@ -145,12 +197,25 @@ const Insights = ({ users }) => {
     <Segment.Group>
       <Segment attached="top" >
         <Grid>
-          <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-            <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
-          </Grid.Column>
-          <Grid.Column textAlign="center" width={12}>
-            <Header color="blue" as="h2">Player Details</Header>
-          </Grid.Column>
+          <Grid.Row columns={3}>
+            <Grid.Column onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+              <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
+            </Grid.Column>
+            <Grid.Column textAlign="center">
+              <Header color="blue" as="h3" style={{ whiteSpace: 'nowrap' }}>Player Details</Header>
+            </Grid.Column>
+            <Grid.Column textAlign="right">
+              <Button
+                basic={!filtersVisible}
+                color="blue"
+                icon
+                onClick={() => setFiltersVisible(!filtersVisible)}
+                size='mini'
+              >
+                <Icon name="filter" />
+              </Button>
+            </Grid.Column>
+          </Grid.Row>
         </Grid>
       </Segment>
       <Segment attached="bottom" className={visible ? 'expandedInsightsStyle' : 'collapsedStyle'}>
@@ -161,20 +226,97 @@ const Insights = ({ users }) => {
         ) : (
           <Grid>
             <Grid.Row>
-              <Grid.Column width={16}>
-                <Table basic="very" singleLine unstackable selectable>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell></Table.HeaderCell>
-                      {playerHeaders}
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>{playerDetails}</Table.Body>
-                </Table>
+              <Grid.Column>
+                <Grid
+                  stackable
+                  style={{
+                    position: 'sticky',
+                    top: -15,
+                    zIndex: 10,
+                    background: 'white',
+                    marginBottom: '10px',
+                  }}>
+                  {filtersVisible && (
+                    <Grid.Row columns={3}>
+                      <Grid.Column>
+                        <Input
+                          placeholder='Name'
+                          fluid
+                          value={nameSearch}
+                          onChange={(e) => setNameSearch(e.target.value)}
+                        />
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Dropdown
+                          placeholder='Team'
+                          fluid
+                          multiple
+                          search
+                          selection
+                          clearable
+                          options={teamOptions}
+                          onChange={(e, { value }) => setTeamFilter(value)}
+                          value={teamFilter}
+                          renderLabel={(item) => ({
+                            content: (
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Image
+                                  src={item.image.src}
+                                  avatar
+                                  style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    marginRight: '5px',
+                                  }} // Smaller size for the chip
+                                />
+                                <span>{item.text}</span>
+                              </div>
+                            ),
+                            style: {
+                              display: 'inline-flex', // Ensure chips are inline
+                              alignItems: 'center',
+                              margin: '2px', // Add spacing between chips
+                              padding: '4px 8px', // Compact padding for the chip
+                              borderRadius: '4px', // Rounded corners for the chip
+                              background: '#f1f1f1', // Optional: Light background for better visibility
+                            },
+                          })}
+                        />
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Dropdown
+                          placeholder='Position'
+                          fluid
+                          multiple
+                          search
+                          selection
+                          clearable
+                          options={positionOptions}
+                          onChange={(e, { value }) => setPositionFilter(value)}
+                          value={positionFilter}
+                        />
+                      </Grid.Column>
+                    </Grid.Row>
+                  )}
+                  <Grid.Row>
+                    <Grid.Column width={16}>
+                      <Table basic="very" singleLine unstackable selectable>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell></Table.HeaderCell>
+                            {playerHeaders}
+                          </Table.Row>
+                        </Table.Header>
+                        <Table.Body>{playerDetails}</Table.Body>
+                      </Table>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
               </Grid.Column>
             </Grid.Row>
           </Grid>
         )}
+
       </Segment>
     </Segment.Group>
   );

@@ -23,16 +23,16 @@
 
 .expandedStandingsStyle {
   transition: all 1s;
-  max-height: 75.25vh;
+  max-height: 80vh;
   overflow-y: auto;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
   -webkit-filter: opacity(1);
   filter: opacity(1);
 }
 
 .expandedRosterStyle {
   transition: all 1s;
-  max-height: 74vh;
+  max-height: 80vh;
   overflow: auto;
   -webkit-filter: opacity(1);
   filter: opacity(1);
@@ -40,7 +40,7 @@
 
 .expandedInsightsStyle {
   transition: all 1s;
-  max-height: 74vh;
+  height: 90vh;
   overflow: auto;
   -webkit-filter: opacity(1);
   filter: opacity(1);
@@ -48,11 +48,11 @@
 
 @media screen and (max-width: 767px) {
   .expandedStandingsStyle {
-    max-height: 50vh;
+    max-height: 80vh;
   }
 
   .expandedRosterStyle {
-    max-height: 65vh;
+    max-height: 80vh;
   }
 }
 

@@ -182,7 +182,7 @@ const TeamDetails = ({ users, season }) => {
             <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
           </Grid.Column>
           <Grid.Column textAlign="center" width={12}>
-            <Header color="blue" as="h2">Team Details</Header>
+            <Header color="blue" as="h3">Team Details</Header>
           </Grid.Column>
         </Grid>
       </Segment>
