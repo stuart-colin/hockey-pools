@@ -153,22 +153,33 @@ const Insights = ({ users }) => {
     return Array.from(teams.values()); // Convert the Map values to an array
   }, [playerSort]);
 
-  const playerHeaders = headers.map((header) => {
+  const playerHeaders = headers.map((header, index) => {
+    const isSticky = index === 0;
     return (
       <Table.HeaderCell
+        key={header}
         onClick={() => {
           setSortPlayerOption(header);
           sortPlayerOption === header && setReverse(!reverse);
         }}
-        style={{ cursor: 'pointer' }}
+        style={{
+          cursor: 'pointer',
+          ...(isSticky && {
+            position: 'sticky',
+            left: 0,
+            marginLeft: -50,
+            background: 'white', // Ensure the sticky header has a background
+            zIndex: 2, // Ensure it stays above the body rows
+          }),
+        }}
       >
         {header}
         {sortPlayerOption === header && !reverse ? (
-          <Icon name="sort down" />
+          <Icon name='sort down' />
         ) : sortPlayerOption === header && reverse ? (
-          <Icon name="sort up" />
+          <Icon name='sort up' />
         ) : (
-          <Icon name="sort" />
+          <Icon name='sort' />
         )}
       </Table.HeaderCell>
     );
@@ -178,12 +189,19 @@ const Insights = ({ users }) => {
     return (
       <Table.Row key={player[1]} negative={eliminatedTeams.includes(player[4])}>
         <Table.Cell collapsing>{index + 1}</Table.Cell>
-        <Table.Cell>
+        <Table.Cell
+          style={{
+            position: 'sticky',
+            left: 0,
+            background: 'white', // Ensure the sticky column has a background
+            zIndex: 1, // Ensure it stays above other columns when scrolling
+          }}
+        >
           <Image src={player[0]} avatar alt={`${player[1]} Headshot`} /> {player[1]}
         </Table.Cell>
         <Table.Cell>{player[2]}</Table.Cell>
         <Table.Cell>
-          <Image src={player[3]} avatar size="mini" alt={`${player[4]} Logo`} /> {player[4]}
+          <Image src={player[3]} avatar size='mini' alt={`${player[4]} Logo`} /> {player[4]}
         </Table.Cell>
         <Table.Cell>{player[5]}</Table.Cell>
         <Table.Cell>
@@ -195,112 +213,115 @@ const Insights = ({ users }) => {
 
   return (
     <Segment.Group>
-      <Segment attached="top" >
-        <Grid>
-          <Grid.Row columns={3}>
-            <Grid.Column onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-              <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
+      <Segment attached='top' >
+        <Grid columns='equal'>
+          <Grid.Row >
+            <Grid.Column textAlign='left' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+              <Icon circular color='blue' name={visible ? 'chevron up' : 'chevron down'} />
             </Grid.Column>
-            <Grid.Column textAlign="center">
-              <Header color="blue" as="h3" style={{ whiteSpace: 'nowrap' }}>Player Details</Header>
+            <Grid.Column>
+              <Header color='blue' textAlign='center' as='h3' style={{ whiteSpace: 'nowrap' }}>Player Details</Header>
             </Grid.Column>
-            <Grid.Column textAlign="right">
+            <Grid.Column textAlign='right'>
               <Button
                 basic={!filtersVisible}
-                color="blue"
+                color='blue'
                 icon
                 onClick={() => setFiltersVisible(!filtersVisible)}
                 size='mini'
               >
-                <Icon name="filter" />
+                <Icon name='filter' />
               </Button>
             </Grid.Column>
           </Grid.Row>
         </Grid>
+        {filtersVisible && (
+          <Grid stackable columns='equal'>
+            <Grid.Row
+              columns={3}
+              style={{
+                position: 'sticky',
+                top: 0,
+                left: 0,
+                zIndex: 10,
+                background: 'white',
+              }}>
+              <Grid.Column>
+                <Input
+                  placeholder='Name'
+                  fluid
+                  value={nameSearch}
+                  onChange={(e) => setNameSearch(e.target.value)}
+                />
+              </Grid.Column>
+              <Grid.Column>
+                <Dropdown
+                  placeholder='Team'
+                  fluid
+                  multiple
+                  search
+                  selection
+                  clearable
+                  options={teamOptions}
+                  onChange={(e, { value }) => setTeamFilter(value)}
+                  value={teamFilter}
+                  renderLabel={(item) => ({
+                    content: (
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Image
+                          src={item.image.src}
+                          avatar
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            marginRight: '5px',
+                          }} // Smaller size for the chip
+                        />
+                        <span>{item.text}</span>
+                      </div>
+                    ),
+                    style: {
+                      display: 'inline-flex', // Ensure chips are inline
+                      alignItems: 'center',
+                      margin: '2px', // Add spacing between chips
+                      padding: '4px 8px', // Compact padding for the chip
+                      borderRadius: '4px', // Rounded corners for the chip
+                      background: '#f1f1f1', // Optional: Light background for better visibility
+                    },
+                  })}
+                />
+              </Grid.Column>
+              <Grid.Column>
+                <Dropdown
+                  placeholder='Position'
+                  fluid
+                  multiple
+                  search
+                  selection
+                  clearable
+                  options={positionOptions}
+                  onChange={(e, { value }) => setPositionFilter(value)}
+                  value={positionFilter}
+                />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        )}
       </Segment>
-      <Segment attached="bottom" className={visible ? 'expandedStyle' : 'collapsedStyle'}>
+      <Segment attached='bottom' className={visible ? 'expandedStyle' : 'collapsedStyle'}>
         {loading ? (
-          <Loader active inline="centered" size="large">
+          <Loader active inline='centered' size='large'>
             Loading Player Details...
           </Loader>
         ) : (
           <Grid>
             <Grid.Row>
               <Grid.Column>
-                <Grid
-                  stackable
-                  style={{
-                    position: 'sticky',
-                    top: -15,
-                    zIndex: 10,
-                    background: 'white',
-                    marginBottom: '10px',
-                  }}>
-                  {filtersVisible && (
-                    <Grid.Row columns={3}>
-                      <Grid.Column>
-                        <Input
-                          placeholder='Name'
-                          fluid
-                          value={nameSearch}
-                          onChange={(e) => setNameSearch(e.target.value)}
-                        />
-                      </Grid.Column>
-                      <Grid.Column>
-                        <Dropdown
-                          placeholder='Team'
-                          fluid
-                          multiple
-                          search
-                          selection
-                          clearable
-                          options={teamOptions}
-                          onChange={(e, { value }) => setTeamFilter(value)}
-                          value={teamFilter}
-                          renderLabel={(item) => ({
-                            content: (
-                              <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Image
-                                  src={item.image.src}
-                                  avatar
-                                  style={{
-                                    width: '16px',
-                                    height: '16px',
-                                    marginRight: '5px',
-                                  }} // Smaller size for the chip
-                                />
-                                <span>{item.text}</span>
-                              </div>
-                            ),
-                            style: {
-                              display: 'inline-flex', // Ensure chips are inline
-                              alignItems: 'center',
-                              margin: '2px', // Add spacing between chips
-                              padding: '4px 8px', // Compact padding for the chip
-                              borderRadius: '4px', // Rounded corners for the chip
-                              background: '#f1f1f1', // Optional: Light background for better visibility
-                            },
-                          })}
-                        />
-                      </Grid.Column>
-                      <Grid.Column>
-                        <Dropdown
-                          placeholder='Position'
-                          fluid
-                          multiple
-                          search
-                          selection
-                          clearable
-                          options={positionOptions}
-                          onChange={(e, { value }) => setPositionFilter(value)}
-                          value={positionFilter}
-                        />
-                      </Grid.Column>
-                    </Grid.Row>
-                  )}
+                <Grid stackable>
+
                   <Grid.Row>
                     <Grid.Column width={16}>
-                      <Table basic="very" singleLine unstackable selectable>
+                      <Table basic='very' singleLine unstackable selectable>
                         <Table.Header>
                           <Table.Row>
                             <Table.HeaderCell></Table.HeaderCell>
