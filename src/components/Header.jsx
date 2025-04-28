@@ -15,6 +15,7 @@ const Header = ({ season }) => {
           src='/public/../logo.svg'
           style={{
             width: 250,
+            paddingTop: 25,
             position: 'relative',
           }}
           alt='bps annual hockey pool logo' />

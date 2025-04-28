@@ -386,6 +386,7 @@ const Insights = ({ users }) => {
                 </Statistic.Group>
               </Grid.Column>
             </Grid.Row>
+            <Divider />
             <Grid.Row columns={2}>
               <Grid.Column>
                 <Header as="h3">Perfect Team - {bestPoints} Points, {bestRemaining}/16 Players</Header>

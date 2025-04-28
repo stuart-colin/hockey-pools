@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Menu, Sidebar, Icon, Label, Segment } from "semantic-ui-react";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useMediaQuery } from "react-responsive";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
+import React, { Fragment, useEffect, useState } from 'react';
+import { Menu, Sidebar, Icon, Label, Segment } from 'semantic-ui-react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useMediaQuery } from 'react-responsive';
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
 
 const Navigation = ({ onMenuSelect }) => {
   const [activeItem, setActiveItem] = useState();
@@ -48,11 +48,14 @@ const Navigation = ({ onMenuSelect }) => {
       {isMobile ? (
         // Mobile Layout with Sidebar
         <>
-          <Menu fixed="bottom">
+          <Menu fixed='bottom'>
             <Menu.Item onClick={() => setSidebarVisible(!sidebarVisible)}>
-              <Icon name="bars" size="large" color="blue" />
+              <Icon
+                name={sidebarVisible ? 'close' : 'bars'}
+                size='large'
+                color='blue' />
             </Menu.Item>
-            <Menu.Item position="right">
+            <Menu.Item position='right'>
               {error && <div>Authentication Error: {error.message}</div>}
               {!error && isLoading && <div>Loading login button...</div>}
               {!error && !isLoading && (
@@ -66,8 +69,9 @@ const Navigation = ({ onMenuSelect }) => {
 
           <Sidebar
             as={Menu}
-            animation="bottom"
-            icon="labeled"
+            animation='overlay'
+            direction='bottom'
+            icon='labeled'
             vertical
             visible={sidebarVisible}
             onHide={() => setSidebarVisible(false)}
@@ -86,35 +90,35 @@ const Navigation = ({ onMenuSelect }) => {
             {renderMenuItems()}
             {isAuthenticated && (
               <Menu.Item
-                name="team-builder"
-                active={activeItem === "team-builder"}
+                name='team-builder'
+                active={activeItem === 'team-builder'}
                 onClick={() => {
-                  setActiveItem("team-builder");
+                  setActiveItem('team-builder');
                   setSidebarVisible(false);
                 }}
               >
                 Team Builder
-                <Label color="red">Beta</Label>
+                <Label color='red'>Beta</Label>
               </Menu.Item>
             )}
           </Sidebar>
 
           {/* Push content down to avoid overlap with the fixed menu */}
-          <Segment basic style={{ marginTop: "50px" }} />
+          <Segment basic style={{ marginTop: '50px' }} />
         </>
       ) : (
         // Desktop Layout
         <Menu stackable>
           {renderMenuItems()}
-          <Menu.Menu position="right">
+          <Menu.Menu position='right'>
             {isAuthenticated && (
               <Menu.Item
-                name="team-builder"
-                active={activeItem === "team-builder"}
-                onClick={() => setActiveItem("team-builder")}
+                name='team-builder'
+                active={activeItem === 'team-builder'}
+                onClick={() => setActiveItem('team-builder')}
               >
                 Team Builder
-                <Label color="red">Beta</Label>
+                <Label color='red'>Beta</Label>
               </Menu.Item>
             )}
             <Menu.Item>
