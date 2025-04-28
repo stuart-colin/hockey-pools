@@ -226,7 +226,7 @@ const Insights = ({ users }) => {
         <Table.Cell>
           <strong>{player[5]}</strong>
           {player[2] === 'G'
-            ? ' — ' + player[6] + ' W | ' + player[7] + ' L | ' + player[8] + ' OTL'
+            ? ' — ' + player[6] + ' W | ' + player[7] + ' SO | ' + player[8] + ' OTL'
             : ' — ' + player[6] + ' G | ' + player[7] + ' A | ' + player[8] + ' OTG'
           }
         </Table.Cell>
