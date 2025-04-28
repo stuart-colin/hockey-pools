@@ -25,41 +25,43 @@ const Scoreboard = () => {
 
   const renderGoalDetails = (goals) => {
     return (
-      <List divided relaxed>
-        {goals.map((goal, index) => (
-          <List.Item
-            key={index}
-            style={{
-              display: "flex", // Use flexbox for horizontal alignment
-              alignItems: "center", // Vertically center the content
-            }}
-          >
-            <Image
-              avatar
-              src={teamLogo + goal.teamAbbrev + '_light.svg'} // Assuming the team logo URL is stored here
-              alt={`${goal.teamName} Logo`}
-              style={{ marginRight: "10px" }}
-            />
-            <Image
-              avatar
-              src={goal.mugshot} // Assuming the mugshot URL is stored here
-              alt={`${goal.name.default}'s mugshot`}
-              style={{ marginRight: "10px" }}
-            />
-            <List.Content>
-              <List.Header>
-                <strong>G:</strong> {goal.name.default}
-              </List.Header>
-              <List.Description>
-                <strong>A:</strong>{" "}
-                {goal.assists.length > 0
-                  ? goal.assists.map((assist) => assist.name.default).join(", ")
-                  : "None"}
-              </List.Description>
-            </List.Content>
-          </List.Item>
-        ))}
-      </List>
+      goals ?
+        <List divided relaxed>
+          {goals.map((goal, index) => (
+            <List.Item
+              key={index}
+              style={{
+                display: "flex", // Use flexbox for horizontal alignment
+                alignItems: "center", // Vertically center the content
+              }}
+            >
+              <Image
+                avatar
+                src={teamLogo + goal.teamAbbrev + '_light.svg'} // Assuming the team logo URL is stored here
+                alt={`${goal.teamName} Logo`}
+                style={{ marginRight: "10px" }}
+              />
+              <Image
+                avatar
+                src={goal.mugshot} // Assuming the mugshot URL is stored here
+                alt={`${goal.name.default}'s mugshot`}
+                style={{ marginRight: "10px" }}
+              />
+              <List.Content>
+                <List.Header>
+                  <strong>G:</strong> {goal.name.default}
+                </List.Header>
+                <List.Description>
+                  <strong>A:</strong>{" "}
+                  {goal.assists.length > 0
+                    ? goal.assists.map((assist) => assist.name.default).join(", ")
+                    : "None"}
+                </List.Description>
+              </List.Content>
+            </List.Item>
+          ))}
+        </List>
+        : null
     );
   };
 
