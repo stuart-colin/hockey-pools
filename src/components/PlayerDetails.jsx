@@ -80,16 +80,25 @@ const Insights = ({ users }) => {
 
   playerData.forEach((player) => {
     let playerPoints;
+    let playerStat1;
+    let playerStat2;
+    let playerStat3;
     if (player.position === 'G') {
       playerPoints = player.stats.featuredStats.playoffs.subSeason.wins * 2 + player.stats.featuredStats.playoffs.subSeason.shutouts * 2 + player.stats.otl;
+      playerStat1 = player.stats.featuredStats.playoffs.subSeason.wins;
+      playerStat2 = player.stats.featuredStats.playoffs.subSeason.shutouts;
+      playerStat3 = player.stats.otl;
     } else {
       playerPoints = player.stats.featuredStats.playoffs.subSeason.goals + player.stats.featuredStats.playoffs.subSeason.assists + player.stats.featuredStats.playoffs.subSeason.otGoals;
+      playerStat1 = player.stats.featuredStats.playoffs.subSeason.goals;
+      playerStat2 = player.stats.featuredStats.playoffs.subSeason.assists;
+      playerStat3 = player.stats.featuredStats.playoffs.subSeason.otGoals;
     }
-    players.push([player.headshot, player.name, player.position, player.stats.teamLogo, player.stats.teamName, playerPoints])
+    players.push([player.headshot, player.name, player.position, player.stats.teamLogo, player.stats.teamName, playerPoints, playerStat1, playerStat2, playerStat3])
   });
 
   frequency(players).map((player) => {
-    playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], player[0].split(',')[3], player[0].split(',')[4], parseFloat(player[0].split(',')[5]), player[1]])
+    playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], player[0].split(',')[3], player[0].split(',')[4], parseFloat(player[0].split(',')[5]), parseFloat(player[0].split(',')[6]), parseFloat(player[0].split(',')[7]), parseFloat(player[0].split(',')[8]), player[1]])
     return null;
   });
 
@@ -196,6 +205,7 @@ const Insights = ({ users }) => {
   });
 
   const playerDetails = filteredPlayers.map((player, index) => {
+
     return (
       <Table.Row key={player[1]} negative={eliminatedTeams.includes(player[4])}>
         <Table.Cell collapsing>{index + 1}</Table.Cell>
@@ -213,7 +223,13 @@ const Insights = ({ users }) => {
         <Table.Cell>
           <Image src={player[3]} avatar size='mini' alt={`${player[4]} Logo`} /> {player[4]}
         </Table.Cell>
-        <Table.Cell>{player[5]}</Table.Cell>
+        <Table.Cell>
+          <strong>{player[5]}</strong>
+          {player[2] === 'G'
+            ? ' — ' + player[6] + ' W | ' + player[7] + ' L | ' + player[8] + ' OTL'
+            : ' — ' + player[6] + ' G | ' + player[7] + ' A | ' + player[8] + ' OTG'
+          }
+        </Table.Cell>
         <Table.Cell>
           {player[6] + `/` + users.rosters.length + ` -- ` + ((player[6] / users.rosters.length) * 100).toFixed(0)}%
         </Table.Cell>
