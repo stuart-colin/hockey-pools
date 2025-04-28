@@ -1,46 +1,35 @@
-/* Default: Fixed to the top-right corner */
-.fixed-auth-buttons {
-  position: fixed;
-  top: 10px;
-  /* Distance from the top */
-  right: 10px;
-  /* Distance from the right */
-  z-index: 1000;
-  /* Ensure it stays above other elements */
+/* Initially hide the app content */
+.hidden-content {
+  opacity: 0;
+  /* Fully transparent */
+  pointer-events: none;
+  /* Prevent interaction while hidden */
+  transition: opacity 0.5s ease-in;
+  /* Smooth fade-in effect */
 }
 
-/* On smaller screens (mobile), move to the bottom-right corner */
-@media (max-width: 768px) {
-  .fixed-auth-buttons {
-    top: auto;
-    /* Reset top positioning */
-    bottom: 10px;
-    /* Distance from the bottom */
-    right: 10px;
-    /* Distance from the right */
-  }
+/* Gradually show the app content */
+.visible-content {
+  opacity: 1;
+  /* Fully visible */
+  pointer-events: auto;
+  /* Enable interaction */
+  transition: opacity 0.5s ease-in;
+  /* Smooth fade-in effect */
 }
 
 .expandedStandingsStyle {
   transition: all 1s;
-  max-height: 80vh;
+  max-height: calc(100vh - 505px);
   overflow-y: auto;
   /* overflow-x: hidden; */
   -webkit-filter: opacity(1);
   filter: opacity(1);
 }
 
-.expandedRosterStyle {
+.expandedStyle {
   transition: all 1s;
-  max-height: 80vh;
-  overflow: auto;
-  -webkit-filter: opacity(1);
-  filter: opacity(1);
-}
-
-.expandedInsightsStyle {
-  transition: all 1s;
-  height: 90vh;
+  max-height: calc(100vh - 482px);
   overflow: auto;
   -webkit-filter: opacity(1);
   filter: opacity(1);
@@ -48,11 +37,11 @@
 
 @media screen and (max-width: 767px) {
   .expandedStandingsStyle {
-    max-height: 80vh;
+    max-height: calc(100vh - 280px);
   }
 
-  .expandedRosterStyle {
-    max-height: 80vh;
+  .expandedStyle {
+    max-height: calc(100vh - 200px);
   }
 }
 

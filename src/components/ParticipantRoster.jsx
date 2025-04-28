@@ -1,154 +1,122 @@
-import React, { useState } from 'react';
-import { Icon } from 'semantic-ui-react';
+import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
+import { Icon, Segment, Grid, Header, Statistic, Button } from 'semantic-ui-react';
 import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import '../css/customStyle.css';
 
 const ParticipantRoster = ({ selectedRoster, rosterData }) => {
-  const [visible, setVisible] = useState('false');
-  const [cardView, setCardView] = useState('true');
+  const [visible, setVisible] = useState(true); // Default to true for expanded view
+  const [cardView, setCardView] = useState(); // Default to card view
 
-  console.log('selectedRoster', selectedRoster);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  useEffect(() => {
+    isMobile ? setCardView(true) : setCardView(false)
+  }, setCardView)
 
   if (!selectedRoster) {
     return (
-      <div className='ui vertical segments'>
-        <div className='ui top blue centered attached header'>
-          <div className='ui stackable grid'>
-            <div className='three column row'>
-              <div className='left aligned column'>
-                <h3 style={{ position: 'absolute', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
-                  {visible &&
-                    <Icon
-                      circular
-                      color='blue'
-                      name='chevron up'
-                    />
-                  }
-                  {!visible &&
-                    <Icon
-                      circular
-                      color='blue'
-                      name='chevron down'
-                    />
-                  }
-                </h3>
-              </div>
-              <div className='middle aligned column'>
-                <h2>
-                  Roster Details
-                </h2>
-              </div>
-            </div >
-          </div>
-        </div>
-      </div>
-    )
-  };
+      <Segment.Group>
+        <Segment attached='top'>
+          <Grid>
+            <Grid.Row columns={3}>
+              <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+                <Icon
+                  circular
+                  color='blue'
+                  name={visible ? 'chevron up' : 'chevron down'}
+                />
+              </Grid.Column>
+              <Grid.Column width={12} textAlign='center'>
+                <Header as='h3' color='blue' style={{ whiteSpace: 'nowrap' }}>
+                  Select Roster From Standings
+                </Header>
+              </Grid.Column>
+              <Grid.Column width={2} />
+            </Grid.Row>
+          </Grid>
+        </Segment>
+      </Segment.Group>
+    );
+  }
 
-  const rosterPlayers = rosterData[0].map((player, index) => {
-    return (
-      <ul key={index}>
-        {cardView && <StatsSlim player={player} />}
-        {!cardView && <StatsCard player={player} />}
-      </ul>
-    )
-  })
+  const rosterPlayers = rosterData[0].map((player, index) => (
+    <Grid.Column key={index}>
+      {cardView ? <StatsSlim player={player} /> : <StatsCard player={player} />}
+    </Grid.Column>
+  ));
 
   return (
-    <div className='ui segments'>
-      <div className='ui top blue centered attached header'>
-        <div className='ui grid'>
-          <div className='three column row'>
-            <div className='left aligned column'>
-              <h3 style={{ position: 'absolute', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
-                {visible &&
-                  <Icon
-                    circular
-                    color='blue'
-                    name='chevron up'
-                  />
-                }
-                {!visible &&
-                  <Icon
-                    circular
-                    color='blue'
-                    name='chevron down'
-                  />
-                }
-              </h3>
-
-            </div>
-            <div className='middle aligned column'>
-              <h2>
+    <Segment.Group>
+      {/* Header Segment */}
+      <Segment attached='top'>
+        <Grid>
+          <Grid.Row columns={3}>
+            {/* Toggle Visibility Icon */}
+            <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+              <Icon
+                circular
+                color='blue'
+                name={visible ? 'chevron up' : 'chevron down'}
+              />
+            </Grid.Column>
+            {/* Roster Owner Details */}
+            <Grid.Column width={12} textAlign='center'>
+              <Header as='h3' color='blue'>
                 {selectedRoster.owner.name}
-              </h2>
-              <i className={`${selectedRoster.owner.country.toLowerCase()} flag`} />{selectedRoster.owner.region}
-            </div>
-            <div className='right aligned column'>
-              <div className='ui tiny blue statistic'>
-                <div className='value'>
-                  {rosterData[1]}
-                </div>
-                <div className='label'>
-                  Pool Points
-                </div>
-              </div>
-              <div className='ui tiny blue statistic'>
-                <div className='value'>
-                  {rosterData[2]}/16
-                </div>
-                <div className='label'>
-                  Players Remaining
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={`ui bottom attached segment ${!visible ? 'collapsedStyle' : 'expandedRosterStyle'}`}>
-        <h4 className='ui blue header' style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setCardView(!cardView)}>
-          {cardView &&
-            <i className='id badge outline icon'></i>
-          }
-          {!cardView &&
-            <i className='id card outline icon'></i>
-          }
-        </h4>
-        <div className='ui stackable grid'>
-          <div className='row'>
-            {rosterPlayers}
-          </div>
-          {/* <div className='row'>
-            <ul key={'left 1 stats'}><StatsCard id={rosterData[2][0]} /></ul>
-            <ul key={'left 2 stats'}><StatsCard id={rosterData[2][1]} /></ul>
-            <ul key={'left 3 stats'}><StatsCard id={rosterData[2][2]} /></ul>
-            </div>
-            <div className='row'>
-            <ul key={'center 1 stats'}><StatsCard id={rosterData[2][3]} /></ul>
-            <ul key={'center 2 stats'}><StatsCard id={rosterData[2][4]} /></ul>
-            <ul key={'center 3 stats'}><StatsCard id={rosterData[2][5]} /></ul>
-            </div>
-            <div className='row'>
-            <ul key={'right 1 stats'}><StatsCard id={rosterData[2][6]} /></ul>
-            <ul key={'right 2 stats'}><StatsCard id={rosterData[2][7]} /></ul>
-            <ul key={'right 3 stats'}><StatsCard id={rosterData[2][8]} /></ul>
-            </div>
-            <div className='row'>
-            <ul key={'defense 1 stats'}><StatsCard id={rosterData[2][9]} /></ul>
-            <ul key={'defense 2 stats'}><StatsCard id={rosterData[2][10]} /></ul>
-            <ul key={'defense 3 stats'}><StatsCard id={rosterData[2][11]} /></ul>
-            <ul key={'defense 4 stats'}><StatsCard id={rosterData[2][12]} /></ul>
-            </div>
-            <div className='row'>
-            <ul key={'goalie 1 stats'}><StatsCard id={rosterData[2][13]} /></ul>
-            <ul key={'goalie 2 stats'}><StatsCard id={rosterData[2][14]} /></ul>
-            <ul key={'utility stats'}><StatsCard id={rosterData[2][15]} /></ul>
-          </div> */}
-        </div>
-      </div>
-    </div>
-  )
-}
+              </Header>
+              <span>
+                <i className={`${selectedRoster.owner.country.toLowerCase()} flag`} />
+                {selectedRoster.owner.region}
+              </span>
+            </Grid.Column>
+            {/* Pool Points and Players Remaining */}
+            <Grid.Column width={2} textAlign='right'>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row columns={1}>
+            <Grid.Column width={16} textAlign='center'>
+              <Statistic horizontal size='mini' color='blue'>
+                <Statistic.Value>{rosterData[1]}</Statistic.Value>
+                <Statistic.Label>Pool Points</Statistic.Label>
+              </Statistic>
+              <Statistic horizontal size='mini' color='blue'>
+                <Statistic.Value>{rosterData[2]}/16</Statistic.Value>
+                <Statistic.Label>Players Remaining</Statistic.Label>
+              </Statistic>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Segment>
+
+      {/* Content Segment */}
+      <Segment
+        attached='bottom'
+        className={visible ? 'expandedStandingsStyle' : 'collapsedStyle'}
+      >
+        {visible && (
+          <>
+            {/* Toggle Card View */}
+            <Icon
+              icon
+              color='blue'
+              size='large'
+              basic
+              onClick={() => setCardView(!cardView)}
+              style={{ marginBottom: '10px' }}
+              name={cardView ? 'id badge outline' : 'id card outline'}
+            />
+
+            {/* Roster Players */}
+            <Grid stackable columns={3}>
+              {rosterPlayers}
+            </Grid>
+          </>
+        )}
+      </Segment>
+    </Segment.Group>
+  );
+};
 
 export default ParticipantRoster;

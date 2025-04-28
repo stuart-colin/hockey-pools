@@ -186,7 +186,7 @@ const TeamDetails = ({ users, season }) => {
           </Grid.Column>
         </Grid>
       </Segment>
-      <Segment attached="bottom" className={visible ? 'expandedInsightsStyle' : 'collapsedStyle'}>
+      <Segment attached="bottom" className={visible ? 'expandedStyle' : 'collapsedStyle'}>
         {loading ? (
           <Loader active inline="centered" size="large">
             Loading Team Details...

@@ -34,7 +34,7 @@ const Announcement = () => {
       {/* Content Segment */}
       <Segment
         attached="bottom"
-        className={visible ? 'expandedInsightsStyle' : 'collapsedStyle'}
+        className={visible ? 'expandedStyle' : 'collapsedStyle'}
       >
         {visible && (
           <>
