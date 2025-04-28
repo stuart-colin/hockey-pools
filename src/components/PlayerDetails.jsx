@@ -1,5 +1,16 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Button, Dropdown, Icon, Input, Table, Image, Segment, Grid, Loader, Header } from 'semantic-ui-react';
+import {
+  Button,
+  Dropdown,
+  Grid,
+  Header,
+  Icon,
+  Image,
+  Input,
+  Loader,
+  Segment,
+  Table,
+} from 'semantic-ui-react';
 import { frequency, customSort } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 // import positions from '../constants/positions';
@@ -166,10 +177,9 @@ const Insights = ({ users }) => {
           cursor: 'pointer',
           ...(isSticky && {
             position: 'sticky',
-            left: 0,
-            marginLeft: -50,
+            left: -15,
             background: 'white', // Ensure the sticky header has a background
-            zIndex: 2, // Ensure it stays above the body rows
+            zIndex: 3, // Ensure it stays above the body rows
           }),
         }}
       >
@@ -179,7 +189,7 @@ const Insights = ({ users }) => {
         ) : sortPlayerOption === header && reverse ? (
           <Icon name='sort up' />
         ) : (
-          <Icon name='sort' />
+          null
         )}
       </Table.HeaderCell>
     );
@@ -192,7 +202,7 @@ const Insights = ({ users }) => {
         <Table.Cell
           style={{
             position: 'sticky',
-            left: 0,
+            left: -15,
             background: 'white', // Ensure the sticky column has a background
             zIndex: 1, // Ensure it stays above other columns when scrolling
           }}
@@ -322,7 +332,13 @@ const Insights = ({ users }) => {
                   <Grid.Row>
                     <Grid.Column width={16}>
                       <Table basic='very' singleLine unstackable selectable>
-                        <Table.Header>
+                        <Table.Header
+                          style={{
+                            position: 'sticky',
+                            top: -15,
+                            background: 'white', // Ensure the sticky column has a background
+                            zIndex: 2, // Ensure it stays above other columns when scrolling
+                          }}>
                           <Table.Row>
                             <Table.HeaderCell></Table.HeaderCell>
                             {playerHeaders}

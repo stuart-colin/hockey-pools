@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Image, Table, Segment, Grid, Loader, Header } from 'semantic-ui-react';
+import {
+  Grid,
+  Header,
+  Icon,
+  Image,
+  Loader,
+  Segment,
+  Table,
+} from 'semantic-ui-react';
 import { frequency, customSort, sumArrayIndex, sumNestedArray } from '../utils/stats';
 import eliminatedTeams from '../constants/eliminatedTeams';
 
@@ -134,30 +142,47 @@ const TeamDetails = ({ users, season }) => {
     teams.reverse();
   }
 
-  const teamHeaders = headers.map((header) => (
-    <Table.HeaderCell
-      key={header}
-      onClick={() => {
-        setSortTeamOption(header);
-        if (sortTeamOption === header) setReverse(!reverse);
-      }}
-      style={{ cursor: 'pointer' }}
-    >
-      {header}
-      {sortTeamOption === header && !reverse ? (
-        <Icon name="sort down" />
-      ) : sortTeamOption === header && reverse ? (
-        <Icon name="sort up" />
-      ) : (
-        <Icon name="sort" />
-      )}
-    </Table.HeaderCell>
-  ));
+  const teamHeaders = headers.map((header, index) => {
+    const isSticky = index === 0;
+    return (
+      <Table.HeaderCell
+        key={header}
+        onClick={() => {
+          setSortTeamOption(header);
+          if (sortTeamOption === header) setReverse(!reverse);
+        }}
+        style={{
+          cursor: 'pointer',
+          ...(isSticky && {
+            position: 'sticky',
+            left: -15,
+            background: 'white', // Ensure the sticky header has a background
+            zIndex: 3, // Ensure it stays above the body rows
+          }),
+        }}
+      >
+        {header}
+        {sortTeamOption === header && !reverse ? (
+          <Icon name="sort down" />
+        ) : sortTeamOption === header && reverse ? (
+          <Icon name="sort up" />
+        ) : (
+          null
+        )}
+      </Table.HeaderCell>
+    );
+  });
 
   const teamDetails = teams.map((team, index) => (
     <Table.Row key={team[0]} negative={eliminatedTeams.includes(team[0])}>
       <Table.Cell collapsing>{index + 1}</Table.Cell>
-      <Table.Cell>
+      <Table.Cell
+        style={{
+          position: 'sticky',
+          left: -15,
+          background: 'white', // Ensure the sticky column has a background
+          zIndex: 1, // Ensure it stays above other columns when scrolling
+        }}>
         <Image src={team[2]} avatar alt={`${team[0]} logo`} />
         {team[0]}
       </Table.Cell>
@@ -193,7 +218,13 @@ const TeamDetails = ({ users, season }) => {
           </Loader>
         ) : (
           <Table basic="very" singleLine unstackable selectable>
-            <Table.Header>
+            <Table.Header
+              style={{
+                position: 'sticky',
+                top: -15,
+                background: 'white', // Ensure the sticky column has a background
+                zIndex: 2, // Ensure it stays above other columns when scrolling
+              }}>
               <Table.Row>
                 <Table.HeaderCell></Table.HeaderCell>
                 {teamHeaders}
