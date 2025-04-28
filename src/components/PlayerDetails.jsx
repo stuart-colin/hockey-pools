@@ -223,7 +223,7 @@ const Insights = ({ users }) => {
 
   return (
     <Segment.Group>
-      <Segment attached='top' >
+      <Segment attached='top'>
         <Grid columns='equal'>
           <Grid.Row >
             <Grid.Column textAlign='left' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>

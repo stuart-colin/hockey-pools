@@ -72,7 +72,7 @@ const App = () => {
       <div className={`app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
           <Scoreboard />
-          <div style={{ paddingTop: "75px" }}>
+          <div style={{ paddingTop: '55px' }}>
             {!isMobile && <Header season={season} />}
             {showAlert && (
               <Alert
@@ -82,7 +82,14 @@ const App = () => {
               />
             )}
             <CountdownTimer />
-            <Grid stackable >
+            <Grid
+              style={{
+                ...(isMobile && {
+                  position: 'fixed',
+                  left: -14,
+                  right: -14,
+                })
+              }} stackable>
               <Grid.Row>
                 {!isMobile &&
                   <Grid.Column width={4}>

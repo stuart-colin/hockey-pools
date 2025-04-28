@@ -40,7 +40,7 @@ const Scoreboard = () => {
     </>
   );
 
-  const renderGoalDetails = (goals) => {
+  const renderGameStats = (goals) => {
     return (
       <List divided relaxed>
         {goals.map((goal, index) => (
@@ -85,7 +85,7 @@ const Scoreboard = () => {
       {game.goals && game.goals.length > 0 ? (
         <Popup
           trigger={<Label>{renderGameLabels(game)}</Label>}
-          content={renderGoalDetails(game.goals)}
+          content={renderGameStats(game.goals)}
           position="top center"
           hoverable
         />

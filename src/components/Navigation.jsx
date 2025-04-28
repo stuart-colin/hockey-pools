@@ -10,7 +10,6 @@ const Navigation = ({ onMenuSelect }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const { isLoading, error, user, isAuthenticated } = useAuth0();
 
-  // Detect if the screen size is mobile
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
@@ -85,7 +84,6 @@ const Navigation = ({ onMenuSelect }) => {
               {'Standings'}
             </Menu.Item>
             {renderMenuItems()}
-
             {isAuthenticated && (
               <Menu.Item
                 name="team-builder"
