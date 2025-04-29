@@ -37,11 +37,11 @@
 
 @media screen and (max-width: 767px) {
   .expandedStandingsStyle {
-    max-height: calc(100vh - 247px);
+    max-height: calc(95vh - 247px);
   }
 
   .expandedStyle {
-    max-height: calc(100vh - 164px);
+    max-height: calc(95vh - 164px);
   }
 }
 

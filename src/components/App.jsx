@@ -74,9 +74,9 @@ const App = () => {
           <Scoreboard />
           <div
             style={{
-              paddingTop: "55px", // Adjust for Scoreboard height
-              paddingBottom: isMobile ? "55px" : "0px", // Adjust for Mobile Navigation height
-              overflowY: "auto", // Allow scrolling if content overflows
+              paddingTop: "55px",
+              paddingBottom: isMobile ? "55px" : "0px",
+              overflowY: "auto",
             }}>
             {!isMobile && <Header season={season} />}
             {showAlert && (
