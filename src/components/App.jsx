@@ -75,7 +75,6 @@ const App = () => {
           <div
             style={{
               paddingTop: "55px",
-              paddingBottom: isMobile ? "55px" : "0px",
             }}>
             {!isMobile && <Header season={season} />}
             {showAlert && (
