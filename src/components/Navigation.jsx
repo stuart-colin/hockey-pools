@@ -22,7 +22,7 @@ const Navigation = ({ onMenuSelect }) => {
 
   const menuItems = [
     { name: "commissioners-corner", label: "Commissioner's Corner" },
-    { name: "roster-view", label: "Roster View" },
+    { name: "my-team", label: "My Team" },
     { name: "insights", label: "Insights" },
     { name: "player-details", label: "Player Details" },
     { name: "team-details", label: "Team Details" },
@@ -88,7 +88,7 @@ const Navigation = ({ onMenuSelect }) => {
               {'Standings'}
             </Menu.Item>
             {renderMenuItems()}
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Menu.Item
                 name='team-builder'
                 active={activeItem === 'team-builder'}
@@ -100,7 +100,7 @@ const Navigation = ({ onMenuSelect }) => {
                 Team Builder
                 <Label color='red'>Beta</Label>
               </Menu.Item>
-            )}
+            )} */}
           </Sidebar>
 
           {/* Push content down to avoid overlap with the fixed menu */}
@@ -111,7 +111,7 @@ const Navigation = ({ onMenuSelect }) => {
         <Menu stackable>
           {renderMenuItems()}
           <Menu.Menu position='right'>
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Menu.Item
                 name='team-builder'
                 active={activeItem === 'team-builder'}
@@ -120,7 +120,7 @@ const Navigation = ({ onMenuSelect }) => {
                 Team Builder
                 <Label color='red'>Beta</Label>
               </Menu.Item>
-            )}
+            )} */}
             <Menu.Item>
               {error && <div>Authentication Error: {error.message}</div>}
               {!error && isLoading && <div>Loading login button...</div>}

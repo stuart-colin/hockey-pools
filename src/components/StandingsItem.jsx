@@ -6,97 +6,62 @@ import RosterView from './RosterView';
 const URL = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
 // const top6 = ['#66b36650', '#7cbe7c50', '#92c99250', '#a7d3a850', '#bddebe50', '#d3e9d350'];
 // const top7 = ['#66b36650', '#79bc7850', '#8bc58a50', '#9dce9c50', '#afd7ae50', '#c1e0c150', '#d3e9d350'];
-const top10 = ['#66b36650', '#66b36650', '#73b97250', '#7fbf7e50', '#8bc58a50', '#97cb9650', '#afd7af50', '#bbddbb50', '#c7e3c750', '#d3e9d350'];
+const top10Colors = ['#66b36650', '#66b36650', '#73b97250', '#7fbf7e50', '#8bc58a50', '#97cb9650', '#afd7af50', '#bbddbb50', '#c7e3c750', '#d3e9d350'];
 
 
-const StandingsItem = ({ index, user, onRosterSelect, poolSize }) => {
+const StandingsItem = ({ user, poolSize }) => {
   const [activeRoster, setActiveRoster] = useState({});
   const [visible, setVisible] = useState(false);
-
-  // const noramalizedRank = ((user.rank / poolSize) * 100).toFixed(0);
 
   const toggleRoster = () => {
     setActiveRoster((activeRoster) => !activeRoster)
     setVisible((visible) => !visible)
   }
 
-  // const pot = poolSize * 20;
-  // const winnings = [
-  //   ' — $' + (pot * 0.65).toFixed(2),
-  //   ' — $' + (pot * 0.15).toFixed(2),
-  //   ' — $' + (pot * 0.09).toFixed(2),
-  //   ' — $' + (pot * 0.06).toFixed(2),
-  //   ' — $' + (pot * 0.03).toFixed(2),
-  //   ' — $' + (pot * 0.02).toFixed(2),
-  // ];
-  // const winnings = [
-  //   ' — $' + (pot * 0.65).toFixed(2),
-  //   ' — $' + (pot * 0.14).toFixed(2),
-  //   ' — $' + (pot * 0.08).toFixed(2),
-  //   ' — $' + (pot * 0.05).toFixed(2),
-  //   ' — $' + (pot * 0.04).toFixed(2),
-  //   ' — $' + (pot * 0.02).toFixed(2),
-  //   ' — $' + (pot * 0.02).toFixed(2),
-  // ];
+  const pot = poolSize * 20;
+  const prizeDistribution = [0.49, 0.15, 0.10, 0.08, 0.07, 0.04, 0.03, 0.02, 0.01, 0.01];
+  const winnings = prizeDistribution.map((percentage) => ` — $${(pot * percentage).toFixed(2)}`);
 
   const roster = [
-    user.user.left[0],
-    user.user.left[1],
-    user.user.left[2],
-    user.user.center[0],
-    user.user.center[1],
-    user.user.center[2],
-    user.user.right[0],
-    user.user.right[1],
-    user.user.right[2],
-    user.user.defense[0],
-    user.user.defense[1],
-    user.user.defense[2],
-    user.user.defense[3],
-    user.user.goalie[0],
-    user.user.goalie[1],
-    user.user.utility,
+    ...user.roster.left,
+    ...user.roster.center,
+    ...user.roster.right,
+    ...user.roster.defense,
+    ...user.roster.goalie,
+    user.roster.utility,
   ];
-  const points = user.points;
-  const playersRemaining = user.playersRemaining;
 
-  const rosterData = [roster, points, playersRemaining]
+  const backgroundColor = user.rank <= 10 ? top10Colors[user.rank - 1] : '';
 
   return (
-    <div
-      onClick={() => {
-        onRosterSelect([user.user, rosterData]);
-      }}
-      className='item'
-      style={{ backgroundColor: user.rank <= 10 ? top10[user.rank - 1] : '' }}
-    >
+    <div className='item' style={{ backgroundColor }}>
       <div className='left floated content'>{user.rank}</div>
-      <img
-        className='ui left floated avatar image'
-        src={URL} alt='participant avatar'></img>
+      <img className='ui left floated avatar image' src={URL} alt='participant avatar'></img>
       <div className='item'>
         <Icon
           circular
           color='blue'
           name={!visible ? 'chevron right' : 'chevron left'}
           onClick={() => {
-            toggleRoster(user.user);
+            toggleRoster(user.roster);
           }}
           rotated='clockwise'
           size='large'
           className='ui right floated avatar image'
         />
-        {/* <div className='header'>{user.user.owner.name} {user.rank <= 7 ? winnings[user.rank - 1] : ''}</div> */}
+        {/* <div className='header'>{user.roster.owner.name} {user.rank <= 7 ? winnings[user.rank - 1] : ''}</div> */}
         <div className='header'>
-          <Flag name={user.user.owner.country.toLowerCase()} />
-          {'  '}
-          {user.user.owner.name}
+          <Flag name={user.roster.owner.country.toLowerCase()} />
+          {' '}
+          {user.roster.owner.name}
+          {' '}
+          {/* {user.rank <= 10 ? winnings[user.rank - 1] : ''} */}
         </div>
-        <div className={`left floated content playersRemaining${playersRemaining}`}>
-          {playersRemaining}/16
+        <div className={`left floated content playersRemaining${user.playersRemaining}`}>
+          {user.playersRemaining}/16
         </div>
         <div className='right floated content'>
-          {points} Points
+          {user.points} Points
         </div>
 
       </div>
@@ -104,8 +69,7 @@ const StandingsItem = ({ index, user, onRosterSelect, poolSize }) => {
         <Transition visible={visible} duration={500}>
           <div className='ui basic segment' style={{ transition: 'all 1s' }}>
             <RosterView
-              selectedRoster={user.user}
-              rosterData={rosterData}
+              roster={roster}
             />
           </div>
         </Transition>

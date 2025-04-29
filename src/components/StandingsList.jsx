@@ -4,7 +4,7 @@ import Search from "./Search";
 import StandingsItem from "./StandingsItem";
 import "../css/customStyle.css";
 
-const StandingsList = ({ users, onRosterSelect, season }) => {
+const StandingsList = ({ users, season }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
 
@@ -53,7 +53,6 @@ const StandingsList = ({ users, onRosterSelect, season }) => {
   const renderedList = sortedRosters.map((user, index) => (
     <StandingsItem
       user={user}
-      onRosterSelect={onRosterSelect}
       key={index}
       index={index}
       poolSize={sortedRosters.length}
@@ -80,9 +79,6 @@ const StandingsList = ({ users, onRosterSelect, season }) => {
               {/* Season Header */}
               <Header as="h3" color="blue" textAlign="center" style={{ flex: 1 }}>
                 {season} Standings
-                <Header.Subheader>
-
-                </Header.Subheader>
               </Header>
             </Grid.Column>
             <Grid.Column width={2}>

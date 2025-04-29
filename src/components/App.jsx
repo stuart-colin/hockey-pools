@@ -26,13 +26,13 @@ const currentYear = new Date().getFullYear().toString();
 const alertMessageHeading = "📢 Welcome to BP's 20th Annual Hockey Pool!";
 const alertMessage =
   "Reminder: Standings in the app are refreshed roughly every hour, and depend on the NHL updating their data - expect a delay after a game ends to see changes in the standings. Goalie overtime losses are manually added since the NHL does not tally those in the playoffs, so you may see those tracked as soon as immediately after the game ends or later depending on when I am able to get to a computer. Please let us know if you see any discrepancies!";
+const rosterDataEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/'
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
   const { user, isAuthenticated } = useAuth0();
   const [activeItem, setActiveItem] = useState("");
   const [season, setSeason] = useState(currentYear);
-  const [selectedRoster, setSelectedRoster] = useState([]);
   const [beta, setBeta] = useState(true);
   const [showAlert, setShowAlert] = useState(true);
 
@@ -48,16 +48,14 @@ const App = () => {
       "commissioners-corner": <Announcement />,
       "standings": <StandingsList
         users={users}
-        onRosterSelect={setSelectedRoster}
         season={season}
       />,
-      "roster-view":
+      "my-team":
         <ParticipantRoster
-          selectedRoster={selectedRoster[0]}
-          rosterData={selectedRoster[1]}
+          rosterDataEndpoint={rosterDataEndpoint}
         />
       ,
-      insights: <Insights users={users} />,
+      "insights": <Insights users={users} />,
       "player-details": <PlayerDetails users={users} />,
       "team-details": <TeamDetails users={users} season={season} />,
       "team-builder": <TeamBuilder regularSeasonStats={regularSeasonStats} />,
@@ -98,7 +96,6 @@ const App = () => {
                   <Grid.Column width={4}>
                     <StandingsList
                       users={users}
-                      onRosterSelect={setSelectedRoster}
                       season={season}
                     />
                   </Grid.Column>

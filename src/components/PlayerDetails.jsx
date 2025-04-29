@@ -56,25 +56,15 @@ const Insights = ({ users }) => {
     playersRemaining.push(user.playersRemaining)
     points.push(user.points)
     // for (let i = 0; i < positions.length; i++) {
-    //   console.log(user.user[positions[i]])
+    //   console.log(user.roster[positions[i]])
     // }
     playerData.push(
-      user.user.utility,
-      user.user.left[0],
-      user.user.left[1],
-      user.user.left[2],
-      user.user.center[0],
-      user.user.center[1],
-      user.user.center[2],
-      user.user.right[0],
-      user.user.right[1],
-      user.user.right[2],
-      user.user.defense[0],
-      user.user.defense[1],
-      user.user.defense[2],
-      user.user.defense[3],
-      user.user.goalie[0],
-      user.user.goalie[1],
+      ...user.roster.left,
+      ...user.roster.center,
+      ...user.roster.right,
+      ...user.roster.defense,
+      ...user.roster.goalie,
+      user.roster.utility,
     )
   });
 

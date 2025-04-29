@@ -23,83 +23,58 @@ const TeamDetails = ({ users, season }) => {
     }
   }, [users]);
 
-  let playersRemaining = [];
-  let points = [];
-  let playerData = [];
-  let players = [];
-  let playerList = [];
+  let playerData = users.rosters.flatMap((user) => [
+    ...user.roster.left,
+    ...user.roster.center,
+    ...user.roster.right,
+    ...user.roster.defense,
+    ...user.roster.goalie,
+    user.roster.utility,
+  ]);
 
-  users.rosters.forEach((user) => {
-    playersRemaining.push(user.playersRemaining);
-    points.push(user.points);
-    playerData.push(
-      user.user.utility,
-      user.user.left[0],
-      user.user.left[1],
-      user.user.left[2],
-      user.user.center[0],
-      user.user.center[1],
-      user.user.center[2],
-      user.user.right[0],
-      user.user.right[1],
-      user.user.right[2],
-      user.user.defense[0],
-      user.user.defense[1],
-      user.user.defense[2],
-      user.user.defense[3],
-      user.user.goalie[0],
-      user.user.goalie[1]
-    );
-  });
-
-  playerData.forEach((player) => {
-    let playerPoints;
-    if (player.position === 'G') {
-      playerPoints =
-        player.stats.featuredStats.playoffs.subSeason.wins * 2 +
+  const allPlayers = playerData.map((player) => {
+    const playerPoints =
+      player.position === 'G'
+        ? player.stats.featuredStats.playoffs.subSeason.wins * 2 +
         player.stats.featuredStats.playoffs.subSeason.shutouts * 2 +
-        player.stats.otl;
-    } else {
-      playerPoints =
-        player.stats.featuredStats.playoffs.subSeason.goals +
+        player.stats.otl
+        : player.stats.featuredStats.playoffs.subSeason.goals +
         player.stats.featuredStats.playoffs.subSeason.assists +
         player.stats.featuredStats.playoffs.subSeason.otGoals;
-    }
-    players.push([player.name, player.position, player.stats.teamLogo, player.stats.teamName, playerPoints]);
+
+    return [
+      player.name,
+      player.position,
+      player.stats.teamLogo,
+      player.stats.teamName,
+      playerPoints,
+    ];
   });
 
-  frequency(players).map((player) => {
-    playerList.push([
-      player[0].split(',')[0],
-      player[0].split(',')[1],
-      player[0].split(',')[2],
-      player[0].split(',')[3],
-      parseFloat(player[0].split(',')[4]),
-      player[1]
-    ]);
-    return null;
+  const playerList = frequency(allPlayers).map((player) => {
+    const [name, position, teamLogo, teamName, points] = player[0].split(',');
+    return [name, position, teamLogo, teamName, parseFloat(points), player[1]];
   });
 
   const playerTeamCount = playerList.map((team) => team[3]);
-  const selectionsPerTeam = frequency(playerTeamCount).sort();
-  const teamCount = players.map((team) => team[3]);
+  const teamCount = allPlayers.map((team) => team[3]);
   const totalSelectionsPerTeam = frequency(teamCount).sort();
   const teamLogos = playerList.map((team) => [team[3], team[2]]);
   const sortedLogos = frequency(teamLogos).sort();
   const teamPoints = sumArrayIndex(playerList, 3, 4);
-  const teamPoolPoints = sumArrayIndex(players, 3, 4);
+  const teamPoolPoints = sumArrayIndex(allPlayers, 3, 4);
   const totalPoolPoints = sumNestedArray(teamPoolPoints, 1);
+  const selectionsPerTeam = frequency(playerTeamCount).sort();
 
   selectionsPerTeam.map((team, index) => {
-    team.push(
-      sortedLogos[index][0].split(',')[1],
-      totalSelectionsPerTeam[index][1],
-      teamPoints[index][1],
-      teamPoolPoints[index][1],
-      teamPoints[index][1] / selectionsPerTeam[index][1],
-      teamPoolPoints[index][1] / totalSelectionsPerTeam[index][1]
-    );
-    return team;
+    const logo = sortedLogos[index][0].split(',')[1];
+    const totalPlayers = totalSelectionsPerTeam[index][1];
+    const teamPointsValue = teamPoints[index][1];
+    const poolPointsValue = teamPoolPoints[index][1];
+    const pointsPerPick = teamPointsValue / team[1];
+    const weightedPointsPerPick = poolPointsValue / totalPlayers;
+
+    team.push(logo, totalPlayers, teamPointsValue, poolPointsValue, pointsPerPick, weightedPointsPerPick);
   });
 
   selectionsPerTeam.sort();

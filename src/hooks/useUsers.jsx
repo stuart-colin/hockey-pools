@@ -44,10 +44,10 @@ const useUsers = (season) => {
   }, [season]);
 
   useEffect(() => {
-    userList.forEach((user) => {
-      const points = countPoints(user);
-      const playersRemaining = eliminatedPlayers(user);
-      setRosters((rosters) => [...rosters, { user, points, playersRemaining }]);
+    userList.forEach((roster) => {
+      const points = countPoints(roster);
+      const playersRemaining = eliminatedPlayers(roster);
+      setRosters((rosters) => [...rosters, { roster, points, playersRemaining }]);
     });
   }, [userList]);
 
