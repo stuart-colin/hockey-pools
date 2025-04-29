@@ -360,17 +360,21 @@ const Insights = ({ users }) => {
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header as="h3">Best Players No One Took</Header>
-                <Statistic.Group size='tiny' widths='one' color='green'>
+                <Statistic.Group size='mini' widths='one' color='green'>
                   <Statistic
                     horizontal
-                    // label='Pavel Francouz'
-                    // value='14'
-                    // label='Adin Hill'
-                    // value='26'
-                    label='Coming Soon'
+                    label='Phillip Danault'
+                    value='7'
+                  // label='Pavel Francouz'
+                  // value='14'
+                  // label='Adin Hill'
+                  // value='26'
+                  // label='Coming Soon'
                   />
                   <Statistic
                     horizontal
+                    label='Andrei Kuzmenko'
+                    value='5'
                   // label='Antti Raanta'
                   // value='14'
                   // label='Sergei Bobrovsky'
@@ -378,6 +382,8 @@ const Insights = ({ users }) => {
                   />
                   <Statistic
                     horizontal
+                    label='Anthony Beauvillier'
+                    value='5'
                   // label='Carter Verhaeghe'
                   // value='14'
                   // label='Carter Verhaeghe'

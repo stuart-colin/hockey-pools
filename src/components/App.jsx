@@ -72,7 +72,12 @@ const App = () => {
       <div className={`app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
           <Scoreboard />
-          <div style={{ paddingTop: '55px' }}>
+          <div
+            style={{
+              paddingTop: "55px", // Adjust for Scoreboard height
+              paddingBottom: isMobile ? "55px" : "0px", // Adjust for Mobile Navigation height
+              overflowY: "auto", // Allow scrolling if content overflows
+            }}>
             {!isMobile && <Header season={season} />}
             {showAlert && (
               <Alert
