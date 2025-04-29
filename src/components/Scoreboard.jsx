@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Label, Image, Segment, Popup, Icon } from 'semantic-ui-react';
+import { List, Label, Image, Segment, Popup, Icon, ListDescription } from 'semantic-ui-react';
 import useScores from '../hooks/useScores';
 import getOrdinals from '../utils/getOrdinals';
 
@@ -42,7 +42,7 @@ const Scoreboard = () => {
 
   const renderGameStats = (goals) => {
     return (
-      <List divided relaxed>
+      <List divided relaxed >
         {goals.map((goal, index) => (
           <List.Item
             key={index}
@@ -65,13 +65,17 @@ const Scoreboard = () => {
             />
             <List.Content>
               <List.Header>
-                <strong>G:</strong> {goal.name.default}
+                <strong>G: {goal.name.default} {' ('}{goal.goalsToDate}{')'}</strong>
               </List.Header>
               <List.Description>
-                <strong>A:</strong>{" "}
+                <strong>A:</strong>
+                {" "}
                 {goal.assists.length > 0
-                  ? goal.assists.map((assist) => assist.name.default).join(", ")
+                  ? goal.assists.map((assist) => assist.name.default + ' (' + assist.assistsToDate + ')').join(", ")
                   : "None"}
+              </List.Description>
+              <List.Description>
+                <strong>{goal.timeInPeriod} {' '} {goal.period}{getOrdinals(goal.period)}</strong>
               </List.Description>
             </List.Content>
           </List.Item>
@@ -88,6 +92,7 @@ const Scoreboard = () => {
           content={renderGameStats(game.goals)}
           position="top center"
           hoverable
+          wide='very'
         />
       ) : (
         <Label>{renderGameLabels(game)}</Label>
