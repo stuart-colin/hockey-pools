@@ -20,7 +20,7 @@
 
 .expandedStandingsStyle {
   transition: all 1s;
-  max-height: calc(100vh - 505px);
+  max-height: calc(100dvh - 505px);
   overflow-y: auto;
   /* overflow-x: hidden; */
   -webkit-filter: opacity(1);
@@ -29,7 +29,7 @@
 
 .expandedStyle {
   transition: all 1s;
-  max-height: calc(100vh - 482px);
+  max-height: calc(100dvh - 482px);
   overflow: auto;
   -webkit-filter: opacity(1);
   filter: opacity(1);
@@ -37,11 +37,11 @@
 
 @media screen and (max-width: 767px) {
   .expandedStandingsStyle {
-    max-height: calc(95vh - 247px);
+    max-height: calc(100dvh - 247px);
   }
 
   .expandedStyle {
-    max-height: calc(95vh - 164px);
+    max-height: calc(100dvh - 164px);
   }
 }
 
