@@ -128,12 +128,12 @@ const TeamDetails = ({ users, season }) => {
         }}
         style={{
           cursor: 'pointer',
-          ...(isSticky && {
-            position: 'sticky',
-            left: -15,
-            background: 'white', // Ensure the sticky header has a background
-            zIndex: 3, // Ensure it stays above the body rows
-          }),
+          // ...(isSticky && {
+          //   position: 'sticky',
+          //   left: -15,
+          //   background: 'white', // Ensure the sticky header has a background
+          //   zIndex: 3, // Ensure it stays above the body rows
+          // }),
         }}
       >
         {header}

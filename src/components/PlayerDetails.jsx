@@ -174,12 +174,12 @@ const Insights = ({ users }) => {
         }}
         style={{
           cursor: 'pointer',
-          ...(isSticky && {
-            position: 'sticky',
-            left: -15,
-            background: 'white',
-            zIndex: 3, // Ensure it stays above the body rows
-          }),
+          // ...(isSticky && {
+          //   position: 'sticky',
+          //   left: -15,
+          //   background: 'white',
+          //   zIndex: 3, // Ensure it stays above the body rows
+          // }),
         }}
       >
         {header}
