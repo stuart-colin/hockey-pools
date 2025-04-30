@@ -221,7 +221,7 @@ const Insights = ({ users }) => {
           }
         </Table.Cell>
         <Table.Cell>
-          {player[9] + `/` + users.rosters.length + ` -- ` + ((player[9] / users.rosters.length) * 100).toFixed(0)}%
+          {player[9] + `/` + users.rosters.length + ` — ` + ((player[9] / users.rosters.length) * 100).toFixed(0)}%
         </Table.Cell>
       </Table.Row>
     );

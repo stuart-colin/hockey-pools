@@ -33,8 +33,14 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
         <Segment attached="top">
           <Grid>
             <Grid.Row columns={3}>
-              <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-                <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
+              <Grid.Column width={2}>
+                <Icon
+                  color="blue"
+                  circular
+                  name={visible ? 'chevron up' : 'chevron down'}
+                  onClick={() => setVisible(!visible)}
+                  style={{ cursor: 'pointer' }}
+                />
               </Grid.Column>
               <Grid.Column width={12} textAlign="center">
                 <Header as="h3" color="blue" style={{ whiteSpace: 'nowrap' }}>
@@ -66,7 +72,7 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
           {position.charAt(0).toUpperCase() + position.slice(1)}
         </Header>
         {playersInPosition.map((player, playerIndex) => (
-          <div key={playerIndex}>
+          <div style={{ paddingBottom: '10px' }} key={playerIndex}>
             {cardView ? <StatsSlim player={player} /> : <StatsCard player={player} />}
           </div>
         ))}
@@ -79,8 +85,14 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
       <Segment attached="top">
         <Grid>
           <Grid.Row columns={3}>
-            <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-              <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
+            <Grid.Column width={2}>
+              <Icon
+                color="blue"
+                circular
+                name={visible ? 'chevron up' : 'chevron down'}
+                onClick={() => setVisible(!visible)}
+                style={{ cursor: 'pointer' }}
+              />
             </Grid.Column>
             <Grid.Column width={12} textAlign="center">
               <Header as="h3" color="blue">
@@ -91,7 +103,18 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
                 {roster.owner.region}
               </span>
             </Grid.Column>
-            <Grid.Column width={2} textAlign="right"></Grid.Column>
+            <Grid.Column width={2} textAlign="right">
+              <Icon
+
+                icon
+                color='blue'
+                size='large'
+                basic
+                onClick={() => setCardView(!cardView)}
+                style={{ marginBottom: '10px', cursor: 'pointer' }}
+                name={cardView ? 'id badge outline' : 'id card outline'}
+              />
+            </Grid.Column>
           </Grid.Row>
           <Grid.Row columns={1}>
             <Grid.Column width={16} textAlign="center">

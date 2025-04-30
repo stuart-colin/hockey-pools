@@ -163,11 +163,11 @@ const TeamDetails = ({ users, season }) => {
       </Table.Cell>
       <Table.Cell>{team[1]}</Table.Cell>
       <Table.Cell>
-        {team[3]} -- {((team[3] / (users.rosters.length * 16)) * 100).toFixed(2)}%
+        {team[3]} — {((team[3] / (users.rosters.length * 16)) * 100).toFixed(2)}%
       </Table.Cell>
       <Table.Cell>{team[4]}</Table.Cell>
       <Table.Cell>
-        {team[5]} -- {((team[5] / totalPoolPoints) * 100).toFixed(2)}%
+        {team[5]} — {((team[5] / totalPoolPoints) * 100).toFixed(2)}%
       </Table.Cell>
       <Table.Cell>{team[6].toFixed(2)}</Table.Cell>
       <Table.Cell>{team[7].toFixed(2)}</Table.Cell>
