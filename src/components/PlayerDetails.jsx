@@ -177,7 +177,6 @@ const Insights = ({ users }) => {
           ...(isSticky && {
             position: 'sticky',
             left: -15,
-            background: 'white', // Ensure the sticky header has a background
             zIndex: 3, // Ensure it stays above the body rows
           }),
         }}
@@ -203,7 +202,6 @@ const Insights = ({ users }) => {
           style={{
             position: 'sticky',
             left: -15,
-            background: 'white', // Ensure the sticky column has a background
             zIndex: 1, // Ensure it stays above other columns when scrolling
           }}
         >
@@ -260,7 +258,6 @@ const Insights = ({ users }) => {
                 top: 0,
                 left: 0,
                 zIndex: 10,
-                background: 'white',
               }}>
               <Grid.Column>
                 <Input
@@ -342,7 +339,6 @@ const Insights = ({ users }) => {
                           style={{
                             position: 'sticky',
                             top: -15,
-                            background: 'white', // Ensure the sticky column has a background
                             zIndex: 2, // Ensure it stays above other columns when scrolling
                           }}>
                           <Table.Row>

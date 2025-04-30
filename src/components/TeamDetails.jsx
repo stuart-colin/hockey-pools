@@ -131,7 +131,6 @@ const TeamDetails = ({ users, season }) => {
           ...(isSticky && {
             position: 'sticky',
             left: -15,
-            background: 'white', // Ensure the sticky header has a background
             zIndex: 3, // Ensure it stays above the body rows
           }),
         }}
@@ -155,7 +154,6 @@ const TeamDetails = ({ users, season }) => {
         style={{
           position: 'sticky',
           left: -15,
-          background: 'white', // Ensure the sticky column has a background
           zIndex: 1, // Ensure it stays above other columns when scrolling
         }}>
         <Image src={team[2]} avatar alt={`${team[0]} logo`} />
@@ -197,7 +195,6 @@ const TeamDetails = ({ users, season }) => {
               style={{
                 position: 'sticky',
                 top: -15,
-                background: 'white', // Ensure the sticky column has a background
                 zIndex: 2, // Ensure it stays above other columns when scrolling
               }}>
               <Table.Row>
