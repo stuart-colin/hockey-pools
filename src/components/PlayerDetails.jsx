@@ -177,6 +177,7 @@ const Insights = ({ users }) => {
           ...(isSticky && {
             position: 'sticky',
             left: -15,
+            background: 'white',
             zIndex: 3, // Ensure it stays above the body rows
           }),
         }}
@@ -200,9 +201,10 @@ const Insights = ({ users }) => {
         <Table.Cell collapsing>{index + 1}</Table.Cell>
         <Table.Cell
           style={{
-            position: 'sticky',
-            left: -15,
-            zIndex: 1, // Ensure it stays above other columns when scrolling
+            // position: 'sticky',
+            // left: -15,
+            // background: 'white', // Ensure the sticky column has a background
+            // zIndex: 1, // Ensure it stays above other columns when scrolling
           }}
         >
           <Image src={player[0]} avatar alt={`${player[1]} Headshot`} /> {player[1]}
@@ -258,6 +260,7 @@ const Insights = ({ users }) => {
                 top: 0,
                 left: 0,
                 zIndex: 10,
+                background: 'white',
               }}>
               <Grid.Column>
                 <Input
@@ -339,6 +342,7 @@ const Insights = ({ users }) => {
                           style={{
                             position: 'sticky',
                             top: -15,
+                            background: 'white', // Ensure the sticky column has a background
                             zIndex: 2, // Ensure it stays above other columns when scrolling
                           }}>
                           <Table.Row>

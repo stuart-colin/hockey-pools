@@ -8,12 +8,12 @@ const Search = ({ users, placeholder }) => {
 
   useEffect(() => {
     if (!users.loading) {
-      setFilteredUsers(users.rosters.filter(user => user.user.owner.name.toLowerCase().includes(searchTerm.toLowerCase())));
+      setFilteredUsers(users.rosters.filter(user => user.roster.owner.name.toLowerCase().includes(searchTerm.toLowerCase())));
     }
   }, [searchTerm]);
 
   const searchedUser = filteredUsers.map(user => (
-    <div key={user.user.owner.id}>{user.user.owner.name} - {user.rank}{getOrdinal(user.rank)} place, {user.points} points </div>
+    <div key={user.roster.owner.id}>{user.roster.owner.name} - {user.rank}{getOrdinal(user.rank)} place, {user.points} points </div>
   ));
 
   const labelDisplay = () => {
