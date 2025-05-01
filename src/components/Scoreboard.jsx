@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { List, Label, Image, Segment, Popup, Icon, ListDescription } from 'semantic-ui-react';
 import useScores from '../hooks/useScores';
 import getOrdinals from '../utils/getOrdinals';
@@ -27,8 +27,6 @@ const Scoreboard = () => {
     <>
       <Image avatar src={game.awayTeam.logo} alt={`${game.awayTeam.name.default} Logo`} />
       <Label>{game.awayTeam.score}</Label>
-      <Image avatar src={game.homeTeam.logo} alt={`${game.homeTeam.name.default} Logo`} />
-      <Label>{game.homeTeam.score}</Label>
       <Label>
         {game.gameState === "OFF" || game.gameState === "FINAL"
           ? "Final"
@@ -37,13 +35,56 @@ const Scoreboard = () => {
             : `${game.clock.timeRemaining} ${game.period}${getOrdinals(game.period)} ${game.clock.inIntermission ? "INT" : ""
             }`}
       </Label>
+      <Label>{game.homeTeam.score}</Label>
+      <Image avatar src={game.homeTeam.logo} alt={`${game.homeTeam.name.default} Logo`} />
     </>
   );
 
-  const renderGameStats = (goals) => {
+  const renderGameStats = (game) => {
+
+    const homeTeamWins =
+      game.homeTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
+        ? game.seriesStatus.topSeedWins
+        : game.seriesStatus.bottomSeedWins;
+
+    const awayTeamWins =
+      game.awayTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
+        ? game.seriesStatus.topSeedWins
+        : game.seriesStatus.bottomSeedWins;
     return (
       <List divided relaxed >
-        {goals.map((goal, index) => (
+        <List.Item
+          textAlign="center"
+          style={{
+            display: "flex", // Use flexbox for horizontal alignment
+            justifyContent: "center", // Center horizontally
+            alignItems: "center", // Center vertically
+          }}>
+          <Label>
+            <Image avatar src={game.awayTeam.logo} alt={`${game.awayTeam.name.default} Logo`} />
+            <Label>
+              {awayTeamWins}
+            </Label>
+            <Label>
+              {
+                awayTeamWins === 4
+                  ? game.awayTeam.abbrev + ' Wins'
+                  : homeTeamWins === 4
+                    ? game.homeTeam.abbrev + ' Wins'
+                    : awayTeamWins === homeTeamWins
+                      ? 'Series Tied'
+                      : awayTeamWins > homeTeamWins
+                        ? game.awayTeam.abbrev + ' Leads'
+                        : game.homeTeam.abbrev + ' Leads'
+              }
+            </Label>
+            <Label>
+              {homeTeamWins}
+            </Label>
+            <Image avatar src={game.homeTeam.logo} alt={`${game.homeTeam.name.default} Logo`} />
+          </Label>
+        </List.Item>
+        {game.goals.map((goal, index) => (
           <List.Item
             key={index}
             style={{
@@ -86,17 +127,13 @@ const Scoreboard = () => {
 
   const games = scoreboard.games.map((game, index) => (
     <List.Item key={index}>
-      {game.goals && game.goals.length > 0 ? (
-        <Popup
-          trigger={<Label>{renderGameLabels(game)}</Label>}
-          content={renderGameStats(game.goals)}
-          position="top center"
-          hoverable
-          wide='very'
-        />
-      ) : (
-        <Label>{renderGameLabels(game)}</Label>
-      )}
+      <Popup
+        trigger={<Label>{renderGameLabels(game)}</Label>}
+        content={game.goals && game.goals.length > 0 ? renderGameStats(game) : null}
+        position="top center"
+        hoverable
+        wide='very'
+      />
     </List.Item>
   ));
 
