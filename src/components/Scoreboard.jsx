@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { useMediaQuery } from "react-responsive";
 import { List, Label, Image, Segment, Popup, Icon, ListDescription } from 'semantic-ui-react';
 import useScores from '../hooks/useScores';
 import getOrdinals from '../utils/getOrdinals';
@@ -7,6 +8,8 @@ const teamLogo = 'https://assets.nhle.com/logos/nhl/svg/';
 
 const Scoreboard = () => {
   const scoreboard = useScores();
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   function localDate(date) {
     const newDate = new Date(date);
@@ -28,11 +31,12 @@ const Scoreboard = () => {
       <Image avatar src={game.awayTeam.logo} alt={`${game.awayTeam.name.default} Logo`} />
       <Label>{game.awayTeam.score}</Label>
       <Label>
-        {game.gameState === "OFF" || game.gameState === "FINAL"
-          ? "Final"
-          : game.gameState === "FUT" || game.gameState === "PRE"
+        {game.gameState === 'OFF' || game.gameState === 'FINAL'
+          ? 'FINAL' + (game.gameOutcome.lastPeriodType === 'OT'
+            ? game.gameOutcome.otPeriods + '/' + game.gameOutcome.lastPeriodType : '')
+          : game.gameState === 'FUT' || game.gameState === 'PRE'
             ? localDate(game.startTimeUTC)
-            : `${game.clock.timeRemaining} ${game.period}${getOrdinals(game.period)} ${game.clock.inIntermission ? "INT" : ""
+            : `${game.clock.timeRemaining} ${game.period}${getOrdinals(game.period)} ${game.clock.inIntermission ? 'INT' : ''
             }`}
       </Label>
       <Label>{game.homeTeam.score}</Label>
@@ -52,13 +56,18 @@ const Scoreboard = () => {
         ? game.seriesStatus.topSeedWins
         : game.seriesStatus.bottomSeedWins;
     return (
-      <List divided relaxed >
+      <List divided relaxed
+        style={{
+          maxHeight: '70dvh',
+          overflow: 'auto',
+          scrollbarWidth: 'thin',
+        }}
+      >
         <List.Item
-          textAlign="center"
           style={{
-            display: "flex", // Use flexbox for horizontal alignment
-            justifyContent: "center", // Center horizontally
-            alignItems: "center", // Center vertically
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
           <Label>
             <Image avatar src={game.awayTeam.logo} alt={`${game.awayTeam.name.default} Logo`} />
@@ -68,14 +77,14 @@ const Scoreboard = () => {
             <Label>
               {
                 awayTeamWins === 4
-                  ? game.awayTeam.abbrev + ' Wins'
+                  ? game.awayTeam.abbrev + ' WINS'
                   : homeTeamWins === 4
-                    ? game.homeTeam.abbrev + ' Wins'
+                    ? game.homeTeam.abbrev + ' WINS'
                     : awayTeamWins === homeTeamWins
-                      ? 'Series Tied'
+                      ? 'SERIES TIED'
                       : awayTeamWins > homeTeamWins
-                        ? game.awayTeam.abbrev + ' Leads'
-                        : game.homeTeam.abbrev + ' Leads'
+                        ? game.awayTeam.abbrev + ' LEADS'
+                        : game.homeTeam.abbrev + ' LEADS'
               }
             </Label>
             <Label>
@@ -88,35 +97,48 @@ const Scoreboard = () => {
           <List.Item
             key={index}
             style={{
-              display: "flex", // Use flexbox for horizontal alignment
-              alignItems: "center", // Vertically center the content
+              display: 'flex',
+              alignItems: 'center',
             }}
           >
             <Image
               avatar
-              src={teamLogo + goal.teamAbbrev + '_light.svg'} // Assuming the team logo URL is stored here
+              src={teamLogo + goal.teamAbbrev + '_light.svg'}
               alt={`${goal.teamName} Logo`}
-              style={{ marginRight: "10px" }}
+              style={{ marginRight: '10px' }}
             />
             <Image
               avatar
-              src={goal.mugshot} // Assuming the mugshot URL is stored here
+              src={goal.mugshot}
               alt={`${goal.name.default}'s mugshot`}
-              style={{ marginRight: "10px" }}
+              style={{ marginRight: '10px' }}
             />
             <List.Content>
               <List.Header>
-                <strong>G: {goal.name.default} {' ('}{goal.goalsToDate}{')'}</strong>
+                <strong>
+                  G: {goal.firstName.default}
+                  {' '}
+                  {goal.lastName.default}
+                  {' ('}{goal.goalsToDate}{')'}
+                </strong>
               </List.Header>
               <List.Description>
-                <strong>A:</strong>
-                {" "}
+                A:
+                {' '}
                 {goal.assists.length > 0
-                  ? goal.assists.map((assist) => assist.name.default + ' (' + assist.assistsToDate + ')').join(", ")
-                  : "None"}
+                  ? goal.assists.map((assist) => assist.name.default + ' (' + assist.assistsToDate + ')').join(', ')
+                  : 'None'}
               </List.Description>
               <List.Description>
-                <strong>{goal.timeInPeriod} {' '} {goal.period}{getOrdinals(goal.period)}</strong>
+                <strong>
+                  {'('}
+                  {goal.timeInPeriod}
+                  {' — '}
+                  {goal.period > 3
+                    ? (goal.period - 3) + goal.periodDescriptor.periodType
+                    : goal.period + getOrdinals(goal.period)}
+                  {')'}
+                </strong>
               </List.Description>
             </List.Content>
           </List.Item>
@@ -130,9 +152,9 @@ const Scoreboard = () => {
       <Popup
         trigger={<Label>{renderGameLabels(game)}</Label>}
         content={game.goals && game.goals.length > 0 ? renderGameStats(game) : null}
-        position="top center"
+        position={isMobile ? 'bottom right' : 'bottom center'}
+        flowing
         hoverable
-        wide='very'
       />
     </List.Item>
   ));
