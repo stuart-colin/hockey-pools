@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Transition, Icon, Flag } from 'semantic-ui-react';
+import { Transition, Icon, Flag, List, Image } from 'semantic-ui-react';
 import '../css/customStyle.css';
 import RosterView from './RosterView';
 
@@ -22,60 +22,54 @@ const StandingsItem = ({ user, poolSize }) => {
   const prizeDistribution = [0.49, 0.15, 0.10, 0.08, 0.07, 0.04, 0.03, 0.02, 0.01, 0.01];
   const winnings = prizeDistribution.map((percentage) => ` — $${(pot * percentage).toFixed(2)}`);
 
-  const roster = [
-    ...user.roster.left,
-    ...user.roster.center,
-    ...user.roster.right,
-    ...user.roster.defense,
-    ...user.roster.goalie,
-    user.roster.utility,
-  ];
-
   const backgroundColor = user.rank <= 10 ? top10Colors[user.rank - 1] : '';
 
   return (
-    <div className='item' style={{ backgroundColor }}>
-      <div className='left floated content'>{user.rank}</div>
-      <img className='ui left floated avatar image' src={URL} alt='participant avatar'></img>
-      <div className='item'>
+    <List.Item style={{ backgroundColor }}>
+      <List.Content floated='left' verticalAlign='middle'>
+        {user.rank}
+      </List.Content>
+      <Image avatar src={URL} alt='participant avatar' verticalAlign='middle' />
+      {' '}
+      <List.Content style={{ paddingLeft: '1em' }}>
+        <List.Header>
+          {user.owner && user.owner.country && user.owner.country.toLowerCase() !== 'n/a' &&
+            <Flag name={user.owner.country.toLowerCase()} />
+          }
+          {' '}
+          {user.owner.name}
+          {' '}
+        </List.Header>
+        <List.Description>
+          <span className={`playersRemaining${user.playersRemaining}`}>
+            {user.playersRemaining}/16
+          </span>
+        </List.Description>
+      </List.Content>
+      <List.Content floated='right' verticalAlign='middle'>
+        <span style={{ paddingRight: '1em' }}>
+          {user.points} Points
+        </span>
         <Icon
           circular
           color='blue'
           name={!visible ? 'chevron right' : 'chevron left'}
-          onClick={() => {
-            toggleRoster(user.roster);
-          }}
+          onClick={toggleRoster}
           rotated='clockwise'
-          size='large'
-          className='ui right floated avatar image'
+          link
         />
-        {/* <div className='header'>{user.roster.owner.name} {user.rank <= 7 ? winnings[user.rank - 1] : ''}</div> */}
-        <div className='header'>
-          <Flag name={user.roster.owner.country.toLowerCase()} />
-          {' '}
-          {user.roster.owner.name}
-          {' '}
-          {/* {user.rank <= 10 ? winnings[user.rank - 1] : ''} */}
-        </div>
-        <div className={`left floated content playersRemaining${user.playersRemaining}`}>
-          {user.playersRemaining}/16
-        </div>
-        <div className='right floated content'>
-          {user.points} Points
-        </div>
-
-      </div>
+      </List.Content>
       {!activeRoster ?
         <Transition visible={visible} duration={500}>
           <div className='ui basic segment' style={{ transition: 'all 1s' }}>
             <RosterView
-              roster={roster}
+              user={user}
             />
           </div>
         </Transition>
         : null
       }
-    </div>
+    </List.Item>
   )
 }
 

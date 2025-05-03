@@ -37,5 +37,42 @@ export const sumNestedArray = (array, index) => {
   return sum;
 }
 
-export const customSort = (array, index) => [].concat(array)
-  .sort((a, b) => a[index] > b[index] ? -1 : 1);
+// Example of a non-mutating customSort in src/utils/stats.js
+export const customSort = (array, key) => {
+  // Basic validation
+  if (!Array.isArray(array)) {
+    console.error("customSort expects an array.");
+    return [];
+  }
+  if (!array.length) {
+    return []; // Return empty if array is empty
+  }
+  // Check if key exists on the first element (basic check)
+  // You might want more robust checking depending on your data
+  if (key && typeof array[0][key] === 'undefined') {
+    console.warn(`customSort: Key "${key}" not found on array elements.`);
+    // Decide how to handle: return original, empty, or sort differently
+    return [...array]; // Return a copy of the original for now
+  }
+
+
+  // Create a shallow copy using spread syntax BEFORE sorting
+  return [...array].sort((a, b) => {
+    const valA = key ? a[key] : a; // Handle sorting array of primitives if key is null/undefined
+    const valB = key ? b[key] : b;
+
+    // Basic descending sort for numbers, adjust as needed for strings etc.
+    if (typeof valA === 'number' && typeof valB === 'number') {
+      return valB - valA; // Descending for numbers
+    }
+    // Add logic here for string comparison if needed
+    if (String(valA) < String(valB)) {
+      return -1; // Ascending for strings
+    }
+    if (String(valA) > String(valB)) {
+      return 1;
+    }
+
+    return 0;
+  });
+};

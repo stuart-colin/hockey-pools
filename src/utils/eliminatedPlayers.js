@@ -1,35 +1,20 @@
-import eliminatedTeams from '../constants/eliminatedTeams';
+function eliminatedPlayers(roster, eliminatedTeamsList) {
+  const safeEliminatedList = Array.isArray(eliminatedTeamsList) ? eliminatedTeamsList : [];
 
-function eliminatedPlayers(roster) {
-  const teams = [
-    roster.utility.stats.teamName,
-    roster.left[0].stats.teamName,
-    roster.left[1].stats.teamName,
-    roster.left[2].stats.teamName,
-    roster.center[0].stats.teamName,
-    roster.center[1].stats.teamName,
-    roster.center[2].stats.teamName,
-    roster.right[0].stats.teamName,
-    roster.right[1].stats.teamName,
-    roster.right[2].stats.teamName,
-    roster.defense[0].stats.teamName,
-    roster.defense[1].stats.teamName,
-    roster.defense[2].stats.teamName,
-    roster.defense[3].stats.teamName,
-    roster.goalie[0].stats.teamName,
-    roster.goalie[1].stats.teamName,
-  ];
+  const allPlayers = [
+    ...(roster.left || []),
+    ...(roster.center || []),
+    ...(roster.right || []),
+    ...(roster.defense || []),
+    ...(roster.goalie || []),
+    ...(roster.utility ? [roster.utility] : []),
+  ].filter(Boolean);
 
-  let playersRemaining = 16;
+  const remainingPlayers = allPlayers.filter(player =>
+    player.stats && player.stats.teamName && !safeEliminatedList.includes(player.stats.teamName)
+  );
 
-  teams.map((team) => {
-    if (eliminatedTeams.includes(team)) {
-      playersRemaining--;
-    }
-    return playersRemaining;
-  })
-
-  return playersRemaining;
+  return remainingPlayers.length;
 }
 
 export default eliminatedPlayers;

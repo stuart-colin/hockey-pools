@@ -1,8 +1,9 @@
 import React from 'react';
-import eliminatedTeams from '../constants/eliminatedTeams';
+import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 import '../css/customStyle.css';
 
 const StatsSlim = ({ player }) => {
+  const { eliminatedTeams, loading, error } = useEliminatedTeamsContext();
 
   let stats;
   let points;
@@ -14,8 +15,10 @@ const StatsSlim = ({ player }) => {
     points = stats[0] + stats[2] + stats[4];
   }
 
+  const isEliminated = eliminatedTeams.includes(player.stats.teamName);
+
   return (
-    <div key={player.name} className={`ui blue card ${eliminatedTeams.includes(player.stats.teamName) ? 'eliminated' : ''}`} alt={`${player.stats.teamName} logo`}>
+    <div key={player.name} className={`ui blue card ${isEliminated ? 'eliminated' : ''}`} alt={`${player.stats.teamName} logo`}>
       <div className='items' >
         <div className='logoBox'>
           <img className='teamLogoSlim' src={player.stats.teamLogo} alt={`${player.stats.teamName} Logo`} />

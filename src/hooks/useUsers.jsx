@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import countPoints from "../utils/countPoints";
+import useEliminatedTeams from './useEliminatedTeams';
 import eliminatedPlayers from "../utils/eliminatedPlayers";
 import seasons from "../constants/seasons";
 
@@ -8,12 +9,14 @@ import seasons from "../constants/seasons";
 const rosterEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters`;
 
 const useUsers = (season) => {
-  const [userList, setUserList] = useState([]);
-  const [rosters, setRosters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [rawUserList, setRawUserList] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [errorUsers, setErrorUsers] = useState(null);
+
+  const { eliminatedTeams, loading: eliminatedLoading, error: eliminatedError } = useEliminatedTeams(season);
 
   useEffect(() => {
-    setRosters([]);
+    setRawUserList([]); // Clear previous raw data on season change
     const getUserList = async () => {
       switch (season) {
         default:
@@ -23,37 +26,43 @@ const useUsers = (season) => {
           //   const res2 = await fetch(rosterEndpoint + '?limit=1&page=' + i)
           //   const users2 = await res2.json();
           //   setUserList(users2.results);
-          // }
-          setUserList(users.results);
-          setLoading(false);
+          // } catch (e) { ... setErrorUsers(e); }
+          setRawUserList(users.results || []); // Set raw data, ensure it's an array
+          setLoadingUsers(false);
           break;
         case "2023":
-          setUserList(seasons.seasons.season2023.results);
-          setLoading(false);
+          setRawUserList(seasons.seasons.season2023.results);
+          setLoadingUsers(false);
           break;
         case "2022":
-          setUserList(seasons.seasons.season2022.results);
-          setLoading(false);
+          setRawUserList(seasons.seasons.season2022.results);
+          setLoadingUsers(false);
           break;
       }
-      return () => {
-        setUserList([]);
-      };
     };
     getUserList();
   }, [season]);
 
-  useEffect(() => {
-    userList.forEach((roster) => {
+  // Use useMemo to process the raw data only when it or dependencies change
+  const processedRosters = useMemo(() => {
+    // Don't process until both users and eliminated teams are loaded
+    if (loadingUsers || eliminatedLoading || !rawUserList) {
+      return [];
+    }
+
+    // Map over raw data to calculate points and remaining players
+    return rawUserList.map((roster) => {
       const points = countPoints(roster);
-      const playersRemaining = eliminatedPlayers(roster);
-      setRosters((rosters) => [...rosters, { roster, points, playersRemaining }]);
+      const playersRemaining = eliminatedPlayers(roster, eliminatedTeams);
+      return { ...roster, points, playersRemaining }; // Return new object with calculated fields
     });
-  }, [userList]);
+  }, [rawUserList, eliminatedTeams, loadingUsers, eliminatedLoading]); // Dependencies for the memo
+
 
   return {
-    rosters: rosters,
-    loading: loading,
+    rosters: processedRosters, // Return the processed list
+    loading: loadingUsers || eliminatedLoading, // Combine loading states
+    error: errorUsers || eliminatedError, // Combine errors (simple approach)
   };
 };
 

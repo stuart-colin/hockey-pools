@@ -9,25 +9,24 @@ const useStandings = () => {
   useEffect(() => {
     const getStandingsData = async () => {
       const res = await fetch(standingsEndpointNHL);
-      const json = await res.json();
-      for (let i = 0; i < json.standings.length; i++) {
-        if (
-          json.standings[i].clinchIndicator &&
-          json.standings[i].clinchIndicator !== "e"
-        ) {
-          setPlayoffTeams([
-            json.standings[i].teamName.default,
-            json.standings[i].teamAbbrev.default,
-          ]);
+      const data = await res.json();
+      const teams = [];
+      if (data && data.standings && Array.isArray(data.standings)) {
+        data.standings.forEach(team => {
+          if (team.clinchIndicator && ['x', 'y', 'z', 'p'].includes(team.clinchIndicator.toLowerCase())) {
+            if (team.teamAbbrev && team.teamAbbrev.default) {
+              teams.push(team.teamAbbrev.default);
+            }
+          }
         }
+        )
       }
+      setPlayoffTeams(teams);
     };
     getStandingsData();
-  }, [setPlayoffTeams]);
+  }, []);
 
-  return {
-    playoffTeams: playoffTeams,
-  };
+  return playoffTeams;
 };
 
 export default useStandings;

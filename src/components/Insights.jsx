@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Divider, Icon, Grid, Statistic, Segment, Header, Loader } from 'semantic-ui-react';
-import { min, max, mean, frequency, customSort } from '../utils/stats';
-import eliminatedTeams from '../constants/eliminatedTeams';
-// import positions from '../constants/positions';
+import { min, max, mean, customSort } from '../utils/stats';
 import '../css/customStyle.css';
 
 const smallStep = 1;
@@ -10,7 +8,7 @@ const bigStep = 10;
 const defaultHighThresh = 50;
 const defaultLowThresh = 50;
 
-const Insights = ({ users }) => {
+const Insights = ({ users, players }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
   const [highThresh, setHighThresh] = useState(defaultHighThresh);
@@ -34,185 +32,138 @@ const Insights = ({ users }) => {
     }
   }
 
-  let playersRemaining = [];
-  let points = [];
-  let playerData = [];
-  let players = [];
-  let playerList = [];
+  const userPlayersRemaining = useMemo(() => users.rosters.map(u => u.playersRemaining), [users.rosters]);
+  const userPoints = useMemo(() => users.rosters.map(u => u.points), [users.rosters]);
 
-  users.rosters.forEach((user) => {
-    playersRemaining.push(user.playersRemaining)
-    points.push(user.points)
-    // for (let i = 0; i < positions.length; i++) {
-    //   console.log(user.roster[positions[i]])
-    // }
-    playerData.push(
-      user.roster.utility,
-      user.roster.left[0],
-      user.roster.left[1],
-      user.roster.left[2],
-      user.roster.center[0],
-      user.roster.center[1],
-      user.roster.center[2],
-      user.roster.right[0],
-      user.roster.right[1],
-      user.roster.right[2],
-      user.roster.defense[0],
-      user.roster.defense[1],
-      user.roster.defense[2],
-      user.roster.defense[3],
-      user.roster.goalie[0],
-      user.roster.goalie[1],
-    )
-  })
+  const playerPickRate = useMemo(() => players.map(p => ({
+    ...p,
+    pickRate: (p.pickCount / users.rosters.length) * 100
+  })), [players, users.rosters.length]);
 
-  const calculatePlayerPoints = (player) => {
-    if (player.position === 'G') {
-      return (
-        player.stats.featuredStats.playoffs.subSeason.wins * 2 +
-        player.stats.featuredStats.playoffs.subSeason.shutouts * 2 +
-        player.stats.otl
-      );
-    }
-    return (
-      player.stats.featuredStats.playoffs.subSeason.goals +
-      player.stats.featuredStats.playoffs.subSeason.assists +
-      player.stats.featuredStats.playoffs.subSeason.otGoals
-    );
-  };
+  const mostPlayersRemaining = max(userPlayersRemaining);
+  const averagePlayersRemaining = mean(userPlayersRemaining).toFixed(0);
+  const leastPlayersRemaining = min(userPlayersRemaining);
 
-  playerData.forEach((player) => {
-    const playerPoints = calculatePlayerPoints(player);
-    players.push([player.name, player.position, player.stats.teamName, playerPoints]);
-  });
+  const mostPoints = max(userPoints);
+  const averagePoints = mean(userPoints).toFixed(0)
+  const leastPoints = min(userPoints);
 
-  frequency(players).map((player) => {
-    playerList.push([player[0].split(',')[0], player[0].split(',')[1], player[0].split(',')[2], parseFloat(player[0].split(',')[3]), player[1]])
-    return null;
-  })
-
-  const mostPlayersRemaining = max(playersRemaining);
-  const averagePlayersRemaining = mean(playersRemaining).toFixed(0);
-  const leastPlayersRemaining = min(playersRemaining);
-
-  const mostPoints = max(points);
-  const averagePoints = mean(points).toFixed(0)
-  const leastPoints = min(points);
-
-  const mostCommonPlayers = playerList.slice(0, 3).map((player) => {
-    return <Statistic horizontal value={player[4]
+  const mostCommonPlayers = playerPickRate.slice(0, 3).map((player) => {
+    return <Statistic horizontal value={player.pickCount
       // + ' - ' + (commonPlayerSelections / users.rosters.length * 100).toFixed(0) + '%'
     }
-      key={player[0]}
-      label={player[0]}
+      key={player.id}
+      label={player.name}
     />;
   });
 
-  const playerTeamCount = playerList.map((team) => {
-    return team[2];
-  })
-  const selectionsPerTeam = frequency(playerTeamCount).sort();
-
-  const teamCount = players.map((team) => {
-    return team[2];
-  })
-  const totalSelectionsPerTeam = frequency(teamCount).sort();
-
-  selectionsPerTeam.map((team, index) => {
-    team.push(totalSelectionsPerTeam[index][1])
-    return team;
-  })
-
-  selectionsPerTeam.push(['Seattle Kraken', 0, 0]);
-  selectionsPerTeam.sort()
-
-  const topL = customSort(playerList, 3).filter(player => player[1] === 'L').slice(0, 3);
-  const topC = customSort(playerList, 3).filter(player => player[1] === 'C').slice(0, 3);
-  const topR = customSort(playerList, 3).filter(player => player[1] === 'R').slice(0, 3);
-  const topD = customSort(playerList, 3).filter(player => player[1] === 'D').slice(0, 4);
-  const topG = customSort(playerList, 3).filter(player => player[1] === 'G').slice(0, 2);
+  const topL = customSort(playerPickRate, 'points').filter(player => player.position === 'L').slice(0, 3);
+  const topC = customSort(playerPickRate, 'points').filter(player => player.position === 'C').slice(0, 3);
+  const topR = customSort(playerPickRate, 'points').filter(player => player.position === 'R').slice(0, 3);
+  const topD = customSort(playerPickRate, 'points').filter(player => player.position === 'D').slice(0, 4);
+  const topG = customSort(playerPickRate, 'points').filter(player => player.position === 'G').slice(0, 2);
   const topByPosition = [topL, topC, topR, topD, topG].flat();
-  const topU = customSort(playerList, 3).filter(player => !topByPosition.includes(player)).slice(0, 1);
+  const topU = customSort(playerPickRate, 'points').filter(player => !topByPosition.some(p => p.id === player.id)).slice(0, 1);
 
   const bestTeam = topByPosition.concat(topU);
   let bestRemaining = 16;
   let bestPoints = 0;
   bestTeam.map((player) => {
-    if (eliminatedTeams.includes(player[2])) {
+    if (player.isEliminated) {
       bestRemaining--
     }
-    bestPoints = bestPoints + player[3];
+    bestPoints = bestPoints + player.points;
     return null;
   });
 
-  const commonL = playerList.filter(player => player[1] === 'L').slice(0, 3);
-  const commonC = playerList.filter(player => player[1] === 'C').slice(0, 3);
-  const commonR = playerList.filter(player => player[1] === 'R').slice(0, 3);
-  const commonD = playerList.filter(player => player[1] === 'D').slice(0, 4);
-  const commonG = playerList.filter(player => player[1] === 'G').slice(0, 2);
+  const commonL = playerPickRate.filter(player => player.position === 'L').slice(0, 3); // Use playerPickRate
+  const commonC = playerPickRate.filter(player => player.position === 'C').slice(0, 3);
+  const commonR = playerPickRate.filter(player => player.position === 'R').slice(0, 3);
+  const commonD = playerPickRate.filter(player => player.position === 'D').slice(0, 4);
+  const commonG = playerPickRate.filter(player => player.position === 'G').slice(0, 2);
   const commonByPosition = [commonL, commonC, commonR, commonD, commonG].flat();
-  const commonU = playerList.filter(player => !commonByPosition.includes(player)).slice(0, 1);
+  const commonU = playerPickRate.filter(player => !commonByPosition.some(p => p.id === player.id)).slice(0, 1);
 
   const commonTeam = commonByPosition.concat(commonU);
   let commonRemaining = 16;
   let commonPoints = 0;
   commonTeam.map((player) => {
-    if (eliminatedTeams.includes(player[2])) {
+    if (player.isEliminated) {
       commonRemaining--
     }
-    commonPoints = commonPoints + player[3]
+    commonPoints = commonPoints + player.points
     return null;
   });
 
-  const topPlayers = customSort(playerList, 3)
+  const topPlayers = customSort(playerPickRate, 'points')
     .slice(0, 3)
     .map((player) => {
-      return <Statistic horizontal value={player[3]
+      return <Statistic horizontal value={player.points
       }
-        key={player[0]}
-        label={player[0] + ' (' + player[4] + ')'}
+        key={player.id}
+        label={`${player.name} (${player.pickCount})`}
       />;
     });
 
-  const bottomPlayers = customSort(playerList, 3)
+  const bottomPlayers = customSort(playerPickRate, 'points')
     .slice(-3)
     .reverse()
     .map((player) => {
-      return <Statistic horizontal value={player[3]
+      return <Statistic horizontal value={player.points
       }
-        key={player[0]}
-        label={player[0] + ' (' + player[4] + ')'}
+        key={player.id}
+        label={`${player.name} (${player.pickCount})`}
       />;
     });
 
-  const bestByPickThreshold = customSort(playerList, 3)
-    .filter(player => Math.round(player[4] / users.rosters.length * 100) <= highThresh)
+  const bestByPickThreshold = customSort(playerPickRate, 'points')
+    .filter(player => Math.round(player.pickRate) <= highThresh)
     .slice(0, 3)
     .map((player) => {
-      return <Statistic horizontal value={player[3]
+      return <Statistic horizontal value={player.points
       }
-        key={player[0]}
-        label={player[0] + ' (' + player[4] + ')'}
+        key={player.id}
+        label={`${player.name} (${player.pickCount})`}
       />;
     });
 
-  const highThreshMin = playerList.length ? parseFloat((playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0)) : null;
-  const highThreshMax = playerList.length ? parseFloat((playerList[0][4] / users.rosters.length * 100).toFixed(0)) : null;
+  const highThreshMin = playerPickRate.length ? Math.floor(playerPickRate[playerPickRate.length - 1].pickRate) : 0;
+  const highThreshMax = playerPickRate.length ? Math.ceil(playerPickRate[0].pickRate) : 100;
 
-  const worstByPickThreshold = customSort(playerList, 3)
-    .filter(player => (player[4] / users.rosters.length * 100) >= lowThresh)
+  const worstByPickThreshold = customSort(playerPickRate, 'points')
+    .filter(player => player.pickRate >= lowThresh)
     .slice(-3)
     .reverse()
     .map((player) => {
-      return <Statistic horizontal value={player[3]
+      return <Statistic horizontal value={player.points
       }
-        key={player[0]}
-        label={player[0] + ' (' + player[4] + ')'}
+        key={player.id}
+        label={`${player.name} (${player.pickCount})`}
       />;
     });
 
-  const lowThreshMin = playerList.length ? parseFloat((playerList[playerList.length - 1][4] / users.rosters.length * 100).toFixed(0)) : null;
-  const lowThreshMax = playerList.length ? parseFloat((playerList[2][4] / users.rosters.length * 100).toFixed(0)) : null;
+  const lowThreshMin = playerPickRate.length ? Math.floor(playerPickRate[playerPickRate.length - 1].pickRate) : 0;
+  const lowThreshMax = playerPickRate.length ? Math.ceil(playerPickRate[0].pickRate) : 100; // Use players[0] for max pick rate
+
+  const chunkArray = (array, size) => {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunks.push(array.slice(i, i + size));
+    }
+    return chunks;
+  };
+
+  const renderStatistics = (players, color) => {
+    return players.map((player) => (
+      <Statistic
+        color={player.isEliminated ? 'red' : color}
+        horizontal
+        key={player.id} // Use unique id
+        label={`${player.name} (${player.pickCount})`}
+        value={player.points}
+      />
+    ));
+  };
 
   return (
     <Segment.Group>
@@ -397,201 +348,49 @@ const Insights = ({ users }) => {
               <Grid.Column>
                 <Header as="h3">Perfect Team - {bestPoints} Points, {bestRemaining}/16 Players</Header>
                 <Grid>
-                  <Grid.Row columns={3}>
-                    <Grid.Column>
-                      <Header as='h4'>Left</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
-                        {topL.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Center</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
-                        {topC.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Right</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
-                        {topR.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                  </Grid.Row>
-                  <Grid.Row columns={3}>
-                    <Grid.Column>
-                      <Header as='h4'>Defense</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
-                        {topD.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Goalie</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
-                        {topG.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Utility</Header>
-                      <Statistic.Group size='mini' widths='one' color='green'>
-                        {topU.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                  </Grid.Row>
+                  {chunkArray(['Left', 'Center', 'Right', 'Defense', 'Goalie', 'Utility'], 3).map((chunk, rowIndex) => (
+                    <Grid.Row columns={3} key={rowIndex}>
+                      {chunk.map((position) => (
+                        <Grid.Column key={position}>
+                          <Header as="h4">{position}</Header>
+                          <Statistic.Group size="mini" widths="one">
+                            {renderStatistics(
+                              position === 'Left' ? topL :
+                                position === 'Center' ? topC :
+                                  position === 'Right' ? topR :
+                                    position === 'Defense' ? topD :
+                                      position === 'Goalie' ? topG : topU,
+                              'green'
+                            )}
+                          </Statistic.Group>
+                        </Grid.Column>
+                      ))}
+                    </Grid.Row>
+                  ))}
                 </Grid>
               </Grid.Column>
               <Grid.Column>
                 <Header as="h3">Most Common Team - {commonPoints} Points, {commonRemaining}/16 Players</Header>
                 <Grid>
-                  <Grid.Row columns={3}>
-                    <Grid.Column>
-                      <Header as='h4'>Left</Header>
-                      <Statistic.Group size='mini' widths='one' color='purple'>
-                        {commonL.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Center</Header>
-                      <Statistic.Group size='mini' widths='one' color='purple'>
-                        {commonC.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Right</Header>
-                      <Statistic.Group size='mini' widths='one' color='purple'>
-                        {commonR.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid>
-                <Grid>
-                  <Grid.Row columns={3}>
-                    <Grid.Column>
-                      <Header as='h4'>Defense</Header>
-                      <Statistic.Group size='mini' widths='one' color='purple'>
-                        {commonD.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Goalie</Header>
-                      <Statistic.Group size='mini' widths='one' color='purple'>
-                        {commonG.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Header as='h4'>Utility</Header>
-                      <Statistic.Group size='mini' widths='one' color='purple'>
-                        {commonU.map((player) => {
-                          return (
-                            <Statistic
-                              horizontal
-                              key={player[0]}
-                              label={player[0] + ' (' + player[4] + ')'}
-                              value={player[3]}
-                              style={{ color: eliminatedTeams.includes(player[2]) ? 'red' : '' }} />
-                          )
-                        })}
-                      </Statistic.Group>
-                    </Grid.Column>
-                  </Grid.Row>
+                  {chunkArray(['Left', 'Center', 'Right', 'Defense', 'Goalie', 'Utility'], 3).map((chunk, rowIndex) => (
+                    <Grid.Row columns={3} key={rowIndex}>
+                      {chunk.map((position) => (
+                        <Grid.Column key={position}>
+                          <Header as="h4">{position}</Header>
+                          <Statistic.Group size="mini" widths="one">
+                            {renderStatistics(
+                              position === 'Left' ? commonL :
+                                position === 'Center' ? commonC :
+                                  position === 'Right' ? commonR :
+                                    position === 'Defense' ? commonD :
+                                      position === 'Goalie' ? commonG : commonU,
+                              'blue'
+                            )}
+                          </Statistic.Group>
+                        </Grid.Column>
+                      ))}
+                    </Grid.Row>
+                  ))}
                 </Grid>
               </Grid.Column>
             </Grid.Row>

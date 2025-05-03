@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const skaterStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
 const goalieStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/goalieStats`;
 
-const useRegularSeasonStats = ({ playoffTeams }) => {
+const useRegularSeasonStats = (playoffTeams) => { // Accept playoffTeams array directly
   const [skaterStats, setSkaterStats] = useState([]);
   const [goalieStats, setGoalieStats] = useState([]);
   const [skaterLoading, setSkaterLoading] = useState(false);
@@ -12,21 +12,18 @@ const useRegularSeasonStats = ({ playoffTeams }) => {
 
   useEffect(() => {
     const getSkaterData = async () => {
-      if (playoffTeams.length) {
-        setSkaterLoading(true); // Set skater loading to true
+      if (playoffTeams && playoffTeams.length > 0) {
+        setSkaterLoading(true);
         const res = await fetch(skaterStatsEndpoint);
         const json = await res.json();
-        for (let i = 0; i < json.data.length; i++) {
-          if (
-            json.data[i].teamAbbrevs
-              .split(/[,]+/)
-              .pop()
-              .includes(playoffTeams[1])
-          ) {
-            setSkaterStats((skater) => [...skater, json.data[i]]);
-          }
-        }
-        setSkaterLoading(false); // Set skater loading to false when done
+        const filteredSkaters = json.data.filter(player => {
+          const teamAbbrevsArray = player.teamAbbrevs && player.teamAbbrevs.split(/[,]+/);
+          const currentTeam = teamAbbrevsArray && teamAbbrevsArray.pop();
+          return currentTeam && playoffTeams.includes(currentTeam);
+        });
+        filteredSkaters.sort((a, b) => b.points - a.points);
+        setSkaterStats(filteredSkaters);
+        setSkaterLoading(false);
       }
     };
     getSkaterData();
@@ -34,28 +31,22 @@ const useRegularSeasonStats = ({ playoffTeams }) => {
 
   useEffect(() => {
     const getGoalieData = async () => {
-      if (playoffTeams.length) {
-        setGoalieLoading(true); // Set goalie loading to true
+      if (playoffTeams && playoffTeams.length > 0) {
+        setGoalieLoading(true);
         const res = await fetch(goalieStatsEndpoint);
         const json = await res.json();
-        for (let i = 0; i < json.data.length; i++) {
-          if (
-            json.data[i].teamAbbrevs
-              .split(/[,]+/)
-              .pop()
-              .includes(playoffTeams[1])
-          ) {
-            json.data[i].positionCode = "G";
-            setGoalieStats((goalie) => [...goalie, json.data[i]]);
-          }
-        }
-        setGoalieLoading(false); // Set goalie loading to false when done
+        const filteredGoalies = json.data.filter(player => {
+          const teamAbbrevsArray = player.teamAbbrevs && player.teamAbbrevs.split(/[,]+/);
+          const currentTeam = teamAbbrevsArray && teamAbbrevsArray.pop();
+          return currentTeam && playoffTeams.includes(currentTeam);
+        }).map(goalie => ({ ...goalie, positionCode: "G" }));
+        filteredGoalies.sort((a, b) => b.wins - a.wins);
+        setGoalieStats(filteredGoalies);
+        setGoalieLoading(false);
       }
     };
     getGoalieData();
   }, [playoffTeams]);
-
-  // Update the overall loading state based on individual loading states
   useEffect(() => {
     setLoading(skaterLoading || goalieLoading);
   }, [skaterLoading, goalieLoading]);

@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMediaQuery } from "react-responsive";
-import { Grid, Segment, Container } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 
 import Alert from "./Alert";
 import Announcement from "./Announcement";
@@ -18,15 +18,18 @@ import StandingsList from "./StandingsList";
 import TeamBuilder from "./TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
+import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
+import useEliminatedTeams from "../hooks/useEliminatedTeams";
+import { EliminatedTeamsProvider } from "../context/EliminatedTeamsContext";
 
 const currentYear = new Date().getFullYear().toString();
 const alertMessageHeading = "📢 Welcome to BP's 20th Annual Hockey Pool!";
 const alertMessage =
   "Reminder: Standings in the app are refreshed roughly every hour, and depend on the NHL updating their data - expect a delay after a game ends to see changes in the standings. Goalie overtime losses are manually added since the NHL does not tally those in the playoffs, so you may see those tracked as soon as immediately after the game ends or later depending on when I am able to get to a computer. Please let us know if you see any discrepancies!";
-const rosterDataEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/'
+const rosterDataEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -39,7 +42,8 @@ const App = () => {
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams);
   const users = useUsers(season);
-
+  const { eliminatedTeams, loading: eliminatedLoading, error: eliminatedError } = useEliminatedTeams(season);
+  const players = usePlayerData(users, eliminatedTeams, eliminatedLoading);
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   // Map activeItem to components
@@ -55,9 +59,9 @@ const App = () => {
           rosterDataEndpoint={rosterDataEndpoint}
         />
       ,
-      "insights": <Insights users={users} />,
-      "player-details": <PlayerDetails users={users} />,
-      "team-details": <TeamDetails users={users} season={season} />,
+      "insights": <Insights users={users} players={players} />,
+      "player-details": <PlayerDetails users={users} players={players} />,
+      "team-details": <TeamDetails users={users} players={players} season={season} />,
       "team-builder": <TeamBuilder regularSeasonStats={regularSeasonStats} />,
     };
 
@@ -69,53 +73,55 @@ const App = () => {
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <div className={`app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
-          <Scoreboard />
-          <div
-            style={{
-              paddingTop: "55px",
-            }}>
-            {!isMobile && <Header season={season} />}
-            {showAlert && (
-              <Alert
-                messageHeading={alertMessageHeading}
-                message={alertMessage}
-                onClose={() => setShowAlert(false)}
-              />
-            )}
-            <CountdownTimer />
-            <Grid
+          <EliminatedTeamsProvider season={season}>
+            <Scoreboard />
+            <div
               style={{
-                ...(isMobile && {
-                  position: 'fixed',
-                  left: -14,
-                  right: -14,
-                })
-              }} stackable>
-              <Grid.Row>
-                {!isMobile &&
-                  <Grid.Column width={4}>
-                    <StandingsList
-                      users={users}
-                      season={season}
-                    />
-                  </Grid.Column>
-                }
-                <Grid.Column width={12}>
+                paddingTop: "55px",
+              }}>
+              {!isMobile && <Header season={season} />}
+              {showAlert && (
+                <Alert
+                  messageHeading={alertMessageHeading}
+                  message={alertMessage}
+                  onClose={() => setShowAlert(false)}
+                />
+              )}
+              <CountdownTimer />
+              <Grid
+                style={{
+                  ...(isMobile && {
+                    position: 'fixed',
+                    left: -14,
+                    right: -14,
+                  })
+                }} stackable>
+                <Grid.Row>
                   {!isMobile &&
-                    <Navigation
-                      onMenuSelect={setActiveItem}
-                      onSeasonSelect={setSeason}
-                      beta={beta}
-                    />
+                    <Grid.Column width={4}>
+                      <StandingsList
+                        users={users}
+                        season={season}
+                      />
+                    </Grid.Column>
                   }
-                  {renderContent()}
-                  {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
-                    <PlayerCreator regularSeasonStats={regularSeasonStats} />
-                  )}
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </div>
+                  <Grid.Column width={12}>
+                    {!isMobile &&
+                      <Navigation
+                        onMenuSelect={setActiveItem}
+                        onSeasonSelect={setSeason}
+                        beta={beta}
+                      />
+                    }
+                    {renderContent()}
+                    {/* {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
+                      <PlayerCreator regularSeasonStats={regularSeasonStats} />
+                    )} */}
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </div>
+          </EliminatedTeamsProvider>
         </Fragment >
         {isMobile &&
           <Navigation

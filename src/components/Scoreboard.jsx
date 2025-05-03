@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useMediaQuery } from "react-responsive";
 import {
   List,
@@ -173,7 +173,7 @@ const Scoreboard = () => {
       )));
   };
 
-  const games = scoreboard.games.map((game, index) => (
+  const games = useMemo(() => scoreboard.games.map((game, index) => (
     <List.Item key={index}>
       <Popup
         trigger={<Label>{renderGameLabels(game)}</Label>}
@@ -183,7 +183,7 @@ const Scoreboard = () => {
         hoverable
       />
     </List.Item>
-  ));
+  )), [scoreboard.games, isMobile]);
 
   return (
     <Segment

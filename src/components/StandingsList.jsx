@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Flag, Grid, Icon, Segment, Header, List, Dimmer, Loader, Button } from "semantic-ui-react";
 import Search from "./Search";
 import StandingsItem from "./StandingsItem";
@@ -12,50 +12,42 @@ const StandingsList = ({ users, season }) => {
     if (!users.loading) setLoading(false);
   }, [users]);
 
-  function setRanks(roster) {
-    let currentCount = -1,
-      currentRank = 0,
-      stack = 1;
-    for (let i = 0; i < roster.length; i++) {
-      const result = roster[i];
-      if (currentCount !== result["points"]) {
-        currentRank += stack;
-        stack = 1;
-      } else {
-        stack++;
-      }
-      result["rank"] = currentRank;
-      currentCount = result["points"];
+  const rankedRosters = useMemo(() => {
+    if (!users.rosters || users.rosters.length === 0) {
+      return [];
     }
-  }
 
-  const sortedRosters = [].concat(users.rosters).sort((a, b) => (a.points > b.points ? -1 : 1));
-  setRanks(sortedRosters);
+    // 1. Create a shallow copy and sort by points descending
+    const sorted = [...users.rosters].sort((a, b) => b.points - a.points);
 
-  const pot = sortedRosters.length * 20;
+    // 2. Calculate ranks immutably
+    let currentRank = 0;
+    let stack = 1;
+    let lastPoints = -Infinity; // Start with a value lower than any possible points
 
-  // const winnings = [
-  //   ' — $' + (pot * 0.65).toFixed(2),
-  //   ' — $' + (pot * 0.14).toFixed(2),
-  //   ' — $' + (pot * 0.08).toFixed(2),
-  //   ' — $' + (pot * 0.05).toFixed(2),
-  //   ' — $' + (pot * 0.04).toFixed(2),
-  //   ' — $' + (pot * 0.02).toFixed(2),
-  //   ' — $' + (pot * 0.02).toFixed(2),
-  // ];
+    return sorted.map((roster, index) => {
+      if (roster.points !== lastPoints) {
+        currentRank += stack;
+        stack = 1; // Reset stack for the new rank
+      }
+      else {
+        stack++; // Increment stack for tied rank
+      }
+      lastPoints = roster.points; // Update lastPoints for the next iteration
 
-  // const winningsDistro = sortedRosters.map((user, index) => {
-  //   return (
-  //     user.rank <= 7 ? winnings[user.rank - 1] : ''
-  //   )
-  // })
+      // Return a new object with the rank added
+      return { ...roster, rank: currentRank };
+    });
+  }, [users.rosters]); // Only recalculate when users.rosters changes
 
-  const renderedList = sortedRosters.map((user, index) => (
+  const pot = rankedRosters.length * 20;
+
+  const renderedList = rankedRosters.map((user, index) => (
     <StandingsItem
       user={user}
       key={index}
       index={index}
-      poolSize={sortedRosters.length}
+      poolSize={rankedRosters.length}
     />
   ));
 
@@ -65,7 +57,6 @@ const StandingsList = ({ users, season }) => {
       <Segment attached="top" >
         <Grid textAlign="center">
           <Grid.Row columns={3}>
-            {/* Toggle Visibility Button */}
             <Grid.Column width={2}>
               <Icon
                 circular
@@ -76,7 +67,6 @@ const StandingsList = ({ users, season }) => {
               />
             </Grid.Column>
             <Grid.Column width={12}>
-              {/* Season Header */}
               <Header as="h3" color="blue" textAlign="center" style={{ flex: 1 }}>
                 {season} Standings
               </Header>
@@ -87,14 +77,11 @@ const StandingsList = ({ users, season }) => {
               Pot: ${pot} <Flag name="canada" />
             </Grid.Row>
           </Grid.Row>
-          {/* Search Component */}
           <Grid.Row columns={12}>
             <Search users={users} placeholder={"Search Rosters"} />
           </Grid.Row>
         </Grid>
       </Segment>
-
-      {/* Content Segment */}
       <Segment
         attached="bottom"
         className={visible ? "expandedStandingsStyle" : "collapsedStyle"}

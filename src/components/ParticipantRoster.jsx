@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Grid, Header, Icon, Segment, Statistic } from 'semantic-ui-react';
+import {
+  Flag,
+  Grid,
+  Header,
+  Icon,
+  Segment,
+  Statistic
+} from 'semantic-ui-react';
 import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import rosterPositions from '../constants/rosterPositions';
 import eliminatedPlayers from '../utils/eliminatedPlayers';
+import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 import countPoints from '../utils/countPoints';
-import useMyTeam from '../hooks/useMyTeam'; // Import the custom hook
+import useMyTeam from '../hooks/useMyTeam';
 import '../css/customStyle.css';
 
 const ParticipantRoster = ({ rosterDataEndpoint }) => {
-  const { roster, error, isLoading } = useMyTeam(rosterDataEndpoint); // Use the custom hook
+  const { eliminatedTeams } = useEliminatedTeamsContext();
+  const { roster, error, isLoading } = useMyTeam(rosterDataEndpoint);
   const [visible, setVisible] = useState(true);
-  const [cardView, setCardView] = useState();
   const isMobile = useMediaQuery({ maxWidth: 767 });
-
-  useState(() => {
-    isMobile ? setCardView(true) : setCardView(false);
-  }, [isMobile]);
+  const [cardView, setCardView] = useState(isMobile);
 
   if (isLoading) {
     return <Segment loading>Loading roster...</Segment>;
@@ -44,9 +49,9 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
               </Grid.Column>
               <Grid.Column width={12} textAlign="center">
                 <Header as="h3" color="blue" style={{ whiteSpace: 'nowrap' }}>
-                  No Roster Found
+                  No Team Found
                 </Header>
-                Please sign in to see your roster.
+                Please sign in to see your team.
               </Grid.Column>
               <Grid.Column width={2} />
             </Grid.Row>
@@ -99,17 +104,16 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
                 {roster.owner.name}
               </Header>
               <span>
-                <i className={`${roster.owner.country.toLowerCase()} flag`} />
+                {roster.owner && roster.owner.country && roster.owner.country.toLowerCase() !== 'n/a' &&
+                  <Flag name={roster.owner.country.toLowerCase()} />
+                }
                 {roster.owner.region}
               </span>
             </Grid.Column>
             <Grid.Column width={2} textAlign="right">
               <Icon
-
-                icon
                 color='blue'
                 size='large'
-                basic
                 onClick={() => setCardView(!cardView)}
                 style={{ marginBottom: '10px', cursor: 'pointer' }}
                 name={cardView ? 'id badge outline' : 'id card outline'}
@@ -123,7 +127,7 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
                 <Statistic.Label>Pool Points</Statistic.Label>
               </Statistic>
               <Statistic horizontal size="mini" color="blue">
-                <Statistic.Value>{eliminatedPlayers(roster)}/16</Statistic.Value>
+                <Statistic.Value>{eliminatedPlayers(roster, eliminatedTeams)}/16</Statistic.Value>
                 <Statistic.Label>Players Remaining</Statistic.Label>
               </Statistic>
             </Grid.Column>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Grid,
   Header,
@@ -8,10 +8,10 @@ import {
   Segment,
   Table,
 } from 'semantic-ui-react';
-import { frequency, customSort, sumArrayIndex, sumNestedArray } from '../utils/stats';
-import eliminatedTeams from '../constants/eliminatedTeams';
 
-const TeamDetails = ({ users, season }) => {
+import { customSort } from '../utils/stats';
+
+const TeamDetails = ({ users, players, season }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(true);
   const [sortTeamOption, setSortTeamOption] = useState('Points/Pick (Weighted)');
@@ -23,108 +23,88 @@ const TeamDetails = ({ users, season }) => {
     }
   }, [users]);
 
-  let playerData = users.rosters.flatMap((user) => [
-    ...user.roster.left,
-    ...user.roster.center,
-    ...user.roster.right,
-    ...user.roster.defense,
-    ...user.roster.goalie,
-    user.roster.utility,
-  ]);
+  const teamAggregations = useMemo(() => {
+    const aggregations = {};
 
-  const allPlayers = playerData.map((player) => {
-    const playerPoints =
-      player.position === 'G'
-        ? player.stats.featuredStats.playoffs.subSeason.wins * 2 +
-        player.stats.featuredStats.playoffs.subSeason.shutouts * 2 +
-        player.stats.otl
-        : player.stats.featuredStats.playoffs.subSeason.goals +
-        player.stats.featuredStats.playoffs.subSeason.assists +
-        player.stats.featuredStats.playoffs.subSeason.otGoals;
+    players.forEach(player => {
+      const teamName = player.teamName;
+      if (!teamName) return; // Skip if teamName is missing
 
-    return [
-      player.name,
-      player.position,
-      player.stats.teamLogo,
-      player.stats.teamName,
-      playerPoints,
-    ];
-  });
+      if (!aggregations[teamName]) {
+        aggregations[teamName] = {
+          name: teamName,
+          logo: player.teamLogo,
+          uniquePlayers: 0,
+          totalPlayers: 0,
+          teamPoints: 0,
+          isEliminated: player.isEliminated,
+          poolContribution: 0,
+        };
+      }
 
-  const playerList = frequency(allPlayers).map((player) => {
-    const [name, position, teamLogo, teamName, points] = player[0].split(',');
-    return [name, position, teamLogo, teamName, parseFloat(points), player[1]];
-  });
+      aggregations[teamName].uniquePlayers += 1;
+      aggregations[teamName].totalPlayers += player.pickCount;
+      aggregations[teamName].teamPoints += player.points;
+      aggregations[teamName].poolContribution += (player.points * player.pickCount);
+    });
 
-  const playerTeamCount = playerList.map((team) => team[3]);
-  const teamCount = allPlayers.map((team) => team[3]);
-  const totalSelectionsPerTeam = frequency(teamCount).sort();
-  const teamLogos = playerList.map((team) => [team[3], team[2]]);
-  const sortedLogos = frequency(teamLogos).sort();
-  const teamPoints = sumArrayIndex(playerList, 3, 4);
-  const teamPoolPoints = sumArrayIndex(allPlayers, 3, 4);
-  const totalPoolPoints = sumNestedArray(teamPoolPoints, 1);
-  const selectionsPerTeam = frequency(playerTeamCount).sort();
+    return Object.values(aggregations);
+  }, [players]);
 
-  selectionsPerTeam.map((team, index) => {
-    const logo = sortedLogos[index][0].split(',')[1];
-    const totalPlayers = totalSelectionsPerTeam[index][1];
-    const teamPointsValue = teamPoints[index][1];
-    const poolPointsValue = teamPoolPoints[index][1];
-    const pointsPerPick = teamPointsValue / team[1];
-    const weightedPointsPerPick = poolPointsValue / totalPlayers;
+  const totalPoolPoints = useMemo(() => {
+    return teamAggregations.reduce((sum, team) => sum + team.poolContribution, 0);
+  }, [teamAggregations]);
 
-    team.push(logo, totalPlayers, teamPointsValue, poolPointsValue, pointsPerPick, weightedPointsPerPick);
-  });
+  const totalRosters = users.rosters.length;
 
-  selectionsPerTeam.sort();
+  const headerKeys = {
+    'Team': 'name',
+    'Unique Players': 'uniquePlayers',
+    'Total Players': 'totalPlayers',
+    'Per Player Points': 'teamPoints',
+    'Pool Contribution': 'poolContribution',
+    'Points/Pick (Average)': 'avgPointsPerPick',
+    'Points/Pick (Weighted)': 'weightedPointsPerPick'
+  };
 
-  const headers = [
-    'Team',
-    'Unique Players',
-    'Total Players',
-    'Per Player Points',
-    'Pool Contribution',
-    'Points/Pick (Average)',
-    'Points/Pick (Weighted)'
-  ];
+  const teamData = useMemo(() => {
+    return teamAggregations.map(team => {
+      const avgPointsPerPick = team.uniquePlayers > 0 ? team.teamPoints / team.uniquePlayers : 0;
+      const weightedPointsPerPick = team.totalPlayers > 0 ? team.poolContribution / team.totalPlayers : 0;
+      const totalPlayerPercentage = totalRosters > 0 ? (team.totalPlayers / (totalRosters * 16)) * 100 : 0;
+      const poolContributionPercentage = totalPoolPoints > 0 ? (team.poolContribution / totalPoolPoints) * 100 : 0;
 
-  let teams;
-  switch (sortTeamOption) {
-    case 'Team':
-      teams = selectionsPerTeam;
-      break;
-    case 'Unique Players':
-      teams = customSort(selectionsPerTeam, 1);
-      break;
-    case 'Total Players':
-      teams = customSort(selectionsPerTeam, 3);
-      break;
-    case 'Per Player Points':
-      teams = customSort(selectionsPerTeam, 4);
-      break;
-    case 'Pool Contribution':
-      teams = customSort(selectionsPerTeam, 5);
-      break;
-    case 'Points/Pick (Average)':
-      teams = customSort(selectionsPerTeam, 6);
-      break;
-    default:
-      teams = customSort(selectionsPerTeam, 7);
-  }
+      return {
+        ...team,
+        avgPointsPerPick: avgPointsPerPick,
+        weightedPointsPerPick: weightedPointsPerPick,
+        totalPlayerPercentage: totalPlayerPercentage,
+        poolContributionPercentage: poolContributionPercentage,
+      }
+    });
+  }, [teamAggregations, totalRosters, totalPoolPoints]);
 
-  if (reverse) {
-    teams.reverse();
-  }
+  const sortedTeams = useMemo(() => {
+    const sortKey = headerKeys[sortTeamOption];
+    if (!sortKey) {
+      return customSort(teamData, headerKeys['Points/Pick (Weighted)']);
+    }
+    const sorted = customSort(teamData, sortKey);
+    return reverse ? sorted.reverse() : sorted;
+  }, [teamData, sortTeamOption, reverse]);
 
-  const teamHeaders = headers.map((header, index) => {
+  const teamHeaders = Object.keys(headerKeys).map((header, index) => {
     const isSticky = index === 0;
     return (
       <Table.HeaderCell
         key={header}
         onClick={() => {
-          setSortTeamOption(header);
-          if (sortTeamOption === header) setReverse(!reverse);
+          if (sortTeamOption === header) {
+            setReverse(!reverse);
+          } else {
+            setSortTeamOption(header);
+            setReverse(false);
+          }
         }}
         style={{
           cursor: 'pointer',
@@ -148,29 +128,29 @@ const TeamDetails = ({ users, season }) => {
     );
   });
 
-  const teamDetails = teams.map((team, index) => (
-    <Table.Row key={team[0]} negative={eliminatedTeams.includes(team[0])}>
+  const teamDetails = sortedTeams.map((team, index) => (
+    <Table.Row key={team.name} negative={team.isEliminated}>
       <Table.Cell collapsing>{index + 1}</Table.Cell>
       <Table.Cell
         style={{
           // position: 'sticky',
           // left: -15,
           // background: 'white', // Ensure the sticky column has a background
-          // zIndex: 1, // Ensure it stays above other columns when scrolling
+          // zIndex: 1,
         }}>
-        <Image src={team[2]} avatar alt={`${team[0]} logo`} />
-        {team[0]}
+        <Image src={team.logo} avatar alt={`${team.name} logo`} />
+        {team.name}
       </Table.Cell>
-      <Table.Cell>{team[1]}</Table.Cell>
+      <Table.Cell>{team.uniquePlayers}</Table.Cell>
       <Table.Cell>
-        {team[3]} — {((team[3] / (users.rosters.length * 16)) * 100).toFixed(2)}%
+        {team.totalPlayers} — {team.totalPlayerPercentage.toFixed(2)}%
       </Table.Cell>
-      <Table.Cell>{team[4]}</Table.Cell>
+      <Table.Cell>{team.teamPoints}</Table.Cell>
       <Table.Cell>
-        {team[5]} — {((team[5] / totalPoolPoints) * 100).toFixed(2)}%
+        {team.poolContribution} — {team.poolContributionPercentage.toFixed(2)}%
       </Table.Cell>
-      <Table.Cell>{team[6].toFixed(2)}</Table.Cell>
-      <Table.Cell>{team[7].toFixed(2)}</Table.Cell>
+      <Table.Cell>{team.avgPointsPerPick.toFixed(2)}</Table.Cell>
+      <Table.Cell>{team.weightedPointsPerPick.toFixed(2)}</Table.Cell>
     </Table.Row>
   ));
 
@@ -197,8 +177,8 @@ const TeamDetails = ({ users, season }) => {
               style={{
                 position: 'sticky',
                 top: -15,
-                background: 'white', // Ensure the sticky column has a background
-                zIndex: 2, // Ensure it stays above other columns when scrolling
+                background: 'white',
+                zIndex: 2,
               }}>
               <Table.Row>
                 <Table.HeaderCell></Table.HeaderCell>
