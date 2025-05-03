@@ -72,7 +72,7 @@ const Navigation = ({ onMenuSelect }) => {
             onHide={() => setSidebarVisible(false)}
           >
             {renderMenuItems(true)}
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Menu.Item
                 name='team-builder'
                 active={activeItem === 'team-builder'}
@@ -84,7 +84,7 @@ const Navigation = ({ onMenuSelect }) => {
                 Team Builder
                 <Label color='red'>Beta</Label>
               </Menu.Item>
-            )}
+            )} */}
           </Sidebar>
           <Segment basic style={{ marginTop: '50px' }} />
         </>
@@ -93,7 +93,7 @@ const Navigation = ({ onMenuSelect }) => {
         <Menu stackable>
           {renderMenuItems(false)}
           <Menu.Menu position='right'>
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Menu.Item
                 name='team-builder'
                 active={activeItem === 'team-builder'}
@@ -102,7 +102,7 @@ const Navigation = ({ onMenuSelect }) => {
                 Team Builder
                 <Label color='red'>Beta</Label>
               </Menu.Item>
-            )}
+            )} */}
             <Menu.Item>
               <AuthButtons />
             </Menu.Item>
