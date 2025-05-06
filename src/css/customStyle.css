@@ -19,51 +19,40 @@
 }
 
 .expandedStyle {
-  transition: all 1s;
-  max-height: calc(100dvh - 483px);
+  max-height: calc(100dvh - 482px);
   overflow: auto;
-  -webkit-filter: opacity(1);
-  filter: opacity(1);
+}
+
+.expandedPlayersStyle {
+  max-height: calc(100dvh - 489px);
+  overflow: auto;
 }
 
 .expandedStandingsStyle {
-  transition: all 1s;
   max-height: calc(100dvh - 505px);
-  overflow-y: auto;
-  /* overflow-x: hidden; */
-  -webkit-filter: opacity(1);
-  filter: opacity(1);
-}
-
-.expandedStandingsStyle {
-  transition: all 1s;
-  max-height: calc(100dvh - 505px);
-  overflow-y: auto;
-  /* overflow-x: hidden; */
-  -webkit-filter: opacity(1);
-  filter: opacity(1);
+  overflow: auto;
 }
 
 .expandedRosterStyle {
-  transition: all 1s;
-  max-height: calc(100dvh - 573px);
-  overflow-y: auto;
-  /* overflow-x: hidden; */
-  -webkit-filter: opacity(1);
-  filter: opacity(1);
+  max-height: calc(100dvh - 580px);
+  overflow: auto;
 }
 
 @media screen and (max-width: 767px) {
   .expandedStyle {
+    max-height: calc(100dvh - 154px);
+  }
+
+  .expandedPlayersStyle {
     max-height: calc(100dvh - 160px);
   }
 
   .expandedStandingsStyle {
-    max-height: calc(100dvh - 245px);
+    max-height: calc(100dvh - 240px);
   }
 
   .expandedRosterStyle {
-    max-height: calc(100dvh - 275px);
+    max-height: calc(100dvh - 251px);
   }
 }
 

@@ -16,7 +16,6 @@ import '../css/customStyle.css';
 
 const PlayerDetails = ({ users, players }) => {
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(true);
   const [sortPlayerOption, setSortPlayerOption] = useState('Points');
   const [reverse, setReverse] = useState(false);
   const [filtersVisible, setFiltersVisible] = useState(false);
@@ -95,9 +94,9 @@ const PlayerDetails = ({ users, players }) => {
     >
       {header}
       {sortPlayerOption === header && !reverse ? (
-        <Icon name="sort down" />
+        <Icon name='sort down' />
       ) : sortPlayerOption === header && reverse ? (
-        <Icon name="sort up" />
+        <Icon name='sort up' />
       ) : null}
     </Table.HeaderCell>
   ));
@@ -110,7 +109,7 @@ const PlayerDetails = ({ users, players }) => {
       </Table.Cell>
       <Table.Cell>{player.position}</Table.Cell>
       <Table.Cell>
-        <Image src={player.teamLogo} avatar size="mini" alt={`${player.teamName} Logo`} />{' '}
+        <Image src={player.teamLogo} avatar size='mini' alt={`${player.teamName} Logo`} />{' '}
         {player.teamName}
       </Table.Cell>
       <Table.Cell>
@@ -127,32 +126,30 @@ const PlayerDetails = ({ users, players }) => {
 
   return (
     <Segment.Group>
-      <Segment attached="top">
-        <Grid columns="equal">
+      <Segment attached='top'>
+        <Grid columns='equal'>
           <Grid.Row>
-            <Grid.Column textAlign="left" onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-              <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
-            </Grid.Column>
+            <Grid.Column />
             <Grid.Column>
-              <Header color="blue" textAlign="center" as="h3" style={{ whiteSpace: 'nowrap' }}>
+              <Header color='blue' textAlign='center' size='medium' style={{ whiteSpace: 'nowrap' }}>
                 Player Details
               </Header>
             </Grid.Column>
-            <Grid.Column textAlign="right">
+            <Grid.Column textAlign='right'>
               <Button
                 basic={!filtersVisible}
-                color="blue"
+                color='blue'
                 icon
                 onClick={() => setFiltersVisible(!filtersVisible)}
-                size="mini"
+                size='mini'
               >
-                <Icon name="filter" />
+                <Icon name='filter' />
               </Button>
             </Grid.Column>
           </Grid.Row>
         </Grid>
         {filtersVisible && (
-          <Grid stackable columns="equal">
+          <Grid stackable columns='equal'>
             <Grid.Row
               columns={3}
               style={{
@@ -165,7 +162,7 @@ const PlayerDetails = ({ users, players }) => {
             >
               <Grid.Column>
                 <Input
-                  placeholder="Name"
+                  placeholder='Name'
                   fluid
                   value={nameSearch}
                   onChange={(e) => setNameSearch(e.target.value)}
@@ -173,7 +170,7 @@ const PlayerDetails = ({ users, players }) => {
               </Grid.Column>
               <Grid.Column>
                 <Dropdown
-                  placeholder="Team"
+                  placeholder='Team'
                   fluid
                   multiple
                   search
@@ -186,7 +183,7 @@ const PlayerDetails = ({ users, players }) => {
               </Grid.Column>
               <Grid.Column>
                 <Dropdown
-                  placeholder="Position"
+                  placeholder='Position'
                   fluid
                   multiple
                   search
@@ -201,13 +198,13 @@ const PlayerDetails = ({ users, players }) => {
           </Grid>
         )}
       </Segment>
-      <Segment attached="bottom" className={visible ? 'expandedStyle' : 'collapsedStyle'}>
+      <Segment attached='bottom' className={'expandedPlayersStyle'}>
         {loading ? (
-          <Loader active inline="centered" size="large">
+          <Loader active inline='centered' size='large'>
             Loading Player Details...
           </Loader>
         ) : (
-          <Table basic="very" singleLine unstackable selectable>
+          <Table basic='very' singleLine unstackable selectable>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell></Table.HeaderCell>

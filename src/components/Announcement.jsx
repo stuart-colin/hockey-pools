@@ -1,80 +1,66 @@
-import React, { useState } from 'react';
-import { Segment, Grid, Icon, Header, Image, Divider } from 'semantic-ui-react';
+import React from 'react';
+import {
+  Divider,
+  Grid,
+  Header,
+  Image,
+  Segment,
+} from 'semantic-ui-react';
 import bp from '../images/bp-crop.jpg'
 
 const Announcement = () => {
-  const [visible, setVisible] = useState(true);
 
   return (
     <Segment.Group>
-      {/* Header Segment */}
-      <Segment attached="top">
+      <Segment attached='top'>
         <Grid>
           <Grid.Row columns={3}>
-            {/* Toggle Visibility Icon */}
-            <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-              <Icon
-                circular
-                color="blue"
-                name={visible ? 'chevron up' : 'chevron down'}
-              />
-            </Grid.Column>
-            {/* Title */}
-            <Grid.Column width={12} textAlign="center">
-              <Header as="h3" color="blue" style={{ whiteSpace: 'nowrap' }}>
+            <Grid.Column width={2} />
+            <Grid.Column width={12} textAlign='center'>
+              <Header size='medium' color='blue' style={{ whiteSpace: 'nowrap' }}>
                 Commissioner's Corner
               </Header>
             </Grid.Column>
-            {/* Empty Column for Alignment */}
             <Grid.Column width={2} />
           </Grid.Row>
         </Grid>
       </Segment>
-
-      {/* Content Segment */}
-      <Segment
-        attached="bottom"
-        className={visible ? 'expandedStyle' : 'collapsedStyle'}
-      >
-        {visible && (
-          <>
-            <Image
-              src={bp}
-              size="tiny"
-              circular
-              floated="right"
-              verticalAlign="top"
-            />
-            <Header as="h4">
-              <span role="img" aria-label="loudspeaker">📢</span> 4/18/2025 - Signup and TeamBuilder is live!
-            </Header>
-            <p>
-              You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday.
-            </p>
-            <p>
-              If anyone has any trouble submitting their team, please reach out to us as soon as possible. Any other feedback is very welcome.
-            </p>
-            <p>
-              Thank you! - The pool team
-            </p>
-            <Divider />
-            <Header as="h4">
-              <span role="img" aria-label="loudspeaker">📢</span> 4/17/2025 - Finishing Touches Being Applied to the App!
-            </Header>
-            <p>Hi all,</p>
-            <p>
-              Thanks for your patience while the TeamBuilder module and sign-up service is finalized. Expect to see this live later today, and you can begin creating your roster!
-            </p>
-            <p>
-              Also be sure to carry your trash talk over to the Discord group: <a href="https://discord.gg/GZQ4AWnv39">https://discord.gg/GZQ4AWnv39</a>
-              <br />
-              Discord works on iPhone and Android through their respective App Stores as well as PC and Mac via website (<a href="https://discord.com/">https://discord.com/</a>)
-            </p>
-            <p>
-              Thanks - Colin
-            </p>
-          </>
-        )}
+      <Segment attached='bottom' className={'expandedStyle'}>
+        <Image
+          src={bp}
+          size='tiny'
+          circular
+          floated='right'
+          verticalAlign='top'
+        />
+        <Header as='h4'>
+          <span role='img' aria-label='loudspeaker'>📢</span> 4/18/2025 - Signup and TeamBuilder is live!
+        </Header>
+        <p>
+          You can now register for an account and create your team! You will be able to update your team until puck drop on Saturday.
+        </p>
+        <p>
+          If anyone has any trouble submitting their team, please reach out to us as soon as possible. Any other feedback is very welcome.
+        </p>
+        <p>
+          Thank you! - The pool team
+        </p>
+        <Divider />
+        <Header as='h4'>
+          <span role='img' aria-label='loudspeaker'>📢</span> 4/17/2025 - Finishing Touches Being Applied to the App!
+        </Header>
+        <p>Hi all,</p>
+        <p>
+          Thanks for your patience while the TeamBuilder module and sign-up service is finalized. Expect to see this live later today, and you can begin creating your roster!
+        </p>
+        <p>
+          Also be sure to carry your trash talk over to the Discord group: <a href='https://discord.gg/GZQ4AWnv39'>https://discord.gg/GZQ4AWnv39</a>
+          <br />
+          Discord works on iPhone and Android through their respective App Stores as well as PC and Mac via website (<a href='https://discord.com/'>https://discord.com/</a>)
+        </p>
+        <p>
+          Thanks - Colin
+        </p>
       </Segment>
     </Segment.Group>
     //     <h4>
@@ -121,7 +107,7 @@ const Announcement = () => {
     //       Hi all,
     //     </h5>
     //     <p>
-    //       And here we are onto round 2 of the playoffs... Based on the entirety of entries all eliminated teams had the lowest number of players selected. A total of 40 of the entries had all 16 of their players advance to the semi finals. This is a much higher than the last 5+ years. It's safe to say so far we have had somewhat of a predictable playoffs. Nevertheless, plenty of exhilarating hockey! As we continue to progress through the playoffs we will see a widening of the standings... Mark Jones leads the way with 177 pts only 11 pts away from what would be the current "Perfectly Composed Entry." Kris Negus holds sole position of 2nd, while Dave Shepherd and Brady Ferguson are tied for 3rd playce with 174 pts.
+    //       And here we are onto round 2 of the playoffs... Based on the entirety of entries all eliminated teams had the lowest number of players selected. A total of 40 of the entries had all 16 of their players advance to the semi finals. This is a much higher than the last 5+ years. It's safe to say so far we have had somewhat of a predictable playoffs. Nevertheless, plenty of exhilarating hockey! As we continue to progress through the playoffs we will see a widening of the standings... Mark Jones leads the way with 177 pts only 11 pts away from what would be the current 'Perfectly Composed Entry.' Kris Negus holds sole position of 2nd, while Dave Shepherd and Brady Ferguson are tied for 3rd playce with 174 pts.
     //     </p>
     //     <p>
     //       It's still anyone's pot! Looking forward to an action packed weekend of hockey and with what's on the docket we are certain to see some high scoring matches!
@@ -209,7 +195,7 @@ const Announcement = () => {
     //       2 Weeks in and we have witnessed some incredible hockey... Charles Barkley was one to admit the NHL is putting on more entertaining games than the NBA, and he sure as right... With 3, 7 game series' and a few 6 game series' most of the action was close.... But best of all is the upsets! This is what makes NHL playoffs exciting. This is what separates the NHL playoffs from other major pro sports... At this period of hockey any team can win. We witnessed this over the last two days where two of the heavy underdogs took out the 65 win Boston Bruins and defending Stanley Cup champions.
     //     </p>
     //     <p>
-    //       No one expected this... Ok maybe according to a couple people in our pool they may have expected Florida to get by, but no one expected Seattle (0 Seattle players selected amongst the 123 entries from the pool). Along with these upsets we witnessed the "Over-Underdog," New Jersey Devils and Toronto Maple Leafs take out Stanley Cup favorites NYR and TBL. Much of this came to surprise the group and we now enter into the semi finals with only 2/123 entries having all 16 of their players! This is the least number of full rosters entering into the semis in 18 years. Gotta love playoff hockey. Average number of players remaining per an entry is now at 6/16... Wow...
+    //       No one expected this... Ok maybe according to a couple people in our pool they may have expected Florida to get by, but no one expected Seattle (0 Seattle players selected amongst the 123 entries from the pool). Along with these upsets we witnessed the 'Over-Underdog,' New Jersey Devils and Toronto Maple Leafs take out Stanley Cup favorites NYR and TBL. Much of this came to surprise the group and we now enter into the semi finals with only 2/123 entries having all 16 of their players! This is the least number of full rosters entering into the semis in 18 years. Gotta love playoff hockey. Average number of players remaining per an entry is now at 6/16... Wow...
     //     </p>
     //     <p>
     //       Congratulations to Mike Johnson who closed out the quarterfinals as the leader (128 pts), followed right behind Jim Veysey (127 pts) and Alan Shields (125 pts). Watch for Justin Denis and Tristan Burnette who are the two remaining competitors who have all 16 of their players still competing.
@@ -233,7 +219,7 @@ const Announcement = () => {
     //     <p>
     //       This app is currently in beta and we would love any feedback you have. Bugs, suggestions, or cool ideas are all welcome. Please pass your thoughts on to BP or leave a comment on the <a href='https://discord.gg/GZQ4AWnv39'>Discord</a> and we will do our best to make this fun to use.
     //     </p>
-    //     {/* <div style={{ position: "fixed", right: 5, bottom: 5, zIndex: 100, width: 500, maxWidth: '97%' }}>
+    //     {/* <div style={{ position: 'fixed', right: 5, bottom: 5, zIndex: 100, width: 500, maxWidth: '97%' }}>
     //       <div className={`ui bottom attached small yellow message`}>
     //         <h4>
     //           <span role='img' aria-label='sparkles'>✨</span> New Features:

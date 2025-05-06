@@ -20,7 +20,6 @@ import '../css/customStyle.css';
 const ParticipantRoster = ({ rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
   const { roster, error, isLoading } = useMyTeam(rosterDataEndpoint);
-  const [visible, setVisible] = useState(true);
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [cardView, setCardView] = useState(isMobile);
 
@@ -35,20 +34,12 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
   if (!roster) {
     return (
       <Segment.Group>
-        <Segment attached="top">
+        <Segment attached='top'>
           <Grid>
             <Grid.Row columns={3}>
-              <Grid.Column width={2}>
-                <Icon
-                  color="blue"
-                  circular
-                  name={visible ? 'chevron up' : 'chevron down'}
-                  onClick={() => setVisible(!visible)}
-                  style={{ cursor: 'pointer' }}
-                />
-              </Grid.Column>
-              <Grid.Column width={12} textAlign="center">
-                <Header as="h3" color="blue" style={{ whiteSpace: 'nowrap' }}>
+              <Grid.Column width={2} />
+              <Grid.Column width={12} textAlign='center'>
+                <Header size='medium' color='blue' style={{ whiteSpace: 'nowrap' }}>
                   No Team Found
                 </Header>
                 Please sign in to see your team.
@@ -73,7 +64,7 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
 
     return (
       <Grid.Column key={index}>
-        <Header as="h4" color="blue">
+        <Header size='small' color='blue'>
           {position.charAt(0).toUpperCase() + position.slice(1)}
         </Header>
         {playersInPosition.map((player, playerIndex) => (
@@ -87,20 +78,12 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
 
   return (
     <Segment.Group>
-      <Segment attached="top">
+      <Segment attached='top'>
         <Grid>
           <Grid.Row columns={3}>
-            <Grid.Column width={2}>
-              <Icon
-                color="blue"
-                circular
-                name={visible ? 'chevron up' : 'chevron down'}
-                onClick={() => setVisible(!visible)}
-                style={{ cursor: 'pointer' }}
-              />
-            </Grid.Column>
-            <Grid.Column width={12} textAlign="center">
-              <Header as="h3" color="blue">
+            <Grid.Column width={2} />
+            <Grid.Column width={12} textAlign='center'>
+              <Header size='medium' color='blue'>
                 {roster.owner.name}
               </Header>
               <span>
@@ -110,7 +93,7 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
                 {roster.owner.region}
               </span>
             </Grid.Column>
-            <Grid.Column width={2} textAlign="right">
+            <Grid.Column width={2} textAlign='right'>
               <Icon
                 color='blue'
                 size='large'
@@ -121,12 +104,12 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
             </Grid.Column>
           </Grid.Row>
           <Grid.Row columns={1}>
-            <Grid.Column width={16} textAlign="center">
-              <Statistic horizontal size="mini" color="blue">
+            <Grid.Column width={16} textAlign='center'>
+              <Statistic horizontal size='mini' color='blue'>
                 <Statistic.Value>{countPoints(roster)}</Statistic.Value>
                 <Statistic.Label>Pool Points</Statistic.Label>
               </Statistic>
-              <Statistic horizontal size="mini" color="blue">
+              <Statistic horizontal size='mini' color='blue'>
                 <Statistic.Value>{eliminatedPlayers(roster, eliminatedTeams)}/16</Statistic.Value>
                 <Statistic.Label>Players Remaining</Statistic.Label>
               </Statistic>
@@ -135,15 +118,8 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
         </Grid>
       </Segment>
 
-      <Segment
-        attached="bottom"
-        className={visible ? 'expandedRosterStyle' : 'collapsedStyle'}
-      >
-        {visible && (
-          <>
-            <Grid stackable columns={3}>{rosterPlayers}</Grid>
-          </>
-        )}
+      <Segment attached='bottom' className={'expandedRosterStyle'}>
+        <Grid stackable columns={3}>{rosterPlayers}</Grid>
       </Segment>
     </Segment.Group>
   );

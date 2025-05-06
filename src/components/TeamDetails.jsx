@@ -13,7 +13,6 @@ import { customSort } from '../utils/stats';
 
 const TeamDetails = ({ users, players, season }) => {
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(true);
   const [sortTeamOption, setSortTeamOption] = useState('Points/Pick (Weighted)');
   const [reverse, setReverse] = useState(false);
 
@@ -28,7 +27,7 @@ const TeamDetails = ({ users, players, season }) => {
 
     players.forEach(player => {
       const teamName = player.teamName;
-      if (!teamName) return; // Skip if teamName is missing
+      if (!teamName) return;
 
       if (!aggregations[teamName]) {
         aggregations[teamName] = {
@@ -118,9 +117,9 @@ const TeamDetails = ({ users, players, season }) => {
       >
         {header}
         {sortTeamOption === header && !reverse ? (
-          <Icon name="sort down" />
+          <Icon name='sort down' />
         ) : sortTeamOption === header && reverse ? (
-          <Icon name="sort up" />
+          <Icon name='sort up' />
         ) : (
           null
         )}
@@ -156,23 +155,21 @@ const TeamDetails = ({ users, players, season }) => {
 
   return (
     <Segment.Group>
-      <Segment attached="top">
+      <Segment attached='top'>
         <Grid>
-          <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-            <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
-          </Grid.Column>
-          <Grid.Column textAlign="center" width={12}>
-            <Header color="blue" as="h3">Team Details</Header>
+          <Grid.Column width={2} />
+          <Grid.Column textAlign='center' width={12}>
+            <Header color='blue' size='medium'>Team Details</Header>
           </Grid.Column>
         </Grid>
       </Segment>
-      <Segment attached="bottom" className={visible ? 'expandedStyle' : 'collapsedStyle'}>
+      <Segment attached='bottom' className={'expandedStyle'}>
         {loading ? (
-          <Loader active inline="centered" size="large">
+          <Loader active inline='centered' size='large'>
             Loading Team Details...
           </Loader>
         ) : (
-          <Table basic="very" singleLine unstackable selectable>
+          <Table basic='very' singleLine unstackable selectable>
             <Table.Header
               style={{
                 position: 'sticky',

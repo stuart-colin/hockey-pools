@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Divider, Icon, Grid, Statistic, Segment, Header, Loader } from 'semantic-ui-react';
+import {
+  Divider,
+  Grid,
+  Header,
+  Icon,
+  Loader,
+  Segment,
+  Statistic,
+} from 'semantic-ui-react';
 import { min, max, mean, customSort } from '../utils/stats';
 import '../css/customStyle.css';
 
@@ -10,7 +18,6 @@ const defaultLowThresh = 50;
 
 const Insights = ({ users, players }) => {
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(true);
   const [highThresh, setHighThresh] = useState(defaultHighThresh);
   const [lowThresh, setLowThresh] = useState(defaultLowThresh);
 
@@ -158,7 +165,7 @@ const Insights = ({ users, players }) => {
       <Statistic
         color={player.isEliminated ? 'red' : color}
         horizontal
-        key={player.id} // Use unique id
+        key={player.id}
         label={`${player.name} (${player.pickCount})`}
         value={player.points}
       />
@@ -167,19 +174,17 @@ const Insights = ({ users, players }) => {
 
   return (
     <Segment.Group>
-      <Segment attached="top">
+      <Segment attached='top'>
         <Grid>
-          <Grid.Column width={2} onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
-            <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
-          </Grid.Column>
-          <Grid.Column textAlign="center" width={12}>
-            <Header size='medium' color="blue">Quick Insights</Header>
+          <Grid.Column width={2} />
+          <Grid.Column textAlign='center' width={12}>
+            <Header size='medium' color='blue'>Insights</Header>
           </Grid.Column>
         </Grid>
       </Segment>
-      <Segment attached="bottom" className={visible ? 'expandedStyle' : 'collapsedStyle'}>
+      <Segment attached='bottom' className={'expandedStyle'}>
         {loading ? (
-          <Loader active inline="centered" size="large">
+          <Loader active inline='centered' size='large'>
             Loading Insights...
           </Loader>
         ) : (
@@ -188,40 +193,40 @@ const Insights = ({ users, players }) => {
               <Grid.Column width={2} >
                 <Header size='medium'>Players Remaining</Header>
                 <Statistic.Group size='mini' widths='one'>
-                  <Statistic horizontal color="blue" value={mostPlayersRemaining} label="Most" />
-                  <Statistic horizontal color="purple" value={averagePlayersRemaining} label="Average" />
-                  <Statistic horizontal color="red" value={leastPlayersRemaining} label="Least" />
+                  <Statistic horizontal color='blue' value={mostPlayersRemaining} label='Most' />
+                  <Statistic horizontal color='purple' value={averagePlayersRemaining} label='Average' />
+                  <Statistic horizontal color='red' value={leastPlayersRemaining} label='Least' />
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header size='medium'>Pool Points</Header>
                 <Statistic.Group size='mini' widths='one'>
-                  <Statistic horizontal color="blue" value={mostPoints} label="Most" />
-                  <Statistic horizontal color="purple" value={averagePoints} label="Average" />
-                  <Statistic horizontal color="red" value={leastPoints} label="Least" />
+                  <Statistic horizontal color='blue' value={mostPoints} label='Most' />
+                  <Statistic horizontal color='purple' value={averagePoints} label='Average' />
+                  <Statistic horizontal color='red' value={leastPoints} label='Least' />
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header size='medium'>Most Picks</Header>
-                <Statistic.Group size='mini' widths='one' color="blue">
+                <Statistic.Group size='mini' widths='one' color='blue'>
                   {mostCommonPlayers}
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header size='medium'>Best Picks</Header>
-                <Statistic.Group size='mini' widths='one' color="green">
+                <Statistic.Group size='mini' widths='one' color='green'>
                   {topPlayers}
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header size='medium'>Worst Picks</Header>
-                <Statistic.Group size='mini' widths='one' color="red">
+                <Statistic.Group size='mini' widths='one' color='red'>
                   {bottomPlayers}
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header size='medium'>Most Advantageous Picks</Header>
-                <Statistic.Group size='mini' widths='one' color="teal">
+                <Statistic.Group size='mini' widths='one' color='teal'>
                   {bestByPickThreshold}
                 </Statistic.Group>
                 <br></br>
@@ -266,7 +271,7 @@ const Insights = ({ users, players }) => {
               </Grid.Column>
               <Grid.Column width={2}>
                 <Header size='medium'>Least Advantageous Picks</Header>
-                <Statistic.Group size='mini' widths='one' color="purple">
+                <Statistic.Group size='mini' widths='one' color='purple'>
                   {worstByPickThreshold}
                 </Statistic.Group>
                 <br></br>
@@ -352,8 +357,8 @@ const Insights = ({ users, players }) => {
                     <Grid.Row columns={3} key={rowIndex}>
                       {chunk.map((position) => (
                         <Grid.Column key={position}>
-                          <Header as="h4">{position}</Header>
-                          <Statistic.Group size="mini" widths="one">
+                          <Header as='h4'>{position}</Header>
+                          <Statistic.Group size='mini' widths='one'>
                             {renderStatistics(
                               position === 'Left' ? topL :
                                 position === 'Center' ? topC :
@@ -376,8 +381,8 @@ const Insights = ({ users, players }) => {
                     <Grid.Row columns={3} key={rowIndex}>
                       {chunk.map((position) => (
                         <Grid.Column key={position}>
-                          <Header as="h4">{position}</Header>
-                          <Statistic.Group size="mini" widths="one">
+                          <Header as='h4'>{position}</Header>
+                          <Statistic.Group size='mini' widths='one'>
                             {renderStatistics(
                               position === 'Left' ? commonL :
                                 position === 'Center' ? commonC :
@@ -398,13 +403,6 @@ const Insights = ({ users, players }) => {
         )
         }
       </Segment >
-
-
-      {/* <div className='two wide center aligned column'>
-              <h4>Team</h4>
-              <p>Most players picked</p>
-              <p>Least players picked</p>
-            </div> */}
     </Segment.Group >
   );
 };

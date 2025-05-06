@@ -18,11 +18,11 @@ import StandingsList from "./StandingsList";
 import TeamBuilder from "./TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
+import useEliminatedTeams from "../hooks/useEliminatedTeams";
 import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
-import useEliminatedTeams from "../hooks/useEliminatedTeams";
 import { EliminatedTeamsProvider } from "../context/EliminatedTeamsContext";
 
 const currentYear = new Date().getFullYear().toString();
