@@ -314,8 +314,8 @@ const Insights = ({ users, players }) => {
                 <Statistic.Group size='mini' widths='one' color='green'>
                   <Statistic
                     horizontal
-                    label='Phillip Danault'
-                    value='7'
+                    label='Calvin Pickard'
+                    value='8'
                   // label='Pavel Francouz'
                   // value='14'
                   // label='Adin Hill'
@@ -324,8 +324,8 @@ const Insights = ({ users, players }) => {
                   />
                   <Statistic
                     horizontal
-                    label='Andrei Kuzmenko'
-                    value='5'
+                    label='Phillip Danault'
+                    value='8'
                   // label='Antti Raanta'
                   // value='14'
                   // label='Sergei Bobrovsky'
@@ -333,8 +333,8 @@ const Insights = ({ users, players }) => {
                   />
                   <Statistic
                     horizontal
-                    label='Anthony Beauvillier'
-                    value='5'
+                    label='Andrei Kuzmenko'
+                    value='6'
                   // label='Carter Verhaeghe'
                   // value='14'
                   // label='Carter Verhaeghe'
