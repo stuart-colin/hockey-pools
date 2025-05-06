@@ -14,6 +14,7 @@ import '../css/customStyle.css';
 
 const StandingsList = ({ users, season }) => {
   const [loading, setLoading] = useState(true);
+  const [activeRosterKey, setActiveRosterKey] = useState(null); // To track the open item
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -49,12 +50,18 @@ const StandingsList = ({ users, season }) => {
 
   const pot = rankedRosters.length * 20;
 
-  const renderedList = rankedRosters.map((user, index) => (
+  const handleToggleRoster = (itemKey) => {
+    setActiveRosterKey(prevKey => (prevKey === itemKey ? null : itemKey));
+  };
+
+  const standingsList = rankedRosters.map((user, index) => (
+
     <StandingsItem
       user={user}
-      key={index}
-      index={index}
+      key={user.owner.id}
       poolSize={rankedRosters.length}
+      isRosterVisible={activeRosterKey === index}
+      onToggleRoster={() => handleToggleRoster(index)}
     />
   ));
 
@@ -87,7 +94,9 @@ const StandingsList = ({ users, season }) => {
             <Loader>Loading Standings...</Loader>
           </Dimmer>
         ) : (
-          <List divided relaxed selection>{renderedList}</List>
+          <List animated divided relaxed selection>
+            {standingsList}
+          </List>
         )}
       </Segment>
     </Segment.Group>

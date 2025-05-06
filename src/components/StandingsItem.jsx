@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Transition, Icon, Flag, List, Image } from 'semantic-ui-react';
+import {
+  Flag,
+  Icon,
+  Image,
+  List,
+  Transition,
+} from 'semantic-ui-react';
 import '../css/customStyle.css';
 import RosterView from './RosterView';
 
@@ -9,23 +15,16 @@ const URL = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
 const top10Colors = ['#66b36650', '#66b36650', '#73b97250', '#7fbf7e50', '#8bc58a50', '#97cb9650', '#afd7af50', '#bbddbb50', '#c7e3c750', '#d3e9d350'];
 
 
-const StandingsItem = ({ user, poolSize }) => {
-  const [activeRoster, setActiveRoster] = useState({});
-  const [visible, setVisible] = useState(false);
+const StandingsItem = ({ user, poolSize, isRosterVisible, onToggleRoster }) => {
 
-  const toggleRoster = () => {
-    setActiveRoster((activeRoster) => !activeRoster)
-    setVisible((visible) => !visible)
-  }
-
-  const pot = poolSize * 20;
-  const prizeDistribution = [0.49, 0.15, 0.10, 0.08, 0.07, 0.04, 0.03, 0.02, 0.01, 0.01];
-  const winnings = prizeDistribution.map((percentage) => ` — $${(pot * percentage).toFixed(2)}`);
+  // const pot = poolSize * 20;
+  // const prizeDistribution = [0.49, 0.15, 0.10, 0.08, 0.07, 0.04, 0.03, 0.02, 0.01, 0.01];
+  // const winnings = prizeDistribution.map((percentage) => ` — $${(pot * percentage).toFixed(2)}`);
 
   const backgroundColor = user.rank <= 10 ? top10Colors[user.rank - 1] : '';
 
   return (
-    <List.Item style={{ backgroundColor }}>
+    <List.Item style={{ backgroundColor }} onClick={onToggleRoster}>
       <List.Content floated='left' verticalAlign='middle'>
         {user.rank}
       </List.Content>
@@ -53,22 +52,14 @@ const StandingsItem = ({ user, poolSize }) => {
         <Icon
           circular
           color='blue'
-          name={!visible ? 'chevron right' : 'chevron left'}
-          onClick={toggleRoster}
-          rotated='clockwise'
-          link
+          name={!isRosterVisible ? 'chevron down' : 'chevron up'}
         />
       </List.Content>
-      {!activeRoster ?
-        <Transition visible={visible} duration={500}>
-          <div className='ui basic segment' style={{ transition: 'all 1s' }}>
-            <RosterView
-              user={user}
-            />
-          </div>
-        </Transition>
-        : null
-      }
+      <Transition visible={isRosterVisible} animation='fade' duration={250} unmountOnHide>
+        <div style={{ flexBasis: '100%', width: '100%', paddingTop: '10px' }}>
+          <RosterView user={user} />
+        </div>
+      </Transition>
     </List.Item>
   )
 }

@@ -22,7 +22,7 @@ const RosterView = ({ user }) => {
   })
 
   return (
-    <div>
+    <div style={{ padding: '5px' }}>
       {rosterPlayers}
     </div>
   )
