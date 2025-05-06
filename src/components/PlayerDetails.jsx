@@ -78,6 +78,58 @@ const PlayerDetails = ({ users, players }) => {
     return Array.from(teams.values());
   }, [players]);
 
+  const playerFilters = () => {
+    return (
+      <Grid stackable columns='equal'>
+        <Grid.Row
+          columns={3}
+          style={{
+            position: 'sticky',
+            top: 0,
+            left: 0,
+            zIndex: 10,
+            background: 'white',
+          }}
+        >
+          <Grid.Column>
+            <Input
+              placeholder='Name'
+              fluid
+              value={nameSearch}
+              onChange={(e) => setNameSearch(e.target.value)}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Dropdown
+              placeholder='Team'
+              fluid
+              multiple
+              search
+              selection
+              clearable
+              options={teamOptions}
+              onChange={(e, { value }) => setTeamFilter(value)}
+              value={teamFilter}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Dropdown
+              placeholder='Position'
+              fluid
+              multiple
+              search
+              selection
+              clearable
+              options={positionOptions}
+              onChange={(e, { value }) => setPositionFilter(value)}
+              value={positionFilter}
+            />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    );
+  };
+
   // Table headers
   const playerHeaders = Object.keys(headerKeys).map((header) => (
     <Table.HeaderCell
@@ -90,7 +142,7 @@ const PlayerDetails = ({ users, players }) => {
           setReverse(false);
         }
       }}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: 'pointer', paddingTop: 13, background: 'white' }}
     >
       {header}
       {sortPlayerOption === header && !reverse ? (
@@ -149,56 +201,10 @@ const PlayerDetails = ({ users, players }) => {
           </Grid.Row>
         </Grid>
         {filtersVisible && (
-          <Grid stackable columns='equal'>
-            <Grid.Row
-              columns={3}
-              style={{
-                position: 'sticky',
-                top: 0,
-                left: 0,
-                zIndex: 10,
-                background: 'white',
-              }}
-            >
-              <Grid.Column>
-                <Input
-                  placeholder='Name'
-                  fluid
-                  value={nameSearch}
-                  onChange={(e) => setNameSearch(e.target.value)}
-                />
-              </Grid.Column>
-              <Grid.Column>
-                <Dropdown
-                  placeholder='Team'
-                  fluid
-                  multiple
-                  search
-                  selection
-                  clearable
-                  options={teamOptions}
-                  onChange={(e, { value }) => setTeamFilter(value)}
-                  value={teamFilter}
-                />
-              </Grid.Column>
-              <Grid.Column>
-                <Dropdown
-                  placeholder='Position'
-                  fluid
-                  multiple
-                  search
-                  selection
-                  clearable
-                  options={positionOptions}
-                  onChange={(e, { value }) => setPositionFilter(value)}
-                  value={positionFilter}
-                />
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
+          playerFilters()
         )}
       </Segment>
-      <Segment attached='bottom' className={'expandedPlayersStyle'}>
+      <Segment attached='bottom' className={'expandedPlayersStyle'} style={{ paddingTop: 0 }}>
         {loading ? (
           <Loader active inline='centered' size='large'>
             Loading Player Details...
@@ -208,16 +214,18 @@ const PlayerDetails = ({ users, players }) => {
             <Table.Header
               style={{
                 position: 'sticky',
-                top: -15,
+                top: 0,
                 background: 'white',
                 zIndex: 2,
               }}>
               <Table.Row>
-                <Table.HeaderCell></Table.HeaderCell>
+                <Table.HeaderCell />
                 {playerHeaders}
               </Table.Row>
             </Table.Header>
-            <Table.Body>{playerDetails}</Table.Body>
+            <Table.Body>
+              {playerDetails}
+            </Table.Body>
           </Table>
         )}
       </Segment>

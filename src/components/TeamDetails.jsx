@@ -105,15 +105,7 @@ const TeamDetails = ({ users, players, season }) => {
             setReverse(false);
           }
         }}
-        style={{
-          cursor: 'pointer',
-          // ...(isSticky && {
-          //   position: 'sticky',
-          //   left: -15,
-          //   background: 'white', // Ensure the sticky header has a background
-          //   zIndex: 3, // Ensure it stays above the body rows
-          // }),
-        }}
+        style={{ cursor: 'pointer', paddingTop: 13, background: 'white' }}
       >
         {header}
         {sortTeamOption === header && !reverse ? (
@@ -163,7 +155,7 @@ const TeamDetails = ({ users, players, season }) => {
           </Grid.Column>
         </Grid>
       </Segment>
-      <Segment attached='bottom' className={'expandedStyle'}>
+      <Segment attached='bottom' className={'expandedStyle'} style={{ paddingTop: 0 }}>
         {loading ? (
           <Loader active inline='centered' size='large'>
             Loading Team Details...
@@ -173,7 +165,7 @@ const TeamDetails = ({ users, players, season }) => {
             <Table.Header
               style={{
                 position: 'sticky',
-                top: -15,
+                top: 0,
                 background: 'white',
                 zIndex: 2,
               }}>
