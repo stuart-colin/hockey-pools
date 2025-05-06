@@ -78,7 +78,7 @@ const StandingsList = ({ users, season }) => {
             </Grid.Row>
           </Grid.Row>
           <Grid.Row columns={12}>
-            <Search users={users} placeholder={"Search Rosters"} />
+            <Search loading={users.loading} rankedRosters={rankedRosters} placeholder={"Search Rosters"} />
           </Grid.Row>
         </Grid>
       </Segment>

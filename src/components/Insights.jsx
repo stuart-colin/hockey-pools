@@ -173,7 +173,7 @@ const Insights = ({ users, players }) => {
             <Icon circular color="blue" name={visible ? 'chevron up' : 'chevron down'} />
           </Grid.Column>
           <Grid.Column textAlign="center" width={12}>
-            <Header as="h3" color="blue">Quick Insights</Header>
+            <Header size='medium' color="blue">Quick Insights</Header>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -186,7 +186,7 @@ const Insights = ({ users, players }) => {
           <Grid stackable>
             <Grid.Row>
               <Grid.Column width={2} >
-                <Header as="h3">Players Remaining</Header>
+                <Header size='medium'>Players Remaining</Header>
                 <Statistic.Group size='mini' widths='one'>
                   <Statistic horizontal color="blue" value={mostPlayersRemaining} label="Most" />
                   <Statistic horizontal color="purple" value={averagePlayersRemaining} label="Average" />
@@ -194,7 +194,7 @@ const Insights = ({ users, players }) => {
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
-                <Header as="h3">Pool Points</Header>
+                <Header size='medium'>Pool Points</Header>
                 <Statistic.Group size='mini' widths='one'>
                   <Statistic horizontal color="blue" value={mostPoints} label="Most" />
                   <Statistic horizontal color="purple" value={averagePoints} label="Average" />
@@ -202,25 +202,25 @@ const Insights = ({ users, players }) => {
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
-                <Header as="h3">Most Picks</Header>
+                <Header size='medium'>Most Picks</Header>
                 <Statistic.Group size='mini' widths='one' color="blue">
                   {mostCommonPlayers}
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
-                <Header as="h3">Best Picks</Header>
+                <Header size='medium'>Best Picks</Header>
                 <Statistic.Group size='mini' widths='one' color="green">
                   {topPlayers}
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
-                <Header as="h3">Worst Picks</Header>
+                <Header size='medium'>Worst Picks</Header>
                 <Statistic.Group size='mini' widths='one' color="red">
                   {bottomPlayers}
                 </Statistic.Group>
               </Grid.Column>
               <Grid.Column width={2}>
-                <Header as="h3">Most Advantageous Picks</Header>
+                <Header size='medium'>Most Advantageous Picks</Header>
                 <Statistic.Group size='mini' widths='one' color="teal">
                   {bestByPickThreshold}
                 </Statistic.Group>
@@ -265,7 +265,7 @@ const Insights = ({ users, players }) => {
                 <h6>Highest points under {highThresh}% selection rate</h6>
               </Grid.Column>
               <Grid.Column width={2}>
-                <Header as="h3">Least Advantageous Picks</Header>
+                <Header size='medium'>Least Advantageous Picks</Header>
                 <Statistic.Group size='mini' widths='one' color="purple">
                   {worstByPickThreshold}
                 </Statistic.Group>
@@ -310,7 +310,7 @@ const Insights = ({ users, players }) => {
                 <h6>Lowest points over {lowThresh}% selection rate</h6>
               </Grid.Column>
               <Grid.Column width={2}>
-                <Header as="h3">Best Players No One Took</Header>
+                <Header size='medium'>Best Players No One Took</Header>
                 <Statistic.Group size='mini' widths='one' color='green'>
                   <Statistic
                     horizontal
@@ -346,7 +346,7 @@ const Insights = ({ users, players }) => {
             <Divider />
             <Grid.Row columns={2}>
               <Grid.Column>
-                <Header as="h3">Perfect Team - {bestPoints} Points, {bestRemaining}/16 Players</Header>
+                <Header size='medium'>Perfect Team - {bestPoints} Points, {bestRemaining}/16 Players</Header>
                 <Grid>
                   {chunkArray(['Left', 'Center', 'Right', 'Defense', 'Goalie', 'Utility'], 3).map((chunk, rowIndex) => (
                     <Grid.Row columns={3} key={rowIndex}>
@@ -370,7 +370,7 @@ const Insights = ({ users, players }) => {
                 </Grid>
               </Grid.Column>
               <Grid.Column>
-                <Header as="h3">Most Common Team - {commonPoints} Points, {commonRemaining}/16 Players</Header>
+                <Header size='medium'>Most Common Team - {commonPoints} Points, {commonRemaining}/16 Players</Header>
                 <Grid>
                   {chunkArray(['Left', 'Center', 'Right', 'Defense', 'Goalie', 'Utility'], 3).map((chunk, rowIndex) => (
                     <Grid.Row columns={3} key={rowIndex}>
