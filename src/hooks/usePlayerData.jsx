@@ -37,7 +37,7 @@ const usePlayerData = (users, eliminatedTeams, eliminatedLoading) => {
           const otl = (player.stats && player.stats.otl != null) ? player.stats.otl : 0;
           const stats = player.stats && player.stats.featuredStats && player.stats.featuredStats.playoffs && player.stats.featuredStats.playoffs.subSeason;
 
-          let points = 0, stat1 = 0, stat2 = 0, stat3 = 0;
+          let points = 0, stat1 = 0, stat2 = 0, stat3 = 0, gamesPlayed = 0;
 
           if (isGoalie) {
             if (stats) {
@@ -55,18 +55,26 @@ const usePlayerData = (users, eliminatedTeams, eliminatedLoading) => {
             }
           }
 
+          if (stats && stats.gamesPlayed && stats.gamesPlayed >= 0) {
+            gamesPlayed = stats.gamesPlayed;
+          }
+
+          const pointsPerGame = gamesPlayed > 0 ? (points / gamesPlayed) : 0;
+
           playerMap.set(player.name, {
             id: player.playerId || player.name,
             headshot: player.headshot,
             name: player.name,
             position: player.position,
-            teamLogo: player.stats && player.stats.teamLogo,
+            teamLogo: player.stats && player.stats.teamLogo, // Ensure teamLogo is correctly accessed
             teamName: player.stats && player.stats.teamName,
+            gamesPlayed: gamesPlayed,
             points: points,
             stat1: stat1,
             stat2: stat2,
             stat3: stat3,
             pickCount: 1,
+            pointsPerGame: pointsPerGame, // Add pointsPerGame here
             isEliminated: eliminatedTeams.includes(player.stats && player.stats.teamName), // Calculate directly
           });
         } else {

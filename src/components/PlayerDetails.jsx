@@ -32,6 +32,8 @@ const PlayerDetails = ({ users, players }) => {
     Position: 'position',
     Team: 'teamName',
     Points: 'points',
+    Games: 'gamesPlayed',
+    'Points/Game': 'pointsPerGame',
     'Pick Count — Rate': 'pickCount',
   };
 
@@ -54,7 +56,6 @@ const PlayerDetails = ({ users, players }) => {
     return reverse ? sorted.reverse() : sorted;
   }, [players, positionFilter, teamFilter, nameSearch, sortPlayerOption, reverse]);
 
-  // Dropdown options for filters
   const positionOptions = [
     { key: 'C', text: 'C', value: 'C' },
     { key: 'L', text: 'L', value: 'L' },
@@ -169,6 +170,12 @@ const PlayerDetails = ({ users, players }) => {
         {player.position === 'G'
           ? ` — ${player.stat1} W | ${player.stat2} SO | ${player.stat3} OTL`
           : ` — ${player.stat1} G | ${player.stat2} A | ${player.stat3} OTG`}
+      </Table.Cell>
+      <Table.Cell>
+        {player.gamesPlayed}
+      </Table.Cell>
+      <Table.Cell>
+        {player.pointsPerGame.toFixed(2)}
       </Table.Cell>
       <Table.Cell>
         {`${player.pickCount}/${users.rosters.length} — ${((player.pickCount / users.rosters.length) * 100).toFixed(0)}%`}
