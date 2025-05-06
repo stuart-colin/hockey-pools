@@ -8,21 +8,18 @@ const Search = ({ users, placeholder }) => {
 
   useEffect(() => {
     if (!users.loading) {
-      setFilteredUsers(users.rosters.filter(user => user.roster.owner.name.toLowerCase().includes(searchTerm.toLowerCase())));
+      setFilteredUsers(users.rosters.filter(user => user.owner && user.owner.name.toLowerCase().includes(searchTerm.toLowerCase())));
     }
-  }, [searchTerm]);
+  }, [searchTerm, users.rosters, users.loading]); // Add users.rosters and users.loading to dependencies
 
   const searchedUser = filteredUsers.map(user => (
-    <div key={user.roster.owner.id}>{user.roster.owner.name} - {user.rank}{getOrdinal(user.rank)} place, {user.points} points </div>
+    <div key={user.owner.id}>{user.owner.name} - {user.rank}{getOrdinal(user.rank)} place, {user.points} points </div>
   ));
-
   const labelDisplay = () => {
     if (!searchTerm.length || !filteredUsers.length) {
       return { display: 'none' }
     }
   }
-  // console.log(filteredUsers)
-  // onUserSearch(filteredUsers);
 
   return (
     <div>
