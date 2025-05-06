@@ -205,7 +205,13 @@ const PlayerDetails = ({ users, players }) => {
           </Loader>
         ) : (
           <Table basic='very' singleLine unstackable selectable>
-            <Table.Header>
+            <Table.Header
+              style={{
+                position: 'sticky',
+                top: -15,
+                background: 'white',
+                zIndex: 2,
+              }}>
               <Table.Row>
                 <Table.HeaderCell></Table.HeaderCell>
                 {playerHeaders}
