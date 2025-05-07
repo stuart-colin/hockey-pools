@@ -14,7 +14,7 @@ import '../css/customStyle.css';
 
 const StandingsList = ({ users, season }) => {
   const [loading, setLoading] = useState(true);
-  const [activeRosterKey, setActiveRosterKey] = useState(null); // To track the open item
+  const [activeRosterKey, setActiveRosterKey] = useState(null);
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -25,28 +25,24 @@ const StandingsList = ({ users, season }) => {
       return [];
     }
 
-    // 1. Create a shallow copy and sort by points descending
     const sorted = [...users.rosters].sort((a, b) => b.points - a.points);
-
-    // 2. Calculate ranks immutably
     let currentRank = 0;
     let stack = 1;
-    let lastPoints = -Infinity; // Start with a value lower than any possible points
+    let lastPoints = -Infinity;
 
     return sorted.map((roster, index) => {
       if (roster.points !== lastPoints) {
         currentRank += stack;
-        stack = 1; // Reset stack for the new rank
+        stack = 1;
       }
       else {
-        stack++; // Increment stack for tied rank
+        stack++;
       }
-      lastPoints = roster.points; // Update lastPoints for the next iteration
+      lastPoints = roster.points;
 
-      // Return a new object with the rank added
       return { ...roster, rank: currentRank };
     });
-  }, [users.rosters]); // Only recalculate when users.rosters changes
+  }, [users.rosters]);
 
   const pot = rankedRosters.length * 20;
 
@@ -55,13 +51,12 @@ const StandingsList = ({ users, season }) => {
   };
 
   const standingsList = rankedRosters.map((user, index) => (
-
     <StandingsItem
       user={user}
       key={user.owner.id}
       poolSize={rankedRosters.length}
-      isRosterVisible={activeRosterKey === index}
-      onToggleRoster={() => handleToggleRoster(index)}
+      isRosterVisible={activeRosterKey === user.owner.id}
+      onToggleRoster={() => handleToggleRoster(user.owner.id)}
     />
   ));
 
