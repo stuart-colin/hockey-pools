@@ -83,7 +83,7 @@ const StandingsList = ({ users, season }) => {
           </Grid.Row>
         </Grid>
       </Segment>
-      <Segment attached='bottom' className={'expandedStandingsStyle'}>
+      <Segment attached='bottom' className={'expandedStandingsStyle'} style={{ padding: 0 }}>
         {loading ? (
           <Dimmer active inverted>
             <Loader>Loading Standings...</Loader>
