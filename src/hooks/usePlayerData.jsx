@@ -66,7 +66,7 @@ const usePlayerData = (users, eliminatedTeams, eliminatedLoading) => {
             headshot: player.headshot,
             name: player.name,
             position: player.position,
-            teamLogo: player.stats && player.stats.teamLogo, // Ensure teamLogo is correctly accessed
+            teamLogo: player.stats && player.stats.teamLogo,
             teamName: player.stats && player.stats.teamName,
             gamesPlayed: gamesPlayed,
             points: points,
@@ -74,8 +74,8 @@ const usePlayerData = (users, eliminatedTeams, eliminatedLoading) => {
             stat2: stat2,
             stat3: stat3,
             pickCount: 1,
-            pointsPerGame: pointsPerGame, // Add pointsPerGame here
-            isEliminated: eliminatedTeams.includes(player.stats && player.stats.teamName), // Calculate directly
+            pointsPerGame: pointsPerGame,
+            isEliminated: eliminatedTeams.includes(player.stats && player.stats.teamName),
           });
         } else {
           playerMap.get(player.name).pickCount += 1;
@@ -83,10 +83,9 @@ const usePlayerData = (users, eliminatedTeams, eliminatedLoading) => {
       });
     });
 
-    // Convert map values to an array and sort
     const playerList = Array.from(playerMap.values());
-    return playerList.sort((a, b) => b.pickCount - a.pickCount); // Sort by pick count descending
-  }, [users, eliminatedTeams, eliminatedLoading]); // Update dependencies
+    return playerList.sort((a, b) => b.pickCount - a.pickCount);
+  }, [users, eliminatedTeams, eliminatedLoading]);
 
   return players;
 };

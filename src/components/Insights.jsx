@@ -320,7 +320,7 @@ const Insights = ({ users, players }) => {
                   <Statistic
                     horizontal
                     label='Calvin Pickard'
-                    value='8'
+                    value='10'
                   // label='Pavel Francouz'
                   // value='14'
                   // label='Adin Hill'
