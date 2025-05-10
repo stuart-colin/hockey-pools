@@ -39,7 +39,7 @@ const Scoreboard = () => {
       <Label>
         {game.gameState === 'OFF' || game.gameState === 'FINAL'
           ? 'FINAL' + (game.gameOutcome.lastPeriodType === 'OT'
-            ? game.gameOutcome.otPeriods + '/' + game.gameOutcome.lastPeriodType : '')
+            ? ' ' + game.gameOutcome.otPeriods + '/' + game.gameOutcome.lastPeriodType : '')
           : game.gameState === 'FUT' || game.gameState === 'PRE'
             ? localDate(game.startTimeUTC)
             : `${game.clock.timeRemaining} ${game.period}${getOrdinals(game.period)} ${game.clock.inIntermission ? 'INT' : ''
@@ -173,17 +173,46 @@ const Scoreboard = () => {
       )));
   };
 
-  const games = useMemo(() => scoreboard.games.map((game, index) => (
-    <List.Item key={index}>
-      <Popup
-        trigger={<Label>{renderGameLabels(game)}</Label>}
-        content={renderSeriesStatus(game)}
-        position={isMobile ? 'bottom right' : 'bottom center'}
-        flowing
-        hoverable
-      />
-    </List.Item>
-  )), [scoreboard.games, isMobile]);
+  const games = useMemo(() => {
+    if (!scoreboard.games || !Array.isArray(scoreboard.games)) {
+      return [];
+    }
+
+    // Create a mutable copy for sorting so that gameState 'OFF' is moved to the end
+    const gamesToSort = [...scoreboard.games];
+
+    gamesToSort.sort((a, b) => {
+      const aIsFinished = a.gameState === 'OFF';
+      const bIsFinished = b.gameState === 'OFF';
+
+      if (aIsFinished && !bIsFinished) {
+        return 1; // 'a' is finished, 'b' is not: 'a' comes after 'b'
+      }
+      if (!aIsFinished && bIsFinished) {
+        return -1; // 'a' is not finished, 'b' is: 'a' comes before 'b'
+      }
+
+      // If both are finished or both are not finished, sort by start time
+      const startTimeA = new Date(a.startTimeUTC).getTime();
+      const startTimeB = new Date(b.startTimeUTC).getTime();
+
+      return startTimeA - startTimeB;
+    });
+
+    return gamesToSort.map((game, index) => (
+      // Using game.gamePk (common NHL API game ID) if available, otherwise fallback to index.
+      // Ensure your game object from useScores() has a unique ID like gamePk.
+      <List.Item key={game.gamePk || index}>
+        <Popup
+          trigger={<Label>{renderGameLabels(game)}</Label>}
+          content={renderSeriesStatus(game)}
+          position={isMobile ? 'bottom right' : 'bottom center'}
+          flowing
+          hoverable
+        />
+      </List.Item>
+    ));
+  }, [scoreboard.games, isMobile]); // Dependencies remain the same
 
   return (
     <Segment

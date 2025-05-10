@@ -320,7 +320,7 @@ const Insights = ({ users, players }) => {
                   <Statistic
                     horizontal
                     label='Calvin Pickard'
-                    value='10'
+                    value='12'
                   // label='Pavel Francouz'
                   // value='14'
                   // label='Adin Hill'
@@ -329,7 +329,7 @@ const Insights = ({ users, players }) => {
                   />
                   <Statistic
                     horizontal
-                    label='Phillip Danault'
+                    label='Anton Lundell'
                     value='8'
                   // label='Antti Raanta'
                   // value='14'
@@ -338,8 +338,8 @@ const Insights = ({ users, players }) => {
                   />
                   <Statistic
                     horizontal
-                    label='Andrei Kuzmenko'
-                    value='6'
+                    label='Eetu Luostarinen'
+                    value='8'
                   // label='Carter Verhaeghe'
                   // value='14'
                   // label='Carter Verhaeghe'
