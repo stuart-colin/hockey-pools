@@ -59,8 +59,13 @@ const App = () => {
           rosterDataEndpoint={rosterDataEndpoint}
         />
       ,
-      "insights": <Insights users={users} players={players} />,
-      "player-details": <PlayerDetails users={users} players={players} />,
+      "insights": <Insights users={users} players={players} />, // Consider if Insights also needs unselected players later
+      "player-details": <PlayerDetails
+        users={users}
+        players={players}
+        season={season}
+        eliminatedTeams={eliminatedTeams}
+      />,
       "team-details": <TeamDetails users={users} players={players} season={season} />,
       "team-builder": <TeamBuilder regularSeasonStats={regularSeasonStats} />,
     };

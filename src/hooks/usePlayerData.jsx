@@ -62,7 +62,7 @@ const usePlayerData = (users, eliminatedTeams, eliminatedLoading) => {
           const pointsPerGame = gamesPlayed > 0 ? (points / gamesPlayed) : 0;
 
           playerMap.set(player.name, {
-            id: player.playerId || player.name,
+            id: player.nhl_id,
             headshot: player.headshot,
             name: player.name,
             position: player.position,

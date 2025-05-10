@@ -12,9 +12,10 @@ import {
   Table,
 } from 'semantic-ui-react';
 import { customSort } from '../utils/stats';
+import useUnselectedPlayers from '../hooks/useUnselectedPlayers';
 import '../css/customStyle.css';
 
-const PlayerDetails = ({ users, players }) => {
+const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
   const [loading, setLoading] = useState(true);
   const [sortPlayerOption, setSortPlayerOption] = useState('Points');
   const [reverse, setReverse] = useState(false);
@@ -22,10 +23,16 @@ const PlayerDetails = ({ users, players }) => {
   const [nameSearch, setNameSearch] = useState('');
   const [teamFilter, setTeamFilter] = useState([]);
   const [positionFilter, setPositionFilter] = useState([]);
+  const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
+
+  const allPlayoffPlayers = useMemo(() => {
+    const processedSelectedPlayers = players.map(p => ({ ...p, id: p.id ? p.id.toString() : p.name }));
+    return [...processedSelectedPlayers, ...unselectedPlayers];
+  }, [players, unselectedPlayers]);
 
   useEffect(() => {
-    setLoading(users.loading);
-  }, [users]);
+    setLoading(users.loading || loadingUnselected);
+  }, [users.loading, loadingUnselected]);
 
   const headerKeys = {
     Player: 'name',
@@ -38,7 +45,7 @@ const PlayerDetails = ({ users, players }) => {
   };
 
   const filteredPlayers = useMemo(() => {
-    const filtered = players.filter((player) => {
+    const filtered = allPlayoffPlayers.filter((player) => {
       const matchesPosition = positionFilter.length
         ? positionFilter.includes(player.position)
         : true;
@@ -54,7 +61,7 @@ const PlayerDetails = ({ users, players }) => {
     const key = headerKeys[sortPlayerOption];
     const sorted = customSort(filtered, key);
     return reverse ? sorted.reverse() : sorted;
-  }, [players, positionFilter, teamFilter, nameSearch, sortPlayerOption, reverse]);
+  }, [allPlayoffPlayers, positionFilter, teamFilter, nameSearch, sortPlayerOption, reverse]);
 
   const positionOptions = [
     { key: 'C', text: 'C', value: 'C' },
@@ -66,7 +73,7 @@ const PlayerDetails = ({ users, players }) => {
 
   const teamOptions = useMemo(() => {
     const teams = new Map();
-    players.forEach((player) => {
+    allPlayoffPlayers.forEach((player) => {
       if (!teams.has(player.teamName)) {
         teams.set(player.teamName, {
           key: player.teamName,
@@ -77,7 +84,7 @@ const PlayerDetails = ({ users, players }) => {
       }
     });
     return Array.from(teams.values());
-  }, [players]);
+  }, [allPlayoffPlayers]);
 
   const playerFilters = () => {
     return (
@@ -155,7 +162,11 @@ const PlayerDetails = ({ users, players }) => {
   ));
 
   const playerDetails = filteredPlayers.map((player, index) => (
-    <Table.Row key={player.name} negative={player.isEliminated}>
+    <Table.Row
+      key={player.id}
+      negative={player.isEliminated}
+      warning={!player.isEliminated && player.isUnselected}
+    >
       <Table.Cell collapsing>{index + 1}</Table.Cell>
       <Table.Cell>
         <Image src={player.headshot} avatar alt={`${player.name} Headshot`} /> {player.name}
@@ -178,7 +189,9 @@ const PlayerDetails = ({ users, players }) => {
         {player.pointsPerGame.toFixed(2)}
       </Table.Cell>
       <Table.Cell>
-        {`${player.pickCount}/${users.rosters.length} — ${((player.pickCount / users.rosters.length) * 100).toFixed(0)}%`}
+        {player.isUnselected
+          ? 'Not Selected'
+          : `${player.pickCount}/${users.rosters.length} — ${((player.pickCount / users.rosters.length) * 100).toFixed(0)}%`}
       </Table.Cell>
     </Table.Row>
   ));
@@ -213,7 +226,7 @@ const PlayerDetails = ({ users, players }) => {
       </Segment>
       <Segment attached='bottom' className={'expandedPlayersStyle'} style={{ paddingTop: 0 }}>
         {loading ? (
-          <Loader active inline='centered' size='large'>
+          <Loader active={loading} inline='centered' size='large'>
             Loading Player Details...
           </Loader>
         ) : (
