@@ -4,7 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import { Grid } from "semantic-ui-react";
 
 import Alert from "./Alert";
-import Announcement from "./Announcement";
+import CommissionersCorner from "./CommissionersCorner";
 import CountdownTimer from "./CountdownTimer";
 import Header from "./Header";
 import Insights from "./Insights";
@@ -49,7 +49,7 @@ const App = () => {
   // Map activeItem to components
   const renderContent = () => {
     const components = {
-      "commissioners-corner": <Announcement />,
+      "commissioners-corner": <CommissionersCorner season={season} />,
       "standings": <StandingsList
         users={users}
         season={season}
