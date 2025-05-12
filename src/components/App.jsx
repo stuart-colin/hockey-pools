@@ -49,7 +49,8 @@ const App = () => {
   // Map activeItem to components
   const renderContent = () => {
     const components = {
-      "commissioners-corner": <CommissionersCorner season={season} />,
+      "commissioners-corner": <CommissionersCorner
+        season={season} />,
       "standings": <StandingsList
         users={users}
         season={season}
@@ -59,15 +60,24 @@ const App = () => {
           rosterDataEndpoint={rosterDataEndpoint}
         />
       ,
-      "insights": <Insights users={users} players={players} />, // Consider if Insights also needs unselected players later
+      "insights": <Insights
+        users={users}
+        players={players}
+        season={season}
+        eliminatedTeams={eliminatedTeams} />, // Consider if Insights also needs unselected players later
       "player-details": <PlayerDetails
         users={users}
         players={players}
         season={season}
         eliminatedTeams={eliminatedTeams}
       />,
-      "team-details": <TeamDetails users={users} players={players} season={season} />,
-      "team-builder": <TeamBuilder regularSeasonStats={regularSeasonStats} />,
+      "team-details": <TeamDetails
+        users={users}
+        players={players}
+        season={season} />,
+      "team-builder": <TeamBuilder
+        regularSeasonStats={regularSeasonStats}
+      />,
     };
 
     return components[activeItem] || null;

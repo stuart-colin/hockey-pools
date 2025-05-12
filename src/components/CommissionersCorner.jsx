@@ -192,14 +192,17 @@ const CommissionersCorner = ({ season }) => {
               <Item.Image avatar size='mini' src={announcement.authorImage} />
               <Item.Content>
                 <Item.Header as='h4'>
-                  <span role='img' aria-label='loudspeaker'>📢</span>{' '}
-                  {/* Format date to user's locale */}
-                  {new Date(announcement.date).toLocaleDateString(undefined, {
-                    year: 'numeric', month: 'numeric', day: 'numeric'
-                  })}{' '}
-                  - {announcement.title}
+                  <span role='img' aria-label='loudspeaker'>📢</span> {announcement.title}
                 </Item.Header>
-                <Item.Meta>By: {announcement.author}</Item.Meta>
+                <Item.Meta>
+                  <span>
+                    By: {announcement.author}
+                    {' — '}
+                    {new Date(announcement.date).toLocaleDateString(undefined, {
+                      year: 'numeric', month: 'numeric', day: 'numeric'
+                    })}
+                  </span>
+                </Item.Meta>
                 <Item.Description>
                   {announcement.content.map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>

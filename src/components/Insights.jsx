@@ -9,6 +9,7 @@ import {
   Statistic,
 } from 'semantic-ui-react';
 import { min, max, mean, customSort } from '../utils/stats';
+import useUnselectedPlayers from '../hooks/useUnselectedPlayers'; // Import the hook
 import '../css/customStyle.css';
 
 const smallStep = 1;
@@ -16,28 +17,16 @@ const bigStep = 10;
 const defaultHighThresh = 50;
 const defaultLowThresh = 50;
 
-const Insights = ({ users, players }) => {
+const Insights = ({ users, players, season, eliminatedTeams }) => { // Removed unselectedPlayers, added season & eliminatedTeams
   const [loading, setLoading] = useState(true);
   const [highThresh, setHighThresh] = useState(defaultHighThresh);
   const [lowThresh, setLowThresh] = useState(defaultLowThresh);
 
+  const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
+
   useEffect(() => {
-    if (!users.loading) {
-      setLoading(false);
-    }
-  }, [users]);
-
-  const loadedStyle = () => {
-    if (!loading) {
-      return { display: 'none' }
-    }
-  }
-
-  const loadingStyle = () => {
-    if (loading) {
-      return { opacity: 0 }
-    }
-  }
+    setLoading(users.loading || loadingUnselected);
+  }, [users.loading, loadingUnselected]);
 
   const userPlayersRemaining = useMemo(() => users.rosters.map(u => u.playersRemaining), [users.rosters]);
   const userPoints = useMemo(() => users.rosters.map(u => u.points), [users.rosters]);
@@ -172,6 +161,19 @@ const Insights = ({ users, players }) => {
     ));
   };
 
+  const topUnselectedPlayers = useMemo(() => {
+    if (!unselectedPlayers || unselectedPlayers.length === 0) {
+      return [];
+    }
+    // Sort unselected players by points (descending) and take top 3
+    return customSort([...unselectedPlayers], 'points').slice(0, 3);
+  }, [unselectedPlayers]);
+
+  const renderUnselectedPlayerStats = (playersToRender) => {
+    return playersToRender.map((player) => (
+      <Statistic horizontal key={player.id} label={player.name} value={player.points} />
+    ));
+  };
   return (
     <Segment.Group>
       <Segment attached='top'>
@@ -317,7 +319,12 @@ const Insights = ({ users, players }) => {
               <Grid.Column width={2}>
                 <Header size='medium'>Best Players No One Took</Header>
                 <Statistic.Group size='mini' widths='one' color='green'>
-                  <Statistic
+                  {topUnselectedPlayers.length > 0 ? (
+                    renderUnselectedPlayerStats(topUnselectedPlayers)
+                  ) : (
+                    <Statistic horizontal label='' value='' />
+                  )}
+                  {/* <Statistic
                     horizontal
                     label='Calvin Pickard'
                     value='12'
@@ -329,8 +336,8 @@ const Insights = ({ users, players }) => {
                   />
                   <Statistic
                     horizontal
-                    label='Anton Lundell'
-                    value='8'
+                    label='Ryan Nugent-Hopkins'
+                    value='9'
                   // label='Antti Raanta'
                   // value='14'
                   // label='Sergei Bobrovsky'
@@ -344,7 +351,7 @@ const Insights = ({ users, players }) => {
                   // value='14'
                   // label='Carter Verhaeghe'
                   // value='19'
-                  />
+                  /> */}
                 </Statistic.Group>
               </Grid.Column>
             </Grid.Row>

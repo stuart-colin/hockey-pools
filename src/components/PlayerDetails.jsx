@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import {
+  Checkbox,
   Button,
   Dropdown,
   Grid,
@@ -23,6 +24,10 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
   const [nameSearch, setNameSearch] = useState('');
   const [teamFilter, setTeamFilter] = useState([]);
   const [positionFilter, setPositionFilter] = useState([]);
+  const [showActive, setShowActive] = useState(false);
+  const [showEliminated, setShowEliminated] = useState(false);
+  const [showUnselected, setShowUnselected] = useState(false);
+
   const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
 
   const allPlayoffPlayers = useMemo(() => {
@@ -34,15 +39,17 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
     setLoading(users.loading || loadingUnselected);
   }, [users.loading, loadingUnselected]);
 
-  const headerKeys = {
-    Player: 'name',
-    Position: 'position',
-    Team: 'teamName',
-    Points: 'points',
-    Games: 'gamesPlayed',
-    'Points/Game': 'pointsPerGame',
-    'Pick Count — Rate': 'pickCount',
-  };
+  // Memoize headerKeys to prevent unnecessary re-renders
+  const headerKeys = useMemo(() => ({
+    Player: "name",
+    Position: "position",
+    Team: "teamName",
+    Points: "points",
+    Games: "gamesPlayed",
+    "Points/Game": "pointsPerGame",
+    "Pick Count — Rate": "pickCount",
+  }), []); // Empty dependency array, so it's only created once.
+
 
   const filteredPlayers = useMemo(() => {
     const filtered = allPlayoffPlayers.filter((player) => {
@@ -55,13 +62,32 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
       const matchesName = nameSearch
         ? player.name.toLowerCase().includes(nameSearch.toLowerCase())
         : true;
-      return matchesPosition && matchesTeam && matchesName;
+
+      let matchesStatus = true;
+      const anyStatusFilterActive = showActive || showEliminated || showUnselected;
+      if (anyStatusFilterActive) {
+        matchesStatus = false;
+        const conditions = [];
+        if (showActive) {
+          conditions.push(!player.isEliminated);
+        }
+        if (showEliminated) {
+          conditions.push(player.isEliminated);
+        }
+        if (showUnselected) {
+          conditions.push(player.isUnselected);
+        }
+        if (conditions.length > 0 && conditions.every(condition => condition === true)) {
+          matchesStatus = true;
+        }
+      }
+      return matchesPosition && matchesTeam && matchesName && matchesStatus;
     });
 
     const key = headerKeys[sortPlayerOption];
     const sorted = customSort(filtered, key);
     return reverse ? sorted.reverse() : sorted;
-  }, [allPlayoffPlayers, positionFilter, teamFilter, nameSearch, sortPlayerOption, reverse]);
+  }, [allPlayoffPlayers, positionFilter, teamFilter, nameSearch, sortPlayerOption, reverse, showActive, showEliminated, showUnselected, headerKeys]);
 
   const positionOptions = [
     { key: 'C', text: 'C', value: 'C' },
@@ -89,14 +115,14 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
   const playerFilters = () => {
     return (
       <Grid stackable columns='equal'>
-        <Grid.Row
-          columns={3}
+        <Grid.Row columns={4}
           style={{
             position: 'sticky',
             top: 0,
             left: 0,
             zIndex: 10,
             background: 'white',
+            alignItems: 'center'
           }}
         >
           <Grid.Column>
@@ -133,6 +159,23 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
               value={positionFilter}
             />
           </Grid.Column>
+          <Grid.Column style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+            <Checkbox
+              label='Active'
+              checked={showActive}
+              onChange={() => setShowActive(!showActive)}
+            />
+            <Checkbox
+              label='Eliminated'
+              checked={showEliminated}
+              onChange={() => setShowEliminated(!showEliminated)}
+            />
+            <Checkbox
+              label='Not Selected'
+              checked={showUnselected}
+              onChange={() => setShowUnselected(!showUnselected)}
+            />
+          </Grid.Column>
         </Grid.Row>
       </Grid>
     );
@@ -150,7 +193,11 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
           setReverse(false);
         }
       }}
-      style={{ cursor: 'pointer', paddingTop: 13, background: 'white' }}
+      style={{
+        cursor: 'pointer',
+        paddingTop: 13,
+        background: 'white'
+      }}
     >
       {header}
       {sortPlayerOption === header && !reverse ? (
@@ -226,7 +273,7 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
       </Segment>
       <Segment attached='bottom' className={'expandedPlayersStyle'} style={{ paddingTop: 0 }}>
         {loading ? (
-          <Loader active={loading} inline='centered' size='large'>
+          <Loader active={loading} inline='centered' size='large' style={{ marginTop: 13 }}>
             Loading Player Details...
           </Loader>
         ) : (

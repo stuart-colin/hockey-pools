@@ -157,7 +157,7 @@ const TeamDetails = ({ users, players, season }) => {
       </Segment>
       <Segment attached='bottom' className={'expandedStyle'} style={{ paddingTop: 0 }}>
         {loading ? (
-          <Loader active inline='centered' size='large'>
+          <Loader active inline='centered' size='large' style={{ marginTop: 13 }}>
             Loading Team Details...
           </Loader>
         ) : (
