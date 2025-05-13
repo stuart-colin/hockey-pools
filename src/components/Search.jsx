@@ -5,6 +5,7 @@ import getOrdinal from '../utils/getOrdinals';
 const Search = ({ loading, rankedRosters, placeholder, onSearchResultClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [hoveredUserId, setHoveredUserId] = useState(null); // New state for hover
 
   useEffect(() => {
     if (!loading) {
@@ -21,10 +22,16 @@ const Search = ({ loading, rankedRosters, placeholder, onSearchResultClick }) =>
     .map(user => (
       <div
         key={user.owner.id}
+        onMouseEnter={() => setHoveredUserId(user.owner.id)}
+        onMouseLeave={() => setHoveredUserId(null)}
         onClick={() => onSearchResultClick && onSearchResultClick(user.owner.id)}
-        style={{ cursor: 'pointer', padding: '5px 0' }}
+        style={{ cursor: 'pointer', padding: '5px 0', textAlign: 'left', marginLeft: '5px' }}
       >
-        <strong>{user.owner.name}</strong>: {user.rank}{getOrdinal(user.rank)} place — {user.points} points — {user.playersRemaining}/16 players
+        {hoveredUserId === user.owner.id && (
+          <Icon name='arrow right' style={{ marginLeft: '-20px' }} />
+        )}
+        <strong>{user.owner.name}</strong>
+        {`: ${user.rank}${getOrdinal(user.rank)} place — ${user.points} points — ${user.playersRemaining}/16 players`}
       </div>
     ));
 
