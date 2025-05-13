@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, createRef } from 'react';
 import {
   Dimmer,
   Flag,
@@ -15,6 +15,7 @@ import '../css/customStyle.css';
 const StandingsList = ({ users, season }) => {
   const [loading, setLoading] = useState(true);
   const [activeRosterKey, setActiveRosterKey] = useState(null);
+  const itemRefs = useRef({});
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -46,8 +47,24 @@ const StandingsList = ({ users, season }) => {
 
   const pot = rankedRosters.length * 20;
 
+  useEffect(() => {
+    itemRefs.current = rankedRosters.reduce((acc, value) => {
+      acc[value.owner.id] = acc[value.owner.id] || createRef();
+      return acc;
+    }, {});
+  }, [rankedRosters]);
+
   const handleToggleRoster = (itemKey) => {
     setActiveRosterKey(prevKey => (prevKey === itemKey ? null : itemKey));
+  };
+
+  const handleSearchSelect = (userId) => {
+    requestAnimationFrame(() => {
+      itemRefs.current[userId].current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
   };
 
   const standingsList = rankedRosters.map((user, index) => (
@@ -57,6 +74,7 @@ const StandingsList = ({ users, season }) => {
       poolSize={rankedRosters.length}
       isRosterVisible={activeRosterKey === user.owner.id}
       onToggleRoster={() => handleToggleRoster(user.owner.id)}
+      ref={itemRefs.current[user.owner.id]}
     />
   ));
 
@@ -79,7 +97,12 @@ const StandingsList = ({ users, season }) => {
             </Grid.Row>
           </Grid.Row>
           <Grid.Row columns={12}>
-            <Search loading={users.loading} rankedRosters={rankedRosters} placeholder={'Search Rosters'} />
+            <Search
+              loading={users.loading}
+              rankedRosters={rankedRosters}
+              placeholder={'Search Rosters'}
+              onSearchResultClick={handleSearchSelect}
+            />
           </Grid.Row>
         </Grid>
       </Segment>
