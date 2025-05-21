@@ -204,7 +204,9 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
         <Icon name='sort down' />
       ) : sortPlayerOption === header && reverse ? (
         <Icon name='sort up' />
-      ) : null}
+      ) : (
+        <Icon name='sort' />
+      )}
     </Table.HeaderCell>
   ));
 

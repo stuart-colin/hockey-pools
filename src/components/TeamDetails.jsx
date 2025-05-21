@@ -113,7 +113,7 @@ const TeamDetails = ({ users, players, season }) => {
         ) : sortTeamOption === header && reverse ? (
           <Icon name='sort up' />
         ) : (
-          null
+          <Icon name='sort' />
         )}
       </Table.HeaderCell>
     );

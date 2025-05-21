@@ -119,7 +119,6 @@ const Scoreboard = () => {
   }
 
   const renderGameStats = (game) => {
-
     return (
       game.goals.map((goal, index) => (
         <List.Item
@@ -235,7 +234,7 @@ const Scoreboard = () => {
             ? prettyDate(scoreboard.date)
             : 'No games scheduled today'}
         </Label>
-        {games}
+        {games.length > 0 ? games : <Label>No games scheduled today</Label>}
       </List>
     </Segment>
   );
