@@ -9,10 +9,39 @@ import {
 } from 'semantic-ui-react';
 import bp from '../images/bp-crop.jpg';
 import colin from '../images/colin.jpg';
+import CF_top10 from '../images/CF_top10.png';
 
-// Define announcements as an array of objects
+
 // We can add a 'season' property to each announcement later if needed for filtering
 const allAnnouncements = [
+  {
+    id: '20250523',
+    season: '2025',
+    date: '5/23/2025',
+    title: 'Semi-Finals Recap/Start of Conference Finals',
+    author: 'BP',
+    authorImage: bp,
+    content: [
+      "Hi all,",
+      "Well like many years, this year's NHL playoffs has been full of excitement and UNPREDICTABILITY! This most certainly shows based on how everyone is performing in this year's pool! With juggernaut teams such as Colorado, Winnipeg, Tampa Bay, and Toronto all taking early exits this has left most entries with 3/16 of their players remaining in the pool :/. This is the lowest average players remaining per an entry going into the conference finals in a 7+ years! Now let's dive into some the standings, stats, and housekeeping items:",
+      "Improvements:",
+      "This year the website has made great advancements in mobile experience, as well as hover/click on the scoreboard pills to see scorer information along with the TeamBuilder feature which was provided to users when submitting their teams online. PLEASE CONTINUE PROVIDING FEEDBACK!",
+      "Here is our current top 10 as we enter into the conference finals:",
+      <Image src={CF_top10} size='large'></Image>,
+      "NOTE: Tie Breaker is as follows:",
+      "1) Most Players Remaining in the Playoffs ",
+      "2) Most Players who made the Conference Finals",
+      "3) Most total Goals from their entry",
+      "4) Most total Wins from their entry",
+      "5) Most total Assets from their entry",
+      "6) In the situation of an exact team and within money winnings going into SCF teams will submit their prediction as to how many each team will score in the SCF",
+      "",
+      "Shout out to; Kyle Haugrud (13), Miranda Belsheim (12), Steven Taylor (11), Lauri Leppanen (11), and Shon Noda (10) who are the only five competitors who have 10 or more of their 16 skaters remaining in the pool. An impressive feat any year, but particularly this year given the element of unexpected.",
+      "In Depth Statistics: Something that many of you know, is our hockey pool is known for providing some of the most indepth stats and insights for selections. Be sure to toggle around the top toolbar on the website for more analysis!",
+      "Reminder: Standings in the app are refreshed roughly every hour, and depend on the NHL updating their data - expect a delay after a game ends to see changes in the standings. Goalie overtime losses are manually added since the NHL does not tally those in the playoffs, so you may see those tracked as soon as immediately after the game ends or later depending on when I am able to get to a computer. Please let us know if you see any discrepancies!",
+      "Hope everyone is enjoying the playoffs!",
+    ],
+  },
   {
     id: '20250418',
     season: '2025',
