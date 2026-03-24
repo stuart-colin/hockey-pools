@@ -1,12 +1,9 @@
 import React from 'react';
-import seasons from '../constants/seasons';
-import getOrdinal from '../utils/getOrdinals';
+import getSeasonOrdinal from '../utils/getSeasonOrdinal';
 
 
 const Header = ({ season }) => {
-
-  const seasonIndex = seasons.seasonList.slice(0).reverse().indexOf(season) + 1;
-  const seasonOrdinal = getOrdinal(seasonIndex);
+  const seasonOrdinal = getSeasonOrdinal(season);
 
   return (
     <h1 className='ui center aligned icon header'>

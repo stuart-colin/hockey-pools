@@ -24,11 +24,12 @@ import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
 import { EliminatedTeamsProvider } from "../context/EliminatedTeamsContext";
+import getSeasonOrdinal from "../utils/getSeasonOrdinal";
 
 const currentYear = new Date().getFullYear().toString();
-const alertMessageHeading = "📢 Welcome to BP's 20th Annual Hockey Pool!";
 const alertMessage =
-  "Reminder: Standings in the app are refreshed roughly every hour, and depend on the NHL updating their data - expect a delay after a game ends to see changes in the standings. Goalie overtime losses are manually added since the NHL does not tally those in the playoffs, so you may see those tracked as soon as immediately after the game ends or later depending on when I am able to get to a computer. Please let us know if you see any discrepancies!";
+  "We are excited to have you join us this year! Roster submissions will open once all playoff spots have been clinched and will close at the start of the first playoff game.";
+// "Reminder: Standings in the app are refreshed roughly every hour, and depend on the NHL updating their data - expect a delay after a game ends to see changes in the standings. Goalie overtime losses are manually added since the NHL does not tally those in the playoffs, so you may see those tracked as soon as immediately after the game ends or later depending on when I am able to get to a computer. Please let us know if you see any discrepancies!";
 const rosterDataEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`
 
 const App = () => {
@@ -38,6 +39,7 @@ const App = () => {
   const [season, setSeason] = useState(currentYear);
   const [beta, setBeta] = useState(true);
   const [showAlert, setShowAlert] = useState(true);
+  const alertMessageHeading = `📢 Welcome to BP's ${getSeasonOrdinal(season)} Annual Hockey Pool!`;
 
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams);

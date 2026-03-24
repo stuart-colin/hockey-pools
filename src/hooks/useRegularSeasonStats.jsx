@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 
-const skaterStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
-const goalieStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/goalieStats`;
+// const skaterStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
+// const goalieStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/goalieStats`;
+const skaterStatsEndpoint = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api.nhle.com/stats/rest/en/skater/summary?sort=points&limit=-1&dir=desc&cayenneExp=seasonId=20252026%20and%20gameTypeId=2';
+const goalieStatsEndpoint = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api.nhle.com/stats/rest/en/goalie/summary?sort=wins&limit=-1&dir=desc&cayenneExp=seasonId=20252026%20and%20gameTypeId=2';
 
 const useRegularSeasonStats = (playoffTeams) => { // Accept playoffTeams array directly
   const [skaterStats, setSkaterStats] = useState([]);

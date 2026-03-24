@@ -18,16 +18,20 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
   useEffect(() => {
     if (!seasonId) return;
 
+    let cancelled = false;
+
     const fetchTeamData = async () => {
       try {
         // Fetch team data for mapping abbreviations to full names
         const teamUrl = new URL(`${NHL_API_BASE_URL}/team`);
 
         const response = await fetch(teamUrl.toString());
+        if (cancelled) return;
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status} for team data`);
         }
         const teamData = await response.json();
+        if (cancelled) return;
         const teams = teamData.data;
         const newTeamMap = new Map();
         teams.forEach(team => {
@@ -35,14 +39,20 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
         });
         setTeamMap(newTeamMap);
       } catch (err) {
+        if (cancelled) return;
         console.error('Failed to fetch team data:', err);
         setError(err); // Set error if team data fails, as it's crucial for skaters
       }
     };
     fetchTeamData();
+    return () => {
+      cancelled = true;
+    };
   }, [seasonId]);
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!seasonId || !eliminatedTeams || !teamMap) {
       // Wait for seasonId, eliminatedTeams, and teamMap to be available
       if (seasonId && eliminatedTeams && !teamMap && !error) { // teamMap is loading or failed
@@ -51,7 +61,9 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
         setUnselectedPlayers([]);
         setLoading(false);
       }
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
     const fetchUnselectedPlayersData = async () => {
@@ -67,10 +79,12 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
         goalieUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
 
         const goalieResponse = await fetch(goalieUrl.toString());
+        if (cancelled) return;
         if (!goalieResponse.ok) {
           console.warn(`HTTP error! status: ${goalieResponse.status} for goalie data. Proceeding without unselected goalies.`);
         } else {
           const goalieData = await goalieResponse.json();
+          if (cancelled) return;
           if (goalieData.data) {
             const processedGoalies = goalieData.data
               .filter(apiGoalie => !selectedPlayerIds.has(apiGoalie.playerId.toString()))
@@ -113,10 +127,12 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
         skaterUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
 
         const skaterResponse = await fetch(skaterUrl.toString());
+        if (cancelled) return;
         if (!skaterResponse.ok) {
           console.warn(`HTTP error! status: ${skaterResponse.status} for skater data. Proceeding without unselected skaters.`);
         } else {
           const skaterData = await skaterResponse.json();
+          if (cancelled) return;
           if (skaterData.data) {
             const processedSkaters = skaterData.data
               .filter(apiSkater => !selectedPlayerIds.has(apiSkater.playerId.toString()))
@@ -151,17 +167,24 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
           }
         }
 
+        if (cancelled) return;
         setUnselectedPlayers(allApiPlayers);
       } catch (err) {
+        if (cancelled) return;
         console.error('Failed to fetch unselected NHL players:', err);
         setError(err);
         setUnselectedPlayers([]);
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchUnselectedPlayersData();
+    return () => {
+      cancelled = true;
+    };
   }, [seasonId, selectedPlayers, eliminatedTeams, teamMap, error]); // Add error to dependency to allow retry if teamMap failed
 
   return { unselectedPlayers, loadingUnselected: loading, errorUnselected: error };

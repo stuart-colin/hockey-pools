@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Divider,
   Grid,
@@ -18,15 +18,11 @@ const defaultHighThresh = 50;
 const defaultLowThresh = 50;
 
 const Insights = ({ users, players, season, eliminatedTeams }) => { // Removed unselectedPlayers, added season & eliminatedTeams
-  const [loading, setLoading] = useState(true);
   const [highThresh, setHighThresh] = useState(defaultHighThresh);
   const [lowThresh, setLowThresh] = useState(defaultLowThresh);
 
   const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
-
-  useEffect(() => {
-    setLoading(users.loading || loadingUnselected);
-  }, [users.loading, loadingUnselected]);
+  const loading = users.loading || loadingUnselected;
 
   const userPlayersRemaining = useMemo(() => users.rosters.map(u => u.playersRemaining), [users.rosters]);
   const userPoints = useMemo(() => users.rosters.map(u => u.points), [users.rosters]);

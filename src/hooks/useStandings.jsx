@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-// const standingsEndpointNHL = 'https://statsapi.web.nhl.com/api/v1/standings/regularSeason'
-const standingsEndpointNHL = `${process.env.REACT_APP_BASE_URL}/v1/nhl/standings`;
+// const standingsEndpointNHL = `${process.env.REACT_APP_BASE_URL}/v1/nhl/standings`;
+const standingsEndpointNHL = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api-web.nhle.com/v1/standings/now'
 
 const useStandings = () => {
   const [playoffTeams, setPlayoffTeams] = useState([]);

@@ -1,22 +1,24 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { Menu, Sidebar, Icon, Label, Segment } from 'semantic-ui-react';
+import React, { useEffect, useState } from 'react';
+import { Menu, Sidebar, Icon, Segment, Label } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useMediaQuery } from 'react-responsive';
 import AuthButtons from './AuthButtons';
 
 const Navigation = ({ onMenuSelect }) => {
-  const [activeItem, setActiveItem] = useState();
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [activeItem, setActiveItem] = useState('insights');
   const { isAuthenticated } = useAuth0();
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
-    isMobile ? setActiveItem('standings') : setActiveItem('insights')
-  }, [isMobile, setActiveItem]);
+    setActiveItem(isMobile ? 'standings' : 'insights');
+  }, [isMobile]);
 
   useEffect(() => {
-    onMenuSelect(activeItem);
+    if (activeItem) {
+      onMenuSelect(activeItem);
+    }
   }, [activeItem, onMenuSelect]);
 
   const menuItems = [
@@ -72,7 +74,7 @@ const Navigation = ({ onMenuSelect }) => {
             onHide={() => setSidebarVisible(false)}
           >
             {renderMenuItems(true)}
-            {/* {isAuthenticated && (
+            {isAuthenticated && (
               <Menu.Item
                 name='team-builder'
                 active={activeItem === 'team-builder'}
@@ -84,7 +86,7 @@ const Navigation = ({ onMenuSelect }) => {
                 Team Builder
                 <Label color='red'>Beta</Label>
               </Menu.Item>
-            )} */}
+            )}
           </Sidebar>
           <Segment basic style={{ marginTop: '50px' }} />
         </>
@@ -93,7 +95,7 @@ const Navigation = ({ onMenuSelect }) => {
         <Menu stackable>
           {renderMenuItems(false)}
           <Menu.Menu position='right'>
-            {/* {isAuthenticated && (
+            {isAuthenticated && (
               <Menu.Item
                 name='team-builder'
                 active={activeItem === 'team-builder'}
@@ -102,7 +104,7 @@ const Navigation = ({ onMenuSelect }) => {
                 Team Builder
                 <Label color='red'>Beta</Label>
               </Menu.Item>
-            )} */}
+            )}
             <Menu.Item>
               <AuthButtons />
             </Menu.Item>

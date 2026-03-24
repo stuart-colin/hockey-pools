@@ -31,6 +31,7 @@ function prettyDate(date) {
 const Scoreboard = () => {
   const scoreboard = useScores();
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isPlayoffGame = (game) => Number(game?.gameType) === 3;
 
   const renderGameLabels = (game) => (
     <>
@@ -51,72 +52,80 @@ const Scoreboard = () => {
   );
 
   const renderSeriesStatus = (game) => {
-    const homeTeamWins =
-      game.homeTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
+    const showSeriesStatus = isPlayoffGame(game) && game.seriesStatus;
+    const showRegularSeasonRecord = !isPlayoffGame(game);
+    const homeTeamWins = showSeriesStatus
+      ? game.homeTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
         ? game.seriesStatus.topSeedWins
-        : game.seriesStatus.bottomSeedWins;
-
-    const awayTeamWins =
-      game.awayTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
+        : game.seriesStatus.bottomSeedWins
+      : null;
+    const awayTeamWins = showSeriesStatus
+      ? game.awayTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
         ? game.seriesStatus.topSeedWins
-        : game.seriesStatus.bottomSeedWins;
+        : game.seriesStatus.bottomSeedWins
+      : null;
+    const awayTeamRecord = showRegularSeasonRecord ? (game.awayTeam?.record || '0-0-0') : null;
+    const homeTeamRecord = showRegularSeasonRecord ? (game.homeTeam?.record || '0-0-0') : null;
 
     return (
-      <List divided relaxed
+      <List
+        divided
+        relaxed
         style={{
           maxHeight: '70dvh',
           overflow: 'auto',
           scrollbarWidth: 'thin',
         }}>
-        <List.Item>
-          <Label style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            <Image
-              avatar
-              src={game.awayTeam.logo}
-              alt={`${game.awayTeam.name.default} Logo`}
-            />
-            <Label>{awayTeamWins}</Label>
-            <Label
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-              }}>
-              <List.Header style={{ paddingBottom: 5 }}>
-                Series Status
-              </List.Header>
-              {
-                awayTeamWins === 4
-                  ? game.awayTeam.abbrev + ' WINS'
-                  : homeTeamWins === 4
-                    ? game.homeTeam.abbrev + ' WINS'
-                    : awayTeamWins === homeTeamWins
-                      ? 'SERIES TIED'
-                      : awayTeamWins > homeTeamWins
-                        ? game.awayTeam.abbrev + ' LEADS'
-                        : game.homeTeam.abbrev + ' LEADS'
-              }
+        {(showSeriesStatus || showRegularSeasonRecord) && (
+          <List.Item>
+            <Label style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+              <Image
+                avatar
+                src={game.awayTeam.logo}
+                alt={`${game.awayTeam.name.default} Logo`}
+              />
+              <Label>{showSeriesStatus ? awayTeamWins : awayTeamRecord}</Label>
+              <Label
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}>
+                <List.Header style={{ paddingBottom: 5 }}>
+                  {showSeriesStatus ? 'Series Status' : 'Season'}
+                </List.Header>
+                {showSeriesStatus
+                  ? awayTeamWins === 4
+                    ? game.awayTeam.abbrev + ' WINS'
+                    : homeTeamWins === 4
+                      ? game.homeTeam.abbrev + ' WINS'
+                      : awayTeamWins === homeTeamWins
+                        ? 'SERIES TIED'
+                        : awayTeamWins > homeTeamWins
+                          ? game.awayTeam.abbrev + ' LEADS'
+                          : game.homeTeam.abbrev + ' LEADS'
+                  : 'Record'}
+              </Label>
+              <Label>{showSeriesStatus ? homeTeamWins : homeTeamRecord}</Label>
+              <Image
+                avatar
+                src={game.homeTeam.logo}
+                alt={`${game.homeTeam.name.default} Logo`}
+              />
             </Label>
-            <Label>{homeTeamWins}</Label>
-            <Image
-              avatar
-              src={game.homeTeam.logo}
-              alt={`${game.homeTeam.name.default} Logo`}
-            />
-          </Label>
-        </List.Item>
+          </List.Item>
+        )}
         {
-          game.goals && game.goals.length > 0 ?
-            renderGameStats(game) : null
+          game.goals && game.goals.length > 0 ? renderGameStats(game) : null
         }
-      </List >
-    )
-  }
+      </List>
+    );
+  };
 
   const renderGameStats = (game) => {
     return (

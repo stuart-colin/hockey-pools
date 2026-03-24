@@ -15,7 +15,7 @@ import {
 import useSubmitRoster from '../hooks/useSubmitRoster';
 
 const teamLogoURL = `https://assets.nhle.com/logos/nhl/svg/`;
-const playerHeadshotURL = `https://assets.nhle.com/mugs/nhl/20242025/`;
+const playerHeadshotURL = `https://assets.nhle.com/mugs/nhl/20252026/`;
 
 const TeamBuilder = ({ regularSeasonStats }) => {
   const [myTeam, setMyTeam] = useState([]);
