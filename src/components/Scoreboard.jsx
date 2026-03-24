@@ -31,7 +31,7 @@ function prettyDate(date) {
 const Scoreboard = () => {
   const scoreboard = useScores();
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const isPlayoffGame = (game) => Number(game?.gameType) === 3;
+  const isPlayoffGame = (game) => Number(game && game.gameType) === 3;
 
   const renderGameLabels = (game) => (
     <>
@@ -64,8 +64,8 @@ const Scoreboard = () => {
         ? game.seriesStatus.topSeedWins
         : game.seriesStatus.bottomSeedWins
       : null;
-    const awayTeamRecord = showRegularSeasonRecord ? (game.awayTeam?.record || '0-0-0') : null;
-    const homeTeamRecord = showRegularSeasonRecord ? (game.homeTeam?.record || '0-0-0') : null;
+    const awayTeamRecord = showRegularSeasonRecord ? (game.awayTeam && game.awayTeam.record || '0-0-0') : null;
+    const homeTeamRecord = showRegularSeasonRecord ? (game.homeTeam && game.homeTeam.record || '0-0-0') : null;
 
     return (
       <List
