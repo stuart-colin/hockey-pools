@@ -1,5 +1,6 @@
 [build.environment]
   NODE_VERSION = "16"
+  CI = "false"
 
 [[redirects]]
   from = "/cors-proxy/*"
