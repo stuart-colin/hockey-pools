@@ -181,12 +181,11 @@ const Scoreboard = () => {
       )));
   };
 
-  const games = useMemo(() => {
+  const sortedGames = useMemo(() => {
     if (!scoreboard.games || !Array.isArray(scoreboard.games)) {
       return [];
     }
 
-    // Create a mutable copy for sorting so that gameState 'OFF' is moved to the end
     const gamesToSort = [...scoreboard.games];
 
     gamesToSort.sort((a, b) => {
@@ -194,33 +193,32 @@ const Scoreboard = () => {
       const bIsFinished = b.gameState === 'OFF';
 
       if (aIsFinished && !bIsFinished) {
-        return 1; // 'a' is finished, 'b' is not: 'a' comes after 'b'
+        return 1;
       }
       if (!aIsFinished && bIsFinished) {
-        return -1; // 'a' is not finished, 'b' is: 'a' comes before 'b'
+        return -1;
       }
 
-      // If both are finished or both are not finished, sort by start time
       const startTimeA = new Date(a.startTimeUTC).getTime();
       const startTimeB = new Date(b.startTimeUTC).getTime();
 
       return startTimeA - startTimeB;
     });
 
-    return gamesToSort.map((game, index) => (
-      // Using game.gamePk (common NHL API game ID) if available, otherwise fallback to index.
-      // Ensure your game object from useScores() has a unique ID like gamePk.
-      <List.Item key={game.gamePk || index}>
-        <Popup
-          trigger={<Label>{renderGameLabels(game)}</Label>}
-          content={renderSeriesStatus(game)}
-          position={isMobile ? 'bottom right' : 'bottom center'}
-          flowing
-          hoverable
-        />
-      </List.Item>
-    ));
-  }, [scoreboard.games, isMobile]); // Dependencies remain the same
+    return gamesToSort;
+  }, [scoreboard.games]);
+
+  const gameListItems = sortedGames.map((game, index) => (
+    <List.Item key={game.gamePk || index}>
+      <Popup
+        trigger={<Label>{renderGameLabels(game)}</Label>}
+        content={renderSeriesStatus(game)}
+        position={isMobile ? 'bottom right' : 'bottom center'}
+        flowing
+        hoverable
+      />
+    </List.Item>
+  ));
 
   return (
     <Segment
@@ -243,7 +241,7 @@ const Scoreboard = () => {
             ? prettyDate(scoreboard.date)
             : 'No games scheduled today'}
         </Label>
-        {games.length > 0 ? games : <Label>No games scheduled today</Label>}
+        {gameListItems.length > 0 ? gameListItems : <Label>No games scheduled today</Label>}
       </List>
     </Segment>
   );
