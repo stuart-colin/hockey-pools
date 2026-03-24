@@ -21,10 +21,10 @@ const fetchWithTimeout = async (url, timeoutMs = 10000) => {
 
 const normalizeScorePayload = (json) => {
   const nextDate =
-    typeof json?.currentDate === "string" && !Number.isNaN(new Date(json.currentDate).getTime())
+    typeof json && json.currentDate === "string" && !Number.isNaN(new Date(json.currentDate).getTime())
       ? json.currentDate
       : "";
-  const nextGames = Array.isArray(json?.games) ? json.games : [];
+  const nextGames = Array.isArray(json && json.games) ? json.games : [];
   return { nextDate, nextGames };
 };
 
