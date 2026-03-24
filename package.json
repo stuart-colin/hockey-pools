@@ -2,6 +2,9 @@
   "name": "hockey-pools",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "16.x"
+  },
   "dependencies": {
     "@auth0/auth0-react": "^2.3.0",
     "@testing-library/jest-dom": "^5.12.0",
