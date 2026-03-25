@@ -53,7 +53,7 @@ const Scoreboard = () => {
 
   const renderSeriesStatus = (game) => {
     const showSeriesStatus = isPlayoffGame(game) && game.seriesStatus;
-    const showRegularSeasonRecord = !isPlayoffGame(game);
+    const showRegularSeasonRecord = !isPlayoffGame(game) && game.gameState !== 'LIVE';
     const homeTeamWins = showSeriesStatus
       ? game.homeTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
         ? game.seriesStatus.topSeedWins
