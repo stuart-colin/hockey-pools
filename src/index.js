@@ -16,7 +16,7 @@ ReactDOM.render(
     authorizationParams={{
       redirect_uri: window.location.origin,
       audience: `https://${domain}/api/v2/`,
-      scope: "read:current_user update:current_user_metadata roster:create",
+      scope: "openid profile email read:current_user update:current_user_metadata roster:create",
     }}
   >
     <App />

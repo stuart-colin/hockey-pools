@@ -195,7 +195,7 @@ const Scoreboard = () => {
     return [...scoreboard.games].sort((a, b) => {
       const aFinished = isFinished(a);
       const bFinished = isFinished(b);
-      
+
       if (aFinished && !bFinished) return 1;
       if (!aFinished && bFinished) return -1;
 

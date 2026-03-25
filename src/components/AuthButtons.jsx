@@ -1,24 +1,19 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import LoginButton from './LoginButton';
-import LogoutButton from './LogoutButton';
+import AuthMenu from './AuthMenu';
 
 const AuthButtons = () => {
-  const { isLoading, error, isAuthenticated } = useAuth0();
+  const { isLoading, error } = useAuth0();
 
   if (error) {
-    return <div>Auth Error</div>; // Simplified error display
+    return <div>Auth Error</div>;
   }
 
   if (isLoading) {
-    return <div>Loading...</div>; // Simplified loading display
+    return <div>Loading...</div>;
   }
 
-  return (
-    <Fragment>
-      {!isAuthenticated ? <LoginButton /> : <LogoutButton />}
-    </Fragment>
-  );
+  return <AuthMenu />;
 };
 
 export default AuthButtons;

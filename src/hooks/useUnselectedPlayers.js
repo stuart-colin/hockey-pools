@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 
 const NHL_API_BASE_URL = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api.nhle.com/stats/rest/en';
+// const NHL_API_BASE_URL = `${process.env.REACT_APP_BASE_URL}/v1/nhl/teams`;
 
 const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
   const [unselectedPlayers, setUnselectedPlayers] = useState([]);
