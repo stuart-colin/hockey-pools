@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, createRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Dimmer,
   Flag,
@@ -48,10 +48,18 @@ const StandingsList = ({ users, season }) => {
   const pot = rankedRosters.length * 20;
 
   useEffect(() => {
-    itemRefs.current = rankedRosters.reduce((acc, value) => {
-      acc[value.owner.id] = acc[value.owner.id] || createRef();
-      return acc;
-    }, {});
+    const newRefs = {};
+    rankedRosters.forEach(roster => {
+      if (roster.owner?.id) {
+        // Preserve existing refs to prevent recreating DOM nodes
+        if (itemRefs.current[roster.owner.id]) {
+          newRefs[roster.owner.id] = itemRefs.current[roster.owner.id];
+        } else {
+          newRefs[roster.owner.id] = React.createRef();
+        }
+      }
+    });
+    itemRefs.current = newRefs;
   }, [rankedRosters]);
 
   const handleToggleRoster = (itemKey) => {
@@ -59,8 +67,11 @@ const StandingsList = ({ users, season }) => {
   };
 
   const handleSearchSelect = (userId) => {
+    const selectedRef = itemRefs.current[userId];
+    if (!selectedRef?.current) return;
+
     requestAnimationFrame(() => {
-      itemRefs.current[userId].current.scrollIntoView({
+      selectedRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
@@ -85,26 +96,22 @@ const StandingsList = ({ users, season }) => {
           <Grid.Row columns={3}>
             <Grid.Column width={2}>
             </Grid.Column>
-            <Grid.Column width={12}>
-              <Header size='medium' color='blue' textAlign='center' style={{ flex: 1 }}>
+            <Grid.Column width={12} textAlign='center'>
+              <Header size='medium' color='blue' style={{ whiteSpace: 'nowrap' }}>
                 {season} Standings
               </Header>
+              Pot: ${pot} <Flag name='canada' />
             </Grid.Column>
             <Grid.Column width={2}>
             </Grid.Column>
-            <Grid.Row>
-              Pot: ${pot} <Flag name='canada' />
-            </Grid.Row>
-          </Grid.Row>
-          <Grid.Row columns={12}>
-            <Search
-              loading={users.loading}
-              rankedRosters={rankedRosters}
-              placeholder={'Search Rosters'}
-              onSearchResultClick={handleSearchSelect}
-            />
           </Grid.Row>
         </Grid>
+        <Search
+          loading={users.loading}
+          rankedRosters={rankedRosters}
+          placeholder={'Search Rosters'}
+          onSearchResultClick={handleSearchSelect}
+        />
       </Segment>
       <Segment
         attached='bottom'

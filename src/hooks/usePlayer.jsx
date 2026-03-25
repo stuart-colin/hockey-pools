@@ -21,26 +21,40 @@ const useStats = (playerId) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const getPlayerData = async () => {
-      const res1 = await fetch(playerDetailsEndpoint + playerId.id);
-      const player1 = await res1.json();
-      const res2 = await fetch(playerDetailsEndpointOld + playerId.nhl_id);
-      const player2 = await res2.json();
-      const player = player2.people[0];
-      setPlayerName(playerId.name);
-      setPlayerPosition(playerId.position);
-      setPlayerTeam(player.active ? player.currentTeam.name : "");
-      setPlayerTeamLogo(
-        player.active ? logoUrl + player.currentTeam.id + ".svg" : ""
-      );
-      // player.stats[0].splits[0].stat = undefined ?
-      //   setStatList(null) :
-      //   setStatList(player2.stats[0].splits[0].stat);
-      setStatList(player1.stats.stat);
-      setOtStatList(player1.stats.otl);
-      setLoading(false);
+      try {
+        const res1 = await fetch(playerDetailsEndpoint + playerId.id);
+        const player1 = await res1.json();
+        const res2 = await fetch(playerDetailsEndpointOld + playerId.nhl_id);
+        const player2 = await res2.json();
+
+        if (!isMounted) return;
+
+        const player = player2.people[0];
+        setPlayerName(playerId.name);
+        setPlayerPosition(playerId.position);
+        setPlayerTeam(player.active ? player.currentTeam.name : "");
+        setPlayerTeamLogo(
+          player.active ? logoUrl + player.currentTeam.id + ".svg" : ""
+        );
+        setStatList(player1.stats.stat);
+        setOtStatList(player1.stats.otl);
+        setLoading(false);
+      } catch (error) {
+        if (isMounted) {
+          console.error('Error fetching player data:', error);
+          setLoading(false);
+        }
+      }
     };
+
     getPlayerData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [playerId.nhl_id, playerId.id, playerId.name, playerId.position]);
 
   const playerStats = () => {
