@@ -11,9 +11,9 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
 
   const seasonId = useMemo(() => {
     if (!season) return null;
-    const currentYear = parseInt(season);
+    const currentSeason = parseInt(season);
     // For the 2024 playoffs, season is "2024", seasonId is "20232024"
-    return `${currentYear - 1}${currentYear}`;
+    return `${currentSeason - 1}${currentSeason}`;
   }, [season]);
 
   useEffect(() => {
@@ -71,19 +71,28 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
       setLoading(true);
       setError(null); // Reset error before new fetch
       try {
-        const selectedPlayerIds = new Set(selectedPlayers.map(p => p.id ? p.id.toString() : p.name)); // Ensure string IDs
+        const selectedPlayerIds = new Set(selectedPlayers.map(p => p.id ? p.id.toString() : p.name));
         let allApiPlayers = [];
 
-        // Fetch Goalies
+        // Build URLs for parallel fetching
         const goalieUrl = new URL(`${NHL_API_BASE_URL}/goalie/summary`);
         goalieUrl.searchParams.append('limit', '-1');
         goalieUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
 
-        const goalieResponse = await fetch(goalieUrl.toString());
+        const skaterUrl = new URL(`${NHL_API_BASE_URL}/skater/summary`);
+        skaterUrl.searchParams.append('limit', '-1');
+        skaterUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
+
+        // Fetch both goalies and skaters in parallel
+        const [goalieResponse, skaterResponse] = await Promise.all([
+          fetch(goalieUrl.toString()),
+          fetch(skaterUrl.toString())
+        ]);
+
         if (cancelled) return;
-        if (!goalieResponse.ok) {
-          console.warn(`HTTP error! status: ${goalieResponse.status} for goalie data. Proceeding without unselected goalies.`);
-        } else {
+
+        // Process goalies
+        if (goalieResponse.ok) {
           const goalieData = await goalieResponse.json();
           if (cancelled) return;
           if (goalieData.data) {
@@ -93,10 +102,7 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
                 const points = (apiGoalie.wins * 2) + (apiGoalie.shutouts * 2) + (apiGoalie.otLosses || 0);
                 const gamesPlayed = apiGoalie.gamesPlayed || 0;
                 const pointsPerGame = gamesPlayed > 0 ? points / gamesPlayed : 0;
-
-                // Process teamAbbrevs for goalies, similar to skaters, to get the current team
                 const currentGoalieTeamAbbrev = apiGoalie.teamAbbrevs ? apiGoalie.teamAbbrevs.split(',').pop().trim() : 'UNKNOWN';
-
                 const headshotUrl = `https://assets.nhle.com/mugs/nhl/${seasonId}/${currentGoalieTeamAbbrev}/${apiGoalie.playerId}.png`;
                 const teamFullName = apiGoalie.teamFullName || teamMap.get(currentGoalieTeamAbbrev) || currentGoalieTeamAbbrev;
 
@@ -120,25 +126,18 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
               });
             allApiPlayers = allApiPlayers.concat(processedGoalies);
           }
+        } else {
+          console.warn(`HTTP error! status: ${goalieResponse.status} for goalie data. Proceeding without unselected goalies.`);
         }
 
-        // Fetch Skaters
-        const skaterUrl = new URL(`${NHL_API_BASE_URL}/skater/summary`);
-        skaterUrl.searchParams.append('limit', '-1');
-        skaterUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
-
-        const skaterResponse = await fetch(skaterUrl.toString());
-        if (cancelled) return;
-        if (!skaterResponse.ok) {
-          console.warn(`HTTP error! status: ${skaterResponse.status} for skater data. Proceeding without unselected skaters.`);
-        } else {
+        // Process skaters
+        if (skaterResponse.ok) {
           const skaterData = await skaterResponse.json();
           if (cancelled) return;
           if (skaterData.data) {
             const processedSkaters = skaterData.data
               .filter(apiSkater => !selectedPlayerIds.has(apiSkater.playerId.toString()))
               .map(apiSkater => {
-                // teamAbbrevs can be comma-separated if traded, take the last one for playoff context.
                 const teamAbbrev = apiSkater.teamAbbrevs ? apiSkater.teamAbbrevs.split(',').pop().trim() : 'UNKNOWN';
                 const points = (apiSkater.goals) + (apiSkater.assists) + (apiSkater.otGoals);
                 const gamesPlayed = apiSkater.gamesPlayed;
@@ -166,6 +165,8 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
               });
             allApiPlayers = allApiPlayers.concat(processedSkaters);
           }
+        } else {
+          console.warn(`HTTP error! status: ${skaterResponse.status} for skater data. Proceeding without unselected skaters.`);
         }
 
         if (cancelled) return;

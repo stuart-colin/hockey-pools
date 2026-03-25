@@ -11,14 +11,14 @@ const Navigation = ({ onMenuSelect }) => {
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
+  // Set default item based on mobile status
   useEffect(() => {
     setActiveItem(isMobile ? 'standings' : 'insights');
   }, [isMobile]);
 
+  // Call onMenuSelect whenever activeItem changes (from user clicks or mobile change)
   useEffect(() => {
-    if (activeItem) {
-      onMenuSelect(activeItem);
-    }
+    onMenuSelect(activeItem);
   }, [activeItem, onMenuSelect]);
 
   const menuItems = [

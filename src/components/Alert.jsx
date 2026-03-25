@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Message, Icon } from "semantic-ui-react";
 
 const Alert = ({ messageHeading, message, onClose }) => {
   const [visible, setVisible] = useState(true);
 
-  // Generate a unique identifier for the alert based on its content
-  const alertHash = JSON.stringify({ messageHeading, message });
+  // Memoize the alert hash to prevent unnecessary recalculation
+  const alertHash = useMemo(() => JSON.stringify({ messageHeading, message }), [messageHeading, message]);
 
   useEffect(() => {
     const storedHash = localStorage.getItem("alertHash");
