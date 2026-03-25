@@ -32,40 +32,60 @@ const Scoreboard = () => {
   const scoreboard = useScores();
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const isPlayoffGame = (game) => Number(game && game.gameType) === 3;
+  const isFinished = (game) => game.gameState === 'OFF' || game.gameState === 'FINAL';
+  const isPreGame = (game) => game.gameState === 'FUT' || game.gameState === 'PRE';
+
+  const getGameStatusLabel = (game) => {
+    if (isFinished(game)) {
+      const ot = game.gameOutcome?.lastPeriodType === 'OT'
+        ? ` ${game.gameOutcome.otPeriods}/${game.gameOutcome.lastPeriodType}`
+        : '';
+      return `FINAL${ot}`;
+    }
+    if (isPreGame(game)) return localDate(game.startTimeUTC);
+    const intermission = game.clock?.inIntermission ? ' INT' : '';
+    return `${game.clock?.timeRemaining} ${game.period}${getOrdinals(game.period)}${intermission}`;
+  };
 
   const renderGameLabels = (game) => (
     <>
       <Image avatar src={game.awayTeam.logo} alt={`${game.awayTeam.name.default} Logo`} />
       <Label>{game.awayTeam.score}</Label>
-      <Label>
-        {game.gameState === 'OFF' || game.gameState === 'FINAL'
-          ? 'FINAL' + (game.gameOutcome.lastPeriodType === 'OT'
-            ? ' ' + game.gameOutcome.otPeriods + '/' + game.gameOutcome.lastPeriodType : '')
-          : game.gameState === 'FUT' || game.gameState === 'PRE'
-            ? localDate(game.startTimeUTC)
-            : `${game.clock.timeRemaining} ${game.period}${getOrdinals(game.period)} ${game.clock.inIntermission ? 'INT' : ''
-            }`}
-      </Label>
+      <Label>{getGameStatusLabel(game)}</Label>
       <Label>{game.homeTeam.score}</Label>
       <Image avatar src={game.homeTeam.logo} alt={`${game.homeTeam.name.default} Logo`} />
     </>
   );
 
+  const getSeriesStatusText = (awayWins, homeWins, awayAbbrev, homeAbbrev) => {
+    if (awayWins === 4) return `${awayAbbrev} WINS`;
+    if (homeWins === 4) return `${homeAbbrev} WINS`;
+    if (awayWins === homeWins) return 'SERIES TIED';
+    return awayWins > homeWins ? `${awayAbbrev} LEADS` : `${homeAbbrev} LEADS`;
+  };
+
+  const getTeamWins = (team, seriesStatus) => {
+    if (!seriesStatus) return null;
+    return team.abbrev === seriesStatus.topSeedTeamAbbrev
+      ? seriesStatus.topSeedWins
+      : seriesStatus.bottomSeedWins;
+  };
+
   const renderSeriesStatus = (game) => {
-    const showSeriesStatus = isPlayoffGame(game) && game.seriesStatus;
-    const showRegularSeasonRecord = !isPlayoffGame(game) && game.gameState !== 'LIVE';
-    const homeTeamWins = showSeriesStatus
-      ? game.homeTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
-        ? game.seriesStatus.topSeedWins
-        : game.seriesStatus.bottomSeedWins
-      : null;
-    const awayTeamWins = showSeriesStatus
-      ? game.awayTeam.abbrev === game.seriesStatus.topSeedTeamAbbrev
-        ? game.seriesStatus.topSeedWins
-        : game.seriesStatus.bottomSeedWins
-      : null;
-    const awayTeamRecord = showRegularSeasonRecord ? (game.awayTeam && game.awayTeam.record || '0-0-0') : null;
-    const homeTeamRecord = showRegularSeasonRecord ? (game.homeTeam && game.homeTeam.record || '0-0-0') : null;
+    const playoff = isPlayoffGame(game) && game.seriesStatus;
+    const preGame = !isPlayoffGame(game) && isPreGame(game);
+    const liveOrFinal = !isPlayoffGame(game) && (game.gameState === 'LIVE' || isFinished(game));
+
+    const homeWins = getTeamWins(game.homeTeam, game.seriesStatus);
+    const awayWins = getTeamWins(game.awayTeam, game.seriesStatus);
+    const homeRecord = preGame ? game.homeTeam?.record || '0-0-0' : null;
+    const awayRecord = preGame ? game.awayTeam?.record || '0-0-0' : null;
+    const homeShots = liveOrFinal ? game.homeTeam?.sog || 0 : null;
+    const awayShots = liveOrFinal ? game.awayTeam?.sog || 0 : null;
+
+    const displayValue = playoff ? [awayWins, homeWins] : preGame ? [awayRecord, homeRecord] : [awayShots, homeShots];
+    const displayLabel = playoff ? 'Series Status' : preGame ? 'Record' : 'Shots';
+    const statusText = playoff ? getSeriesStatusText(awayWins, homeWins, game.awayTeam.abbrev, game.homeTeam.abbrev) : null;
 
     return (
       <List
@@ -76,53 +96,39 @@ const Scoreboard = () => {
           overflow: 'auto',
           scrollbarWidth: 'thin',
         }}>
-        {(showSeriesStatus || showRegularSeasonRecord) && (
-          <List.Item>
-            <Label style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-              <Image
-                avatar
-                src={game.awayTeam.logo}
-                alt={`${game.awayTeam.name.default} Logo`}
-              />
-              <Label>{showSeriesStatus ? awayTeamWins : awayTeamRecord}</Label>
-              <Label
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                }}>
-                <List.Header style={{ paddingBottom: 5 }}>
-                  {showSeriesStatus ? 'Series Status' : 'Season'}
-                </List.Header>
-                {showSeriesStatus
-                  ? awayTeamWins === 4
-                    ? game.awayTeam.abbrev + ' WINS'
-                    : homeTeamWins === 4
-                      ? game.homeTeam.abbrev + ' WINS'
-                      : awayTeamWins === homeTeamWins
-                        ? 'SERIES TIED'
-                        : awayTeamWins > homeTeamWins
-                          ? game.awayTeam.abbrev + ' LEADS'
-                          : game.homeTeam.abbrev + ' LEADS'
-                  : 'Record'}
-              </Label>
-              <Label>{showSeriesStatus ? homeTeamWins : homeTeamRecord}</Label>
-              <Image
-                avatar
-                src={game.homeTeam.logo}
-                alt={`${game.homeTeam.name.default} Logo`}
-              />
+        <List.Item>
+          <Label style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <Image
+              avatar
+              src={game.awayTeam.logo}
+              alt={`${game.awayTeam.name.default} Logo`}
+            />
+            <Label>{displayValue[0]}</Label>
+            <Label
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+              }}>
+              <List.Header style={playoff ? { paddingBottom: 5 } : null}>
+                {displayLabel}
+              </List.Header>
+              {statusText}
             </Label>
-          </List.Item>
-        )}
-        {
-          game.goals && game.goals.length > 0 ? renderGameStats(game) : null
-        }
+            <Label>{displayValue[1]}</Label>
+            <Image
+              avatar
+              src={game.homeTeam.logo}
+              alt={`${game.homeTeam.name.default} Logo`}
+            />
+          </Label>
+        </List.Item>
+        {game.goals && game.goals.length > 0 && renderGameStats(game)}
       </List>
     );
   };
@@ -186,26 +192,15 @@ const Scoreboard = () => {
       return [];
     }
 
-    const gamesToSort = [...scoreboard.games];
+    return [...scoreboard.games].sort((a, b) => {
+      const aFinished = isFinished(a);
+      const bFinished = isFinished(b);
+      
+      if (aFinished && !bFinished) return 1;
+      if (!aFinished && bFinished) return -1;
 
-    gamesToSort.sort((a, b) => {
-      const aIsFinished = a.gameState === 'OFF';
-      const bIsFinished = b.gameState === 'OFF';
-
-      if (aIsFinished && !bIsFinished) {
-        return 1;
-      }
-      if (!aIsFinished && bIsFinished) {
-        return -1;
-      }
-
-      const startTimeA = new Date(a.startTimeUTC).getTime();
-      const startTimeB = new Date(b.startTimeUTC).getTime();
-
-      return startTimeA - startTimeB;
+      return new Date(a.startTimeUTC).getTime() - new Date(b.startTimeUTC).getTime();
     });
-
-    return gamesToSort;
   }, [scoreboard.games]);
 
   const gameListItems = sortedGames.map((game, index) => (
@@ -237,9 +232,7 @@ const Scoreboard = () => {
       <List horizontal>
         <Label color='blue'>
           <Icon size='large' name='calendar outline' />
-          {scoreboard.date
-            ? prettyDate(scoreboard.date)
-            : 'No games scheduled today'}
+          {scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}
         </Label>
         {gameListItems.length > 0 ? gameListItems : <Label>No games scheduled today</Label>}
       </List>
