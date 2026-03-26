@@ -16,8 +16,8 @@ const initialState = {
   myTeam: [],
   submittedTeam: {},
   userId: '',
-  filterPosition: null,
-  filterTeam: '',
+  filterPosition: [],
+  filterTeam: [],
   filterName: '',
   isLoading: false,
   submissionStatus: 'idle',
@@ -57,6 +57,7 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
   const [state, dispatch] = useReducer(teamBuilderReducer, initialState);
   const { user, isAuthenticated } = useAuth0();
   const { postData } = useSubmitRoster();
+  const rosterLoaded = React.useRef(false);
 
   // Initialize userId from Auth0 user
   useEffect(() => {
@@ -67,11 +68,12 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
     }
   }, [isAuthenticated, user]);
 
-  // Load existing roster from database
+  // Load existing roster from database (only once)
   const { roster } = useMyTeam(rosterDataEndpoint);
 
   useEffect(() => {
-    if (roster && roster.center && regularSeasonStats.skaterStats && regularSeasonStats.goalieStats) {
+    if (roster && roster.center && regularSeasonStats.skaterStats && regularSeasonStats.goalieStats && !rosterLoaded.current) {
+      rosterLoaded.current = true;
       // Combine all stats for lookup
       const allPlayers = [...regularSeasonStats.skaterStats, ...regularSeasonStats.goalieStats];
 
@@ -93,7 +95,7 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
         }
       });
     }
-  }, [roster, regularSeasonStats.skaterStats, regularSeasonStats.goalieStats]);
+  }, [roster]);
 
   const positionLimits = useMemo(
     () => calculatePositionLimits(state.myTeam),
@@ -170,10 +172,10 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
   return (
     <Segment.Group>
       <Segment attached="top">
-        <Grid columns={3}>
-          <Grid.Row>
+        <Grid columns={3} verticalAlign='middle'>
+          <Grid.Row verticalAlign='middle'>
             <Grid.Column />
-            <Grid.Column textAlign='center'>
+            <Grid.Column verticalAlign='middle' textAlign='center'>
               <Header as='h3' color='blue' style={{ whiteSpace: 'nowrap' }}>Team Builder</Header>
             </Grid.Column>
             <Grid.Column textAlign='right'>
@@ -193,41 +195,45 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
       <Segment attached="bottom">
         <Grid columns={2} stackable>
           <Grid.Row>
-            <AvailablePlayersTable
-              goalieStats={regularSeasonStats.goalieStats || []}
-              skaterStats={regularSeasonStats.skaterStats || []}
-              loading={regularSeasonStats.loading}
-              filtersVisible={filtersVisible}
-              nameSearch={state.filterName}
-              onNameSearchChange={handleNameFilterChange}
-              teamFilter={state.filterTeam ? [state.filterTeam] : []}
-              onTeamFilterChange={(teams) =>
-                dispatch({
-                  type: 'SET_FILTER_TEAM',
-                  payload: teams.length > 0 ? teams[0] : '',
-                })
-              }
-              positionFilter={state.filterPosition ? [state.filterPosition] : []}
-              onPositionFilterChange={(positions) =>
-                dispatch({
-                  type: 'SET_FILTER_POSITION',
-                  payload: positions.length > 0 ? positions[0] : null,
-                })
-              }
-              myTeam={state.myTeam}
-              positionLimit={positionLimits}
-              utilityBonus={utilityBonus}
-              onPlayerToggle={handlePlayerToggle}
-            />
-            <RosterTable
-              myTeam={state.myTeam}
-              teamCount={teamCount}
-              submissionStatus={state.submissionStatus}
-              teamIds={state.submittedTeam}
-              onClearTeam={handleClearTeam}
-              onRemovePlayer={(player) => handleRemovePlayer(player?.playerId)}
-              onSubmit={handleSubmitClick}
-            />
+            <Grid.Column>
+              <AvailablePlayersTable
+                goalieStats={regularSeasonStats.goalieStats || []}
+                skaterStats={regularSeasonStats.skaterStats || []}
+                loading={regularSeasonStats.loading}
+                filtersVisible={filtersVisible}
+                nameSearch={state.filterName}
+                onNameSearchChange={handleNameFilterChange}
+                teamFilter={state.filterTeam}
+                onTeamFilterChange={(teams) =>
+                  dispatch({
+                    type: 'SET_FILTER_TEAM',
+                    payload: teams,
+                  })
+                }
+                positionFilter={state.filterPosition}
+                onPositionFilterChange={(positions) =>
+                  dispatch({
+                    type: 'SET_FILTER_POSITION',
+                    payload: positions,
+                  })
+                }
+                myTeam={state.myTeam}
+                positionLimit={positionLimits}
+                utilityBonus={utilityBonus}
+                onPlayerToggle={handlePlayerToggle}
+              />
+            </Grid.Column>
+            <Grid.Column>
+              <RosterTable
+                myTeam={state.myTeam}
+                teamCount={teamCount}
+                submissionStatus={state.submissionStatus}
+                teamIds={state.submittedTeam}
+                onClearTeam={handleClearTeam}
+                onRemovePlayer={(player) => handleRemovePlayer(player?.playerId)}
+                onSubmit={handleSubmitClick}
+              />
+            </Grid.Column>
           </Grid.Row>
         </Grid>
       </Segment>

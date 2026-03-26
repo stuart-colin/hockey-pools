@@ -118,7 +118,6 @@ const StandingsList = ({ users, season }) => {
         className={'expandedStandingsStyle'}
         style={{
           padding: 0,
-          scrollbarWidth: 'thin'
         }}
       >
         {loading ? (

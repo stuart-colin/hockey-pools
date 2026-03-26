@@ -69,8 +69,8 @@ const AvailablePlayersTable = ({
   }, [skaterStats, nameSearch, teamFilter, positionFilter]);
 
   return (
-    <Grid.Column style={{ height: isMobile ? 'calc(100vh - 254px)' : 'auto', maxHeight: isMobile ? 'none' : '60vh', overflow: 'auto' }}>
-      <Grid>
+    <div style={{ marginTop: 0, height: isMobile ? 'calc(100vh - 272px)' : 'auto', maxHeight: isMobile ? 'none' : '60vh', display: 'flex', flexDirection: 'column' }}>
+      <Grid style={{ marginBottom: 0 }}>
         <Grid.Row columns={2}>
           <Grid.Column>
             <Header as='h4'>Available Players</Header>
@@ -80,8 +80,8 @@ const AvailablePlayersTable = ({
 
       {/* Filters */}
       {filtersVisible && (
-        <Grid stackable style={{ position: 'sticky', top: -15, zIndex: 10, background: 'white', marginBottom: '10px' }}>
-          <Grid.Row columns={3}>
+        <Grid stackable style={{ position: 'sticky', zIndex: 10, marginBottom: 10, marginTop: 0, flex: 'none' }}>
+          <Grid.Row columns={3} style={{ padding: 0 }}>
             <Grid.Column>
               <Input
                 placeholder='Name'
@@ -97,10 +97,10 @@ const AvailablePlayersTable = ({
                 multiple
                 search
                 selection
-                clearable
                 options={teamOptions}
                 onChange={(e, { value }) => onTeamFilterChange(value)}
                 value={teamFilter}
+                noResultsMessage={teamFilter.length === teamOptions.length ? 'All selected' : 'No results found'}
                 renderLabel={(item) => ({
                   content: (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -130,61 +130,63 @@ const AvailablePlayersTable = ({
                 multiple
                 search
                 selection
-                clearable
                 options={POSITION_OPTIONS}
                 onChange={(e, { value }) => onPositionFilterChange(value)}
                 value={positionFilter}
+                noResultsMessage={positionFilter.length === POSITION_OPTIONS.length ? 'All selected' : 'No results found'}
               />
             </Grid.Column>
           </Grid.Row>
         </Grid>
       )}
 
-      {/* Players Table */}
-      <Grid>
-        <Grid.Row>
-          <Grid.Column>
-            {loading ? (
-              <Loader active inline='centered' size='medium'>
-                Loading Available Players...
-              </Loader>
-            ) : (
-              <Table singleLine unstackable basic='very' compact='very'>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>Select</Table.HeaderCell>
-                    <Table.HeaderCell>Position</Table.HeaderCell>
-                    <Table.HeaderCell>Name</Table.HeaderCell>
-                    <Table.HeaderCell>Team</Table.HeaderCell>
-                    <Table.HeaderCell>Stats</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {filteredGoalies.map((goalie) => (
-                    <PlayerRow
-                      key={goalie.playerId}
-                      player={goalie}
-                      isSelected={myTeam.some((p) => p.playerId === goalie.playerId)}
-                      isDisabled={isPlayerDisabled(goalie, positionLimit, utilityBonus) && !myTeam.some((p) => p.playerId === goalie.playerId)}
-                      onToggle={onPlayerToggle}
-                    />
-                  ))}
-                  {filteredSkaters.map((skater) => (
-                    <PlayerRow
-                      key={skater.playerId}
-                      player={skater}
-                      isSelected={myTeam.some((p) => p.playerId === skater.playerId)}
-                      isDisabled={isPlayerDisabled(skater, positionLimit, utilityBonus) && !myTeam.some((p) => p.playerId === skater.playerId)}
-                      onToggle={onPlayerToggle}
-                    />
-                  ))}
-                </Table.Body>
-              </Table>
-            )}
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </Grid.Column>
+      {/* Scrollable Players Table Container */}
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        <Grid style={{ marginRight: 0 }}>
+          <Grid.Row>
+            <Grid.Column style={{ paddingRight: 0 }}>
+              {loading ? (
+                <Loader active inline='centered' size='medium'>
+                  Loading Available Players...
+                </Loader>
+              ) : (
+                <Table singleLine unstackable basic='very' compact='very'>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell>Select</Table.HeaderCell>
+                      <Table.HeaderCell>Position</Table.HeaderCell>
+                      <Table.HeaderCell>Name</Table.HeaderCell>
+                      <Table.HeaderCell>Team</Table.HeaderCell>
+                      <Table.HeaderCell>Stats</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {filteredGoalies.map((goalie) => (
+                      <PlayerRow
+                        key={goalie.playerId}
+                        player={goalie}
+                        isSelected={myTeam.some((p) => p.playerId === goalie.playerId)}
+                        isDisabled={isPlayerDisabled(goalie, positionLimit, utilityBonus) && !myTeam.some((p) => p.playerId === goalie.playerId)}
+                        onToggle={onPlayerToggle}
+                      />
+                    ))}
+                    {filteredSkaters.map((skater) => (
+                      <PlayerRow
+                        key={skater.playerId}
+                        player={skater}
+                        isSelected={myTeam.some((p) => p.playerId === skater.playerId)}
+                        isDisabled={isPlayerDisabled(skater, positionLimit, utilityBonus) && !myTeam.some((p) => p.playerId === skater.playerId)}
+                        onToggle={onPlayerToggle}
+                      />
+                    ))}
+                  </Table.Body>
+                </Table>
+              )}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </div>
+    </div >
   );
 };
 

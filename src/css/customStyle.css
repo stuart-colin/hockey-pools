@@ -173,3 +173,53 @@
 .playersRemaining16 {
   color: #0000ff;
 }
+
+/* Hide scrollbars while maintaining scroll functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  /* Chrome, Safari and Opera */
+}
+
+/* Global scrollbar styling */
+/* Desktop: thin scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #eee;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #eee transparent;
+}
+
+/* Mobile: hide scrollbars globally */
+@media screen and (max-width: 767px) {
+  * {
+    scrollbar-width: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+}

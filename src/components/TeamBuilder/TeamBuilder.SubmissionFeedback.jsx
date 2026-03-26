@@ -20,8 +20,8 @@ const SubmissionFeedback = ({ status }) => {
   if (status === 'success') {
     return (
       <Message positive>
-        <Message.Header>Submission Successful</Message.Header>
-        Your roster has been submitted successfully!
+        <Message.Header>Roster Submission Successful!</Message.Header>
+        You may edit your team until the start of the first game of the playoffs.
       </Message>
     );
   }
@@ -30,8 +30,7 @@ const SubmissionFeedback = ({ status }) => {
     return (
       <Message negative>
         <Message.Header>Submission Failed</Message.Header>
-        There was an error submitting your roster. Please ensure your User ID
-        matches the provided ID.
+        There was an error submitting your roster.
       </Message>
     );
   }

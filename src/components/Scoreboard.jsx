@@ -94,8 +94,8 @@ const Scoreboard = () => {
         style={{
           maxHeight: '70dvh',
           overflow: 'auto',
-          scrollbarWidth: 'thin',
-        }}>
+        }}
+      >
         <List.Item>
           <Label style={{
             display: 'flex',
@@ -222,7 +222,6 @@ const Scoreboard = () => {
         position: 'fixed',
         overflowX: 'auto',
         whiteSpace: 'nowrap',
-        scrollbarWidth: 'thin',
         padding: 5,
         top: 0,
         backgroundColor: 'white',
