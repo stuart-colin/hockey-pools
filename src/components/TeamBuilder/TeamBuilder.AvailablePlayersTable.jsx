@@ -18,6 +18,7 @@ import {
   sortPlayers,
   isPlayerDisabled,
   getTeamAbbrev,
+  createTableHeader,
 } from '../../utils/teambuilder';
 
 /**
@@ -151,15 +152,7 @@ const AvailablePlayersTable = ({
                 </Loader>
               ) : (
                 <Table singleLine unstackable basic='very' compact='very'>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Select</Table.HeaderCell>
-                      <Table.HeaderCell>Position</Table.HeaderCell>
-                      <Table.HeaderCell>Name</Table.HeaderCell>
-                      <Table.HeaderCell>Team</Table.HeaderCell>
-                      <Table.HeaderCell>Stats</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
+                  {createTableHeader()}
                   <Table.Body>
                     {filteredGoalies.map((goalie) => (
                       <PlayerRow

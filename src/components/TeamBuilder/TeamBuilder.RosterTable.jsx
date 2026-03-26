@@ -4,7 +4,7 @@ import { useMediaQuery } from 'react-responsive';
 import RosterRow from './TeamBuilder.RosterRow';
 import SubmissionFeedback from './TeamBuilder.SubmissionFeedback';
 import { ROSTER_POSITIONS, TEAM_LOGO_URL, TOTAL_ROSTER_SIZE } from '../../constants/teambuilder';
-import { findUtilityPlayer } from '../../utils/teambuilder';
+import { findUtilityPlayer, createTableHeader } from '../../utils/teambuilder';
 
 /**
  * Right panel: Team roster display and submission
@@ -142,6 +142,7 @@ const RosterTable = ({
           justifyContent: 'space-evenly',
           alignItems: 'center',
           padding: '0 16px 8px 16px',
+          borderBottom: '1px solid #e0e0e0'
         }}>
           {positionPreview.map((slot) => (
             <div
@@ -189,7 +190,9 @@ const RosterTable = ({
               </Button.Group>
 
               {/* Submission feedback */}
-              <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
+              {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
+                <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
+              )}
             </div>
 
             <div
@@ -201,15 +204,7 @@ const RosterTable = ({
             >
               {/* Roster table */}
               <Table singleLine unstackable basic='very' compact='very'>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>Remove</Table.HeaderCell>
-                    <Table.HeaderCell>Position</Table.HeaderCell>
-                    <Table.HeaderCell>Name</Table.HeaderCell>
-                    <Table.HeaderCell>Team</Table.HeaderCell>
-                    <Table.HeaderCell>Stats</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
+                {createTableHeader()}
                 <Table.Body>{rosterRows}</Table.Body>
               </Table>
             </div>
@@ -273,15 +268,7 @@ const RosterTable = ({
         {/* Roster table - Scrollable */}
         <div style={{ flex: 1, overflow: 'auto' }}>
           <Table singleLine unstackable basic='very' compact='very'>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Remove</Table.HeaderCell>
-                <Table.HeaderCell>Position</Table.HeaderCell>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Team</Table.HeaderCell>
-                <Table.HeaderCell>Stats</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+            {createTableHeader()}
             <Table.Body>{rosterRows}</Table.Body>
           </Table>
         </div>

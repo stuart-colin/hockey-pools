@@ -32,3 +32,12 @@ export const POSITION_OPTIONS = [
 
 // Roster constants
 export const TOTAL_ROSTER_SIZE = 16;
+
+// Table header names
+export const TABLE_HEADERS = {
+  ACTION: '',
+  POSITION: 'Pos',
+  NAME: 'Name',
+  TEAM: 'Team',
+  STATS: 'Season Stats',
+};

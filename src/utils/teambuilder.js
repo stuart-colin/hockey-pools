@@ -146,3 +146,22 @@ export const sortPlayers = (players, isGoalie) => {
     return b.points - a.points;
   });
 };
+
+/**
+ * Create a reusable table header row with standard columns
+ */
+export const createTableHeader = () => {
+  const { Table } = require('semantic-ui-react');
+  const { TABLE_HEADERS } = require('../constants/teambuilder');
+  return (
+    <Table.Header>
+      <Table.Row>
+        <Table.HeaderCell>{TABLE_HEADERS.ACTION}</Table.HeaderCell>
+        <Table.HeaderCell>{TABLE_HEADERS.POSITION}</Table.HeaderCell>
+        <Table.HeaderCell>{TABLE_HEADERS.NAME}</Table.HeaderCell>
+        <Table.HeaderCell>{TABLE_HEADERS.TEAM}</Table.HeaderCell>
+        <Table.HeaderCell>{TABLE_HEADERS.STATS}</Table.HeaderCell>
+      </Table.Row>
+    </Table.Header>
+  );
+};
