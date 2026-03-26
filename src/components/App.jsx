@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMediaQuery } from "react-responsive";
 import { Grid } from "semantic-ui-react";
@@ -15,7 +15,7 @@ import PlayerDetails from "./PlayerDetails";
 import Scoreboard from "./Scoreboard";
 import SplashScreen from "./SplashScreen";
 import StandingsList from "./StandingsList";
-import TeamBuilder from "./TeamBuilder";
+import TeamBuilder from "./TeamBuilder/TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
 import useEliminatedTeams from "../hooks/useEliminatedTeams";
@@ -34,7 +34,7 @@ const rosterDataEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, isLoading } = useAuth0();
   const [activeItem, setActiveItem] = useState("");
   const [season, setSeason] = useState(currentYear);
   const [beta, setBeta] = useState(true);
@@ -131,9 +131,9 @@ const App = () => {
                       />
                     }
                     {renderContent()}
-                    {/* {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
+                    {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
                       <PlayerCreator regularSeasonStats={regularSeasonStats} />
-                    )} */}
+                    )}
                   </Grid.Column>
                 </Grid.Row>
               </Grid>

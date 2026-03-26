@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const createPlayerEndpoint = "https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/players/cache";
+const createPlayerEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/players/cache`;
 
 const useCreatePlayer = () => {
   const [loading, setLoading] = useState(false);
