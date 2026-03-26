@@ -3,6 +3,7 @@ import { Button, Grid, Header, Image, Table, Icon, Label } from 'semantic-ui-rea
 import { useMediaQuery } from 'react-responsive';
 import RosterRow from './TeamBuilder.RosterRow';
 import SubmissionFeedback from './TeamBuilder.SubmissionFeedback';
+import ConfirmationDialog from './TeamBuilder.ConfirmationDialog';
 import { ROSTER_POSITIONS, TEAM_LOGO_URL, TOTAL_ROSTER_SIZE } from '../../constants/teambuilder';
 import { findUtilityPlayer, createTableHeader } from '../../utils/teambuilder';
 
@@ -20,6 +21,7 @@ const RosterTable = ({
 }) => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [isExpanded, setIsExpanded] = useState(false);
+  const [confirmationAction, setConfirmationAction] = useState(null); // 'clear' | 'submit' | null
 
   // Build roster rows by position
   const rosterRows = useMemo(() => {
@@ -91,18 +93,19 @@ const RosterTable = ({
   if (isMobile) {
 
     return (
-      <div style={{
-        position: 'fixed',
-        top: isExpanded ? 55 : 'auto',
-        bottom: isExpanded ? 55 : 60,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        background: 'white',
-        borderTop: '2px solid #e0e0e0',
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
+      <>
+        <div style={{
+          position: 'fixed',
+          top: isExpanded ? 55 : 'auto',
+          bottom: isExpanded ? 55 : 60,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          background: 'white',
+          borderTop: '2px solid #e0e0e0',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
         {/* Collapsed header */}
         <div
           onClick={() => setIsExpanded(!isExpanded)}
@@ -177,13 +180,13 @@ const RosterTable = ({
             }}>
               {/* Action buttons */}
               <Button.Group size='small' fluid>
-                <Button color='red' disabled={myTeam.length === 0} onClick={onClearTeam}>
+                <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
                   Clear
                 </Button>
                 <Button
                   color='green'
                   disabled={myTeam.length < TOTAL_ROSTER_SIZE}
-                  onClick={onSubmit}
+                  onClick={() => setConfirmationAction('submit')}
                 >
                   Submit
                 </Button>
@@ -210,13 +213,37 @@ const RosterTable = ({
             </div>
           </>
         )}
-      </div>
+        </div>
+
+        {/* Clear Team Confirmation Modal */}
+        <ConfirmationDialog
+          isOpen={confirmationAction === 'clear'}
+          actionType='clear'
+          onConfirm={() => {
+            setConfirmationAction(null);
+            onClearTeam();
+          }}
+          onCancel={() => setConfirmationAction(null)}
+        />
+
+        {/* Submit Team Confirmation Modal */}
+        <ConfirmationDialog
+          isOpen={confirmationAction === 'submit'}
+          actionType='submit'
+          onConfirm={() => {
+            setConfirmationAction(null);
+            onSubmit();
+          }}
+          onCancel={() => setConfirmationAction(null)}
+        />
+      </>
     );
   }
 
   // Desktop view
   return (
-    <Grid.Column style={{ padding: 0 }}>
+    <>
+      <Grid.Column style={{ padding: 0 }}>
       <div style={{ height: '60vh', display: 'flex', flexDirection: 'column' }}>
         <Grid stackable style={{ padding: 0, position: 'sticky', top: 0, zIndex: 10, background: 'white', marginBottom: '10px', flex: 'none' }}>
           <Grid.Row>
@@ -239,13 +266,13 @@ const RosterTable = ({
                   ))}
                 </Label>
                 <Button.Group size='small'>
-                  <Button color='red' disabled={myTeam.length === 0} onClick={onClearTeam}>
+                  <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
                     Clear
                   </Button>
                   <Button
                     color='green'
                     disabled={myTeam.length < TOTAL_ROSTER_SIZE}
-                    onClick={onSubmit}
+                    onClick={() => setConfirmationAction('submit')}
                   >
                     Submit
                   </Button>
@@ -274,6 +301,29 @@ const RosterTable = ({
         </div>
       </div>
     </Grid.Column>
+
+    {/* Clear Team Confirmation Modal */}
+    <ConfirmationDialog
+      isOpen={confirmationAction === 'clear'}
+      actionType='clear'
+      onConfirm={() => {
+        setConfirmationAction(null);
+        onClearTeam();
+      }}
+      onCancel={() => setConfirmationAction(null)}
+    />
+
+    {/* Submit Team Confirmation Modal */}
+    <ConfirmationDialog
+      isOpen={confirmationAction === 'submit'}
+      actionType='submit'
+      onConfirm={() => {
+        setConfirmationAction(null);
+        onSubmit();
+      }}
+      onCancel={() => setConfirmationAction(null)}
+    />
+    </>
   );
 };
 
