@@ -7,6 +7,7 @@ import {
   Loader,
   Table,
 } from 'semantic-ui-react';
+import { useMediaQuery } from 'react-responsive';
 import PlayerRow from './TeamBuilder.PlayerRow';
 import {
   POSITION_OPTIONS,
@@ -38,6 +39,7 @@ const AvailablePlayersTable = ({
   utilityBonus,
   onPlayerToggle,
 }) => {
+  const isMobile = useMediaQuery({ maxWidth: 767 });
   // Build team options from available stats
   const teamOptions = useMemo(() => {
     const teams = Array.from(
@@ -67,7 +69,7 @@ const AvailablePlayersTable = ({
   }, [skaterStats, nameSearch, teamFilter, positionFilter]);
 
   return (
-    <Grid.Column style={{ maxHeight: '60vh', overflow: 'auto' }}>
+    <Grid.Column style={{ height: isMobile ? 'calc(100vh - 254px)' : 'auto', maxHeight: isMobile ? 'none' : '60vh', overflow: 'auto' }}>
       <Grid>
         <Grid.Row columns={2}>
           <Grid.Column>
