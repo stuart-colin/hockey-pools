@@ -3,8 +3,7 @@ import { Button, Grid, Header, Image, Table } from 'semantic-ui-react';
 import RosterRow from './TeamBuilder.RosterRow';
 import SubmissionFeedback from './TeamBuilder.SubmissionFeedback';
 import { ROSTER_POSITIONS, TEAM_LOGO_URL, POSITION_COUNTS, TOTAL_ROSTER_SIZE } from '../../constants/teambuilder';
-import { getTeamAbbrev } from '../../utils/teambuilder';
-
+import { findUtilityPlayer } from '../../utils/teambuilder';
 /**
  * Right panel: Team roster display and submission
  */
@@ -20,19 +19,10 @@ const RosterTable = ({
   // Build roster rows by position
   const rosterRows = useMemo(() => {
     const remainingPlayers = [...myTeam];
+    const utilityPlayer = findUtilityPlayer(myTeam);
 
     return ROSTER_POSITIONS.map((position, index) => {
       if (position === 'U') {
-        // Find first player who exceeded position limit for utility
-        const utilityPlayerIndex = remainingPlayers.findIndex((p) => {
-          const count = myTeam.filter((player) => player.positionCode === p.positionCode).length;
-          return count > POSITION_COUNTS[p.positionCode];
-        });
-
-        const utilityPlayer = utilityPlayerIndex !== -1
-          ? remainingPlayers.splice(utilityPlayerIndex, 1)[0]
-          : null;
-
         return (
           <RosterRow
             key={`utility-${utilityPlayer?.playerId || 'empty'}`}
@@ -43,9 +33,9 @@ const RosterTable = ({
         );
       }
 
-      // Regular positions
+      // Regular positions - exclude utility player from position slots
       const playerIndex = remainingPlayers.findIndex(
-        (p) => p.positionCode === position
+        (p) => p.playerId !== utilityPlayer?.playerId && p.positionCode === position
       );
       const player = playerIndex !== -1
         ? remainingPlayers.splice(playerIndex, 1)[0]

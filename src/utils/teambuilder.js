@@ -32,6 +32,22 @@ export const getPlayerStatsDisplay = (player) => {
 };
 
 /**
+ * Find utility player: last player added who exceeded their position limit
+ */
+export const findUtilityPlayer = (myTeam) => {
+  const utilityPlayerIndex = [...myTeam]
+    .reverse()
+    .findIndex((p) => {
+      const positionCount = myTeam.filter(
+        (player) => player.positionCode === p.positionCode
+      ).length;
+      return positionCount > POSITION_COUNTS[p.positionCode];
+    });
+
+  return utilityPlayerIndex !== -1 ? myTeam[myTeam.length - 1 - utilityPlayerIndex] : null;
+};
+
+/**
  * Calculate how many of each position are selected
  */
 export const calculatePositionLimits = (myTeam) => {
@@ -78,20 +94,9 @@ export const isPlayerDisabled = (player, positionLimit, utilityBonus) => {
  * Build the roster IDs object for submission
  */
 export const buildTeamIds = (myTeam, userId) => {
-  const remainingPlayers = [...myTeam];
+  const utilityPlayer = findUtilityPlayer(myTeam);
 
-  // Find utility player (first one who exceeded position limit)
-  const utilityPlayerIndex = remainingPlayers.findIndex((p) => {
-    const positionCount = remainingPlayers.filter(
-      (player) => player.positionCode === p.positionCode
-    ).length;
-    return positionCount > POSITION_COUNTS[p.positionCode];
-  });
-
-  const utilityPlayer =
-    utilityPlayerIndex !== -1
-      ? remainingPlayers.splice(utilityPlayerIndex, 1)[0]
-      : null;
+  const remainingPlayers = [...myTeam].filter((p) => p.playerId !== utilityPlayer?.playerId);
 
   // Helper to get player IDs for a specific position
   const getPlayersByPosition = (players, positionCode) =>
