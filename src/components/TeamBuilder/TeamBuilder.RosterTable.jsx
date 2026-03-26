@@ -16,6 +16,7 @@ const RosterTable = ({
   onClearTeam,
   onRemovePlayer,
   onSubmit,
+  onDismissStatus,
 }) => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [isExpanded, setIsExpanded] = useState(false);
@@ -135,13 +136,19 @@ const RosterTable = ({
         </div>
 
         {/* Position preview row */}
-        <div style={{ display: 'flex', gap: '0', justifyContent: 'space-evenly', alignItems: 'center', padding: '0 16px 8px 16px', borderBottom: '1px solid #e0e0e0' }}>
+        <div style={{
+          display: 'flex',
+          gap: '0',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+          padding: '0 16px 8px 16px',
+        }}>
           {positionPreview.map((slot) => (
             <div
               key={slot.key}
               style={{
                 padding: '0',
-                borderRadius: '3px',
+                borderRadius: '4px',
                 fontSize: '10px',
                 fontWeight: 'bold',
                 background: slot.filled ? '#4CAF50' : '#d0d0d0',
@@ -163,7 +170,10 @@ const RosterTable = ({
         {/* Expanded content */}
         {isExpanded && (
           <>
-            <div style={{ padding: '8px 16px', borderBottom: '1px solid #e0e0e0' }}>
+            <div style={{
+              padding: '8px 16px',
+              borderBottom: '1px solid #e0e0e0'
+            }}>
               {/* Action buttons */}
               <Button.Group size='small' fluid>
                 <Button color='red' disabled={myTeam.length === 0} onClick={onClearTeam}>
@@ -179,7 +189,7 @@ const RosterTable = ({
               </Button.Group>
 
               {/* Submission feedback */}
-              <SubmissionFeedback status={submissionStatus} />
+              <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
             </div>
 
             <div
@@ -251,10 +261,10 @@ const RosterTable = ({
         </Grid>
 
         {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
-          <Grid stackable style={{ padding: 0, marginBottom: '10px', flex: 'none' }}>
+          <Grid stackable style={{ padding: 0, marginTop: -20, marginBottom: 0, flex: 'none' }}>
             <Grid.Row>
               <Grid.Column>
-                <SubmissionFeedback status={submissionStatus} />
+                <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
               </Grid.Column>
             </Grid.Row>
           </Grid>

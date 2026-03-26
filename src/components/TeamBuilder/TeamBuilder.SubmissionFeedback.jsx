@@ -4,7 +4,7 @@ import { Icon, Message } from 'semantic-ui-react';
 /**
  * Displays submission status feedback messages
  */
-const SubmissionFeedback = ({ status }) => {
+const SubmissionFeedback = ({ status, onDismiss }) => {
   if (status === 'processing') {
     return (
       <Message icon>
@@ -19,7 +19,7 @@ const SubmissionFeedback = ({ status }) => {
 
   if (status === 'success') {
     return (
-      <Message positive>
+      <Message positive onDismiss={onDismiss}>
         <Message.Header>Roster Submission Successful!</Message.Header>
         You may edit your team until the start of the first game of the playoffs.
       </Message>
@@ -28,7 +28,7 @@ const SubmissionFeedback = ({ status }) => {
 
   if (status === 'error') {
     return (
-      <Message negative>
+      <Message negative onDismiss={onDismiss}>
         <Message.Header>Submission Failed</Message.Header>
         There was an error submitting your roster.
       </Message>

@@ -151,6 +151,10 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
     }
   }, [state, postData]);
 
+  const handleDismissFeedback = useCallback(() => {
+    dispatch({ type: 'SET_SUBMISSION_STATUS', payload: 'idle' });
+  }, []);
+
   const handlePlayerToggle = useCallback((player) => {
     const isSelected = state.myTeam.some((p) => p.playerId === player.playerId);
     if (isSelected) {
@@ -232,6 +236,7 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
                 onClearTeam={handleClearTeam}
                 onRemovePlayer={(player) => handleRemovePlayer(player?.playerId)}
                 onSubmit={handleSubmitClick}
+                onDismissStatus={handleDismissFeedback}
               />
             </Grid.Column>
           </Grid.Row>
