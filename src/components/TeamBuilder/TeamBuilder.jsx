@@ -2,7 +2,7 @@ import React, { useReducer, useMemo, useCallback, useState, useEffect } from 're
 import { Grid, Segment, Header, Icon, Button } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
 import useSubmitRoster from '../../hooks/useSubmitRoster';
-import { TOTAL_ROSTER_SIZE } from '../../constants/teambuilder';
+import useMyTeam from '../../hooks/useMyTeam';
 import {
   calculatePositionLimits,
   calculateTeamCount,
@@ -53,7 +53,7 @@ const teamBuilderReducer = (state, action) => {
   }
 };
 
-const TeamBuilder = ({ regularSeasonStats }) => {
+const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
   const [state, dispatch] = useReducer(teamBuilderReducer, initialState);
   const { user, isAuthenticated } = useAuth0();
   const { postData } = useSubmitRoster();
@@ -66,6 +66,34 @@ const TeamBuilder = ({ regularSeasonStats }) => {
       dispatch({ type: 'SET_USER_ID', payload: userIdFromAuth });
     }
   }, [isAuthenticated, user]);
+
+  // Load existing roster from database
+  const { roster } = useMyTeam(rosterDataEndpoint);
+
+  useEffect(() => {
+    if (roster && roster.center && regularSeasonStats.skaterStats && regularSeasonStats.goalieStats) {
+      // Combine all stats for lookup
+      const allPlayers = [...regularSeasonStats.skaterStats, ...regularSeasonStats.goalieStats];
+
+      // Get all NHL IDs from roster (extract nhl_id from player objects)
+      const nhlIds = [
+        ...roster.center.map(p => p.nhl_id),
+        ...roster.left.map(p => p.nhl_id),
+        ...roster.right.map(p => p.nhl_id),
+        ...roster.defense.map(p => p.nhl_id),
+        ...roster.goalie.map(p => p.nhl_id),
+        ...(roster.utility && roster.utility.nhl_id ? [roster.utility.nhl_id] : []),
+      ];
+
+      // Look up each player in available stats and add to team
+      nhlIds.forEach((nhlId) => {
+        const playerData = allPlayers.find((p) => p.playerId === nhlId);
+        if (playerData) {
+          dispatch({ type: 'ADD_PLAYER', payload: playerData });
+        }
+      });
+    }
+  }, [roster, regularSeasonStats.skaterStats, regularSeasonStats.goalieStats]);
 
   const positionLimits = useMemo(
     () => calculatePositionLimits(state.myTeam),

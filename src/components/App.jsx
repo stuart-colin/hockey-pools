@@ -79,6 +79,7 @@ const App = () => {
         season={season} />,
       "team-builder": <TeamBuilder
         regularSeasonStats={regularSeasonStats}
+        rosterDataEndpoint={rosterDataEndpoint}
       />,
     };
 
