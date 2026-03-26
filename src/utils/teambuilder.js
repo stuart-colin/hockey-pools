@@ -148,7 +148,41 @@ export const sortPlayers = (players, isGoalie) => {
 };
 
 /**
- * Create a reusable table header row with standard columns
+ * Get individual stat value from player (GP, G/W, A/L, P/OTL)
+ */
+export const getStatValue = (player, statIndex) => {
+  const { positionCode, gamesPlayed } = player;
+
+  if (statIndex === 0) {
+    return gamesPlayed; // GP for both
+  }
+
+  if (positionCode === 'G') {
+    const { wins, losses, otLosses } = player;
+    if (statIndex === 1) return wins;    // W
+    if (statIndex === 2) return losses;  // L
+    if (statIndex === 3) return otLosses; // OTL
+  }
+
+  // Skaters
+  const { goals, assists, points } = player;
+  if (statIndex === 1) return goals;   // G
+  if (statIndex === 2) return assists; // A
+  if (statIndex === 3) return points;  // P
+};
+
+/**
+ * Get stat label for column based on position and stat index
+ */
+export const getStatLabel = (player, statIndex) => {
+  if (statIndex === 0) return 'GP';
+  if (statIndex === 1) return player.positionCode === 'G' ? 'W' : 'G';
+  if (statIndex === 2) return player.positionCode === 'G' ? 'L' : 'A';
+  if (statIndex === 3) return player.positionCode === 'G' ? 'OTL' : 'P';
+};
+
+/**
+ * Create a reusable table header row with standard columns (split stats into 4 columns)
  */
 export const createTableHeader = () => {
   const { Table } = require('semantic-ui-react');
@@ -160,7 +194,7 @@ export const createTableHeader = () => {
         <Table.HeaderCell>{TABLE_HEADERS.POSITION}</Table.HeaderCell>
         <Table.HeaderCell>{TABLE_HEADERS.NAME}</Table.HeaderCell>
         <Table.HeaderCell>{TABLE_HEADERS.TEAM}</Table.HeaderCell>
-        <Table.HeaderCell>{TABLE_HEADERS.STATS}</Table.HeaderCell>
+        <Table.HeaderCell colSpan='4'>Season Stats</Table.HeaderCell>
       </Table.Row>
     </Table.Header>
   );

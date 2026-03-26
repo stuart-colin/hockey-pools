@@ -39,5 +39,8 @@ export const TABLE_HEADERS = {
   POSITION: 'Pos',
   NAME: 'Name',
   TEAM: 'Team',
-  STATS: 'Season Stats',
+  STAT_1: 'GP',
+  STAT_2: 'G/W',
+  STAT_3: 'A/L',
+  STAT_4: 'P/OTL',
 };

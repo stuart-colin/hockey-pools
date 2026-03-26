@@ -4,12 +4,12 @@ import {
   TEAM_LOGO_URL,
   PLAYER_HEADSHOT_URL,
 } from '../../constants/teambuilder';
-import { getTeamAbbrev, getPlayerName, getPlayerStatsDisplay } from '../../utils/teambuilder';
+import { getTeamAbbrev, getPlayerName, getStatValue, getStatLabel } from '../../utils/teambuilder';
+import StatCell from './TeamBuilder.StatCell';
 
 const PlayerRow = ({ player, isSelected, isDisabled, onToggle }) => {
   const teamAbbrev = getTeamAbbrev(player.teamAbbrevs);
   const playerName = getPlayerName(player);
-  const statsDisplay = getPlayerStatsDisplay(player);
 
   return (
     <Table.Row key={player.playerId}>
@@ -42,7 +42,18 @@ const PlayerRow = ({ player, isSelected, isDisabled, onToggle }) => {
         />
         {teamAbbrev}
       </Table.Cell>
-      <Table.Cell>{statsDisplay}</Table.Cell>
+      <Table.Cell>
+        <StatCell label={getStatLabel(player, 0)} value={getStatValue(player, 0)} />
+      </Table.Cell>
+      <Table.Cell>
+        <StatCell label={getStatLabel(player, 1)} value={getStatValue(player, 1)} />
+      </Table.Cell>
+      <Table.Cell>
+        <StatCell label={getStatLabel(player, 2)} value={getStatValue(player, 2)} />
+      </Table.Cell>
+      <Table.Cell>
+        <StatCell label={getStatLabel(player, 3)} value={getStatValue(player, 3)} />
+      </Table.Cell>
     </Table.Row>
   );
 };

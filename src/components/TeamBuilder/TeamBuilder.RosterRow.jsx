@@ -4,7 +4,8 @@ import {
   TEAM_LOGO_URL,
   PLAYER_HEADSHOT_URL,
 } from '../../constants/teambuilder';
-import { getTeamAbbrev, getPlayerName, getPlayerStatsDisplay } from '../../utils/teambuilder';
+import { getTeamAbbrev, getPlayerName, getStatValue, getStatLabel } from '../../utils/teambuilder';
+import StatCell from './TeamBuilder.StatCell';
 
 /**
  * Displays a single roster position slot (filled or empty)
@@ -13,7 +14,6 @@ const RosterRow = ({ position, player, onRemove }) => {
   const hasPlayer = !!player;
   const teamAbbrev = hasPlayer ? getTeamAbbrev(player.teamAbbrevs) : null;
   const playerName = hasPlayer ? getPlayerName(player) : null;
-  const statsDisplay = hasPlayer ? getPlayerStatsDisplay(player) : null;
 
   return (
     <Table.Row key={`${position}-${player?.playerId || 'empty'}`}>
@@ -54,7 +54,18 @@ const RosterRow = ({ position, player, onRemove }) => {
           </>
         )}
       </Table.Cell>
-      <Table.Cell>{hasPlayer ? statsDisplay : ''}</Table.Cell>
+      <Table.Cell>
+        {hasPlayer ? <StatCell label={getStatLabel(player, 0)} value={getStatValue(player, 0)} /> : ''}
+      </Table.Cell>
+      <Table.Cell>
+        {hasPlayer ? <StatCell label={getStatLabel(player, 1)} value={getStatValue(player, 1)} /> : ''}
+      </Table.Cell>
+      <Table.Cell>
+        {hasPlayer ? <StatCell label={getStatLabel(player, 2)} value={getStatValue(player, 2)} /> : ''}
+      </Table.Cell>
+      <Table.Cell>
+        {hasPlayer ? <StatCell label={getStatLabel(player, 3)} value={getStatValue(player, 3)} /> : ''}
+      </Table.Cell>
     </Table.Row>
   );
 };
