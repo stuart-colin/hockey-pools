@@ -106,113 +106,113 @@ const RosterTable = ({
           display: 'flex',
           flexDirection: 'column',
         }}>
-        {/* Collapsed header */}
-        <div
-          onClick={() => setIsExpanded(!isExpanded)}
-          style={{
-            padding: '12px 16px',
+          {/* Collapsed header */}
+          <div
+            onClick={() => setIsExpanded(!isExpanded)}
+            style={{
+              padding: '12px 16px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              cursor: 'pointer',
+              gap: '8px',
+            }}
+          >
+            <strong style={{ whiteSpace: 'nowrap', fontSize: '16px' }}>My Team</strong>
+
+            {/* Team stats - compact */}
+            <Label size='small' style={{ display: 'inline-flex', alignItems: 'center' }}>
+              {myTeam.length}/{TOTAL_ROSTER_SIZE}
+              {Object.entries(teamCount).slice(0, 2).map(([team, count]) => (
+                <Label.Detail key={team} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  <Image
+                    src={`${TEAM_LOGO_URL}${team}_light.svg`}
+                    alt={`${team} Logo`}
+                    style={{ width: '16px', height: '16px', marginRight: '4px', transform: 'scale(1.5)' }}
+                  />
+                  {count}
+                </Label.Detail>
+              ))}
+            </Label>
+
+            <Icon circular color='blue' name={isExpanded ? 'chevron down' : 'chevron up'} style={{ marginLeft: 'auto' }} />
+          </div>
+
+          {/* Position preview row */}
+          <div style={{
             display: 'flex',
-            justifyContent: 'space-between',
+            gap: '0',
+            justifyContent: 'space-evenly',
             alignItems: 'center',
-            cursor: 'pointer',
-            gap: '8px',
-          }}
-        >
-          <strong style={{ whiteSpace: 'nowrap', fontSize: '16px' }}>My Team</strong>
-
-          {/* Team stats - compact */}
-          <Label size='small' style={{ display: 'inline-flex', alignItems: 'center' }}>
-            {myTeam.length}/{TOTAL_ROSTER_SIZE}
-            {Object.entries(teamCount).slice(0, 2).map(([team, count]) => (
-              <Label.Detail key={team} style={{ display: 'inline-flex', alignItems: 'center' }}>
-                <Image
-                  src={`${TEAM_LOGO_URL}${team}_light.svg`}
-                  alt={`${team} Logo`}
-                  style={{ width: '16px', height: '16px', marginRight: '4px', transform: 'scale(1.5)' }}
-                />
-                {count}
-              </Label.Detail>
+            padding: '0 16px 8px 16px',
+            borderBottom: '1px solid #e0e0e0'
+          }}>
+            {positionPreview.map((slot) => (
+              <div
+                key={slot.key}
+                style={{
+                  padding: '0',
+                  borderRadius: '4px',
+                  fontSize: '10px',
+                  fontWeight: 'bold',
+                  background: slot.filled ? '#3688ce' : '#d0d0d0',
+                  color: slot.filled ? 'white' : '#666',
+                  width: '22px',
+                  height: '22px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: 'none',
+                  flexShrink: 0,
+                }}
+              >
+                {slot.position}
+              </div>
             ))}
-          </Label>
+          </div>
 
-          <Icon circular color='blue' name={isExpanded ? 'chevron down' : 'chevron up'} style={{ marginLeft: 'auto' }} />
-        </div>
+          {/* Expanded content */}
+          {isExpanded && (
+            <>
+              <div style={{
+                padding: '8px 16px',
+                borderBottom: '1px solid #e0e0e0'
+              }}>
+                {/* Action buttons */}
+                <Button.Group size='small' fluid>
+                  <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
+                    Clear
+                  </Button>
+                  <Button
+                    color='green'
+                    disabled={myTeam.length < TOTAL_ROSTER_SIZE}
+                    onClick={() => setConfirmationAction('submit')}
+                  >
+                    Submit
+                  </Button>
+                </Button.Group>
 
-        {/* Position preview row */}
-        <div style={{
-          display: 'flex',
-          gap: '0',
-          justifyContent: 'space-evenly',
-          alignItems: 'center',
-          padding: '0 16px 8px 16px',
-          borderBottom: '1px solid #e0e0e0'
-        }}>
-          {positionPreview.map((slot) => (
-            <div
-              key={slot.key}
-              style={{
-                padding: '0',
-                borderRadius: '4px',
-                fontSize: '10px',
-                fontWeight: 'bold',
-                background: slot.filled ? '#4CAF50' : '#d0d0d0',
-                color: slot.filled ? 'white' : '#666',
-                width: '22px',
-                height: '22px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: 'none',
-                flexShrink: 0,
-              }}
-            >
-              {slot.position}
-            </div>
-          ))}
-        </div>
+                {/* Submission feedback */}
+                {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
+                  <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
+                )}
+              </div>
 
-        {/* Expanded content */}
-        {isExpanded && (
-          <>
-            <div style={{
-              padding: '8px 16px',
-              borderBottom: '1px solid #e0e0e0'
-            }}>
-              {/* Action buttons */}
-              <Button.Group size='small' fluid>
-                <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
-                  Clear
-                </Button>
-                <Button
-                  color='green'
-                  disabled={myTeam.length < TOTAL_ROSTER_SIZE}
-                  onClick={() => setConfirmationAction('submit')}
-                >
-                  Submit
-                </Button>
-              </Button.Group>
-
-              {/* Submission feedback */}
-              {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
-                <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
-              )}
-            </div>
-
-            <div
-              style={{
-                flex: 1,
-                overflow: 'auto',
-                padding: '12px 16px',
-              }}
-            >
-              {/* Roster table */}
-              <Table singleLine unstackable basic='very' compact='very'>
-                {createTableHeader()}
-                <Table.Body>{rosterRows}</Table.Body>
-              </Table>
-            </div>
-          </>
-        )}
+              <div
+                style={{
+                  flex: 1,
+                  overflow: 'auto',
+                  padding: '12px 16px',
+                }}
+              >
+                {/* Roster table */}
+                <Table singleLine unstackable basic='very' compact='very'>
+                  {createTableHeader()}
+                  <Table.Body>{rosterRows}</Table.Body>
+                </Table>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Clear Team Confirmation Modal */}
@@ -244,85 +244,85 @@ const RosterTable = ({
   return (
     <>
       <Grid.Column style={{ padding: 0 }}>
-      <div style={{ height: '60vh', display: 'flex', flexDirection: 'column' }}>
-        <Grid stackable style={{ padding: 0, position: 'sticky', top: 0, zIndex: 10, background: 'white', marginBottom: '10px', flex: 'none' }}>
-          <Grid.Row>
-            <Grid.Column width={4}>
-              <Header as='h4' >My Team</Header>
-            </Grid.Column>
-            <Grid.Column width={12}>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center' }}>
-                <Label size='large' style={{ display: 'inline-flex', alignItems: 'center' }}>
-                  {myTeam.length} / {TOTAL_ROSTER_SIZE}
-                  {Object.entries(teamCount).map(([team, count]) => (
-                    <Label.Detail key={team} style={{ display: 'inline-flex', alignItems: 'center' }}>
-                      <Image
-                        src={`${TEAM_LOGO_URL}${team}_light.svg`}
-                        alt={`${team} Logo`}
-                        style={{ width: '17.5px', height: '17.5px', marginRight: '8px', scale: '2' }}
-                      />
-                      {count}
-                    </Label.Detail>
-                  ))}
-                </Label>
-                <Button.Group size='small'>
-                  <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
-                    Clear
-                  </Button>
-                  <Button
-                    color='green'
-                    disabled={myTeam.length < TOTAL_ROSTER_SIZE}
-                    onClick={() => setConfirmationAction('submit')}
-                  >
-                    Submit
-                  </Button>
-                </Button.Group>
-              </div>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-
-        {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
-          <Grid stackable style={{ padding: 0, marginTop: -20, marginBottom: 0, flex: 'none' }}>
+        <div style={{ height: '60vh', display: 'flex', flexDirection: 'column' }}>
+          <Grid stackable style={{ padding: 0, position: 'sticky', top: 0, zIndex: 10, background: 'white', marginBottom: '10px', flex: 'none' }}>
             <Grid.Row>
-              <Grid.Column>
-                <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
+              <Grid.Column width={4}>
+                <Header as='h4' >My Team</Header>
+              </Grid.Column>
+              <Grid.Column width={12}>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center' }}>
+                  <Label size='large' style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    {myTeam.length} / {TOTAL_ROSTER_SIZE}
+                    {Object.entries(teamCount).map(([team, count]) => (
+                      <Label.Detail key={team} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <Image
+                          src={`${TEAM_LOGO_URL}${team}_light.svg`}
+                          alt={`${team} Logo`}
+                          style={{ width: '17.5px', height: '17.5px', marginRight: '8px', scale: '2' }}
+                        />
+                        {count}
+                      </Label.Detail>
+                    ))}
+                  </Label>
+                  <Button.Group size='small'>
+                    <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
+                      Clear
+                    </Button>
+                    <Button
+                      color='green'
+                      disabled={myTeam.length < TOTAL_ROSTER_SIZE}
+                      onClick={() => setConfirmationAction('submit')}
+                    >
+                      Submit
+                    </Button>
+                  </Button.Group>
+                </div>
               </Grid.Column>
             </Grid.Row>
           </Grid>
-        )}
 
-        {/* Roster table - Scrollable */}
-        <div style={{ flex: 1, overflow: 'auto' }}>
-          <Table singleLine unstackable basic='very' compact='very'>
-            {createTableHeader()}
-            <Table.Body>{rosterRows}</Table.Body>
-          </Table>
+          {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
+            <Grid stackable style={{ padding: 0, marginTop: -20, marginBottom: 0, flex: 'none' }}>
+              <Grid.Row>
+                <Grid.Column>
+                  <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          )}
+
+          {/* Roster table - Scrollable */}
+          <div style={{ flex: 1, overflow: 'auto' }}>
+            <Table singleLine unstackable basic='very' compact='very'>
+              {createTableHeader()}
+              <Table.Body>{rosterRows}</Table.Body>
+            </Table>
+          </div>
         </div>
-      </div>
-    </Grid.Column>
+      </Grid.Column>
 
-    {/* Clear Team Confirmation Modal */}
-    <ConfirmationDialog
-      isOpen={confirmationAction === 'clear'}
-      actionType='clear'
-      onConfirm={() => {
-        setConfirmationAction(null);
-        onClearTeam();
-      }}
-      onCancel={() => setConfirmationAction(null)}
-    />
+      {/* Clear Team Confirmation Modal */}
+      <ConfirmationDialog
+        isOpen={confirmationAction === 'clear'}
+        actionType='clear'
+        onConfirm={() => {
+          setConfirmationAction(null);
+          onClearTeam();
+        }}
+        onCancel={() => setConfirmationAction(null)}
+      />
 
-    {/* Submit Team Confirmation Modal */}
-    <ConfirmationDialog
-      isOpen={confirmationAction === 'submit'}
-      actionType='submit'
-      onConfirm={() => {
-        setConfirmationAction(null);
-        onSubmit();
-      }}
-      onCancel={() => setConfirmationAction(null)}
-    />
+      {/* Submit Team Confirmation Modal */}
+      <ConfirmationDialog
+        isOpen={confirmationAction === 'submit'}
+        actionType='submit'
+        onConfirm={() => {
+          setConfirmationAction(null);
+          onSubmit();
+        }}
+        onCancel={() => setConfirmationAction(null)}
+      />
     </>
   );
 };
