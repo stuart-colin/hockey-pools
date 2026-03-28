@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Sidebar, Icon, Segment, Label } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useMediaQuery } from 'react-responsive';
+import useIsMobile from '../hooks/useIsMobile';
 import AuthButtons from './AuthButtons';
 
 const Navigation = ({ onMenuSelect }) => {
@@ -9,7 +9,7 @@ const Navigation = ({ onMenuSelect }) => {
   const [activeItem, setActiveItem] = useState('insights');
   const { isAuthenticated } = useAuth0();
 
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useIsMobile();
 
   // Set default item based on mobile status
   useEffect(() => {

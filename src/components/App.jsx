@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMediaQuery } from "react-responsive";
 import { Grid } from "semantic-ui-react";
 
 import Alert from "./Alert";
@@ -23,6 +22,7 @@ import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
+import useIsMobile from "../hooks/useIsMobile";
 import { EliminatedTeamsProvider } from "../context/EliminatedTeamsContext";
 import getSeasonOrdinal from "../utils/getSeasonOrdinal";
 
@@ -46,7 +46,7 @@ const App = () => {
   const users = useUsers(season);
   const { eliminatedTeams, loading: eliminatedLoading, error: eliminatedError } = useEliminatedTeams(season);
   const players = usePlayerData(users, eliminatedTeams, eliminatedLoading);
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useIsMobile();
 
   // Map activeItem to components
   const renderContent = () => {

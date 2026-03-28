@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useMediaQuery } from "react-responsive";
 import {
   List,
   Label,
@@ -9,6 +8,7 @@ import {
   Icon
 } from 'semantic-ui-react';
 import useScores from '../hooks/useScores';
+import useIsMobile from '../hooks/useIsMobile';
 import getOrdinals from '../utils/getOrdinals';
 
 const teamLogo = 'https://assets.nhle.com/logos/nhl/svg/';
@@ -30,7 +30,7 @@ function prettyDate(date) {
 
 const Scoreboard = () => {
   const scoreboard = useScores();
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useIsMobile();
   const isPlayoffGame = (game) => Number(game && game.gameType) === 3;
   const isFinished = (game) => game.gameState === 'OFF' || game.gameState === 'FINAL';
   const isPreGame = (game) => game.gameState === 'FUT' || game.gameState === 'PRE';

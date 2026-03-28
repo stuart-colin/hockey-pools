@@ -7,7 +7,7 @@ import {
   Loader,
   Table,
 } from 'semantic-ui-react';
-import { useMediaQuery } from 'react-responsive';
+import useIsMobile from '../../hooks/useIsMobile';
 import PlayerRow from './TeamBuilder.PlayerRow';
 import {
   POSITION_OPTIONS,
@@ -40,7 +40,7 @@ const AvailablePlayersTable = ({
   utilityBonus,
   onPlayerToggle,
 }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useIsMobile();
   // Build team options from available stats
   const teamOptions = useMemo(() => {
     const teams = Array.from(

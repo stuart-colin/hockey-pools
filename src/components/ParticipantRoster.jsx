@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
 import {
   Flag,
   Grid,
@@ -8,6 +7,7 @@ import {
   Segment,
   Statistic
 } from 'semantic-ui-react';
+import useIsMobile from '../hooks/useIsMobile';
 import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import rosterPositions from '../constants/rosterPositions';
@@ -20,7 +20,7 @@ import '../css/customStyle.css';
 const ParticipantRoster = ({ rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
   const { roster, error, isLoading } = useMyTeam(rosterDataEndpoint);
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useIsMobile();
   const [cardView, setCardView] = useState(isMobile);
 
   if (isLoading) {

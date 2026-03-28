@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Grid, Header, Image, Table, Icon, Label } from 'semantic-ui-react';
-import { useMediaQuery } from 'react-responsive';
+import useIsMobile from '../../hooks/useIsMobile';
 import RosterRow from './TeamBuilder.RosterRow';
 import SubmissionFeedback from './TeamBuilder.SubmissionFeedback';
 import ConfirmationDialog from './TeamBuilder.ConfirmationDialog';
@@ -19,7 +19,7 @@ const RosterTable = ({
   onSubmit,
   onDismissStatus,
 }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useIsMobile();
   const [isExpanded, setIsExpanded] = useState(false);
   const [confirmationAction, setConfirmationAction] = useState(null); // 'clear' | 'submit' | null
 

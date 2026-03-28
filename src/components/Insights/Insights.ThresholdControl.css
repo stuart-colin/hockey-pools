@@ -1,0 +1,129 @@
+.threshold-control {
+  padding: 12px 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.threshold-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.threshold-display .ui.label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.threshold-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #ddd, #999);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.threshold-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #333;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.threshold-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.threshold-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #333;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.threshold-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.threshold-bounds {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #666;
+  padding: 0 4px;
+}
+
+.bound-min {
+  font-weight: 500;
+}
+
+.bound-max {
+  font-weight: 500;
+}
+
+/* High threshold slider - Teal (Semantic UI color) */
+.threshold-slider-high {
+  background: linear-gradient(to right, rgba(27, 146, 153, 0.2), #1B9299);
+}
+
+.threshold-slider-high::-webkit-slider-thumb {
+  border-color: #1B9299;
+}
+
+.threshold-slider-high::-moz-range-thumb {
+  border-color: #1B9299;
+}
+
+/* Low threshold slider - Purple (Semantic UI color) */
+.threshold-slider-low {
+  background: linear-gradient(to right, rgba(163, 51, 200, 0.2), #A333C8);
+}
+
+.threshold-slider-low::-webkit-slider-thumb {
+  border-color: #A333C8;
+}
+
+.threshold-slider-low::-moz-range-thumb {
+  border-color: #A333C8;
+}
+
+.threshold-description {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #555;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .threshold-control {
+    padding: 8px 6px;
+    gap: 6px;
+  }
+
+  .threshold-slider {
+    height: 5px;
+  }
+
+  .threshold-slider::-webkit-slider-thumb,
+  .threshold-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+  }
+}
