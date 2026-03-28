@@ -9,7 +9,40 @@ import {
 import '../css/customStyle.css';
 import RosterView from './RosterView';
 
-const URL = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
+const AVATAR_COLORS = [
+  '#db2828', // red
+  '#f2711c', // orange
+  '#b5cc18', // olive
+  '#21ba45', // green
+  '#00b5ad', // teal
+  '#2185d0', // blue
+  '#6435c9', // violet
+  '#a333c8', // purple
+  '#e03997', // pink
+  '#a5673f', // brown
+];
+
+const getInitials = (name) => {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+const getAvatarColor = (name) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+};
+
+const getAvatarSvg = (name) => {
+  const initials = getInitials(name);
+  const color = getAvatarColor(name);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><circle cx="32" cy="32" r="32" fill="${color}"/><text x="32" y="32" text-anchor="middle" dy=".36em" fill="white" font-family="sans-serif" font-size="24" font-weight="500">${initials}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+};
 // const top6 = ['#66b36650', '#7cbe7c50', '#92c99250', '#a7d3a850', '#bddebe50', '#d3e9d350'];
 // const top7 = ['#66b36650', '#79bc7850', '#8bc58a50', '#9dce9c50', '#afd7ae50', '#c1e0c150', '#d3e9d350'];
 const top10Colors = ['#66b36650', '#66b36650', '#73b97250', '#7fbf7e50', '#8bc58a50', '#97cb9650', '#afd7af50', '#bbddbb50', '#c7e3c750', '#d3e9d350'];
@@ -30,7 +63,7 @@ const StandingsItem = React.forwardRef(({ user, poolSize, isRosterVisible, onTog
         <List.Content floated='left' verticalAlign='middle'>
           {user.rank}
         </List.Content>
-        <Image avatar src={URL} alt='participant avatar' verticalAlign='middle' />
+        <Image avatar src={getAvatarSvg(user.owner.name)} alt='participant avatar' verticalAlign='middle' style={{ width: '2.5em', height: '2.5em' }} />
         {' '}
         <List.Content style={{ paddingLeft: '1em' }}>
           <List.Header>
