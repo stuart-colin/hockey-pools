@@ -19,7 +19,7 @@ const PlayerInsightTable = ({
   const VISIBLE_ROWS = 4;
 
   if (!players || players.length === 0) {
-    return <p style={{ color: '#999', fontStyle: 'italic' }}>{emptyMessage}</p>;
+    return <p style={{ color: '#999', fontStyle: 'italic', textAlign: 'center', padding: '16px 0', margin: 0 }}>{emptyMessage}</p>;
   }
 
   const visiblePlayers = isExpanded ? players : players.slice(0, VISIBLE_ROWS);

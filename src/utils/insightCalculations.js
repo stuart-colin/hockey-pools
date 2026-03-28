@@ -322,3 +322,206 @@ export const calculatePositionEliminionImpact = (players) => {
     totalPoolPoints,
   };
 };
+
+/**
+ * Calculate sunk cost per roster — points locked in eliminated players
+ * @param {Array} rosters - User rosters with position arrays
+ * @param {Array} eliminatedTeams - List of eliminated team names
+ * @returns {Array} Rosters ranked by sunk points (descending)
+ */
+export const calculateSunkCosts = (rosters, eliminatedTeams) => {
+  const safeEliminated = Array.isArray(eliminatedTeams) ? eliminatedTeams : [];
+
+  return rosters.map(roster => {
+    const allPlayers = [
+      ...(roster.left || []),
+      ...(roster.center || []),
+      ...(roster.right || []),
+      ...(roster.defense || []),
+      ...(roster.goalie || []),
+      ...(roster.utility ? [roster.utility] : []),
+    ].filter(Boolean);
+
+    let sunkPoints = 0;
+    let eliminatedCount = 0;
+
+    allPlayers.forEach(player => {
+      const teamName = player.stats && player.stats.teamName;
+      if (teamName && safeEliminated.includes(teamName)) {
+        eliminatedCount++;
+        const isGoalie = player.position === 'G';
+        const stats = player.stats?.featuredStats?.playoffs?.subSeason;
+        if (stats) {
+          sunkPoints += isGoalie
+            ? (stats.wins * 2) + (stats.shutouts * 2) + (player.stats.otl || 0)
+            : stats.goals + stats.assists + stats.otGoals;
+        }
+      }
+    });
+
+    const totalPoints = roster.points || 0;
+
+    return {
+      owner: roster.owner?.name || 'Unknown',
+      sunkPoints,
+      eliminatedCount,
+      totalPoints,
+      sunkPercentage: totalPoints > 0 ? +((sunkPoints / totalPoints) * 100).toFixed(1) : 0,
+    };
+  }).sort((a, b) => b.sunkPoints - a.sunkPoints);
+};
+
+/**
+ * Calculate "Clutch Factor" — playoff performance vs regular season baseline
+ * Compares PPG in playoffs against regular season to surface over/underperformers.
+ * @param {Array} players - Playoff players with points, gamesPlayed, position, stat1, stat2
+ * @param {Object} regularSeasonStats - { skaterStats, goalieStats, loading } from useRegularSeasonStats
+ * @returns {Array} Players with clutchRating, sorted by biggest overperformers first
+ */
+export const calculateClutchFactor = (players, regularSeasonStats) => {
+  if (!regularSeasonStats || regularSeasonStats.loading) return [];
+
+  const { skaterStats = [], goalieStats = [] } = regularSeasonStats;
+
+  const rsSkaterMap = new Map();
+  skaterStats.forEach(s => { if (s.skaterFullName) rsSkaterMap.set(s.skaterFullName, s); });
+
+  const rsGoalieMap = new Map();
+  goalieStats.forEach(g => { if (g.goalieFullName) rsGoalieMap.set(g.goalieFullName, g); });
+
+  return players
+    .filter(p => p.gamesPlayed > 0)
+    .map(player => {
+      const isGoalie = player.position === 'G';
+      let rsPPG, playoffPPG;
+
+      if (isGoalie) {
+        const rs = rsGoalieMap.get(player.name);
+        if (!rs || !rs.gamesPlayed) return null;
+        rsPPG = ((rs.wins * 2) + (rs.shutouts * 2) + (rs.otLosses || 0)) / rs.gamesPlayed;
+        playoffPPG = player.points / player.gamesPlayed;
+      } else {
+        const rs = rsSkaterMap.get(player.name);
+        if (!rs || !rs.gamesPlayed) return null;
+        // Compare standard PPG (goals + assists / GP) for fair comparison
+        rsPPG = rs.points / rs.gamesPlayed;
+        playoffPPG = (player.stat1 + player.stat2) / player.gamesPlayed;
+      }
+
+      return {
+        ...player,
+        playoffPPG: +playoffPPG.toFixed(2),
+        regularSeasonPPG: +rsPPG.toFixed(2),
+        clutchRating: +(playoffPPG - rsPPG).toFixed(2),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.clutchRating - a.clutchRating);
+};
+
+/**
+ * Calculate roster diversity — frequency distribution of how many NHL teams rosters draw from
+ * @param {Array} rosters - User rosters with position arrays
+ * @param {Array} eliminatedTeams - List of eliminated team names
+ * @returns {Array} Frequency distribution sorted by team count ascending
+ */
+export const calculateRosterDiversity = (rosters, eliminatedTeams) => {
+  const frequency = {};
+
+  rosters.forEach(roster => {
+    const allPlayers = [
+      ...(roster.left || []),
+      ...(roster.center || []),
+      ...(roster.right || []),
+      ...(roster.defense || []),
+      ...(roster.goalie || []),
+      ...(roster.utility ? [roster.utility] : []),
+    ].filter(Boolean);
+
+    const uniqueTeams = new Set();
+    allPlayers.forEach(player => {
+      const teamName = player.stats && player.stats.teamName;
+      if (teamName) uniqueTeams.add(teamName);
+    });
+
+    const count = uniqueTeams.size;
+    frequency[count] = (frequency[count] || 0) + 1;
+  });
+
+  return Object.entries(frequency)
+    .map(([teamCount, rosterCount]) => ({
+      teamCount: Number(teamCount),
+      rosterCount,
+      percentage: +((rosterCount / rosters.length) * 100).toFixed(1),
+    }))
+    .sort((a, b) => a.teamCount - b.teamCount);
+};
+
+/**
+ * Get players earning disproportionate bonus points (OT goals for skaters, shutouts for goalies)
+ * @param {Array} players - All players with stat fields
+ * @param {number} topN - Number of players to return
+ * @returns {Array} Top bonus point earners sorted by bonus points descending
+ */
+export const getBonusHunters = (players, topN = 10) => {
+  const skaterBonuses = players
+    .filter(p => p.position !== 'G' && p.stat3 > 0)
+    .map(p => ({
+      ...p,
+      bonusPoints: p.stat3,
+      bonusLabel: `${p.stat3} OT goal${p.stat3 !== 1 ? 's' : ''}`,
+    }));
+
+  const goalieBonuses = players
+    .filter(p => p.position === 'G' && p.stat2 > 0)
+    .map(p => ({
+      ...p,
+      bonusPoints: p.stat2 * 2,
+      bonusLabel: `${p.stat2} shutout${p.stat2 !== 1 ? 's' : ''}`,
+    }));
+
+  return [...skaterBonuses, ...goalieBonuses]
+    .sort((a, b) => b.bonusPoints - a.bonusPoints)
+    .slice(0, topN);
+};
+
+/**
+ * Get players that only appear on a single roster — unique differentiators
+ * @param {Array} players - All players with pickCount
+ * @param {number} topN - Number of players to return
+ * @returns {Array} Unique picks sorted by points descending
+ */
+export const getLoneWolves = (players, topN = 10) => {
+  return players
+    .filter(p => p.pickCount === 1 && p.points > 0)
+    .sort((a, b) => b.points - a.points)
+    .slice(0, topN);
+};
+
+/**
+ * Calculate average points per player by position across the pool
+ * @param {Array} players - All players with position and points
+ * @returns {Array} Position stats sorted by avg points per player (descending)
+ */
+export const calculatePositionPointsBreakdown = (players) => {
+  const positions = ['L', 'C', 'R', 'D', 'G'];
+  const positionLabels = { L: 'Left Wing', C: 'Center', R: 'Right Wing', D: 'Defense', G: 'Goalie' };
+
+  const totalPoolPoints = players.reduce((sum, p) => sum + (p.points || 0), 0);
+
+  return positions.map(pos => {
+    const posPlayers = players.filter(p => p.position === pos);
+    const totalPoints = posPlayers.reduce((sum, p) => sum + (p.points || 0), 0);
+    const remaining = posPlayers.filter(p => !p.isEliminated).length;
+
+    return {
+      position: pos,
+      label: positionLabels[pos],
+      totalPoints,
+      playerCount: posPlayers.length,
+      remaining,
+      avgPoints: posPlayers.length > 0 ? +(totalPoints / posPlayers.length).toFixed(1) : 0,
+      shareOfPool: totalPoolPoints > 0 ? +((totalPoints / totalPoolPoints) * 100).toFixed(1) : 0,
+    };
+  }).sort((a, b) => b.avgPoints - a.avgPoints);
+};

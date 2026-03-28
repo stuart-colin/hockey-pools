@@ -66,7 +66,8 @@ const App = () => {
         users={users}
         players={players}
         season={season}
-        eliminatedTeams={eliminatedTeams} />, // Consider if Insights also needs unselected players later
+        eliminatedTeams={eliminatedTeams}
+        regularSeasonStats={regularSeasonStats} />,
       "player-details": <PlayerDetails
         users={users}
         players={players}

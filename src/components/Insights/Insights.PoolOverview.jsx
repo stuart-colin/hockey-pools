@@ -34,7 +34,7 @@ const PoolOverview = ({
   leastPoints,
 }) => {
   const isMobile = useIsMobile();
-  const STAT_GROUP_SIZE = isMobile ? 'small' : 'large';
+  const STAT_GROUP_SIZE = isMobile ? 'tiny' : 'small';
   /**
    * ProgressBarWithMarkers - Renders a progress bar with tooltipped markers for data points
    */
