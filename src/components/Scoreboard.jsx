@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   List,
   Label,
@@ -28,8 +28,24 @@ function prettyDate(date) {
   });
 }
 
+const formatDateParam = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
 const Scoreboard = () => {
-  const scoreboard = useScores();
+  const [dateOffset, setDateOffset] = useState(0);
+
+  const dateParam = useMemo(() => {
+    if (dateOffset === 0) return null;
+    const d = new Date();
+    d.setDate(d.getDate() + dateOffset);
+    return formatDateParam(d);
+  }, [dateOffset]);
+
+  const scoreboard = useScores(dateParam);
   const isMobile = useIsMobile();
   const isPlayoffGame = (game) => Number(game && game.gameType) === 3;
   const isFinished = (game) => game.gameState === 'OFF' || game.gameState === 'FINAL';
@@ -49,11 +65,19 @@ const Scoreboard = () => {
 
   const renderGameLabels = (game) => (
     <>
-      <Image avatar src={game.awayTeam.logo} alt={`${game.awayTeam.name.default} Logo`} />
+      <Image
+        alt={`${game.awayTeam.name.default} Logo`}
+        avatar
+        src={game.awayTeam.logo}
+      />
       <Label>{game.awayTeam.score}</Label>
       <Label>{getGameStatusLabel(game)}</Label>
       <Label>{game.homeTeam.score}</Label>
-      <Image avatar src={game.homeTeam.logo} alt={`${game.homeTeam.name.default} Logo`} />
+      <Image
+        alt={`${game.homeTeam.name.default} Logo`}
+        avatar
+        src={game.homeTeam.logo}
+      />
     </>
   );
 
@@ -97,15 +121,17 @@ const Scoreboard = () => {
         }}
       >
         <List.Item>
-          <Label style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+          <Label
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <Image
+              alt={`${game.awayTeam.name.default} Logo`}
               avatar
               src={game.awayTeam.logo}
-              alt={`${game.awayTeam.name.default} Logo`}
             />
             <Label>{displayValue[0]}</Label>
             <Label
@@ -114,17 +140,20 @@ const Scoreboard = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
-              }}>
-              <List.Header style={playoff ? { paddingBottom: 5 } : null}>
+              }}
+            >
+              <List.Header
+                style={playoff ? { paddingBottom: 5 } : null}
+              >
                 {displayLabel}
               </List.Header>
               {statusText}
             </Label>
             <Label>{displayValue[1]}</Label>
             <Image
+              alt={`${game.homeTeam.name.default} Logo`}
               avatar
               src={game.homeTeam.logo}
-              alt={`${game.homeTeam.name.default} Logo`}
             />
           </Label>
         </List.Item>
@@ -141,18 +170,23 @@ const Scoreboard = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <Image
+            alt={`${goal.teamName} Logo`}
             avatar
             src={teamLogo + goal.teamAbbrev + '_light.svg'}
-            alt={`${goal.teamName} Logo`}
-            style={{ marginRight: '10px' }}
+            style={{
+              marginRight: '10px',
+            }}
           />
           <Image
+            alt={`${goal.name.default}'s mugshot`}
             avatar
             src={goal.mugshot}
-            alt={`${goal.name.default}'s mugshot`}
-            style={{ marginRight: '10px' }}
+            style={{
+              marginRight: '10px',
+            }}
           />
           <List.Content>
             <List.Header>
@@ -206,18 +240,17 @@ const Scoreboard = () => {
   const gameListItems = sortedGames.map((game, index) => (
     <List.Item key={game.gamePk || index}>
       <Popup
-        trigger={<Label>{renderGameLabels(game)}</Label>}
         content={renderSeriesStatus(game)}
-        position={isMobile ? 'bottom right' : 'bottom center'}
         flowing
         hoverable
+        position={isMobile ? 'bottom right' : 'bottom center'}
+        trigger={<Label>{renderGameLabels(game)}</Label>}
       />
     </List.Item>
   ));
 
   return (
     <Segment
-      textAlign='center'
       style={{
         position: 'fixed',
         overflowX: 'auto',
@@ -227,11 +260,63 @@ const Scoreboard = () => {
         backgroundColor: 'white',
         width: '100vw',
         zIndex: '1000',
-      }}>
+      }}
+      textAlign='center'
+    >
       <List horizontal>
-        <Label color='blue'>
-          <Icon size='large' name='calendar outline' />
-          {scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled today'}
+        <Label
+          color='blue'
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.4em',
+          }}
+        >
+          <Icon
+            name='calendar outline'
+            style={{
+              margin: '0.5em',
+            }}
+          />
+          <Icon
+            name='chevron left'
+            onClick={(e) => {
+              e.stopPropagation();
+              setDateOffset(prev => prev - 1);
+            }}
+            style={{
+              cursor: 'pointer',
+              margin: 7,
+            }}
+            title='Previous day'
+          />
+          {scoreboard.date ? prettyDate(scoreboard.date) : 'No games scheduled'}
+          <Icon
+            name='chevron right'
+            onClick={(e) => {
+              e.stopPropagation();
+              setDateOffset(prev => prev + 1);
+            }}
+            style={{
+              cursor: 'pointer',
+              margin: 7,
+            }}
+            title='Next day'
+          />
+          {dateOffset !== 0 && (
+            <Icon
+              name='undo'
+              onClick={(e) => {
+                e.stopPropagation();
+                setDateOffset(0);
+              }}
+              style={{
+                cursor: 'pointer',
+                margin: '0.5em',
+              }}
+              title='Back to today'
+            />
+          )}
         </Label>
         {gameListItems.length > 0 ? gameListItems : <Label>No games scheduled today</Label>}
       </List>
