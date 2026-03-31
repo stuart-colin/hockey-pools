@@ -23,7 +23,7 @@ const normalizeScorePayload = (json) => {
   return { nextDate, nextGames };
 };
 
-const useScores = () => {
+const useScores = (dateOverride) => {
   const [date, setDate] = useState("");
   const [games, setGames] = useState([]);
 
@@ -32,7 +32,10 @@ const useScores = () => {
 
     const getScoreData = async () => {
       try {
-        const res = await fetchWithTimeout(scoreDetailsEndpointNHL);
+        const url = dateOverride
+          ? `${scoreDetailsEndpointNHL}/${dateOverride}`
+          : scoreDetailsEndpointNHL;
+        const res = await fetchWithTimeout(url);
         if (!res.ok) {
           throw new Error(`Score request failed (${res.status})`);
         }
@@ -63,7 +66,7 @@ const useScores = () => {
       isMounted = false;
       clearInterval(interval);
     };
-  }, []);
+  }, [dateOverride]);
 
   return {
     date: date,
