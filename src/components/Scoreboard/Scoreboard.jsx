@@ -1,0 +1,83 @@
+import React, { useState, useMemo } from 'react';
+import { Label, List, Segment } from 'semantic-ui-react';
+import useScores from '../../hooks/useScores';
+import useIsMobile from '../../hooks/useIsMobile';
+import DateLabel from './Scoreboard.DateLabel';
+import GameCard from './Scoreboard.GameCard';
+
+const formatDateParam = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+const isFinished = (game) => game.gameState === 'OFF' || game.gameState === 'FINAL';
+
+const Scoreboard = () => {
+  const [dateOffset, setDateOffset] = useState(0);
+
+  const dateParam = useMemo(() => {
+    if (dateOffset === 0) return null;
+    const d = new Date();
+    d.setDate(d.getDate() + dateOffset);
+    return formatDateParam(d);
+  }, [dateOffset]);
+
+  const scoreboard = useScores(dateParam);
+  const isMobile = useIsMobile();
+
+  const sortedGames = useMemo(() => {
+    if (!scoreboard.games || !Array.isArray(scoreboard.games)) {
+      return [];
+    }
+
+    return [...scoreboard.games].sort((a, b) => {
+      const aFinished = isFinished(a);
+      const bFinished = isFinished(b);
+
+      if (aFinished && !bFinished) return 1;
+      if (!aFinished && bFinished) return -1;
+
+      return new Date(a.startTimeUTC).getTime() - new Date(b.startTimeUTC).getTime();
+    });
+  }, [scoreboard.games]);
+
+  return (
+    <Segment
+      style={{
+        position: 'fixed',
+        overflowX: 'auto',
+        whiteSpace: 'nowrap',
+        padding: 5,
+        top: 0,
+        backgroundColor: 'white',
+        width: '100vw',
+        zIndex: '1000',
+      }}
+      textAlign='center'
+    >
+      <List horizontal>
+        <DateLabel
+          date={scoreboard.date}
+          dateOffset={dateOffset}
+          onNext={() => setDateOffset(prev => prev + 1)}
+          onPrev={() => setDateOffset(prev => prev - 1)}
+          onReset={() => setDateOffset(0)}
+        />
+        {sortedGames.length > 0
+          ? sortedGames.map((game, index) => (
+            <GameCard
+              game={game}
+              isMobile={isMobile}
+              key={game.gamePk || index}
+            />
+          ))
+          : <Label>No games scheduled today</Label>
+        }
+      </List>
+    </Segment>
+  );
+};
+
+export default Scoreboard;
