@@ -10,8 +10,9 @@ const useEliminatedTeams = (season) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const PLAYOFF_BRACKET_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playoff-bracket/${season}`;
+
   useEffect(() => {
-    const PLAYOFF_BRACKET_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playoff-bracket/${season}`;
 
     const fetchBracketData = async () => {
       setLoading(true);

@@ -3,6 +3,20 @@ import '../css/customStyle.css';
 
 const StatsCard = ({ player }) => {
 
+  const delta = player._delta;
+
+  const deltaStyle = {
+    color: '#21ba45',
+    fontWeight: 'bold',
+    fontSize: '0.85em',
+    marginLeft: '2px',
+  };
+
+  const renderDelta = (value) => {
+    if (!value || value <= 0) return null;
+    return <span style={deltaStyle}>+{value}</span>;
+  };
+
   let stats;
   let points;
   if (player.position === 'G') {
@@ -32,17 +46,17 @@ const StatsCard = ({ player }) => {
             <div className='ui divided items'>
               <div className='item'>
                 <div className='middle aligned content'>
-                  <b>{stats[0]}</b> {stats[1]}
+                  <b>{stats[0]}</b> {stats[1]} {renderDelta(delta?.goals || delta?.wins)}
                 </div>
               </div>
               <div className='item'>
                 <div className='middle aligned content'>
-                  <b>{stats[2]}</b> {stats[3]}
+                  <b>{stats[2]}</b> {stats[3]} {renderDelta(delta?.assists || delta?.shutouts)}
                 </div>
               </div>
               <div className='item'>
                 <div className='middle aligned content'>
-                  <b>{stats[4]}</b> {stats[5]}
+                  <b>{stats[4]}</b> {stats[5]} {renderDelta(delta?.otGoals)}
                 </div>
               </div>
             </div>
@@ -50,7 +64,7 @@ const StatsCard = ({ player }) => {
           <div className='middle aligned column'>
             <div className='ui small blue statistic'>
               <div className='value'>
-                {points}
+                {points}{renderDelta(delta?.points)}
               </div>
               <div className='label'>
                 Pool Points

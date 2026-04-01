@@ -13,13 +13,14 @@ import StatsSlim from './StatsSlim';
 import rosterPositions from '../constants/rosterPositions';
 import eliminatedPlayers from '../utils/eliminatedPlayers';
 import normalizePlayer from '../utils/normalizePlayer';
+import { augmentRoster } from '../utils/parseLiveStats';
 import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 import countPoints from '../utils/countPoints';
 import useMyTeam from '../hooks/useMyTeam';
 import { POSITION_ARRAYS } from '../constants/positions';
 import '../css/customStyle.css';
 
-const ParticipantRoster = ({ rosterDataEndpoint }) => {
+const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
   const { roster: rawRoster, error, isLoading } = useMyTeam(rosterDataEndpoint);
   const isMobile = useIsMobile();
@@ -36,8 +37,9 @@ const ParticipantRoster = ({ rosterDataEndpoint }) => {
     normalized.utility = rawRoster.utility
       ? normalizePlayer(rawRoster.utility, eliminatedTeams)
       : null;
-    return normalized;
-  }, [rawRoster, eliminatedTeams]);
+    // Augment with live stats if available
+    return playerDeltas?.size > 0 ? augmentRoster(normalized, playerDeltas) : normalized;
+  }, [rawRoster, eliminatedTeams, playerDeltas]);
 
   if (isLoading) {
     return <Segment loading>Loading roster...</Segment>;

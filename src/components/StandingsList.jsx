@@ -8,11 +8,12 @@ import {
   Loader,
   Segment,
 } from 'semantic-ui-react';
+import { POSITION_ARRAYS } from '../constants/positions';
 import Search from './Search';
 import StandingsItem from './StandingsItem';
 import '../css/customStyle.css';
 
-const StandingsList = ({ users, season }) => {
+const StandingsList = ({ hasLiveGames, season, users }) => {
   const [loading, setLoading] = useState(true);
   const [activeRosterKey, setActiveRosterKey] = useState(null);
   const itemRefs = useRef({});
@@ -26,7 +27,16 @@ const StandingsList = ({ users, season }) => {
       return [];
     }
 
-    const sorted = [...users.rosters].sort((a, b) => b.points - a.points);
+    // Derive live points from _delta fields (already baked into player.points)
+    const withLivePoints = users.rosters.map(roster => {
+      const livePoints = [
+        ...POSITION_ARRAYS.flatMap(pos => roster[pos] || []),
+        ...(roster.utility ? [roster.utility] : []),
+      ].reduce((sum, p) => sum + (p?._delta?.points || 0), 0);
+      return { ...roster, livePoints };
+    });
+
+    const sorted = [...withLivePoints].sort((a, b) => b.points - a.points);
     let currentRank = 0;
     let stack = 1;
     let lastPoints = -Infinity;
@@ -80,12 +90,13 @@ const StandingsList = ({ users, season }) => {
 
   const standingsList = rankedRosters.map((user, index) => (
     <StandingsItem
-      user={user}
-      key={user.owner.id}
-      poolSize={rankedRosters.length}
+      hasLiveGames={hasLiveGames}
       isRosterVisible={activeRosterKey === user.owner.id}
+      key={user.owner.id}
       onToggleRoster={() => handleToggleRoster(user.owner.id)}
+      poolSize={rankedRosters.length}
       ref={itemRefs.current[user.owner.id]}
+      user={user}
     />
   ));
 

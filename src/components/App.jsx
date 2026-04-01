@@ -17,8 +17,10 @@ import StandingsList from "./StandingsList";
 import TeamBuilder from "./TeamBuilder/TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
+import useLiveStats from "../hooks/useLiveStats";
 import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
+import useScores from "../hooks/useScores";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
 import useIsMobile from "../hooks/useIsMobile";
@@ -43,7 +45,9 @@ const AppContent = ({ season, setSeason }) => {
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams, season);
   const users = useUsers(season, eliminatedTeams, eliminatedLoading);
-  const players = usePlayerData(users);
+  const todayScores = useScores();
+  const { augmentedUsers, playerDeltas, hasLiveGames } = useLiveStats(todayScores.games, users);
+  const players = usePlayerData(augmentedUsers);
   const isMobile = useIsMobile();
 
   // Map activeItem to components
@@ -52,28 +56,32 @@ const AppContent = ({ season, setSeason }) => {
       "commissioners-corner": <CommissionersCorner
         season={season} />,
       "standings": <StandingsList
-        users={users}
+        hasLiveGames={hasLiveGames}
         season={season}
+        users={augmentedUsers}
       />,
       "my-team":
         <ParticipantRoster
+          playerDeltas={playerDeltas}
           rosterDataEndpoint={rosterDataEndpoint}
         />
       ,
       "insights": <Insights
-        users={users}
         players={players}
+        regularSeasonStats={regularSeasonStats}
         season={season}
-        regularSeasonStats={regularSeasonStats} />,
+        users={augmentedUsers}
+      />,
       "player-details": <PlayerDetails
-        users={users}
         players={players}
         season={season}
+        users={augmentedUsers}
       />,
       "team-details": <TeamDetails
-        users={users}
         players={players}
-        season={season} />,
+        season={season}
+        users={augmentedUsers}
+      />,
       "team-builder": <TeamBuilder
         regularSeasonStats={regularSeasonStats}
         rosterDataEndpoint={rosterDataEndpoint}
@@ -88,7 +96,7 @@ const AppContent = ({ season, setSeason }) => {
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <div className={`app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
-          <Scoreboard />
+          <Scoreboard todayScores={todayScores} />
           <div
             style={{
               paddingTop: "55px",
@@ -114,8 +122,9 @@ const AppContent = ({ season, setSeason }) => {
                 {!isMobile &&
                   <Grid.Column width={4}>
                     <StandingsList
-                      users={users}
+                      hasLiveGames={hasLiveGames}
                       season={season}
+                      users={augmentedUsers}
                     />
                   </Grid.Column>
                 }

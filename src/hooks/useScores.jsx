@@ -23,11 +23,12 @@ const normalizeScorePayload = (json) => {
   return { nextDate, nextGames };
 };
 
-const useScores = (dateOverride) => {
+const useScores = (dateOverride, { skip = false } = {}) => {
   const [date, setDate] = useState("");
   const [games, setGames] = useState([]);
 
   useEffect(() => {
+    if (skip) return;
     let isMounted = true;
 
     const getScoreData = async () => {
@@ -66,7 +67,7 @@ const useScores = (dateOverride) => {
       isMounted = false;
       clearInterval(interval);
     };
-  }, [dateOverride]);
+  }, [dateOverride, skip]);
 
   return {
     date: date,
