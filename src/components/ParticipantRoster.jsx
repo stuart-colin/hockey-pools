@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Flag,
   Grid,
@@ -12,16 +12,32 @@ import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import rosterPositions from '../constants/rosterPositions';
 import eliminatedPlayers from '../utils/eliminatedPlayers';
+import normalizePlayer from '../utils/normalizePlayer';
 import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 import countPoints from '../utils/countPoints';
 import useMyTeam from '../hooks/useMyTeam';
+import { POSITION_ARRAYS } from '../constants/positions';
 import '../css/customStyle.css';
 
 const ParticipantRoster = ({ rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
-  const { roster, error, isLoading } = useMyTeam(rosterDataEndpoint);
+  const { roster: rawRoster, error, isLoading } = useMyTeam(rosterDataEndpoint);
   const isMobile = useIsMobile();
   const [cardView, setCardView] = useState(isMobile);
+
+  const roster = useMemo(() => {
+    if (!rawRoster) return null;
+    const normalized = { ...rawRoster };
+    for (const pos of POSITION_ARRAYS) {
+      normalized[pos] = Array.isArray(rawRoster[pos])
+        ? rawRoster[pos].map(p => normalizePlayer(p, eliminatedTeams)).filter(Boolean)
+        : [];
+    }
+    normalized.utility = rawRoster.utility
+      ? normalizePlayer(rawRoster.utility, eliminatedTeams)
+      : null;
+    return normalized;
+  }, [rawRoster, eliminatedTeams]);
 
   if (isLoading) {
     return <Segment loading>Loading roster...</Segment>;

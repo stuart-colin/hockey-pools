@@ -330,8 +330,6 @@ export const calculatePositionEliminionImpact = (players) => {
  * @returns {Array} Rosters ranked by sunk points (descending)
  */
 export const calculateSunkCosts = (rosters, eliminatedTeams) => {
-  const safeEliminated = Array.isArray(eliminatedTeams) ? eliminatedTeams : [];
-
   return rosters.map(roster => {
     const allPlayers = [
       ...(roster.left || []),
@@ -346,16 +344,9 @@ export const calculateSunkCosts = (rosters, eliminatedTeams) => {
     let eliminatedCount = 0;
 
     allPlayers.forEach(player => {
-      const teamName = player.stats && player.stats.teamName;
-      if (teamName && safeEliminated.includes(teamName)) {
+      if (player.isEliminated) {
         eliminatedCount++;
-        const isGoalie = player.position === 'G';
-        const stats = player.stats?.featuredStats?.playoffs?.subSeason;
-        if (stats) {
-          sunkPoints += isGoalie
-            ? (stats.wins * 2) + (stats.shutouts * 2) + (player.stats.otl || 0)
-            : stats.goals + stats.assists + stats.otGoals;
-        }
+        sunkPoints += player.points || 0;
       }
     });
 
@@ -440,8 +431,7 @@ export const calculateRosterDiversity = (rosters, eliminatedTeams) => {
 
     const uniqueTeams = new Set();
     allPlayers.forEach(player => {
-      const teamName = player.stats && player.stats.teamName;
-      if (teamName) uniqueTeams.add(teamName);
+      if (player.teamName) uniqueTeams.add(player.teamName);
     });
 
     const count = uniqueTeams.size;

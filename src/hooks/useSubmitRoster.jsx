@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
-// const submitRosterEndpoint = 'https://nhl-pools-api-efhcx3qyra-uc.a.run.app/v1/rosters/'
-const submitRosterEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`;
+const ROSTERS_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`;
 
 const useSubmitRoster = () => {
   const [loading, setLoading] = useState(false);
@@ -40,7 +39,7 @@ const useSubmitRoster = () => {
         }
       }
 
-      const res = await fetch(submitRosterEndpoint, {
+      const res = await fetch(ROSTERS_API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
+import { getSeasonId } from '../constants/seasons';
 
-const skaterStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playerStats`;
-const goalieStatsEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/nhl/goalieStats`;
+const STATS_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/stats`;
 
-const useRegularSeasonStats = (playoffTeams) => {
+const useRegularSeasonStats = (playoffTeams, season) => {
   const [skaterStats, setSkaterStats] = useState([]);
   const [goalieStats, setGoalieStats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,10 +13,13 @@ const useRegularSeasonStats = (playoffTeams) => {
       if (playoffTeams && playoffTeams.length > 0) {
         try {
           setLoading(true);
+          const seasonId = getSeasonId(season);
+          const skaterStatsUrl = `${STATS_PROXY_API_ENDPOINT}/skater/summary?limit=-1&sort=points&gameType=2&cayenneExp=seasonId=${seasonId}`;
+          const goalieStatsUrl = `${STATS_PROXY_API_ENDPOINT}/goalie/summary?limit=-1&sort=wins&gameType=2&cayenneExp=seasonId=${seasonId}`;
           // Fetch both in parallel using Promise.all()
           const [skaterRes, goalieRes] = await Promise.all([
-            fetch(skaterStatsEndpoint),
-            fetch(goalieStatsEndpoint)
+            fetch(skaterStatsUrl),
+            fetch(goalieStatsUrl)
           ]);
 
           const skaterJson = await skaterRes.json();
@@ -47,7 +50,7 @@ const useRegularSeasonStats = (playoffTeams) => {
       }
     };
     getStats();
-  }, [playoffTeams]);
+  }, [playoffTeams, season]);
 
   return {
     skaterStats: skaterStats,

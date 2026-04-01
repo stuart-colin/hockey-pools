@@ -44,14 +44,16 @@ import PoolOverview from './Insights.PoolOverview';
 import PlayerInsightTable from './Insights.PlayerInsightTable';
 import ThresholdControl from './Insights.ThresholdControl';
 import TeamCompositionPanel from './Insights.TeamCompositionPanel';
+import { useEliminatedTeamsContext } from '../../context/EliminatedTeamsContext';
 import '../../css/customStyle.css';
 import './Insights.Sections.css';
 
-const Insights = ({ users, players, season, eliminatedTeams, regularSeasonStats }) => {
+const Insights = ({ users, players, season, regularSeasonStats }) => {
   const [highThresh, setHighThresh] = useState(DEFAULT_HIGH_THRESHOLD);
   const [lowThresh, setLowThresh] = useState(DEFAULT_LOW_THRESHOLD);
   const [eggsExpanded, setEggsExpanded] = useState(false);
 
+  const { eliminatedTeams } = useEliminatedTeamsContext();
   const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
   const loading = users.loading || loadingUnselected;
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const scoreDetailsEndpointNHL = `${process.env.REACT_APP_BASE_URL}/v1/nhl/scores`;
+const SCORES_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/scores`;
 
 const fetchWithTimeout = async (url, timeoutMs = 10000) => {
   const controller = new AbortController();
@@ -33,8 +33,8 @@ const useScores = (dateOverride) => {
     const getScoreData = async () => {
       try {
         const url = dateOverride
-          ? `${scoreDetailsEndpointNHL}/${dateOverride}`
-          : scoreDetailsEndpointNHL;
+          ? `${SCORES_PROXY_API_ENDPOINT}/${dateOverride}`
+          : SCORES_PROXY_API_ENDPOINT;
         const res = await fetchWithTimeout(url);
         if (!res.ok) {
           throw new Error(`Score request failed (${res.status})`);

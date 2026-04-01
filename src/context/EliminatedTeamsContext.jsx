@@ -1,22 +1,28 @@
-import React, { createContext, useContext } from 'react';
-import useEliminatedTeams from '../hooks/useEliminatedTeams'; // Adjust path if needed
+import React, { createContext, useContext, useMemo } from 'react';
+import useEliminatedTeams from '../hooks/useEliminatedTeams';
 
-// 1. Create the context
+// DEV TESTING: Set to true + add team names to test elimination visuals before playoffs start
+const DEV_TEST_ELIMINATED = false;
+const DEV_TEST_TEAMS = ['Toronto Maple Leafs', 'Edmonton Oilers'];
+
 const EliminatedTeamsContext = createContext({
   eliminatedTeams: [],
   loading: true,
   error: null,
 });
 
-// 2. Create a custom hook for easy consumption
 export const useEliminatedTeamsContext = () => useContext(EliminatedTeamsContext);
 
-// 3. Create the Provider component
 export const EliminatedTeamsProvider = ({ season, children }) => {
   const { eliminatedTeams, loading, error } = useEliminatedTeams(season);
 
+  const mergedTeams = useMemo(() => {
+    if (!DEV_TEST_ELIMINATED) return eliminatedTeams;
+    return [...new Set([...eliminatedTeams, ...DEV_TEST_TEAMS])];
+  }, [eliminatedTeams]);
+
   return (
-    <EliminatedTeamsContext.Provider value={{ eliminatedTeams, loading, error }}>
+    <EliminatedTeamsContext.Provider value={{ eliminatedTeams: mergedTeams, loading, error }}>
       {children}
     </EliminatedTeamsContext.Provider>
   );

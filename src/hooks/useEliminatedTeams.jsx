@@ -11,13 +11,13 @@ const useEliminatedTeams = (season) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const endpoint = `https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api-web.nhle.com/v1/playoff-bracket/${season}`;
+    const PLAYOFF_BRACKET_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playoff-bracket/${season}`;
 
     const fetchBracketData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(endpoint);
+        const res = await fetch(PLAYOFF_BRACKET_PROXY_API_ENDPOINT);
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
