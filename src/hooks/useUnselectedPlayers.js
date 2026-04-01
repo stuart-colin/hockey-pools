@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { calculateSkaterPoints, calculateGoaliePoints } from '../utils/points';
 
-const STATS_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/stats`;
+const NHL_REST_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/rest`;
 
 const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
   const [unselectedPlayers, setUnselectedPlayers] = useState([]);
@@ -31,7 +31,7 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
     const fetchTeamData = async () => {
       try {
         // Fetch team data for mapping abbreviations to full names
-        const teamUrl = new URL(`${STATS_PROXY_API_ENDPOINT}/team`);
+        const teamUrl = new URL(`${NHL_REST_API_ENDPOINT}/stats/rest/en/team`);
 
         const response = await fetch(teamUrl.toString());
         if (cancelled) return;
@@ -81,11 +81,11 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
         let allApiPlayers = [];
 
         // Build URLs for parallel fetching
-        const goalieUrl = new URL(`${STATS_PROXY_API_ENDPOINT}/goalie/summary`);
+        const goalieUrl = new URL(`${NHL_REST_API_ENDPOINT}/stats/rest/en/goalie/summary`);
         goalieUrl.searchParams.append('limit', '-1');
         goalieUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
 
-        const skaterUrl = new URL(`${STATS_PROXY_API_ENDPOINT}/skater/summary`);
+        const skaterUrl = new URL(`${NHL_REST_API_ENDPOINT}/stats/rest/en/skater/summary`);
         skaterUrl.searchParams.append('limit', '-1');
         skaterUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
 
