@@ -17,13 +17,12 @@ import StandingsList from "./StandingsList";
 import TeamBuilder from "./TeamBuilder/TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
-import useEliminatedTeams from "../hooks/useEliminatedTeams";
 import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
 import useIsMobile from "../hooks/useIsMobile";
-import { EliminatedTeamsProvider } from "../context/EliminatedTeamsContext";
+import { EliminatedTeamsProvider, useEliminatedTeamsContext } from "../context/EliminatedTeamsContext";
 import getSeasonOrdinal from "../utils/getSeasonOrdinal";
 
 const currentYear = new Date().getFullYear().toString();
@@ -32,20 +31,19 @@ const alertMessage =
 // "Reminder: Standings in the app are refreshed roughly every hour, and depend on the NHL updating their data - expect a delay after a game ends to see changes in the standings. Goalie overtime losses are manually added since the NHL does not tally those in the playoffs, so you may see those tracked as soon as immediately after the game ends or later depending on when I am able to get to a computer. Please let us know if you see any discrepancies!";
 const rosterDataEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`
 
-const App = () => {
+const AppContent = ({ season, setSeason }) => {
   const [showSplash, setShowSplash] = useState(true);
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [activeItem, setActiveItem] = useState("");
-  const [season, setSeason] = useState(currentYear);
   const [beta, setBeta] = useState(true);
   const [showAlert, setShowAlert] = useState(true);
   const alertMessageHeading = `📢 Welcome to BP's ${getSeasonOrdinal(season)} Annual Hockey Pool!`;
 
+  const { eliminatedTeams, loading: eliminatedLoading } = useEliminatedTeamsContext();
   const playoffTeams = useStandings();
-  const regularSeasonStats = useRegularSeasonStats(playoffTeams);
-  const users = useUsers(season);
-  const { eliminatedTeams, loading: eliminatedLoading, error: eliminatedError } = useEliminatedTeams(season);
-  const players = usePlayerData(users, eliminatedTeams, eliminatedLoading);
+  const regularSeasonStats = useRegularSeasonStats(playoffTeams, season);
+  const users = useUsers(season, eliminatedTeams, eliminatedLoading);
+  const players = usePlayerData(users);
   const isMobile = useIsMobile();
 
   // Map activeItem to components
@@ -66,13 +64,11 @@ const App = () => {
         users={users}
         players={players}
         season={season}
-        eliminatedTeams={eliminatedTeams}
         regularSeasonStats={regularSeasonStats} />,
       "player-details": <PlayerDetails
         users={users}
         players={players}
         season={season}
-        eliminatedTeams={eliminatedTeams}
       />,
       "team-details": <TeamDetails
         users={users}
@@ -92,55 +88,53 @@ const App = () => {
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <div className={`app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
-          <EliminatedTeamsProvider season={season}>
-            <Scoreboard />
-            <div
+          <Scoreboard />
+          <div
+            style={{
+              paddingTop: "55px",
+            }}>
+            {!isMobile && <Header season={season} />}
+            {showAlert && (
+              <Alert
+                messageHeading={alertMessageHeading}
+                message={alertMessage}
+                onClose={() => setShowAlert(false)}
+              />
+            )}
+            <CountdownTimer />
+            <Grid
               style={{
-                paddingTop: "55px",
-              }}>
-              {!isMobile && <Header season={season} />}
-              {showAlert && (
-                <Alert
-                  messageHeading={alertMessageHeading}
-                  message={alertMessage}
-                  onClose={() => setShowAlert(false)}
-                />
-              )}
-              <CountdownTimer />
-              <Grid
-                style={{
-                  ...(isMobile && {
-                    position: 'fixed',
-                    left: -14,
-                    right: -14,
-                  })
-                }} stackable>
-                <Grid.Row>
-                  {!isMobile &&
-                    <Grid.Column width={4}>
-                      <StandingsList
-                        users={users}
-                        season={season}
-                      />
-                    </Grid.Column>
-                  }
-                  <Grid.Column width={12}>
-                    {!isMobile &&
-                      <Navigation
-                        onMenuSelect={setActiveItem}
-                        onSeasonSelect={setSeason}
-                        beta={beta}
-                      />
-                    }
-                    {renderContent()}
-                    {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
-                      <PlayerCreator regularSeasonStats={regularSeasonStats} />
-                    )}
+                ...(isMobile && {
+                  position: 'fixed',
+                  left: -14,
+                  right: -14,
+                })
+              }} stackable>
+              <Grid.Row>
+                {!isMobile &&
+                  <Grid.Column width={4}>
+                    <StandingsList
+                      users={users}
+                      season={season}
+                    />
                   </Grid.Column>
-                </Grid.Row>
-              </Grid>
-            </div>
-          </EliminatedTeamsProvider>
+                }
+                <Grid.Column width={12}>
+                  {!isMobile &&
+                    <Navigation
+                      onMenuSelect={setActiveItem}
+                      onSeasonSelect={setSeason}
+                      beta={beta}
+                    />
+                  }
+                  {renderContent()}
+                  {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
+                    <PlayerCreator regularSeasonStats={regularSeasonStats} />
+                  )}
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </div>
         </Fragment >
         {isMobile &&
           <Navigation
@@ -151,6 +145,19 @@ const App = () => {
         }
       </div >
     </>
+  );
+};
+
+const App = () => {
+  const [season, setSeason] = useState(currentYear);
+
+  return (
+    <EliminatedTeamsProvider season={season}>
+      <AppContent
+        season={season}
+        setSeason={setSeason}
+      />
+    </EliminatedTeamsProvider>
   );
 };
 

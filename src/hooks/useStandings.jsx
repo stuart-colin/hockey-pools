@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-const standingsEndpointNHL = `${process.env.REACT_APP_BASE_URL}/v1/nhl/standings`;
+const STANDINGS_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/standings`;
 
 const useStandings = () => {
   const [playoffTeams, setPlayoffTeams] = useState([]);
 
   useEffect(() => {
     const getStandingsData = async () => {
-      const res = await fetch(standingsEndpointNHL);
+      const res = await fetch(STANDINGS_PROXY_API_ENDPOINT);
       const data = await res.json();
       const teams = [];
       if (data && data.standings && Array.isArray(data.standings)) {

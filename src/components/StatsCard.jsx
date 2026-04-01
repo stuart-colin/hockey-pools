@@ -1,26 +1,22 @@
 import React from 'react';
-import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 import '../css/customStyle.css';
 
 const StatsCard = ({ player }) => {
-  const { eliminatedTeams, loading, error } = useEliminatedTeamsContext();
 
   let stats;
   let points;
   if (player.position === 'G') {
-    stats = [player.stats.featuredStats.playoffs.subSeason.wins, 'Wins', player.stats.featuredStats.playoffs.subSeason.shutouts, 'Shutouts', player.stats.otl, 'OT Losses'];
-    points = stats[0] * 2 + stats[2] * 2 + stats[4];
+    stats = [player.wins, 'Wins', player.shutouts, 'Shutouts', player.otl, 'OT Losses'];
+    points = player.points;
   } else {
-    stats = [player.stats.featuredStats.playoffs.subSeason.goals, 'Goals', player.stats.featuredStats.playoffs.subSeason.assists, 'Assists', player.stats.featuredStats.playoffs.subSeason.otGoals, 'OT Goals']
-    points = stats[0] + stats[2] + stats[4];
+    stats = [player.goals, 'Goals', player.assists, 'Assists', player.otGoals, 'OT Goals'];
+    points = player.points;
   }
 
-  const isEliminated = eliminatedTeams.includes(player.stats.teamName);
-
   return (
-    <div key={player.name} className={`ui blue card ${isEliminated ? 'eliminated' : ''}`} alt={`${player.stats.teamName} logo`}>
+    <div key={player.name} className={`ui blue card ${player.isEliminated ? 'eliminated' : ''}`} alt={`${player.teamName} logo`}>
       <div className='logoBox'>
-        <img className='teamLogo' src={player.stats.teamLogo} alt={`${player.stats.teamName} Logo`} />
+        <img className='teamLogo' src={player.teamLogo} alt={`${player.teamName} Logo`} />
       </div>
       <div className='content'>
         <div className='left floated meta'>
@@ -28,7 +24,7 @@ const StatsCard = ({ player }) => {
         </div>
         <div className='right floated meta'>{player.position}</div>
         <div className='sub header'>{player.name}</div>
-        {player.stats.teamName}
+        {player.teamName}
       </div>
       <div className='content'>
         <div className='ui two column relaxed stackable grid'>

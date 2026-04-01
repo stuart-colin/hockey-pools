@@ -29,3 +29,5 @@ yarn-error.log*
 # offline files
 AGENTS.md
 TODO.md
+PLAN-data-cleanup.md
+PLAN-live-stats.md

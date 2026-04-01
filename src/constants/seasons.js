@@ -32,4 +32,10 @@ const seasonList = [
   '2006',
 ];
 
+// Utility to generate NHL seasonId string (e.g. '20252026') from a year string (e.g. '2026')
+export function getSeasonId(year) {
+  const y = parseInt(year, 10);
+  return `${y - 1}${y}`;
+}
+
 export default { seasons, seasonList };

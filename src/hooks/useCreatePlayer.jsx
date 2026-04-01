@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const createPlayerEndpoint = `${process.env.REACT_APP_BASE_URL}/v1/players/cache`;
+const PLAYER_CACHE_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/players/cache`;
 
 const useCreatePlayer = () => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ const useCreatePlayer = () => {
     setError(null);
 
     try {
-      const res = await fetch(createPlayerEndpoint, {
+      const res = await fetch(PLAYER_CACHE_API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

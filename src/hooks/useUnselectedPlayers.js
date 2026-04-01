@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
+import { calculateSkaterPoints, calculateGoaliePoints } from '../utils/points';
 
-const NHL_API_BASE_URL = 'https://cs-cors-anywhere-b93c6060f143.herokuapp.com/https://api.nhle.com/stats/rest/en';
-// const NHL_API_BASE_URL = `${process.env.REACT_APP_BASE_URL}/v1/nhl/teams`;
+const STATS_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/stats`;
 
 const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
   const [unselectedPlayers, setUnselectedPlayers] = useState([]);
@@ -24,7 +24,7 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
     const fetchTeamData = async () => {
       try {
         // Fetch team data for mapping abbreviations to full names
-        const teamUrl = new URL(`${NHL_API_BASE_URL}/team`);
+        const teamUrl = new URL(`${STATS_PROXY_API_ENDPOINT}/team`);
 
         const response = await fetch(teamUrl.toString());
         if (cancelled) return;
@@ -75,11 +75,11 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
         let allApiPlayers = [];
 
         // Build URLs for parallel fetching
-        const goalieUrl = new URL(`${NHL_API_BASE_URL}/goalie/summary`);
+        const goalieUrl = new URL(`${STATS_PROXY_API_ENDPOINT}/goalie/summary`);
         goalieUrl.searchParams.append('limit', '-1');
         goalieUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
 
-        const skaterUrl = new URL(`${NHL_API_BASE_URL}/skater/summary`);
+        const skaterUrl = new URL(`${STATS_PROXY_API_ENDPOINT}/skater/summary`);
         skaterUrl.searchParams.append('limit', '-1');
         skaterUrl.searchParams.append('cayenneExp', `seasonId=${seasonId} and gameTypeId=3`);
 
@@ -99,7 +99,7 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
             const processedGoalies = goalieData.data
               .filter(apiGoalie => !selectedPlayerIds.has(apiGoalie.playerId.toString()))
               .map(apiGoalie => {
-                const points = (apiGoalie.wins * 2) + (apiGoalie.shutouts * 2) + (apiGoalie.otLosses || 0);
+                const points = calculateGoaliePoints(apiGoalie.wins, apiGoalie.shutouts, apiGoalie.otLosses);
                 const gamesPlayed = apiGoalie.gamesPlayed || 0;
                 const pointsPerGame = gamesPlayed > 0 ? points / gamesPlayed : 0;
                 const currentGoalieTeamAbbrev = apiGoalie.teamAbbrevs ? apiGoalie.teamAbbrevs.split(',').pop().trim() : 'UNKNOWN';
@@ -139,7 +139,7 @@ const useUnselectedPlayers = (selectedPlayers, season, eliminatedTeams) => {
               .filter(apiSkater => !selectedPlayerIds.has(apiSkater.playerId.toString()))
               .map(apiSkater => {
                 const teamAbbrev = apiSkater.teamAbbrevs ? apiSkater.teamAbbrevs.split(',').pop().trim() : 'UNKNOWN';
-                const points = (apiSkater.goals) + (apiSkater.assists) + (apiSkater.otGoals);
+                const points = calculateSkaterPoints(apiSkater.goals, apiSkater.assists, apiSkater.otGoals);
                 const gamesPlayed = apiSkater.gamesPlayed;
                 const pointsPerGame = gamesPlayed > 0 ? (points) / gamesPlayed : 0;
                 const headshotUrl = `https://assets.nhle.com/mugs/nhl/${seasonId}/${teamAbbrev}/${apiSkater.playerId}.png`;

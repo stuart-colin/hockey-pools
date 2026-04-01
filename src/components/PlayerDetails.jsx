@@ -14,9 +14,10 @@ import {
 } from 'semantic-ui-react';
 import { customSort } from '../utils/stats';
 import useUnselectedPlayers from '../hooks/useUnselectedPlayers';
+import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 import '../css/customStyle.css';
 
-const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
+const PlayerDetails = ({ users, players, season }) => {
   const [loading, setLoading] = useState(true);
   const [sortPlayerOption, setSortPlayerOption] = useState('Points');
   const [reverse, setReverse] = useState(false);
@@ -28,6 +29,7 @@ const PlayerDetails = ({ users, players, season, eliminatedTeams }) => {
   const [showEliminated, setShowEliminated] = useState(false);
   const [showUnselected, setShowUnselected] = useState(false);
 
+  const { eliminatedTeams } = useEliminatedTeamsContext();
   const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
 
   const allPlayoffPlayers = useMemo(() => {
