@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, Sidebar, Icon, Segment, Label } from 'semantic-ui-react';
+import { Checkbox, Menu, Sidebar, Icon, Segment, Label } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
 import useIsMobile from '../hooks/useIsMobile';
 import AuthButtons from './AuthButtons';
 
-const Navigation = ({ onMenuSelect }) => {
+const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('insights');
   const { isAuthenticated } = useAuth0();
@@ -50,7 +50,6 @@ const Navigation = ({ onMenuSelect }) => {
   return (
     <>
       {isMobile ? (
-        // Mobile Layout with Sidebar
         <>
           <Menu fixed='bottom'>
             <Menu.Item onClick={() => setSidebarVisible(!sidebarVisible)}>
@@ -84,9 +83,24 @@ const Navigation = ({ onMenuSelect }) => {
                 }}
               >
                 Team Builder
-                <Label color='red'>Beta</Label>
               </Menu.Item>
             )}
+            <Menu.Item>
+              <Checkbox
+                checked={liveStatsEnabled}
+                label='Live Stats'
+                onChange={onLiveStatsToggle}
+                size='small'
+                toggle
+              />
+              <Label
+                color='red'
+                size='mini'
+                style={{ marginLeft: '0.5em' }}
+              >
+                Beta
+              </Label>
+            </Menu.Item>
           </Sidebar>
           <Segment basic style={{ marginTop: '50px' }} />
         </>
@@ -102,9 +116,22 @@ const Navigation = ({ onMenuSelect }) => {
                 onClick={() => setActiveItem('team-builder')}
               >
                 Team Builder
-                <Label color='red'>Beta</Label>
               </Menu.Item>
             )}
+            <Menu.Item>
+              <Checkbox
+                checked={liveStatsEnabled}
+                label='Live Stats'
+                onChange={onLiveStatsToggle}
+                toggle
+              />
+              <Label
+                color='red'
+                size='mini'
+              >
+                Beta
+              </Label>
+            </Menu.Item>
             <Menu.Item>
               <AuthButtons />
             </Menu.Item>

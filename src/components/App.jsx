@@ -39,18 +39,29 @@ const AppContent = ({ season, setSeason }) => {
   const [showSplash, setShowSplash] = useState(true);
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [activeItem, setActiveItem] = useState("");
-  const [beta, setBeta] = useState(true);
+  const [liveStatsEnabled, setLiveStatsEnabled] = useState(
+    () => localStorage.getItem('liveStatsEnabled') !== 'false'
+  );
   const [showAlert, setShowAlert] = useState(true);
+
+  const toggleLiveStats = () => {
+    setLiveStatsEnabled(prev => {
+      const next = !prev;
+      localStorage.setItem('liveStatsEnabled', next);
+      return next;
+    });
+  };
   const alertMessageHeading = `📢 Welcome to BP's ${getSeasonOrdinal(season)} Annual Hockey Pool!`;
 
   const { eliminatedTeams, loading: eliminatedLoading } = useEliminatedTeamsContext();
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams, season);
   const users = useUsers(season, eliminatedTeams, eliminatedLoading);
-  const todayScores = useScores(DEV_TEST_SCORES_DATE);
-  const { boxscores } = useBoxscores(todayScores.games);
+  const todayScores = useScores(DEV_TEST_SCORES_DATE, { skip: !liveStatsEnabled });
+  const { boxscores } = useBoxscores(liveStatsEnabled ? todayScores.games : []);
   const { augmentedUsers, playerDeltas, hasLiveGames } = useLiveStats(todayScores.games, boxscores, users);
-  const players = usePlayerData(augmentedUsers);
+  const activeUsers = liveStatsEnabled ? augmentedUsers : users;
+  const players = usePlayerData(activeUsers);
   const isMobile = useIsMobile();
 
   // Map activeItem to components
@@ -59,9 +70,9 @@ const AppContent = ({ season, setSeason }) => {
       "commissioners-corner": <CommissionersCorner
         season={season} />,
       "standings": <StandingsList
-        hasLiveGames={hasLiveGames}
+        hasLiveGames={liveStatsEnabled && hasLiveGames}
         season={season}
-        users={augmentedUsers}
+        users={activeUsers}
       />,
       "my-team":
         <ParticipantRoster
@@ -73,17 +84,17 @@ const AppContent = ({ season, setSeason }) => {
         players={players}
         regularSeasonStats={regularSeasonStats}
         season={season}
-        users={augmentedUsers}
+        users={activeUsers}
       />,
       "player-details": <PlayerDetails
         players={players}
         season={season}
-        users={augmentedUsers}
+        users={activeUsers}
       />,
       "team-details": <TeamDetails
         players={players}
         season={season}
-        users={augmentedUsers}
+        users={activeUsers}
       />,
       "team-builder": <TeamBuilder
         regularSeasonStats={regularSeasonStats}
@@ -125,18 +136,19 @@ const AppContent = ({ season, setSeason }) => {
                 {!isMobile &&
                   <Grid.Column width={4}>
                     <StandingsList
-                      hasLiveGames={hasLiveGames}
+                      hasLiveGames={liveStatsEnabled && hasLiveGames}
                       season={season}
-                      users={augmentedUsers}
+                      users={activeUsers}
                     />
                   </Grid.Column>
                 }
                 <Grid.Column width={12}>
                   {!isMobile &&
                     <Navigation
+                      liveStatsEnabled={liveStatsEnabled}
+                      onLiveStatsToggle={toggleLiveStats}
                       onMenuSelect={setActiveItem}
                       onSeasonSelect={setSeason}
-                      beta={beta}
                     />
                   }
                   {renderContent()}
@@ -150,9 +162,10 @@ const AppContent = ({ season, setSeason }) => {
         </Fragment >
         {isMobile &&
           <Navigation
+            liveStatsEnabled={liveStatsEnabled}
+            onLiveStatsToggle={toggleLiveStats}
             onMenuSelect={setActiveItem}
             onSeasonSelect={setSeason}
-            beta={beta}
           />
         }
       </div >
