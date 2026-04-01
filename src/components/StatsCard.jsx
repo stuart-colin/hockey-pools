@@ -46,17 +46,17 @@ const StatsCard = ({ player }) => {
             <div className='ui divided items'>
               <div className='item'>
                 <div className='middle aligned content'>
-                  <b>{stats[0]}</b> {stats[1]} {renderDelta(delta?.goals || delta?.wins)}
+                  <b>{stats[0]}</b> {stats[1]} {player.position === 'G' ? renderDelta(delta?.wins) : renderDelta(delta?.goals)}
                 </div>
               </div>
               <div className='item'>
                 <div className='middle aligned content'>
-                  <b>{stats[2]}</b> {stats[3]} {renderDelta(delta?.assists || delta?.shutouts)}
+                  <b>{stats[2]}</b> {stats[3]} {player.position === 'G' ? renderDelta(delta?.shutouts) : renderDelta(delta?.assists)}
                 </div>
               </div>
               <div className='item'>
                 <div className='middle aligned content'>
-                  <b>{stats[4]}</b> {stats[5]} {renderDelta(delta?.otGoals)}
+                  <b>{stats[4]}</b> {stats[5]} {player.position === 'G' ? renderDelta(delta?.otl) : renderDelta(delta?.otGoals)}
                 </div>
               </div>
             </div>

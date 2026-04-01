@@ -17,6 +17,7 @@ import StandingsList from "./StandingsList";
 import TeamBuilder from "./TeamBuilder/TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
+import useBoxscores from "../hooks/useBoxscores";
 import useLiveStats from "../hooks/useLiveStats";
 import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
@@ -26,6 +27,7 @@ import useUsers from "../hooks/useUsers";
 import useIsMobile from "../hooks/useIsMobile";
 import { EliminatedTeamsProvider, useEliminatedTeamsContext } from "../context/EliminatedTeamsContext";
 import getSeasonOrdinal from "../utils/getSeasonOrdinal";
+import { DEV_TEST_SCORES_DATE } from "../constants/devConfig";
 
 const currentYear = new Date().getFullYear().toString();
 const alertMessage =
@@ -45,8 +47,9 @@ const AppContent = ({ season, setSeason }) => {
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams, season);
   const users = useUsers(season, eliminatedTeams, eliminatedLoading);
-  const todayScores = useScores();
-  const { augmentedUsers, playerDeltas, hasLiveGames } = useLiveStats(todayScores.games, users);
+  const todayScores = useScores(DEV_TEST_SCORES_DATE);
+  const { boxscores } = useBoxscores(todayScores.games);
+  const { augmentedUsers, playerDeltas, hasLiveGames } = useLiveStats(todayScores.games, boxscores, users);
   const players = usePlayerData(augmentedUsers);
   const isMobile = useIsMobile();
 

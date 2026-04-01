@@ -1,4 +1,4 @@
-import { calculateSkaterPoints } from './points';
+import { calculateSkaterPoints, calculateGoaliePoints } from './points';
 import countPoints from './countPoints';
 import { POSITION_ARRAYS } from '../constants/positions';
 
@@ -99,11 +99,22 @@ export const augmentRoster = (roster, playerDeltas) => {
     if (!player) return player;
     const delta = playerDeltas.get(player.id);
     if (!delta) return { ...player, _delta: null };
+    const isGoalie = player.position === 'G';
+    if (isGoalie) {
+      return {
+        ...player,
+        wins: (player.wins || 0) + (delta.wins || 0),
+        shutouts: (player.shutouts || 0) + (delta.shutouts || 0),
+        otl: (player.otl || 0) + (delta.otl || 0),
+        points: (player.points || 0) + delta.points,
+        _delta: { ...delta },
+      };
+    }
     return {
       ...player,
-      goals: (player.goals || 0) + delta.goals,
-      assists: (player.assists || 0) + delta.assists,
-      otGoals: (player.otGoals || 0) + delta.otGoals,
+      goals: (player.goals || 0) + (delta.goals || 0),
+      assists: (player.assists || 0) + (delta.assists || 0),
+      otGoals: (player.otGoals || 0) + (delta.otGoals || 0),
       points: (player.points || 0) + delta.points,
       _delta: { ...delta },
     };
@@ -125,11 +136,93 @@ export const augmentRoster = (roster, playerDeltas) => {
   return augmented;
 };
 
+/**
+ * Parse live goalie stats from NHL boxscore data and produce per-goalie stat deltas
+ * for pool participants only.
+ *
+ * @param {Array} boxscores - Array of boxscore objects from the NHL gamecenter API
+ * @param {Set<number>} poolPlayerIds - Set of nhl_ids for all players in the pool
+ * @returns {Map<number, object>} - Map of goalie nhl_id → { wins, shutouts, otl, points }
+ */
+export const parseLiveGoalieStats = (boxscores, poolPlayerIds) => {
+  const goalieDeltas = new Map();
+
+  if (!boxscores || !Array.isArray(boxscores) || !poolPlayerIds || poolPlayerIds.size === 0) {
+    return goalieDeltas;
+  }
+
+  for (const boxscore of boxscores) {
+    const gameState = boxscore.gameState;
+    // Only process completed or live games
+    if (gameState !== 'FINAL' && gameState !== 'OFF' && gameState !== 'LIVE') continue;
+
+    const lastPeriodType = boxscore.gameOutcome?.lastPeriodType; // 'REG', 'OT', 'SO'
+
+    const sides = ['homeTeam', 'awayTeam'];
+    for (const side of sides) {
+      const goalies = boxscore.playerByGameStats?.[side]?.goalies;
+      if (!Array.isArray(goalies)) continue;
+
+      for (const goalie of goalies) {
+        const goalieId = goalie.playerId;
+        if (!poolPlayerIds.has(goalieId)) continue;
+
+        // Only goalies with a decision have actionable stats
+        if (!goalie.decision) continue;
+
+        const delta = getOrCreateGoalieDelta(goalieDeltas, goalieId);
+
+        if (goalie.decision === 'W') {
+          delta.wins += 1;
+          // Shutout: must be starter AND 0 goals against
+          if (goalie.starter === true && goalie.goalsAgainst === 0) {
+            delta.shutouts += 1;
+          }
+        } else if (goalie.decision === 'L') {
+          // OTL: loss in OT or SO (not regulation)
+          if (lastPeriodType && lastPeriodType !== 'REG') {
+            delta.otl += 1;
+          }
+        }
+      }
+    }
+  }
+
+  // Calculate points for each goalie delta
+  for (const [, delta] of goalieDeltas) {
+    delta.points = calculateGoaliePoints(delta.wins, delta.shutouts, delta.otl);
+  }
+
+  return goalieDeltas;
+};
+
+/**
+ * Merge skater deltas and goalie deltas into a single playerDeltas Map.
+ *
+ * @param {Map<number, object>} skaterDeltas - From parseLivePlayerStats
+ * @param {Map<number, object>} goalieDeltas - From parseLiveGoalieStats
+ * @returns {Map<number, object>} - Combined delta map
+ */
+export const mergeLiveDeltas = (skaterDeltas, goalieDeltas) => {
+  const merged = new Map(skaterDeltas);
+  for (const [id, delta] of goalieDeltas) {
+    merged.set(id, delta);
+  }
+  return merged;
+};
+
 // --- Helpers ---
 
 const getOrCreateDelta = (map, playerId) => {
   if (!map.has(playerId)) {
-    map.set(playerId, { goals: 0, assists: 0, otGoals: 0, points: 0 });
+    map.set(playerId, { goals: 0, assists: 0, otGoals: 0, wins: 0, shutouts: 0, otl: 0, points: 0 });
+  }
+  return map.get(playerId);
+};
+
+const getOrCreateGoalieDelta = (map, playerId) => {
+  if (!map.has(playerId)) {
+    map.set(playerId, { wins: 0, shutouts: 0, otl: 0, points: 0 });
   }
   return map.get(playerId);
 };
