@@ -17,13 +17,17 @@ import StandingsList from "./StandingsList";
 import TeamBuilder from "./TeamBuilder/TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
+import useBoxscores from "../hooks/useBoxscores";
+import useLiveStats from "../hooks/useLiveStats";
 import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
+import useScores from "../hooks/useScores";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
 import useIsMobile from "../hooks/useIsMobile";
 import { EliminatedTeamsProvider, useEliminatedTeamsContext } from "../context/EliminatedTeamsContext";
 import getSeasonOrdinal from "../utils/getSeasonOrdinal";
+import { DEV_TEST_SCORES_DATE } from "../constants/devConfig";
 
 const currentYear = new Date().getFullYear().toString();
 const alertMessage =
@@ -35,15 +39,29 @@ const AppContent = ({ season, setSeason }) => {
   const [showSplash, setShowSplash] = useState(true);
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [activeItem, setActiveItem] = useState("");
-  const [beta, setBeta] = useState(true);
+  const [liveStatsEnabled, setLiveStatsEnabled] = useState(
+    () => localStorage.getItem('liveStatsEnabled') !== 'false'
+  );
   const [showAlert, setShowAlert] = useState(true);
+
+  const toggleLiveStats = () => {
+    setLiveStatsEnabled(prev => {
+      const next = !prev;
+      localStorage.setItem('liveStatsEnabled', next);
+      return next;
+    });
+  };
   const alertMessageHeading = `📢 Welcome to BP's ${getSeasonOrdinal(season)} Annual Hockey Pool!`;
 
   const { eliminatedTeams, loading: eliminatedLoading } = useEliminatedTeamsContext();
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams, season);
   const users = useUsers(season, eliminatedTeams, eliminatedLoading);
-  const players = usePlayerData(users);
+  const todayScores = useScores(DEV_TEST_SCORES_DATE, { skip: !liveStatsEnabled });
+  const { boxscores } = useBoxscores(liveStatsEnabled ? todayScores.games : []);
+  const { augmentedUsers, playerDeltas, hasLiveGames } = useLiveStats(todayScores.games, boxscores, users);
+  const activeUsers = liveStatsEnabled ? augmentedUsers : users;
+  const players = usePlayerData(activeUsers);
   const isMobile = useIsMobile();
 
   // Map activeItem to components
@@ -52,28 +70,32 @@ const AppContent = ({ season, setSeason }) => {
       "commissioners-corner": <CommissionersCorner
         season={season} />,
       "standings": <StandingsList
-        users={users}
+        hasLiveGames={liveStatsEnabled && hasLiveGames}
         season={season}
+        users={activeUsers}
       />,
       "my-team":
         <ParticipantRoster
+          playerDeltas={playerDeltas}
           rosterDataEndpoint={rosterDataEndpoint}
         />
       ,
       "insights": <Insights
-        users={users}
         players={players}
+        regularSeasonStats={regularSeasonStats}
         season={season}
-        regularSeasonStats={regularSeasonStats} />,
+        users={activeUsers}
+      />,
       "player-details": <PlayerDetails
-        users={users}
         players={players}
         season={season}
+        users={activeUsers}
       />,
       "team-details": <TeamDetails
-        users={users}
         players={players}
-        season={season} />,
+        season={season}
+        users={activeUsers}
+      />,
       "team-builder": <TeamBuilder
         regularSeasonStats={regularSeasonStats}
         rosterDataEndpoint={rosterDataEndpoint}
@@ -88,7 +110,7 @@ const AppContent = ({ season, setSeason }) => {
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <div className={`app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
-          <Scoreboard />
+          <Scoreboard todayScores={todayScores} />
           <div
             style={{
               paddingTop: "55px",
@@ -114,17 +136,19 @@ const AppContent = ({ season, setSeason }) => {
                 {!isMobile &&
                   <Grid.Column width={4}>
                     <StandingsList
-                      users={users}
+                      hasLiveGames={liveStatsEnabled && hasLiveGames}
                       season={season}
+                      users={activeUsers}
                     />
                   </Grid.Column>
                 }
                 <Grid.Column width={12}>
                   {!isMobile &&
                     <Navigation
+                      liveStatsEnabled={liveStatsEnabled}
+                      onLiveStatsToggle={toggleLiveStats}
                       onMenuSelect={setActiveItem}
                       onSeasonSelect={setSeason}
-                      beta={beta}
                     />
                   }
                   {renderContent()}
@@ -138,9 +162,10 @@ const AppContent = ({ season, setSeason }) => {
         </Fragment >
         {isMobile &&
           <Navigation
+            liveStatsEnabled={liveStatsEnabled}
+            onLiveStatsToggle={toggleLiveStats}
             onMenuSelect={setActiveItem}
             onSeasonSelect={setSeason}
-            beta={beta}
           />
         }
       </div >

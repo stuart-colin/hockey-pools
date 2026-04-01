@@ -16,7 +16,9 @@ const RosterView = ({ user }) => {
   const rosterPlayers = roster.map((player, index) => {
     return (
       <div key={index} style={{ padding: '3px' }}>
-        <StatsSlim player={player} />
+        <StatsSlim
+          player={player}
+        />
       </div>
     )
   })

@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import useEliminatedTeams from '../hooks/useEliminatedTeams';
-
-// DEV TESTING: Set to true + add team names to test elimination visuals before playoffs start
-const DEV_TEST_ELIMINATED = false;
-const DEV_TEST_TEAMS = ['Toronto Maple Leafs', 'Edmonton Oilers'];
+import { DEV_TEST_ELIMINATED, DEV_ELIMINATED_TEAMS } from '../constants/devConfig';
 
 const EliminatedTeamsContext = createContext({
   eliminatedTeams: [],
@@ -18,7 +15,7 @@ export const EliminatedTeamsProvider = ({ season, children }) => {
 
   const mergedTeams = useMemo(() => {
     if (!DEV_TEST_ELIMINATED) return eliminatedTeams;
-    return [...new Set([...eliminatedTeams, ...DEV_TEST_TEAMS])];
+    return [...new Set([...eliminatedTeams, ...DEV_ELIMINATED_TEAMS])];
   }, [eliminatedTeams]);
 
   return (

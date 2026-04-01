@@ -8,8 +8,8 @@ const SplashScreen = ({ onComplete }) => {
     // Fade out after 2 seconds
     const timer = setTimeout(() => {
       setVisible(false);
-      setTimeout(onComplete, 250); // Wait for fade-out animation to complete
-    }, 250);
+      setTimeout(onComplete, 500); // Wait for fade-out animation to complete
+    }, 500);
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, [onComplete]);

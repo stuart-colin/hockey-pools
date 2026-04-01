@@ -48,7 +48,7 @@ const getAvatarSvg = (name) => {
 const top10Colors = ['#66b36650', '#66b36650', '#73b97250', '#7fbf7e50', '#8bc58a50', '#97cb9650', '#afd7af50', '#bbddbb50', '#c7e3c750', '#d3e9d350'];
 
 
-const StandingsItem = React.forwardRef(({ user, poolSize, isRosterVisible, onToggleRoster }, ref) => {
+const StandingsItem = React.forwardRef(({ hasLiveGames, isRosterVisible, onToggleRoster, poolSize, user }, ref) => {
 
   // const pot = poolSize * 20;
   // const prizeDistribution = [0.49, 0.15, 0.10, 0.08, 0.07, 0.04, 0.03, 0.02, 0.01, 0.01];
@@ -83,6 +83,18 @@ const StandingsItem = React.forwardRef(({ user, poolSize, isRosterVisible, onTog
         <List.Content floated='right' verticalAlign='middle'>
           <span style={{ paddingRight: '1em' }}>
             {user.points} Points
+            {user.livePoints > 0 && (
+              <span
+                style={{
+                  color: '#21ba45',
+                  fontWeight: 'bold',
+                  marginLeft: '0.4em',
+                  fontSize: '0.9em',
+                }}
+              >
+                {`(+${user.livePoints})`}
+              </span>
+            )}
           </span>
           <Icon
             circular
@@ -92,7 +104,9 @@ const StandingsItem = React.forwardRef(({ user, poolSize, isRosterVisible, onTog
         </List.Content>
         <Transition visible={isRosterVisible} animation='fade' duration={250} unmountOnHide>
           <div style={{ flexBasis: '100%', width: '100%', paddingTop: '10px' }}>
-            <RosterView user={user} />
+            <RosterView
+              user={user}
+            />
           </div>
         </Transition>
       </List.Item>

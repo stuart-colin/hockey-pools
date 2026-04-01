@@ -14,7 +14,7 @@ const formatDateParam = (date) => {
 
 const isFinished = (game) => game.gameState === 'OFF' || game.gameState === 'FINAL';
 
-const Scoreboard = () => {
+const Scoreboard = ({ todayScores }) => {
   const [dateOffset, setDateOffset] = useState(0);
 
   const dateParam = useMemo(() => {
@@ -24,7 +24,9 @@ const Scoreboard = () => {
     return formatDateParam(d);
   }, [dateOffset]);
 
-  const scoreboard = useScores(dateParam);
+  // Only fetch independently when viewing a different date; reuse App's today fetch otherwise
+  const otherDateScores = useScores(dateParam, { skip: dateOffset === 0 });
+  const scoreboard = dateOffset === 0 ? todayScores : otherDateScores;
   const isMobile = useIsMobile();
 
   const sortedGames = useMemo(() => {

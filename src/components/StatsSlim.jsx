@@ -3,6 +3,20 @@ import '../css/customStyle.css';
 
 const StatsSlim = ({ player }) => {
 
+  const delta = player._delta;
+
+  const deltaStyle = {
+    color: '#21ba45',
+    fontWeight: 'bold',
+    fontSize: '0.85em',
+    marginLeft: '2px',
+  };
+
+  const renderDelta = (value) => {
+    if (!value || value <= 0) return null;
+    return <span style={deltaStyle}>+{value}</span>;
+  };
+
   let stats;
   if (player.position === 'G') {
     stats = [player.wins, 'W', player.shutouts, 'SO', player.otl, 'OTL'];
@@ -25,7 +39,11 @@ const StatsSlim = ({ player }) => {
             <div className="sub header">{player.name}</div>
             <div className="meta">{player.teamName}</div>
             <div className="description">
-              <b>{stats[0]}</b> {stats[1]} | <b>{stats[2]}</b> {stats[3]} | <b>{stats[4]}</b> {stats[5]} | <b>{player.points}</b> Pool Points
+              {player.position === 'G' ? (
+                <><b>{stats[0]}{renderDelta(delta?.wins)}</b> {stats[1]} | <b>{stats[2]}{renderDelta(delta?.shutouts)}</b> {stats[3]} | <b>{stats[4]}{renderDelta(delta?.otl)}</b> {stats[5]} | <b>{player.points}{renderDelta(delta?.points)}</b> Pool Points</>
+              ) : (
+                <><b>{stats[0]}{renderDelta(delta?.goals)}</b> {stats[1]} | <b>{stats[2]}{renderDelta(delta?.assists)}</b> {stats[3]} | <b>{stats[4]}{renderDelta(delta?.otGoals)}</b> {stats[5]} | <b>{player.points}{renderDelta(delta?.points)}</b> Pool Points</>
+              )}
             </div>
           </div>
         </div>

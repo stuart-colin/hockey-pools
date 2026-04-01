@@ -10,14 +10,15 @@ const useEliminatedTeams = (season) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const NHL_WEB_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/web`;
+
   useEffect(() => {
-    const PLAYOFF_BRACKET_PROXY_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/playoff-bracket/${season}`;
 
     const fetchBracketData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(PLAYOFF_BRACKET_PROXY_API_ENDPOINT);
+        const res = await fetch(`${NHL_WEB_API_ENDPOINT}/playoff-bracket/${season}`);
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }

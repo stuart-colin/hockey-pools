@@ -50,6 +50,7 @@ const usePlayerData = (users) => {
             pickCount: 1,
             pointsPerGame,
             isEliminated: player.isEliminated,
+            _delta: player._delta || null,
           });
         } else {
           playerMap.get(player.name).pickCount += 1;
