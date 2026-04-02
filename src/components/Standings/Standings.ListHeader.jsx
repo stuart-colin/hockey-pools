@@ -1,43 +1,49 @@
 import React from 'react';
 import { Flag, Grid, Header, Icon, Popup } from 'semantic-ui-react';
 
-const StandingsListHeader = ({ hasLiveGames, moversMode, onMoversToggle, pot, season }) => {
+const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot, season }) => {
   const getHeaderTitle = () => {
     if (moversMode === 'points') return "Today's Movers";
     if (moversMode === 'rank') return 'Biggest Climbers';
     return `${season} Standings`;
   };
 
-  const getMoversTooltip = () => {
-    if (moversMode === 'standings') return "Sort by today's point gains";
-    if (moversMode === 'points') return 'Sort by rank movement';
-    return 'Switch to regular standings';
-  };
+  const moverModes = [
+    { mode: 'standings', icon: 'list ol', color: 'blue', tooltip: 'Sort by overall standings' },
+    { mode: 'points', icon: 'lightning', color: 'green', tooltip: "Sort by today's point gains" },
+    { mode: 'rank', icon: 'chart line', color: 'yellow', tooltip: "Sort by today's rank movement" },
+  ];
 
   return (
-    <Grid textAlign="center">
+    <Grid>
       <Grid.Row columns={3}>
         <Grid.Column
-          textAlign="left"
-          verticalAlign="middle"
-          width={2}
+          textAlign='left'
+          width={3}
         >
-          <Popup
-            content={getMoversTooltip()}
-            position='right center'
-            trigger={
-              <Icon
-                color={moversMode === 'standings' ? 'grey' : moversMode === 'points' ? 'green' : 'yellow'}
-                name="lightning"
-                onClick={onMoversToggle}
-                style={{ cursor: 'pointer' }}
-              />
-            }
-          />
+          {liveStatsEnabled && (
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {moverModes.map(({ mode, icon, color, tooltip }) => (
+                <Popup
+                  content={tooltip}
+                  key={mode}
+                  position="right center"
+                  trigger={
+                    <Icon
+                      color={moversMode === mode ? color : 'grey'}
+                      name={icon}
+                      onClick={() => onMoversToggle(mode)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  }
+                />
+              ))}
+            </div>
+          )}
         </Grid.Column>
         <Grid.Column
-          textAlign="center"
-          width={12}
+          textAlign='center'
+          width={10}
         >
           <Header
             color="blue"
@@ -47,7 +53,9 @@ const StandingsListHeader = ({ hasLiveGames, moversMode, onMoversToggle, pot, se
             {getHeaderTitle()}
           </Header>
         </Grid.Column>
-        <Grid.Column width={2}>
+        <Grid.Column
+          textAlign='right'
+          width={3}>
           <Popup
             content={
               <div>

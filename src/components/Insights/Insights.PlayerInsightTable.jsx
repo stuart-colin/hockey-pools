@@ -77,7 +77,7 @@ const PlayerInsightTable = ({
                   <Table.Cell collapsing>
                     <div
                       style={{
-                        height: isMobile ? '33px' : '44px',
+                        height: isMobile ? '32px' : '44px',
                         marginLeft: -75,
                         marginTop: isMobile ? -5 : -9,
                         position: 'absolute',
@@ -100,6 +100,10 @@ const PlayerInsightTable = ({
                       alt={player.name}
                       avatar
                       src={player.headshot}
+                      style={{
+                        filter: player.isEliminated ? 'grayscale(1)' : 'none',
+                        opacity: player.isEliminated ? 0.5 : 1,
+                      }}
                     />
                     {player.name}
                   </Table.Cell>
