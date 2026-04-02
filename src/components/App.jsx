@@ -100,6 +100,7 @@ const AppContent = ({ season, setSeason }) => {
         regularSeasonStats={regularSeasonStats}
         rosterDataEndpoint={rosterDataEndpoint}
       />,
+      "admin": <PlayerCreator regularSeasonStats={regularSeasonStats} />,
     };
 
     return components[activeItem] || null;
@@ -152,9 +153,6 @@ const AppContent = ({ season, setSeason }) => {
                     />
                   }
                   {renderContent()}
-                  {isAuthenticated && user.email === "stuart.colin@gmail.com" && (
-                    <PlayerCreator regularSeasonStats={regularSeasonStats} />
-                  )}
                 </Grid.Column>
               </Grid.Row>
             </Grid>
