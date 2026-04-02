@@ -48,7 +48,7 @@ const getAvatarSvg = (name) => {
 const top10Colors = ['#66b36650', '#66b36650', '#73b97250', '#7fbf7e50', '#8bc58a50', '#97cb9650', '#afd7af50', '#bbddbb50', '#c7e3c750', '#d3e9d350'];
 
 
-const StandingsItem = React.forwardRef(({ hasLiveGames, isRosterVisible, onToggleRoster, poolSize, user }, ref) => {
+const StandingsItem = React.forwardRef(({ hasLiveGames, isRosterVisible, onToggleRoster, poolSize, rankDelta, user }, ref) => {
 
   // const pot = poolSize * 20;
   // const prizeDistribution = [0.49, 0.15, 0.10, 0.08, 0.07, 0.04, 0.03, 0.02, 0.01, 0.01];
@@ -60,8 +60,28 @@ const StandingsItem = React.forwardRef(({ hasLiveGames, isRosterVisible, onToggl
     <Fragment>
       <div ref={ref} />
       <List.Item style={{ backgroundColor }} onClick={onToggleRoster} >
-        <List.Content floated='left' verticalAlign='middle'>
+        <List.Content floated='left' verticalAlign='middle' style={{ minWidth: '2.5em' }}>
           {user.rank}
+          {rankDelta > 0 && (
+            <span style={{ color: 'green', fontSize: '0.75em', whiteSpace: 'nowrap' }}>
+              <Icon
+                color='green'
+                name='caret up'
+                style={{ marginLeft: '0.25em', marginRight: '0em' }}
+              />
+              {rankDelta}
+            </span>
+          )}
+          {rankDelta < 0 && (
+            <span style={{ color: 'red', fontSize: '0.75em', whiteSpace: 'nowrap' }}>
+              <Icon
+                color='red'
+                name='caret down'
+                style={{ marginLeft: '0.25em', marginRight: '0em' }}
+              />
+              {Math.abs(rankDelta)}
+            </span>
+          )}
         </List.Content>
         <Image avatar src={getAvatarSvg(user.owner.name)} alt='participant avatar' verticalAlign='middle' style={{ width: '2.5em', height: '2.5em' }} />
         {' '}
