@@ -5,11 +5,11 @@ import { Grid } from "semantic-ui-react";
 import Alert from "./Alert";
 import CommissionersCorner from "./CommissionersCorner";
 import CountdownTimer from "./CountdownTimer";
+import DevTools from "./DevTools";
 import Header from "./Header";
 import Insights from "./Insights";
 import Navigation from "./Navigation";
 import ParticipantRoster from "./ParticipantRoster";
-import PlayerCreator from "./PlayerCreator";
 import PlayerDetails from "./PlayerDetails";
 import Scoreboard from "./Scoreboard";
 import SplashScreen from "./SplashScreen";
@@ -26,8 +26,8 @@ import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
 import useIsMobile from "../hooks/useIsMobile";
 import { EliminatedTeamsProvider, useEliminatedTeamsContext } from "../context/EliminatedTeamsContext";
+import { DevToolsProvider, useDevTools } from "../context/DevToolsContext";
 import getSeasonOrdinal from "../utils/getSeasonOrdinal";
-import { DEV_TEST_SCORES_DATE } from "../constants/devConfig";
 
 const currentYear = new Date().getFullYear().toString();
 const alertMessage =
@@ -53,11 +53,12 @@ const AppContent = ({ season, setSeason }) => {
   };
   const alertMessageHeading = `📢 Welcome to BP's ${getSeasonOrdinal(season)} Annual Hockey Pool!`;
 
+  const { devTools } = useDevTools();
   const { eliminatedTeams, loading: eliminatedLoading } = useEliminatedTeamsContext();
   const playoffTeams = useStandings();
   const regularSeasonStats = useRegularSeasonStats(playoffTeams, season);
   const users = useUsers(season, eliminatedTeams, eliminatedLoading);
-  const todayScores = useScores(DEV_TEST_SCORES_DATE, { skip: !liveStatsEnabled });
+  const todayScores = useScores(devTools.testScoresDate, { skip: !liveStatsEnabled });
   const { boxscores } = useBoxscores(liveStatsEnabled ? todayScores.games : []);
   const { augmentedUsers, playerDeltas, hasLiveGames } = useLiveStats(todayScores.games, boxscores, users);
   const activeUsers = liveStatsEnabled ? augmentedUsers : users;
@@ -70,7 +71,7 @@ const AppContent = ({ season, setSeason }) => {
       "commissioners-corner": <CommissionersCorner
         season={season} />,
       "standings": <Standings
-        hasLiveGames={liveStatsEnabled && hasLiveGames}
+        liveStatsEnabled={liveStatsEnabled}
         season={season}
         users={activeUsers}
       />,
@@ -100,7 +101,7 @@ const AppContent = ({ season, setSeason }) => {
         regularSeasonStats={regularSeasonStats}
         rosterDataEndpoint={rosterDataEndpoint}
       />,
-      "admin": <PlayerCreator regularSeasonStats={regularSeasonStats} />,
+      "admin": <DevTools regularSeasonStats={regularSeasonStats} />,
     };
 
     return components[activeItem] || null;
@@ -137,7 +138,7 @@ const AppContent = ({ season, setSeason }) => {
                 {!isMobile &&
                   <Grid.Column width={4}>
                     <Standings
-                      hasLiveGames={liveStatsEnabled && hasLiveGames}
+                      liveStatsEnabled={liveStatsEnabled}
                       season={season}
                       users={activeUsers}
                     />
@@ -175,12 +176,14 @@ const App = () => {
   const [season, setSeason] = useState(currentYear);
 
   return (
-    <EliminatedTeamsProvider season={season}>
-      <AppContent
-        season={season}
-        setSeason={setSeason}
-      />
-    </EliminatedTeamsProvider>
+    <DevToolsProvider>
+      <EliminatedTeamsProvider season={season}>
+        <AppContent
+          season={season}
+          setSeason={setSeason}
+        />
+      </EliminatedTeamsProvider>
+    </DevToolsProvider>
   );
 };
 

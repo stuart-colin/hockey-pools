@@ -12,7 +12,7 @@ import StandingsListHeader from './Standings.ListHeader';
 import '../../css/customStyle.css';
 import useIsMobile from '../../hooks/useIsMobile';
 
-const Standings = ({ hasLiveGames, season, users }) => {
+const Standings = ({ liveStatsEnabled, season, users }) => {
   const [loading, setLoading] = useState(true);
   const [activeRosterKey, setActiveRosterKey] = useState(null);
   const [moversMode, setMoversMode] = useState('standings'); // 'standings' | 'points' | 'rank'
@@ -21,7 +21,7 @@ const Standings = ({ hasLiveGames, season, users }) => {
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
-  }, [users]);
+  }, [users.loading]);
 
   const rankedRosters = useMemo(() => {
     if (!users.rosters || users.rosters.length === 0) {
@@ -122,15 +122,12 @@ const Standings = ({ hasLiveGames, season, users }) => {
     });
   };
 
-  const handleMoversToggle = () => {
-    setMoversMode((m) =>
-      m === 'standings' ? 'points' : m === 'points' ? 'rank' : 'standings'
-    );
+  const handleMoversToggle = (mode) => {
+    setMoversMode(mode);
   };
 
   const standingsList = displayedRosters.map((user) => (
     <StandingsItem
-      hasLiveGames={hasLiveGames}
       isRosterVisible={activeRosterKey === user.owner.id}
       key={user.owner.id}
       onToggleRoster={() => handleToggleRoster(user.owner.id)}
@@ -145,7 +142,7 @@ const Standings = ({ hasLiveGames, season, users }) => {
     <Segment.Group>
       <Segment attached="top">
         <StandingsListHeader
-          hasLiveGames={hasLiveGames}
+          liveStatsEnabled={liveStatsEnabled}
           moversMode={moversMode}
           onMoversToggle={handleMoversToggle}
           pot={pot}

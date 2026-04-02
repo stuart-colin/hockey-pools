@@ -84,7 +84,7 @@ const useBoxscores = (games, { skip = false } = {}) => {
     return () => {
       isMounted = false;
     };
-  }, [games, skip]);
+  }, [games?.length, skip]);
 
   return { boxscores };
 };
