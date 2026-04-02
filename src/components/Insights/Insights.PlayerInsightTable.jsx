@@ -88,9 +88,10 @@ const PlayerInsightTable = ({
                         size='large'
                         src={player.teamLogo}
                         style={{
-                          opacity: 0.05,
+                          opacity: 0.1,
                           height: '100%',
                           objectFit: 'cover',
+                          filter: player.isEliminated ? 'grayscale(1)' : 'none',
                           // filter: 'blur(2px)'
                         }}
                       />

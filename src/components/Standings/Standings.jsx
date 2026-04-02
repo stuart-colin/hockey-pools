@@ -1,25 +1,23 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimmer,
-  Flag,
-  Grid,
-  Header,
-  Icon,
   List,
   Loader,
-  Popup,
   Segment,
 } from 'semantic-ui-react';
-import { POSITION_ARRAYS } from '../constants/positions';
-import Search from './Search';
-import StandingsItem from './StandingsItem';
-import '../css/customStyle.css';
+import { POSITION_ARRAYS } from '../../constants/positions';
+import Search from '../Search';
+import StandingsItem from './Standings.Item';
+import StandingsListHeader from './Standings.ListHeader';
+import '../../css/customStyle.css';
+import useIsMobile from '../../hooks/useIsMobile';
 
-const StandingsList = ({ hasLiveGames, season, users }) => {
+const Standings = ({ hasLiveGames, season, users }) => {
   const [loading, setLoading] = useState(true);
   const [activeRosterKey, setActiveRosterKey] = useState(null);
   const [moversMode, setMoversMode] = useState('standings'); // 'standings' | 'points' | 'rank'
   const itemRefs = useRef({});
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -31,9 +29,9 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
     }
 
     // Derive live points from _delta fields (already baked into player.points)
-    const withLivePoints = users.rosters.map(roster => {
+    const withLivePoints = users.rosters.map((roster) => {
       const livePoints = [
-        ...POSITION_ARRAYS.flatMap(pos => roster[pos] || []),
+        ...POSITION_ARRAYS.flatMap((pos) => roster[pos] || []),
         ...(roster.utility ? [roster.utility] : []),
       ].reduce((sum, p) => sum + (p?._delta?.points || 0), 0);
       return { ...roster, livePoints };
@@ -49,14 +47,16 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
         currentRank += stack;
         stack = 1;
       } else {
-        stack++;
+        stack += 1;
       }
       lastPoints = roster.points;
       return { ...roster, rank: currentRank };
     });
 
     // Base rank by points excluding today's live contribution
-    const baseSorted = [...withLivePoints].sort((a, b) => (b.points - b.livePoints) - (a.points - a.livePoints));
+    const baseSorted = [...withLivePoints].sort(
+      (a, b) => (b.points - b.livePoints) - (a.points - a.livePoints)
+    );
     let baseRank = 0;
     let baseStack = 1;
     let lastBasePoints = -Infinity;
@@ -67,21 +67,25 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
         baseRank += baseStack;
         baseStack = 1;
       } else {
-        baseStack++;
+        baseStack += 1;
       }
       lastBasePoints = basePoints;
       baseRankMap[roster.owner.id] = baseRank;
     });
 
-    return withRank.map(roster => ({
+    return withRank.map((roster) => ({
       ...roster,
       rankDelta: roster.livePoints > 0 ? baseRankMap[roster.owner.id] - roster.rank : 0,
     }));
   }, [users.rosters]);
 
   const displayedRosters = useMemo(() => {
-    if (moversMode === 'points') return [...rankedRosters].sort((a, b) => b.livePoints - a.livePoints);
-    if (moversMode === 'rank') return [...rankedRosters].sort((a, b) => b.rankDelta - a.rankDelta);
+    if (moversMode === 'points') {
+      return [...rankedRosters].sort((a, b) => b.livePoints - a.livePoints);
+    }
+    if (moversMode === 'rank') {
+      return [...rankedRosters].sort((a, b) => b.rankDelta - a.rankDelta);
+    }
     return rankedRosters;
   }, [rankedRosters, moversMode]);
 
@@ -89,7 +93,7 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
 
   useEffect(() => {
     const newRefs = {};
-    rankedRosters.forEach(roster => {
+    rankedRosters.forEach((roster) => {
       if (roster.owner?.id) {
         // Preserve existing refs to prevent recreating DOM nodes
         if (itemRefs.current[roster.owner.id]) {
@@ -103,7 +107,7 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
   }, [rankedRosters]);
 
   const handleToggleRoster = (itemKey) => {
-    setActiveRosterKey(prevKey => (prevKey === itemKey ? null : itemKey));
+    setActiveRosterKey((prevKey) => (prevKey === itemKey ? null : itemKey));
   };
 
   const handleSearchSelect = (userId) => {
@@ -118,7 +122,13 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
     });
   };
 
-  const standingsList = displayedRosters.map((user, index) => (
+  const handleMoversToggle = () => {
+    setMoversMode((m) =>
+      m === 'standings' ? 'points' : m === 'points' ? 'rank' : 'standings'
+    );
+  };
+
+  const standingsList = displayedRosters.map((user) => (
     <StandingsItem
       hasLiveGames={hasLiveGames}
       isRosterVisible={activeRosterKey === user.owner.id}
@@ -133,78 +143,43 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
 
   return (
     <Segment.Group>
-      <Segment attached='top' >
-        <Grid textAlign='center'>
-          <Grid.Row columns={3}>
-            <Grid.Column textAlign='left' verticalAlign='middle' width={2}>
-              {/* {hasLiveGames && ( */}
-              <Popup
-                content={
-                  moversMode === 'standings' ? "Sort by today's point gains" :
-                    moversMode === 'points' ? 'Sort by rank movement' :
-                      'Switch to regular standings'
-                }
-                trigger={
-                  <Icon
-                    color={moversMode === 'standings' ? 'grey' : moversMode === 'points' ? 'green' : 'yellow'}
-                    name='lightning'
-                    onClick={() => setMoversMode(m =>
-                      m === 'standings' ? 'points' :
-                        m === 'points' ? 'rank' :
-                          'standings'
-                    )}
-                    style={{ cursor: 'pointer' }}
-                  />
-                }
-              />
-              {/* )} */}
-            </Grid.Column>
-            <Grid.Column textAlign='center' width={12}>
-              <Header color='blue' size='medium' style={{ whiteSpace: 'nowrap' }}>
-                {moversMode === 'points' ? "Today's Movers" :
-                  moversMode === 'rank' ? "Biggest Climbers" :
-                    `${season} Standings`}
-              </Header>
-            </Grid.Column>
-            <Grid.Column width={2}>
-              <Popup
-                content={
-                  <div>
-                    Pot: ${pot} <Flag name='canada' />
-                  </div>
-                }
-                trigger={
-                  <Icon
-                    name='dollar sign'
-                    color='green'
-                  />
-                }
-              />
-
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+      <Segment attached="top">
+        <StandingsListHeader
+          hasLiveGames={hasLiveGames}
+          moversMode={moversMode}
+          onMoversToggle={handleMoversToggle}
+          pot={pot}
+          season={season}
+        />
         <Search
           loading={users.loading}
-          rankedRosters={rankedRosters}
-          placeholder={'Search Rosters'}
           onSearchResultClick={handleSearchSelect}
+          placeholder="Search Rosters"
+          rankedRosters={rankedRosters}
         />
-
       </Segment>
       <Segment
-        attached='bottom'
-        className={'expandedStandingsStyle'}
+        attached="bottom"
         style={{
+          maxHeight: isMobile ? 'calc(100dvh - 215px)' : 'calc(100dvh - 471px)',
+          overflow: 'auto',
           padding: 0,
         }}
       >
         {loading ? (
-          <Dimmer active inverted>
+          <Dimmer
+            active
+            inverted
+          >
             <Loader>Loading Standings...</Loader>
           </Dimmer>
         ) : (
-          <List animated divided relaxed selection>
+          <List
+            animated
+            divided
+            relaxed
+            selection
+          >
             {standingsList}
           </List>
         )}
@@ -213,4 +188,4 @@ const StandingsList = ({ hasLiveGames, season, users }) => {
   );
 };
 
-export default StandingsList;
+export default Standings;

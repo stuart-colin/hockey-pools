@@ -28,11 +28,6 @@
   overflow: auto;
 }
 
-.expandedStandingsStyle {
-  max-height: calc(100dvh - 505px);
-  overflow: auto;
-}
-
 .expandedRosterStyle {
   max-height: calc(100dvh - 580px);
   overflow: auto;
@@ -45,10 +40,6 @@
 
   .expandedPlayersStyle {
     max-height: calc(100dvh - 160px);
-  }
-
-  .expandedStandingsStyle {
-    max-height: calc(100dvh - 240px);
   }
 
   .expandedRosterStyle {
@@ -107,71 +98,71 @@
 }
 
 .playersRemaining0 {
-  color: #ff0000;
+  color: #db2828;
 }
 
 .playersRemaining1 {
-  color: #f71e26;
+  color: #e01b3d;
 }
 
 .playersRemaining2 {
-  color: #ec2f3d;
+  color: #e21051;
 }
 
 .playersRemaining3 {
-  color: #df3b50;
+  color: #e21064;
 }
 
 .playersRemaining4 {
-  color: #d14461;
+  color: #df1a76;
 }
 
 .playersRemaining5 {
-  color: #c14b72;
+  color: #da2788;
 }
 
 .playersRemaining6 {
-  color: #b05083;
+  color: #d23499;
 }
 
 .playersRemaining7 {
-  color: #9e5293;
+  color: #c841a8;
 }
 
 .playersRemaining8 {
-  color: #8c53a2;
+  color: #bc4cb5;
 }
 
 .playersRemaining9 {
-  color: #7a52b1;
+  color: #ae57c1;
 }
 
 .playersRemaining10 {
-  color: #684ec0;
+  color: #9e60ca;
 }
 
 .playersRemaining11 {
-  color: #5649cd;
+  color: #8d69d1;
 }
 
 .playersRemaining12 {
-  color: #4542da;
+  color: #7b70d5;
 }
 
 .playersRemaining13 {
-  color: #3438e6;
+  color: #6777d7;
 }
 
 .playersRemaining14 {
-  color: #242cf0;
+  color: #537cd7;
 }
 
 .playersRemaining15 {
-  color: #131cf8;
+  color: #3c81d4;
 }
 
 .playersRemaining16 {
-  color: #0000ff;
+  color: #2185d0;
 }
 
 /* Hide scrollbars while maintaining scroll functionality */
