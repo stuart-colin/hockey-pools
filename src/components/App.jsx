@@ -13,7 +13,7 @@ import PlayerCreator from "./PlayerCreator";
 import PlayerDetails from "./PlayerDetails";
 import Scoreboard from "./Scoreboard";
 import SplashScreen from "./SplashScreen";
-import StandingsList from "./StandingsList";
+import Standings from "./Standings";
 import TeamBuilder from "./TeamBuilder/TeamBuilder";
 import TeamDetails from "./TeamDetails";
 
@@ -69,7 +69,7 @@ const AppContent = ({ season, setSeason }) => {
     const components = {
       "commissioners-corner": <CommissionersCorner
         season={season} />,
-      "standings": <StandingsList
+      "standings": <Standings
         hasLiveGames={liveStatsEnabled && hasLiveGames}
         season={season}
         users={activeUsers}
@@ -136,7 +136,7 @@ const AppContent = ({ season, setSeason }) => {
               <Grid.Row>
                 {!isMobile &&
                   <Grid.Column width={4}>
-                    <StandingsList
+                    <Standings
                       hasLiveGames={liveStatsEnabled && hasLiveGames}
                       season={season}
                       users={activeUsers}
