@@ -7,7 +7,8 @@ import AuthButtons from './AuthButtons';
 const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('insights');
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, user } = useAuth0();
+  const isAdmin = user?.email === 'stuart.colin@gmail.com';
 
   const isMobile = useIsMobile();
 
@@ -28,6 +29,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
     { name: "insights", label: "Insights" },
     { name: "player-details", label: "Player Details" },
     { name: "team-details", label: "Team Details" },
+    ...(isAdmin ? [{ name: "admin", label: "🔧 Admin" }] : []),
   ];
 
   const renderMenuItems = (isMobileLayout = false) =>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Icon, Button } from 'semantic-ui-react';
+import { Image, Table, Icon, Button } from 'semantic-ui-react';
 import { INSIGHT_COLORS } from '../../constants/insights';
 
 /**
@@ -30,15 +30,24 @@ const PlayerInsightTable = ({
       <div style={{
         position: 'relative',
       }}>
-        <Table singleLine unstackable selectable color={color}>
+        <Table padded singleLine unstackable selectable color={color}>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width={2}>Player</Table.HeaderCell>
-              {showPercentage && <Table.HeaderCell width={2} textAlign='right'>
+              <Table.HeaderCell />
+              <Table.HeaderCell>
+                Player
+              </Table.HeaderCell>
+              <Table.HeaderCell />
+              <Table.HeaderCell>
+                Team
+              </Table.HeaderCell>
+              {showPercentage && <Table.HeaderCell textAlign='right'>
                 Selections
               </Table.HeaderCell>}
-              <Table.HeaderCell width={1} textAlign='right'>
+              <Table.HeaderCell textAlign='right'>
                 Points
+              </Table.HeaderCell>
+              <Table.HeaderCell>
               </Table.HeaderCell>
               {customColumns.map((col) => (
                 <Table.HeaderCell key={col.key} width={col.width} textAlign='right'>
@@ -49,20 +58,31 @@ const PlayerInsightTable = ({
           </Table.Header>
           <Table.Body>
             {visiblePlayers.map((player) => (
-              <Table.Row key={player.id}>
-                <Table.Cell>
-                  {player.isEliminated ? (
-                    <>
-                      <Icon name='ban' color={INSIGHT_COLORS.ELIMINATED} />
-                      <span style={{ textDecoration: 'line-through', color: '#999' }}>
-                        {player.name}
-                      </span>
-                    </>
-                  ) : (
-                    player.name
-                  )}
+              <Table.Row
+                key={player.id}
+                negative={player.isEliminated}
+              >
+                <Table.Cell collapsing>
+                  <Image
+                    alt={player.name}
+                    avatar
+                    src={player.headshot}
+                  />
                 </Table.Cell>
-                {showPercentage && <Table.Cell textAlign='right' color={color}>
+                <Table.Cell>
+                  {player.name}
+                </Table.Cell>
+                <Table.Cell collapsing>
+                  <Image
+                    alt={`${player.teamName} Logo`}
+                    size='mini'
+                    src={player.teamLogo}
+                  />
+                </Table.Cell>
+                <Table.Cell>
+                  {player.teamName}
+                </Table.Cell>
+                {showPercentage && <Table.Cell textAlign='right'>
                   {totalTeams ? (
                     <>
                       {player.pickCount} <span style={{ fontSize: '0.9em', color: '#666' }}>({Math.round((player.pickCount / totalTeams) * 100)}%)</span>
@@ -71,8 +91,17 @@ const PlayerInsightTable = ({
                     `${player.pickCount}%`
                   )}
                 </Table.Cell>}
-                <Table.Cell textAlign='right' color={color}>
+                <Table.Cell textAlign='right'>
                   <strong>{player.points}</strong>
+                </Table.Cell>
+                <Table.Cell>
+                  <strong>
+                    {player._delta?.points > 0 ? (
+                      <span style={{ color: '#21ba45' }}>+{player._delta.points} today</span>
+                    ) : (
+                      null
+                    )}
+                  </strong>
                 </Table.Cell>
                 {customColumns.map((col) => (
                   <Table.Cell key={col.key} textAlign='right'>
@@ -92,7 +121,7 @@ const PlayerInsightTable = ({
             left: 0,
             right: 0,
             height: '50px',
-            background: 'linear-gradient(to bottom, rgba(250,251,252,0), rgba(250,251,252,1))',
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
             pointerEvents: 'none',
           }} />
         )}
