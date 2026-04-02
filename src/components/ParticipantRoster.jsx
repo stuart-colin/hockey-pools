@@ -7,7 +7,7 @@ import {
   Segment,
   Statistic
 } from 'semantic-ui-react';
-import useIsMobile from '../hooks/useIsMobile';
+import useIsMobile from '../hooks/useBreakpoint';
 import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import rosterPositions from '../constants/rosterPositions';

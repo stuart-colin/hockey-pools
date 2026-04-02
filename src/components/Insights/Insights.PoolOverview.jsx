@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Grid, Statistic, Progress, Popup } from 'semantic-ui-react';
 import { INSIGHT_COLORS } from '../../constants/insights';
-import useIsMobile from '../../hooks/useIsMobile';
+import useIsMobile from '../../hooks/useBreakpoint';
 
 /**
  * PoolOverview - Displays pool-level statistics (players remaining, points)

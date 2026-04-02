@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Image, Table, Icon, Button } from 'semantic-ui-react';
 import { INSIGHT_COLORS } from '../../constants/insights';
-import useIsMobile from '../../hooks/useIsMobile';
+import useIsMobile from '../../hooks/useBreakpoint';
 
 
 /**

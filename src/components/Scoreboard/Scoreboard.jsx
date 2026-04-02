@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Label, List, Segment } from 'semantic-ui-react';
 import useScores from '../../hooks/useScores';
-import useIsMobile from '../../hooks/useIsMobile';
+import useIsMobile from '../../hooks/useBreakpoint';
 import DateLabel from './Scoreboard.DateLabel';
 import GameCard from './Scoreboard.GameCard';
 

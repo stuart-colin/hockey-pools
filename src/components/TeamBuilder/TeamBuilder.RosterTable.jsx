@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Grid, Header, Image, Table, Icon, Label } from 'semantic-ui-react';
-import useIsMobile from '../../hooks/useIsMobile';
+import useIsMobile from '../../hooks/useBreakpoint';
 import RosterRow from './TeamBuilder.RosterRow';
 import SubmissionFeedback from './TeamBuilder.SubmissionFeedback';
 import ConfirmationDialog from './TeamBuilder.ConfirmationDialog';

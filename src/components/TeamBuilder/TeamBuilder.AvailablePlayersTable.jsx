@@ -7,7 +7,7 @@ import {
   Loader,
   Table,
 } from 'semantic-ui-react';
-import useIsMobile from '../../hooks/useIsMobile';
+import useIsMobile from '../../hooks/useBreakpoint';
 import PlayerRow from './TeamBuilder.PlayerRow';
 import {
   POSITION_OPTIONS,

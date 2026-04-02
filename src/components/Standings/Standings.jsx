@@ -10,7 +10,7 @@ import Search from '../Search';
 import StandingsItem from './Standings.Item';
 import StandingsListHeader from './Standings.ListHeader';
 import '../../css/customStyle.css';
-import useIsMobile from '../../hooks/useIsMobile';
+import useIsMobile from '../../hooks/useBreakpoint';
 
 const Standings = ({ liveStatsEnabled, season, users }) => {
   const [loading, setLoading] = useState(true);
