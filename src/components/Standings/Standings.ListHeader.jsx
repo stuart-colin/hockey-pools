@@ -3,8 +3,8 @@ import { Flag, Grid, Header, Icon, Popup } from 'semantic-ui-react';
 
 const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot, season }) => {
   const getHeaderTitle = () => {
-    if (moversMode === 'points') return "Today's Movers";
-    if (moversMode === 'rank') return 'Biggest Climbers';
+    if (moversMode === 'points') return "Point Gainers";
+    if (moversMode === 'rank') return 'Rank Climbers';
     return `${season} Standings`;
   };
 
