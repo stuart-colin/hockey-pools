@@ -47,11 +47,14 @@ import TeamCompositionPanel from './Insights.TeamCompositionPanel';
 import { useEliminatedTeamsContext } from '../../context/EliminatedTeamsContext';
 import '../../css/customStyle.css';
 import './Insights.Sections.css';
+import useBreakpoint from '../../hooks/useBreakpoint';
 
 const Insights = ({ users, players, season, regularSeasonStats }) => {
   const [highThresh, setHighThresh] = useState(DEFAULT_HIGH_THRESHOLD);
   const [lowThresh, setLowThresh] = useState(DEFAULT_LOW_THRESHOLD);
   const [eggsExpanded, setEggsExpanded] = useState(false);
+
+  const { isMobile, isTablet } = useBreakpoint();
 
   const { eliminatedTeams } = useEliminatedTeamsContext();
   const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
@@ -212,7 +215,7 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
               <Header as='h3' dividing>
                 Hits & Misses
               </Header>
-              <Grid columns={3} stackable className='pick-analysis-grid'>
+              <Grid columns={2} stackable className='pick-analysis-grid'>
 
                 {/* Best Picks */}
                 <Grid.Column>
@@ -294,7 +297,7 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
               <Header as='h3' dividing>
                 Value Analysis
               </Header>
-              <Grid stackable columns={3}>
+              <Grid stackable columns={2} className='pick-analysis-grid'>
                 {/* Most Advantageous Picks (Column 1) */}
                 <Grid.Column>
                   <Card fluid>
@@ -607,7 +610,7 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
               <Header as='h3' dividing>
                 X Factors
               </Header>
-              <Grid stackable columns={3}>
+              <Grid stackable columns={2} className='pick-analysis-grid'>
 
                 {/* Verhaeghe Effect */}
                 <Grid.Column>

@@ -128,10 +128,15 @@ const AppContent = ({ season, setSeason }) => {
             <CountdownTimer />
             <Grid
               style={{
-                ...(isMobile && {
+                ...((isMobile) && {
                   position: 'fixed',
-                  left: -14,
-                  right: -14,
+                  left: -15,
+                  right: -15,
+                }),
+                ...(isTablet && {
+                  position: 'fixed',
+                  left: 0,
+                  right: 0,
                 })
               }} stackable>
               <Grid.Row>

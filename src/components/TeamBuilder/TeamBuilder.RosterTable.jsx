@@ -244,7 +244,7 @@ const RosterTable = ({
   return (
     <>
       <Grid.Column style={{ padding: 0 }}>
-        <div style={{ height: '60vh', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ height: '60dvh', display: 'flex', flexDirection: 'column' }}>
           <Grid stackable style={{ padding: 0, position: 'sticky', top: 0, zIndex: 10, background: 'white', marginBottom: '10px', flex: 'none' }}>
             <Grid.Row>
               <Grid.Column width={4}>

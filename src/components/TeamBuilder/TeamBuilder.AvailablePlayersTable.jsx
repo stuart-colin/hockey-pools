@@ -70,7 +70,7 @@ const AvailablePlayersTable = ({
   }, [skaterStats, nameSearch, teamFilter, positionFilter]);
 
   return (
-    <div style={{ marginTop: 0, height: isMobile ? 'calc(100vh - 272px)' : 'auto', maxHeight: isMobile ? 'none' : '60vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ marginTop: 0, height: isMobile ? 'calc(100dvh - 272px)' : 'auto', maxHeight: isMobile ? 'none' : '60dvh', display: 'flex', flexDirection: 'column' }}>
       <Grid style={{ marginBottom: 0 }}>
         <Grid.Row columns={2}>
           <Grid.Column>

@@ -7,7 +7,7 @@
   overflow-y: auto;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .insights-container {
     max-height: calc(100dvh - 168px);
     overflow-y: auto;
@@ -307,8 +307,8 @@
   /* Prevent overflow issues */
 }
 
-/* Ensure columns don't wrap on desktop (screen width > 768px) */
-@media (min-width: 769px) {
+/* Ensure columns don't wrap on desktop (screen width >= 1025px for isDesktop) */
+@media (min-width: 1025px) {
   .pick-analysis-grid>.column {
     width: 33.333% !important;
     flex: 0 0 33.333% !important;
