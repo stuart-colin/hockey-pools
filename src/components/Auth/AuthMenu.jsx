@@ -1,16 +1,20 @@
 import React from 'react';
+import {
+  Dropdown,
+  Icon,
+  Image,
+} from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Dropdown, Icon, Image } from 'semantic-ui-react';
 
 const AuthMenu = () => {
-  const { user, isAuthenticated, loginWithPopup, logout } = useAuth0();
+  const { isAuthenticated, loginWithPopup, logout, user } = useAuth0();
 
   if (!isAuthenticated) {
     return (
       <Icon
+        color='blue'
         name='user circle'
         size='large'
-        color='blue'
         style={{ cursor: 'pointer' }}
         onClick={() => loginWithPopup()}
       />
@@ -19,26 +23,25 @@ const AuthMenu = () => {
 
   const trigger = user?.picture ? (
     <Image
-      avatar
-      size='mini'
-      src={user.picture}
       alt={user.name}
+      avatar
+      src={user.picture}
       style={{ cursor: 'pointer' }}
     />
   ) : (
     <Icon
+      color='blue'
       name='user circle'
       size='large'
-      color='blue'
       style={{ cursor: 'pointer' }}
     />
   );
 
   return (
     <Dropdown
-      trigger={trigger}
-      pointing='top right'
       icon={null}
+      pointing='top right'
+      trigger={trigger}
     >
       <Dropdown.Menu>
         <Dropdown.Header>
@@ -47,7 +50,7 @@ const AuthMenu = () => {
               {user?.name}
             </div>
             {user?.email !== user?.name && (
-              <div style={{ fontSize: '0.9em', color: '#666' }}>
+              <div style={{ color: '#666', fontSize: '0.9em' }}>
                 {user?.email}
               </div>
             )}
@@ -55,8 +58,8 @@ const AuthMenu = () => {
         </Dropdown.Header>
         <Dropdown.Divider />
         <Dropdown.Item
-          text='Sign Out'
           onClick={() => logout()}
+          text='Sign Out'
         />
       </Dropdown.Menu>
     </Dropdown>

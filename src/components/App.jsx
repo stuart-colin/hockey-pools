@@ -131,7 +131,9 @@ const AppContent = ({ season, setSeason }) => {
             style={{
               paddingTop: "55px",
             }}>
-            {(isDesktop || isWide) && <Header season={season} />}
+            {(isDesktop || isWide) &&
+              <Header season={season} />
+            }
             {showAlert && (
               <Alert
                 messageHeading={alertMessageHeading}

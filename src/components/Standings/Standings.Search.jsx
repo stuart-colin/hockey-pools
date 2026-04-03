@@ -5,9 +5,9 @@ import {
   List,
   Message,
 } from 'semantic-ui-react';
-import getOrdinal from '../utils/getOrdinals';
+import getOrdinal from '../../utils/getOrdinals';
 
-const Search = ({ loading, rankedRosters, placeholder, onSearchResultClick }) => {
+const StandingsSearch = ({ loading, rankedRosters, placeholder, onSearchResultClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
 
@@ -42,8 +42,9 @@ const Search = ({ loading, rankedRosters, placeholder, onSearchResultClick }) =>
     ));
 
   return (
-    <div style={{ padding: '5px 0' }}>
+    <div style={{ padding: '15px 0 0' }}>
       <Input
+        error={!filteredUsers.length}
         fluid
         icon={
           searchTerm ? (
@@ -52,11 +53,10 @@ const Search = ({ loading, rankedRosters, placeholder, onSearchResultClick }) =>
             'users'
           )
         }
-        error={!filteredUsers.length}
         iconPosition='left'
-        type='text'
-        placeholder={placeholder}
         onChange={e => setSearchTerm(e.target.value)}
+        placeholder={placeholder}
+        type='text'
         value={searchTerm}
       />
       {searchTerm.length > 0 && filteredUsers.length > 0 && (
@@ -70,4 +70,4 @@ const Search = ({ loading, rankedRosters, placeholder, onSearchResultClick }) =>
   );
 };
 
-export default Search;
+export default StandingsSearch;
