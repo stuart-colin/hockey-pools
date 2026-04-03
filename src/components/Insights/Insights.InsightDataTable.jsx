@@ -7,7 +7,7 @@ import useIsMobile from '../../hooks/useBreakpoint';
 /**
  * InsightDataTable - Flexible data table for insights
  * Can display players with standard layout, or custom data with rowRenderer
- * Features: Expandable (shows 4 rows by default), fade effect, customizable color
+ * Features: Expandable with customizable row limits, fade effect, customizable color
  *
  * Props:
  *   - players: Array of data to display
@@ -16,6 +16,8 @@ import useIsMobile from '../../hooks/useBreakpoint';
  *                  If not provided, renders standard player row with headshot, name, selections, points
  *   - headerRenderer: (optional) Function that renders custom headers. Receives isMobile
  *                     If not provided, renders standard player headers
+ *   - visibleRows: (optional) Number of rows to show before expand button (default 4)
+ *   - expandedRows: (optional) Max rows to show when expanded (default 10)
  *   - showPercentage: Show selection percentage (only used in default player renderer)
  *   - totalTeams: Total teams in pool (for calculating percentages)
  *   - customColumns: Array of additional columns for player renderer
@@ -26,21 +28,26 @@ const InsightDataTable = ({
   color,
   rowRenderer,
   headerRenderer,
+  visibleRows = 4,
+  expandedRows = 10,
   showPercentage = true,
   totalTeams,
   customColumns = [],
   emptyMessage = 'No data to display',
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const VISIBLE_ROWS = 4;
   const isMobile = useIsMobile();
 
   if (!players || players.length === 0) {
     return <p style={{ color: '#999', fontStyle: 'italic', textAlign: 'center', padding: '16px 0', margin: 0 }}>{emptyMessage}</p>;
   }
 
-  const visibleRows = isExpanded ? players : players.slice(0, VISIBLE_ROWS);
-  const hasMore = players.length > VISIBLE_ROWS;
+  const displayRows = isExpanded
+    ? expandedRows
+      ? players.slice(0, expandedRows)
+      : players
+    : players.slice(0, visibleRows);
+  const hasMore = players.length > visibleRows;
 
   // Default header renderer for players
   const renderDefaultHeaders = () => (
@@ -143,7 +150,7 @@ const InsightDataTable = ({
               {headerRenderer ? headerRenderer(isMobile) : renderDefaultHeaders()}
             </Table.Header>
             <Table.Body>
-              {visibleRows.map((item, idx) =>
+              {displayRows.map((item, idx) =>
                 rowRenderer
                   ? rowRenderer(item, isMobile, idx)
                   : renderDefaultPlayerRow(item)

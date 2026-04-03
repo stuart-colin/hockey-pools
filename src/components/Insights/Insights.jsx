@@ -58,7 +58,6 @@ const Insights = ({
 }) => {
   const [highThresh, setHighThresh] = useState(DEFAULT_HIGH_THRESHOLD);
   const [lowThresh, setLowThresh] = useState(DEFAULT_LOW_THRESHOLD);
-  const [eggsExpanded, setEggsExpanded] = useState(false);
 
   const { isMobile, isTablet } = useBreakpoint();
 
@@ -420,8 +419,8 @@ const Insights = ({
                     </Card.Content>
                     <Card.Content>
                       <InsightDataTable
-                        players={positionPointsData}
                         color={INSIGHT_COLORS.BEST_PICKS}
+                        emptyMessage='No position data available'
                         headerRenderer={() => (
                           <Table.Row>
                             <Table.HeaderCell>Position</Table.HeaderCell>
@@ -431,6 +430,7 @@ const Insights = ({
                             <Table.HeaderCell textAlign='right'>Remaining</Table.HeaderCell>
                           </Table.Row>
                         )}
+                        players={positionPointsData}
                         rowRenderer={(item) => (
                           <Table.Row key={item.position}>
                             <Table.Cell collapsing><strong>{item.label}</strong></Table.Cell>
@@ -440,7 +440,7 @@ const Insights = ({
                             <Table.Cell textAlign='right'>{item.remaining}/{item.playerCount}</Table.Cell>
                           </Table.Row>
                         )}
-                        emptyMessage='No position data available'
+                        visibleRows={5}
                       />
                     </Card.Content>
                   </Card>
@@ -490,47 +490,25 @@ const Insights = ({
                       </Card.Header>
                     </Card.Content>
                     <Card.Content>
-                      {rosterDiversityData.length > 0 ? (
-                        <div>
-                          <div style={{ position: 'relative' }}>
-                            <Table singleLine unstackable selectable color='blue'>
-                              <Table.Header>
-                                <Table.Row>
-                                  <Table.HeaderCell>Teams</Table.HeaderCell>
-                                  <Table.HeaderCell textAlign='right'>Rosters</Table.HeaderCell>
-                                  <Table.HeaderCell textAlign='right'>% of Pool</Table.HeaderCell>
-                                </Table.Row>
-                              </Table.Header>
-                              <Table.Body>
-                                {(eggsExpanded ? rosterDiversityData : rosterDiversityData.slice(0, 4)).map((bucket) => (
-                                  <Table.Row key={bucket.teamCount}>
-                                    <Table.Cell><strong>{bucket.teamCount}</strong></Table.Cell>
-                                    <Table.Cell textAlign='right'>{bucket.rosterCount}</Table.Cell>
-                                    <Table.Cell textAlign='right'>{bucket.percentage}%</Table.Cell>
-                                  </Table.Row>
-                                ))}
-                              </Table.Body>
-                            </Table>
-                            {!eggsExpanded && rosterDiversityData.length > 4 && (
-                              <div style={{
-                                position: 'absolute', bottom: 0, left: 0, right: 0, height: '50px',
-                                background: 'linear-gradient(to bottom, rgba(250,251,252,0), rgba(250,251,252,1))',
-                                pointerEvents: 'none',
-                              }} />
-                            )}
-                          </div>
-                          {rosterDiversityData.length > 4 && (
-                            <Button basic color='blue' fluid size='mini' onClick={() => setEggsExpanded(!eggsExpanded)}>
-                              <Icon name={eggsExpanded ? 'chevron up' : 'chevron down'} />
-                              {eggsExpanded ? 'Show Less' : 'Show More'}
-                            </Button>
-                          )}
-                        </div>
-                      ) : (
-                        <p style={{ color: '#999', fontStyle: 'italic', textAlign: 'center', padding: '16px 0', margin: 0 }}>
-                          No roster data available
-                        </p>
-                      )}
+                      <InsightDataTable
+                        color='blue'
+                        emptyMessage='No roster data available'
+                        headerRenderer={() => (
+                          <Table.Row>
+                            <Table.HeaderCell>Teams</Table.HeaderCell>
+                            <Table.HeaderCell textAlign='right'>Rosters</Table.HeaderCell>
+                            <Table.HeaderCell textAlign='right'>% of Pool</Table.HeaderCell>
+                          </Table.Row>
+                        )}
+                        players={rosterDiversityData}
+                        rowRenderer={(bucket) => (
+                          <Table.Row key={bucket.teamCount}>
+                            <Table.Cell><strong>{bucket.teamCount}</strong></Table.Cell>
+                            <Table.Cell textAlign='right'>{bucket.rosterCount}</Table.Cell>
+                            <Table.Cell textAlign='right'>{bucket.percentage}%</Table.Cell>
+                          </Table.Row>
+                        )}
+                      />
                     </Card.Content>
                   </Card>
                 </Grid.Column>
@@ -674,12 +652,14 @@ const Insights = ({
                       </Card.Header>
                     </Card.Content>
                     <Card.Content>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {clutchFactorData.length > 0 ? (
-                          clutchFactorData.slice(0, 10).map((player) => (
-                            <div key={player.id} style={{ borderBottom: '1px solid #eee', paddingBottom: '8px' }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                <strong style={{ fontSize: '14px', color: player.isEliminated ? '#db2828' : 'inherit' }}>{player.name}</strong>
+                      <InsightDataTable
+                        players={clutchFactorData}
+                        color='blue'
+                        rowRenderer={(player) => (
+                          <Table.Row key={player.id} negative={player.isEliminated}>
+                            <Table.Cell colspan='2'>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                <strong style={{ fontSize: '14px' }}>{player.name}</strong>
                                 <span style={{
                                   fontSize: '13px', fontWeight: 'bold',
                                   color: player.clutchRating > 0 ? '#21ba45' : player.clutchRating < 0 ? '#db2828' : '#666'
@@ -687,18 +667,15 @@ const Insights = ({
                                   {player.clutchRating > 0 ? '+' : ''}{player.clutchRating}
                                 </span>
                               </div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#999' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#999', marginTop: '4px' }}>
                                 <span>Playoff: {player.playoffPPG} PPG</span>
                                 <span>Regular: {player.regularSeasonPPG} PPG</span>
                               </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div style={{ color: '#999', fontStyle: 'italic', textAlign: 'center', padding: '16px 0', margin: 0 }}>
-                            {regularSeasonStats?.loading ? 'Loading regular season data...' : 'No data available yet'}
-                          </div>
+                            </Table.Cell>
+                          </Table.Row>
                         )}
-                      </div>
+                        emptyMessage={regularSeasonStats?.loading ? 'Loading regular season data...' : 'No data available yet'}
+                      />
                     </Card.Content>
                   </Card>
                 </Grid.Column>
