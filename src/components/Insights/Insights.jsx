@@ -49,10 +49,16 @@ import '../../css/customStyle.css';
 import './Insights.Sections.css';
 import useBreakpoint from '../../hooks/useBreakpoint';
 
-const Insights = ({ users, players, season, regularSeasonStats }) => {
+const Insights = ({
+  players,
+  regularSeasonStats,
+  season,
+  users
+}) => {
   const [highThresh, setHighThresh] = useState(DEFAULT_HIGH_THRESHOLD);
   const [lowThresh, setLowThresh] = useState(DEFAULT_LOW_THRESHOLD);
   const [eggsExpanded, setEggsExpanded] = useState(false);
+  const [deadWeightExpanded, setDeadWeightExpanded] = useState(false);
 
   const { isMobile, isTablet } = useBreakpoint();
 
@@ -120,6 +126,14 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
   const rosterDiversityData = useMemo(() => calculateRosterDiversity(users.rosters), [users.rosters]);
   const bonusHuntersList = useMemo(() => getBonusHunters(playerPickRate, TOP_N.BEST_PICKS), [playerPickRate]);
   const loneWolvesList = useMemo(() => getLoneWolves(playerPickRate, TOP_N.BEST_PICKS), [playerPickRate]);
+
+  const topPlayerGainers = useMemo(() => {
+    if (!players || players.length === 0) return [];
+    return [...players]
+      .filter(p => p._delta?.points > 0)
+      .sort((a, b) => (b._delta?.points || 0) - (a._delta?.points || 0))
+      .slice(0, TOP_N.BEST_PICKS);
+  }, [players]);
 
   const renderStatistics = (players, color) => {
     return players.map((player) => (
@@ -224,9 +238,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Power Plays
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Players scoring the most points — the anchors of winning rosters.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -248,9 +262,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Disappointments
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content="Players with the lowest points — picks that didn't deliver."
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -272,9 +286,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Missed Opportunities
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Highest scoring players that no one selected.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -305,9 +319,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Biggest Steals
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Best value players: lower selection rates but higher points. Rosters with these guys have an edge.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -339,9 +353,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Biggest Busts
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Low value players: higher selection rates but lower points. Rosters with these picks are not at an advantage.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -373,9 +387,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Position Breakdown
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Average points per player by position — see which positions are carrying the most weight.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -414,9 +428,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Consensus
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Players everyone wanted — the obvious picks that drove the draft.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -437,9 +451,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         All Your Eggs
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='How many NHL teams each roster is spread across — fewer teams means higher risk if those teams get eliminated.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -546,9 +560,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Golf Course All-Stars
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='The highest scoring players who traded their sticks for clubs — gone but not forgotten.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -570,29 +584,46 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Dead Weight
                         <Popup
+                          content='The rosters with the most points locked up in eliminated positions — capped value from out-of-action players.'
+                          position='right center'
                           trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                          content='How many points each roster has locked up in eliminated players — the cost of backing the wrong teams.'
-                          size='small'
                         />
                       </Card.Header>
                     </Card.Content>
                     <Card.Content>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         {sunkCostData.length > 0 && sunkCostData.some(r => r.eliminatedCount > 0) ? (
-                          sunkCostData.filter(r => r.eliminatedCount > 0).map((roster) => (
-                            <div key={roster.owner} style={{ borderBottom: '1px solid #eee', paddingBottom: '8px' }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                <strong style={{ fontSize: '14px' }}>{roster.owner}</strong>
-                                <span style={{ color: '#666', fontSize: '13px' }}>
-                                  {roster.sunkPoints} pts ({roster.sunkPercentage}%)
-                                </span>
-                              </div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#999' }}>
-                                <span>{roster.eliminatedCount} eliminated player{roster.eliminatedCount !== 1 ? 's' : ''}</span>
-                                <span>{roster.totalPoints} total pts</span>
-                              </div>
+                          <>
+                            <div style={{ position: 'relative' }}>
+                              {(deadWeightExpanded ? sunkCostData.filter(r => r.eliminatedCount > 0).slice(0, 10) : sunkCostData.filter(r => r.eliminatedCount > 0).slice(0, 4)).map((roster) => (
+                                <div key={roster.owner} style={{ borderBottom: '1px solid #eee', paddingBottom: '8px' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                    <strong style={{ fontSize: '14px' }}>{roster.owner}</strong>
+                                    <span style={{ color: '#666', fontSize: '13px' }}>
+                                      {roster.sunkPoints} pts ({roster.sunkPercentage}%)
+                                    </span>
+                                  </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#999' }}>
+                                    <span>{roster.eliminatedCount} eliminated player{roster.eliminatedCount !== 1 ? 's' : ''}</span>
+                                    <span>{roster.totalPoints} total pts</span>
+                                  </div>
+                                </div>
+                              ))}
+                              {!deadWeightExpanded && sunkCostData.filter(r => r.eliminatedCount > 0).length > 4 && (
+                                <div style={{
+                                  position: 'absolute', bottom: 0, left: 0, right: 0, height: '50px',
+                                  background: 'linear-gradient(to bottom, rgba(250,251,252,0), rgba(250,251,252,1))',
+                                  pointerEvents: 'none',
+                                }} />
+                              )}
                             </div>
-                          ))
+                            {sunkCostData.filter(r => r.eliminatedCount > 0).length > 4 && (
+                              <Button basic color='blue' fluid size='mini' onClick={() => setDeadWeightExpanded(!deadWeightExpanded)}>
+                                <Icon name={deadWeightExpanded ? 'chevron up' : 'chevron down'} />
+                                {deadWeightExpanded ? 'Show Less' : 'Show More'}
+                              </Button>
+                            )}
+                          </>
                         ) : (
                           <div style={{ color: '#999', fontStyle: 'italic', textAlign: 'center', padding: '16px 0', margin: 0 }}>
                             No eliminations yet
@@ -619,9 +650,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Verhaeghe Effect
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Playoff performance vs. regular season — who elevates their game when it matters most.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -662,9 +693,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Bonus Hunters
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Players earning extra points from overtime goals (skaters) and shutouts (goalies) — the bonus point specialists.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -702,9 +733,9 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                       <Card.Header>
                         Lone Wolves
                         <Popup
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                           content='Players only on one roster — exclusive picks that give their owner a unique edge, if they can produce.'
-                          size='small'
+                          position='right center'
+                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
                         />
                       </Card.Header>
                     </Card.Content>
@@ -720,6 +751,19 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
                 </Grid.Column>
 
               </Grid>
+            </section>
+
+            {/* Section 8: Today's Top Point Gainers (Players) */}
+            <section className='insights-section'>
+              <Header as='h3' dividing>
+                Today's Top Point Gainers
+              </Header>
+              <PlayerInsightTable
+                color={INSIGHT_COLORS.PERFECT_TEAM}
+                emptyMessage='No players scored today yet'
+                players={topPlayerGainers}
+                showPercentage={false}
+              />
             </section>
           </div>
         )}

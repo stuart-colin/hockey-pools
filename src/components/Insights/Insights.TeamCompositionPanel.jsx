@@ -51,7 +51,7 @@ const TeamCompositionPanel = ({
             {tooltip && (
               <Popup
                 content={tooltip}
-                size='small'
+                position='right center'
                 trigger={
                   <Icon
                     name='question circle outline'
