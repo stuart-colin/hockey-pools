@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Header, Statistic, Card, Segment, Icon, Popup } from 'semantic-ui-react';
 import { chunkArray } from '../../utils/insightCalculations';
 import { POSITION_ORDER, GRID_LAYOUT, TOTAL_ROSTER_SIZE } from '../../constants/insights';
-import useIsMobile from '../../hooks/useIsMobile';
+import useIsMobile from '../../hooks/useBreakpoint';
 
 /**
  * TeamCompositionPanel - Displays team roster organized by position

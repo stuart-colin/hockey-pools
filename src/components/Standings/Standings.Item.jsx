@@ -3,7 +3,6 @@ import { Flag, Icon, Image, List, Transition } from 'semantic-ui-react';
 import RosterView from '../RosterView';
 import { getAvatarSvg, TOP_10_COLORS } from './Standings.utils';
 import '../../css/customStyle.css';
-import useIsMobile from '../../hooks/useIsMobile';
 
 
 const StandingsItem = React.forwardRef(
@@ -19,7 +18,6 @@ const StandingsItem = React.forwardRef(
     ref
   ) => {
     const backgroundColor = user.rank <= 10 ? TOP_10_COLORS[user.rank - 1] : '';
-    const isMobile = useIsMobile();
 
     return (
       <Fragment>

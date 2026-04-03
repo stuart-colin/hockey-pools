@@ -24,7 +24,7 @@ import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useScores from "../hooks/useScores";
 import useStandings from "../hooks/useStandings";
 import useUsers from "../hooks/useUsers";
-import useIsMobile from "../hooks/useIsMobile";
+import { useBreakpoint } from "../hooks/useBreakpoint";
 import { EliminatedTeamsProvider, useEliminatedTeamsContext } from "../context/EliminatedTeamsContext";
 import { DevToolsProvider, useDevTools } from "../context/DevToolsContext";
 import getSeasonOrdinal from "../utils/getSeasonOrdinal";
@@ -63,7 +63,7 @@ const AppContent = ({ season, setSeason }) => {
   const { augmentedUsers, playerDeltas, hasLiveGames } = useLiveStats(todayScores.games, boxscores, users);
   const activeUsers = liveStatsEnabled ? augmentedUsers : users;
   const players = usePlayerData(activeUsers);
-  const isMobile = useIsMobile();
+  const { isMobile, isTablet, isDesktop, isWide } = useBreakpoint();
 
   // Map activeItem to components
   const renderContent = () => {
@@ -117,7 +117,7 @@ const AppContent = ({ season, setSeason }) => {
             style={{
               paddingTop: "55px",
             }}>
-            {!isMobile && <Header season={season} />}
+            {(isDesktop || isWide) && <Header season={season} />}
             {showAlert && (
               <Alert
                 messageHeading={alertMessageHeading}
@@ -128,14 +128,19 @@ const AppContent = ({ season, setSeason }) => {
             <CountdownTimer />
             <Grid
               style={{
-                ...(isMobile && {
+                ...((isMobile) && {
                   position: 'fixed',
-                  left: -14,
-                  right: -14,
+                  left: -15,
+                  right: -15,
+                }),
+                ...(isTablet && {
+                  position: 'fixed',
+                  left: 0,
+                  right: 0,
                 })
               }} stackable>
               <Grid.Row>
-                {!isMobile &&
+                {isWide &&
                   <Grid.Column width={4}>
                     <Standings
                       liveStatsEnabled={liveStatsEnabled}
@@ -144,8 +149,8 @@ const AppContent = ({ season, setSeason }) => {
                     />
                   </Grid.Column>
                 }
-                <Grid.Column width={12}>
-                  {!isMobile &&
+                <Grid.Column width={isWide ? 12 : 16}>
+                  {(isDesktop || isWide) &&
                     <Navigation
                       liveStatsEnabled={liveStatsEnabled}
                       onLiveStatsToggle={toggleLiveStats}
@@ -159,7 +164,7 @@ const AppContent = ({ season, setSeason }) => {
             </Grid>
           </div>
         </Fragment >
-        {isMobile &&
+        {(isMobile || isTablet) &&
           <Navigation
             liveStatsEnabled={liveStatsEnabled}
             onLiveStatsToggle={toggleLiveStats}

@@ -10,14 +10,14 @@ import Search from '../Search';
 import StandingsItem from './Standings.Item';
 import StandingsListHeader from './Standings.ListHeader';
 import '../../css/customStyle.css';
-import useIsMobile from '../../hooks/useIsMobile';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 const Standings = ({ liveStatsEnabled, season, users }) => {
   const [loading, setLoading] = useState(true);
   const [activeRosterKey, setActiveRosterKey] = useState(null);
   const [moversMode, setMoversMode] = useState('standings'); // 'standings' | 'points' | 'rank'
   const itemRefs = useRef({});
-  const isMobile = useIsMobile();
+  const { isMobile, isTablet } = useBreakpoint();
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -158,7 +158,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
       <Segment
         attached="bottom"
         style={{
-          maxHeight: isMobile ? 'calc(100dvh - 215px)' : 'calc(100dvh - 471px)',
+          maxHeight: isMobile || isTablet ? 'calc(100dvh - 215px)' : 'calc(100dvh - 471px)',
           overflow: 'auto',
           padding: 0,
         }}

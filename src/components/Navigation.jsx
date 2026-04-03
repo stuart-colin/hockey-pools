@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Menu, Sidebar, Icon, Segment, Label } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
-import useIsMobile from '../hooks/useIsMobile';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import AuthButtons from './AuthButtons';
 
 const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
@@ -10,31 +10,30 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
   const { isAuthenticated, user } = useAuth0();
   const isAdmin = user?.email === 'stuart.colin@gmail.com';
 
-  const isMobile = useIsMobile();
+  const { isMobile, isTablet, isDesktop, isWide } = useBreakpoint();
+  const isMobileOrTablet = isMobile || isTablet;
 
-  // Set default item based on mobile status
   useEffect(() => {
-    setActiveItem(isMobile ? 'standings' : 'insights');
-  }, [isMobile]);
+    setActiveItem(isMobileOrTablet ? 'standings' : 'insights');
+  }, [isMobileOrTablet]);
 
-  // Call onMenuSelect whenever activeItem changes (from user clicks or mobile change)
   useEffect(() => {
     onMenuSelect(activeItem);
   }, [activeItem, onMenuSelect]);
 
   const menuItems = [
-    { name: "standings", label: "Standings", mobileOnly: true },
     { name: "commissioners-corner", label: "Commissioner's Corner" },
-    { name: "my-team", label: "My Team" },
+    { name: "standings", label: "Standings", hideOnWide: true },
     { name: "insights", label: "Insights" },
     { name: "player-details", label: "Player Details" },
     { name: "team-details", label: "Team Details" },
+    { name: "my-team", label: "My Team" },
     ...(isAdmin ? [{ name: "admin", label: "🔧 Admin" }] : []),
   ];
 
-  const renderMenuItems = (isMobileLayout = false) =>
+  const renderMenuItems = () =>
     menuItems
-      .filter(item => isMobileLayout ? true : !item.mobileOnly)
+      .filter(item => !item.hideOnWide || !isWide)
       .map((item) => (
         <Menu.Item
           key={item.name}
@@ -49,16 +48,31 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
         </Menu.Item>
       ));
 
+  const liveStatsBadge = (
+    <>
+      <Checkbox
+        checked={liveStatsEnabled}
+        label='Live Stats'
+        onChange={onLiveStatsToggle}
+        toggle
+      />
+      <Label color='red' size='mini'>
+        Beta
+      </Label>
+    </>
+  );
+
   return (
     <>
-      {isMobile ? (
+      {isMobileOrTablet ? (
         <>
           <Menu fixed='bottom'>
             <Menu.Item onClick={() => setSidebarVisible(!sidebarVisible)}>
               <Icon
+                color='blue'
                 name={sidebarVisible ? 'close' : 'bars'}
                 size='large'
-                color='blue' />
+              />
             </Menu.Item>
             <Menu.Item position='right'>
               <AuthButtons />
@@ -74,7 +88,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
             visible={sidebarVisible}
             onHide={() => setSidebarVisible(false)}
           >
-            {renderMenuItems(true)}
+            {renderMenuItems()}
             {isAuthenticated && (
               <Menu.Item
                 name='team-builder'
@@ -88,28 +102,14 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
               </Menu.Item>
             )}
             <Menu.Item>
-              <Checkbox
-                checked={liveStatsEnabled}
-                label='Live Stats'
-                onChange={onLiveStatsToggle}
-                size='small'
-                toggle
-              />
-              <Label
-                color='red'
-                size='mini'
-                style={{ marginLeft: '0.5em' }}
-              >
-                Beta
-              </Label>
+              {liveStatsBadge}
             </Menu.Item>
           </Sidebar>
           <Segment basic style={{ marginTop: '50px' }} />
         </>
       ) : (
-        // Desktop Layout
         <Menu stackable>
-          {renderMenuItems(false)}
+          {renderMenuItems()}
           <Menu.Menu position='right'>
             {isAuthenticated && (
               <Menu.Item
@@ -121,18 +121,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
               </Menu.Item>
             )}
             <Menu.Item>
-              <Checkbox
-                checked={liveStatsEnabled}
-                label='Live Stats'
-                onChange={onLiveStatsToggle}
-                toggle
-              />
-              <Label
-                color='red'
-                size='mini'
-              >
-                Beta
-              </Label>
+              {liveStatsBadge}
             </Menu.Item>
             <Menu.Item>
               <AuthButtons />

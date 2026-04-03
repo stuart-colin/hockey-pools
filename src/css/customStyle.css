@@ -205,7 +205,7 @@
 }
 
 /* Mobile: hide scrollbars globally */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1024px) {
   * {
     scrollbar-width: none;
   }
