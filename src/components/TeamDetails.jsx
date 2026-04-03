@@ -56,7 +56,7 @@ const TeamDetails = ({ users, players, season }) => {
 
   const totalRosters = users.rosters.length;
 
-  const headerKeys = {
+  const headerKeys = useMemo(() => ({
     'Team': 'name',
     'Unique Players': 'uniquePlayers',
     'Total Players': 'totalPlayers',
@@ -64,7 +64,7 @@ const TeamDetails = ({ users, players, season }) => {
     'Pool Contribution': 'poolContribution',
     'Points/Pick (Average)': 'avgPointsPerPick',
     'Points/Pick (Weighted)': 'weightedPointsPerPick'
-  };
+  }), []);
 
   const teamData = useMemo(() => {
     return teamAggregations.map(team => {
@@ -90,7 +90,7 @@ const TeamDetails = ({ users, players, season }) => {
     }
     const sorted = customSort(teamData, sortKey);
     return reverse ? sorted.reverse() : sorted;
-  }, [teamData, sortTeamOption, reverse]);
+  }, [headerKeys, teamData, sortTeamOption, reverse]);
 
   const teamHeaders = Object.keys(headerKeys).map((header, index) => {
     const isSticky = index === 0;

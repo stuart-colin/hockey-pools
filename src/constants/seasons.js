@@ -38,4 +38,4 @@ export function getSeasonId(year) {
   return `${y - 1}${y}`;
 }
 
-export default { seasons, seasonList };
+export { seasons, seasonList };

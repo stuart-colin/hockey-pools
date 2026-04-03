@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import countPoints from "../utils/countPoints";
 import eliminatedPlayers from "../utils/eliminatedPlayers";
 import normalizePlayer from "../utils/normalizePlayer";
-import seasons from "../constants/seasons";
+import { seasons } from "../constants/seasons";
 import { POSITION_ARRAYS } from "../constants/positions";
 
 const ROSTERS_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/rosters`;
@@ -28,11 +28,11 @@ const useUsers = (season, eliminatedTeams, eliminatedLoading) => {
           setLoadingUsers(false);
           break;
         case "2023":
-          setRawUserList(seasons.seasons.season2023.results);
+          setRawUserList(seasons.season2023.results);
           setLoadingUsers(false);
           break;
         case "2022":
-          setRawUserList(seasons.seasons.season2022.results);
+          setRawUserList(seasons.season2022.results);
           setLoadingUsers(false);
           break;
       }

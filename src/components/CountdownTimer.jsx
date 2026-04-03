@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Message } from "semantic-ui-react";
 
 const CountdownTimer = () => {
@@ -6,10 +6,10 @@ const CountdownTimer = () => {
   const targetDate = new Date("2025-04-14T18:00:00-04:00").getTime();
   const twoDaysAfterTarget = targetDate + 2 * 24 * 60 * 60 * 1000; // Add 2 days in milliseconds
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState(null);
 
   // Function to calculate the remaining time
-  function calculateTimeLeft() {
+  const calculateTimeLeft = useCallback(() => {
     const now = new Date().getTime();
     const difference = targetDate - now;
 
@@ -23,16 +23,17 @@ const CountdownTimer = () => {
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
     return { days, hours, minutes, seconds };
-  }
+  }, [targetDate]);
 
   // Update the timer every second
   useEffect(() => {
+    setTimeLeft(calculateTimeLeft()); // Set initial value immediately
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer); // Cleanup on component unmount
-  }, []);
+  }, [calculateTimeLeft]);
 
   // Check if the current time is more than 2 days after the target date
   const now = new Date().getTime();

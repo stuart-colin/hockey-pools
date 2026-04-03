@@ -95,7 +95,10 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
         }
       });
     }
-  }, [roster]);
+  }, [roster,
+    regularSeasonStats.goalieStats,
+    regularSeasonStats.skaterStats,
+  ]);
 
   const positionLimits = useMemo(
     () => calculatePositionLimits(state.myTeam),

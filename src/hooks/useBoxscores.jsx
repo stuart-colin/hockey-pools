@@ -45,13 +45,13 @@ const useBoxscores = (games, { skip = false } = {}) => {
 
       const results = [];
 
-      // Fetch in parallel, but skip games already cached as FINAL
+      // Fetch in parallel, but skip games already cached as OFF
       const fetches = activeGames.map(async (game) => {
         const gameId = game.id;
         const cached = cacheRef.current.get(gameId);
 
-        // If we have a cached FINAL boxscore, reuse it (game is done, won't change)
-        if (cached && cached.gameState === 'FINAL') {
+        // If we have a cached OFF boxscore, reuse it (game is done, won't change)
+        if (cached && cached.gameState === 'OFF') {
           return cached;
         }
 
@@ -84,7 +84,7 @@ const useBoxscores = (games, { skip = false } = {}) => {
     return () => {
       isMounted = false;
     };
-  }, [games?.length, skip]);
+  }, [games, skip]);
 
   return { boxscores };
 };
