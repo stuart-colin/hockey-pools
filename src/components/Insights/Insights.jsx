@@ -31,7 +31,6 @@ import {
   DEFAULT_HIGH_THRESHOLD,
   DEFAULT_LOW_THRESHOLD,
   ROSTER_LIMITS,
-  TOTAL_ROSTER_SIZE,
   INSIGHT_COLORS,
   TOP_N,
 } from '../../constants/insights';
@@ -45,7 +44,7 @@ import XFactors from './Insights.XFactors';
 import { useEliminatedTeamsContext } from '../../context/EliminatedTeamsContext';
 import '../../css/customStyle.css';
 import './Insights.Sections.css';
-import useBreakpoint from '../../hooks/useBreakpoint';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 const Insights = ({
   players,
@@ -56,14 +55,11 @@ const Insights = ({
   const [highThresh, setHighThresh] = useState(DEFAULT_HIGH_THRESHOLD);
   const [lowThresh, setLowThresh] = useState(DEFAULT_LOW_THRESHOLD);
 
-  const { isMobile, isTablet } = useBreakpoint();
+  const { isMobile } = useBreakpoint();
 
   const { eliminatedTeams } = useEliminatedTeamsContext();
   const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
   const loading = users.loading || loadingUnselected;
-
-  const userPlayersRemaining = useMemo(() => users.rosters.map(u => u.playersRemaining), [users.rosters]);
-  const userPoints = useMemo(() => users.rosters.map(u => u.points), [users.rosters]);
 
   const playerPickRate = useMemo(() => buildPlayerPickRate(players, users.rosters.length), [players, users.rosters.length]);
 
