@@ -33,7 +33,7 @@ const useEliminatedTeams = (season) => {
     };
 
     fetchBracketData();
-  }, [season]);
+  }, [NHL_WEB_API_ENDPOINT, season]);
 
   const eliminatedTeams = useMemo(() => {
     const eliminated = new Set();
