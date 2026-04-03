@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Card, Header } from 'semantic-ui-react';
 import ThresholdControl from './Insights.ThresholdControl';
-import PlayerInsightTable from './Insights.PlayerInsightTable';
+import InsightDataTable from './Insights.InsightDataTable';
 import { INSIGHT_COLORS } from '../../constants/insights';
 
 /**
@@ -28,7 +28,7 @@ const ThresholdExplorer = ({
         <Card fluid>
           <Card.Content>
             <Card.Header>Most Advantageous Picks</Card.Header>
-            <Card.Description style={{ marginTop: '8px', fontSize: '13px', color: '#666' }}>
+            <Card.Description style={{ color: '#666', fontSize: '13px', marginTop: '8px' }}>
               Best value players: lowest selection rate but highest points
             </Card.Description>
           </Card.Content>
@@ -42,7 +42,7 @@ const ThresholdExplorer = ({
             />
           </Card.Content>
           <Card.Content>
-            <PlayerInsightTable
+            <InsightDataTable
               players={highThreshPlayers}
               color={INSIGHT_COLORS.MOST_ADVANTAGEOUS}
               showPercentage={true}
@@ -58,7 +58,7 @@ const ThresholdExplorer = ({
         <Card fluid>
           <Card.Content>
             <Card.Header>Least Advantageous Picks</Card.Header>
-            <Card.Description style={{ marginTop: '8px', fontSize: '13px', color: '#666' }}>
+            <Card.Description style={{ color: '#666', fontSize: '13px', marginTop: '8px' }}>
               Risky players: high selection rate but lowest points
             </Card.Description>
           </Card.Content>
@@ -72,7 +72,7 @@ const ThresholdExplorer = ({
             />
           </Card.Content>
           <Card.Content>
-            <PlayerInsightTable
+            <InsightDataTable
               players={lowThreshPlayers}
               color={INSIGHT_COLORS.LEAST_ADVANTAGEOUS}
               showPercentage={true}
