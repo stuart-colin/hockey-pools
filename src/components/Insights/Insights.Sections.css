@@ -298,7 +298,7 @@
   color: #7b1fa2;
 }
 
-/* Pick Analysis Grid - Keep 3 columns on desktop */
+/* Pick Analysis Grid - Support 2 and 3 column layouts */
 .pick-analysis-grid {
   margin-left: -12px !important;
   margin-right: -12px !important;
@@ -310,9 +310,14 @@
   /* Prevent overflow issues */
 }
 
-/* Ensure columns don't wrap on desktop (screen width >= 1025px for isDesktop) */
+/* Ensure columns respect grid layout on desktop (screen width >= 1025px for isDesktop) */
 @media (min-width: 1025px) {
-  .pick-analysis-grid>.column {
+  .pick-analysis-grid.two-column>.column {
+    width: 50% !important;
+    flex: 0 0 50% !important;
+  }
+  
+  .pick-analysis-grid.three-column>.column {
     width: 33.333% !important;
     flex: 0 0 33.333% !important;
   }

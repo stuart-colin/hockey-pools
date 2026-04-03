@@ -459,7 +459,7 @@ export const getBonusHunters = (players, topN = 10) => {
     .map(p => ({
       ...p,
       bonusPoints: p.stat3,
-      bonusLabel: `${p.stat3} OT goal${p.stat3 !== 1 ? 's' : ''}`,
+      bonusLabel: `${p.stat3} OTG${p.stat3 !== 1 ? 's' : ''}`,
     }));
 
   const goalieBonuses = players
@@ -467,7 +467,7 @@ export const getBonusHunters = (players, topN = 10) => {
     .map(p => ({
       ...p,
       bonusPoints: p.stat2 * 2,
-      bonusLabel: `${p.stat2} shutout${p.stat2 !== 1 ? 's' : ''}`,
+      bonusLabel: `${p.stat2} SO${p.stat2 !== 1 ? 's' : ''}`,
     }));
 
   return [...skaterBonuses, ...goalieBonuses]
