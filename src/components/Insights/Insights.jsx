@@ -2,15 +2,9 @@ import React, { useState, useMemo } from 'react';
 import {
   Grid,
   Header,
-  Image,
   Loader,
   Segment,
   Statistic,
-  Card,
-  Icon,
-  Popup,
-  Button,
-  Table,
 } from 'semantic-ui-react';
 import { min, max, mean, customSort } from '../../utils/stats';
 import useUnselectedPlayers from '../../hooks/useUnselectedPlayers';
@@ -42,9 +36,12 @@ import {
   TOP_N,
 } from '../../constants/insights';
 import PoolOverview from './Insights.PoolOverview';
-import InsightDataTable from './Insights.InsightDataTable';
-import ThresholdControl from './Insights.ThresholdControl';
 import TeamCompositionPanel from './Insights.TeamCompositionPanel';
+import HitsAndMisses from './Insights.HitsAndMisses';
+import ValueAnalysis from './Insights.ValueAnalysis';
+import DraftDaySnapshot from './Insights.DraftDaySnapshot';
+import EliminationImpact from './Insights.EliminationImpact';
+import XFactors from './Insights.XFactors';
 import { useEliminatedTeamsContext } from '../../context/EliminatedTeamsContext';
 import '../../css/customStyle.css';
 import './Insights.Sections.css';
@@ -224,296 +221,36 @@ const Insights = ({
             </section>
 
             {/* Section 2: Hits & Misses */}
-            <section className='insights-section'>
-              <Header as='h3' dividing>
-                Hits & Misses
-              </Header>
-              <Grid columns={2} stackable className='pick-analysis-grid two-column'>
-
-                {/* Best Picks */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Power Plays
-                        <Popup
-                          content='Players with the most overall points.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={topPlayersList}
-                        color={INSIGHT_COLORS.BEST_PICKS}
-                        showPercentage={true}
-                        totalTeams={users.rosters.length}
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                {/* Today's Movers */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Today's Movers
-                        <Popup
-                          content='Players with the most points today.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        color={INSIGHT_COLORS.PERFECT_TEAM}
-                        emptyMessage='No players scored today yet'
-                        players={topPlayerGainers}
-                        showPercentage={true}
-                        totalTeams={users.rosters.length}
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                {/* Worst Picks */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Disappointments
-                        <Popup
-                          content="Players with the lowest overall points."
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={bottomPlayersList}
-                        color={INSIGHT_COLORS.WORST_PICKS}
-                        showPercentage={true}
-                        totalTeams={users.rosters.length}
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                {/* Missed Opportunities */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Missed Opportunities
-                        <Popup
-                          content='Highest scoring players that no one selected.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={topUnselectedPlayers}
-                        color={INSIGHT_COLORS.BEST_UNSELECTED}
-                        showPercentage={false}
-                        emptyMessage='No unselected players with points yet'
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-              </Grid>
-            </section>
+            <HitsAndMisses
+              bottomPlayersList={bottomPlayersList}
+              topPlayerGainers={topPlayerGainers}
+              topPlayersList={topPlayersList}
+              topUnselectedPlayers={topUnselectedPlayers}
+              usersRostersLength={users.rosters.length}
+            />
 
             {/* Section 3: Value Analysis and Position Breakdown */}
-            <section className='insights-section'>
-              <Header as='h3' dividing>
-                Value Analysis
-              </Header>
-              <Grid stackable columns={2} className='pick-analysis-grid three-column'>
-                {/* Most Advantageous Picks (Column 1) */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Biggest Steals
-                        <Popup
-                          content='Higher value players: lower selection rates but higher points. Rosters with these guys have an edge.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <ThresholdControl
-                        threshold={highThresh}
-                        setThreshold={setHighThresh}
-                        minThresh={highThreshMin}
-                        maxThresh={highThreshMax}
-                        isHighThreshold={true}
-                      />
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={bestByPickThresholdList}
-                        color={INSIGHT_COLORS.MOST_ADVANTAGEOUS}
-                        showPercentage={true}
-                        totalTeams={users.rosters.length}
-                        emptyMessage='No players match this threshold'
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                {/* Least Advantageous Picks (Column 2) */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Biggest Busts
-                        <Popup
-                          content='Lower value players: higher selection rates but lower points. Rosters with these picks have less of an advantage.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <ThresholdControl
-                        threshold={lowThresh}
-                        setThreshold={setLowThresh}
-                        minThresh={lowThreshMin}
-                        maxThresh={lowThreshMax}
-                        isHighThreshold={false}
-                      />
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={worstByPickThresholdList}
-                        color={INSIGHT_COLORS.LEAST_ADVANTAGEOUS}
-                        showPercentage={true}
-                        totalTeams={users.rosters.length}
-                        emptyMessage='No players match this threshold'
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                {/* Position Points Breakdown (Column 3) */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Position Breakdown
-                        <Popup
-                          content='Average points per player by position — see which positions are carrying the most weight.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        color={INSIGHT_COLORS.BEST_PICKS}
-                        emptyMessage='No position data available'
-                        headerRenderer={() => (
-                          <Table.Row>
-                            <Table.HeaderCell>Position</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Avg Pts</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Total Pts</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>% of Pool</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Remaining</Table.HeaderCell>
-                          </Table.Row>
-                        )}
-                        players={positionPointsData}
-                        rowRenderer={(item) => (
-                          <Table.Row key={item.position}>
-                            <Table.Cell collapsing><strong>{item.label}</strong></Table.Cell>
-                            <Table.Cell textAlign='right'>{item.avgPoints}</Table.Cell>
-                            <Table.Cell textAlign='right'>{item.totalPoints}</Table.Cell>
-                            <Table.Cell textAlign='right'>{item.shareOfPool}%</Table.Cell>
-                            <Table.Cell textAlign='right'>{item.remaining}/{item.playerCount}</Table.Cell>
-                          </Table.Row>
-                        )}
-                        visibleRows={5}
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-              </Grid>
-            </section>
+            <ValueAnalysis
+              bestByPickThresholdList={bestByPickThresholdList}
+              highThresh={highThresh}
+              highThreshMax={highThreshMax}
+              highThreshMin={highThreshMin}
+              lowThresh={lowThresh}
+              lowThreshMax={lowThreshMax}
+              lowThreshMin={lowThreshMin}
+              positionPointsData={positionPointsData}
+              setHighThresh={setHighThresh}
+              setLowThresh={setLowThresh}
+              usersRostersLength={users.rosters.length}
+              worstByPickThresholdList={worstByPickThresholdList}
+            />
 
             {/* Section 4: Draft Day Snapshot */}
-            <section className='insights-section'>
-              <Header as='h3' dividing>
-                Draft Day Snapshot
-              </Header>
-              <Grid stackable columns={2}>
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Consensus
-                        <Popup
-                          content='Players everyone wanted — the obvious picks that drove the draft.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={mostPickedPlayersList}
-                        color={INSIGHT_COLORS.MOST_PICKS}
-                        showPercentage={true}
-                        totalTeams={users.rosters.length}
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        All Your Eggs
-                        <Popup
-                          content='How many NHL teams rosters are spread across — fewer teams means higher risk if those teams get eliminated.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        color='blue'
-                        emptyMessage='No roster data available'
-                        headerRenderer={() => (
-                          <Table.Row>
-                            <Table.HeaderCell>Teams</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Rosters</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>% of Pool</Table.HeaderCell>
-                          </Table.Row>
-                        )}
-                        players={rosterDiversityData}
-                        rowRenderer={(bucket) => (
-                          <Table.Row key={bucket.teamCount}>
-                            <Table.Cell><strong>{bucket.teamCount}</strong></Table.Cell>
-                            <Table.Cell textAlign='right'>{bucket.rosterCount}</Table.Cell>
-                            <Table.Cell textAlign='right'>{bucket.percentage}%</Table.Cell>
-                          </Table.Row>
-                        )}
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-              </Grid>
-            </section>
+            <DraftDaySnapshot
+              mostPickedPlayersList={mostPickedPlayersList}
+              rosterDiversityData={rosterDiversityData}
+              usersRostersLength={users.rosters.length}
+            />
 
             {/* Section 5: Team Composition */}
             <section className='insights-section'>
@@ -549,235 +286,21 @@ const Insights = ({
             </section>
 
             {/* Section 6: Elimination Impact */}
-            <section className='insights-section'>
-              <Header as='h3' dividing>
-                Elimination Impact
-              </Header>
-
-              {/* FUTURE ENHANCEMENT: Elimination Timing Impact */}
-              {/* Shows when each roster's players were eliminated (Round 1, 2, 3, etc) */}
-              {/* Implementation Blocker: Current data only tracks final elimination status, */}
-              {/* not timing. Would require: */}
-              {/*   - Playoff bracket timestamps from NHL API (series end dates) */}
-              {/*   - Cross-reference player elimination date with roster picks */}
-              {/*   - Track: early losses (Round 1-2) vs late eliminations (Round 3+) */}
-              {/*   - Metric: "Roster Resilience" - how long rosters stayed alive */}
-
-              <Grid stackable columns={2}>
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Golf Course All-Stars
-                        <Popup
-                          content='The highest scoring players who traded their sticks for clubs — gone but not forgotten.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={eliminatedPlayersList}
-                        color={INSIGHT_COLORS.WORST_PICKS}
-                        showPercentage={true}
-                        totalTeams={users.rosters.length}
-                        emptyMessage='No eliminations yet'
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Dead Weight
-                        <Popup
-                          content='The rosters with the most points locked up in eliminated picks — capped value from out-of-action players.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={sunkCostData
-                          .filter(r => r.eliminatedCount > 0)
-                          .sort((a, b) => parseInt(b.sunkPercentage) - parseInt(a.sunkPercentage))
-                          .slice(0, 10)}
-                        color={INSIGHT_COLORS.WORST_PICKS}
-                        headerRenderer={() => (
-                          <Table.Row>
-                            <Table.HeaderCell>Owner</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Eliminated</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Sunk Points</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Total Points</Table.HeaderCell>
-                          </Table.Row>
-                        )}
-                        rowRenderer={(item) => (
-                          <Table.Row key={item.owner}>
-                            <Table.Cell collapsing><strong>{item.owner}</strong></Table.Cell>
-                            <Table.Cell textAlign='right'>{item.eliminatedCount}</Table.Cell>
-                            <Table.Cell textAlign='right'>{item.sunkPoints} ({item.sunkPercentage}%)</Table.Cell>
-                            <Table.Cell textAlign='right'>{item.totalPoints}</Table.Cell>
-                          </Table.Row>
-                        )}
-                        emptyMessage='No eliminations yet'
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-              </Grid>
-            </section>
+            <EliminationImpact
+              eliminatedPlayersList={eliminatedPlayersList}
+              sunkCostData={sunkCostData}
+              usersRostersLength={users.rosters.length}
+            />
 
             {/* Section 7: X Factors */}
-            <section className='insights-section'>
-              <Header as='h3' dividing>
-                X Factors
-              </Header>
-              <Grid stackable columns={2} className='pick-analysis-grid three-column'>
-
-                {/* Verhaeghe Effect */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Verhaeghe Effect
-                        <Popup
-                          content='Playoff performance vs. regular season — who elevates their game when it matters most.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={clutchFactorData}
-                        color='blue'
-                        rowRenderer={(player) => (
-                          <Table.Row key={player.id} negative={player.isEliminated}>
-                            <Table.Cell colspan='2'>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                                <strong style={{ fontSize: '14px' }}>{player.name}</strong>
-                                <span style={{
-                                  fontSize: '13px', fontWeight: 'bold',
-                                  color: player.clutchRating > 0 ? '#21ba45' : player.clutchRating < 0 ? '#db2828' : '#666'
-                                }}>
-                                  {player.clutchRating > 0 ? '+' : ''}{player.clutchRating}
-                                </span>
-                              </div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#999', marginTop: '4px' }}>
-                                <span>Playoff: {player.playoffPPG} PPG</span>
-                                <span>Regular: {player.regularSeasonPPG} PPG</span>
-                              </div>
-                            </Table.Cell>
-                          </Table.Row>
-                        )}
-                        emptyMessage={regularSeasonStats?.loading ? 'Loading regular season data...' : 'No data available yet'}
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                {/* Bonus Hunters */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Bonus Hunters
-                        <Popup
-                          content='Players earning extra points from overtime goals and shutouts.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={bonusHuntersList}
-                        color={INSIGHT_COLORS.BEST_PICKS}
-                        headerRenderer={() => (
-                          <Table.Row>
-                            <Table.HeaderCell>Player</Table.HeaderCell>
-                            <Table.HeaderCell />
-                            <Table.HeaderCell textAlign='right'>Selections</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Points</Table.HeaderCell>
-                            <Table.HeaderCell textAlign='right'>Bonus</Table.HeaderCell>
-                          </Table.Row>
-                        )}
-                        rowRenderer={(player, isMobile) => (
-                          <Table.Row key={player.id} negative={player.isEliminated}>
-                            <Table.Cell collapsing>
-                              <div
-                                style={{
-                                  height: isMobile ? '32px' : '44px',
-                                  marginLeft: -75,
-                                  marginTop: isMobile ? -5 : -9,
-                                  position: 'absolute',
-                                }}
-                              >
-                                <Image
-                                  alt={`${player.teamName} Logo`}
-                                  size='large'
-                                  src={player.teamLogo}
-                                  style={{
-                                    opacity: 0.1,
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    filter: player.isEliminated ? 'grayscale(1)' : 'none',
-                                  }}
-                                />
-                              </div>
-                              <Image
-                                alt={player.name}
-                                avatar
-                                src={player.headshot}
-                                style={{
-                                  filter: player.isEliminated ? 'grayscale(1)' : 'none',
-                                  opacity: player.isEliminated ? 0.5 : 1,
-                                }}
-                              />
-                              {player.name}
-                            </Table.Cell>
-                            <Table.Cell collapsing></Table.Cell>
-                            <Table.Cell textAlign='right'>{player.pickCount}</Table.Cell>
-                            <Table.Cell textAlign='right'><strong>{player.points}</strong></Table.Cell>
-                            <Table.Cell textAlign='right'> {player.bonusLabel} (+{player.bonusPoints})</Table.Cell>
-                          </Table.Row>
-                        )}
-                        emptyMessage='No bonus points scored yet'
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-                {/* Lone Wolves */}
-                <Grid.Column>
-                  <Card fluid>
-                    <Card.Content>
-                      <Card.Header>
-                        Lone Wolves
-                        <Popup
-                          content='Players only on one roster — exclusive picks that give their owner a unique edge, if they can produce.'
-                          position='right center'
-                          trigger={<Icon name='question circle outline' size='small' style={{ marginLeft: '6px', cursor: 'pointer', opacity: 0.6 }} />}
-                        />
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <InsightDataTable
-                        players={loneWolvesList}
-                        color={INSIGHT_COLORS.MOST_ADVANTAGEOUS}
-                        showPercentage={false}
-                        emptyMessage='No unique picks with points yet'
-                      />
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-
-              </Grid>
-            </section>
+            <XFactors
+              bonusHuntersList={bonusHuntersList}
+              clutchFactorData={clutchFactorData}
+              isMobile={isMobile}
+              loneWolvesList={loneWolvesList}
+              regularSeasonStats={regularSeasonStats}
+              usersRostersLength={users.rosters.length}
+            />
           </div>
         )}
       </Segment>

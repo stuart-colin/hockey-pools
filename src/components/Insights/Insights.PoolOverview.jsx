@@ -56,23 +56,36 @@ const PoolOverview = ({
     }, []);
 
     return (
-      <div style={{ position: 'relative', diplay: 'block', width: '100%', height: `${PROGRESS_BAR_HEIGHT}px` }}>
+      <div
+        style={{
+          display: 'block',
+          height: `${PROGRESS_BAR_HEIGHT}px`,
+          position: 'relative',
+          width: '100%',
+        }}
+      >
         <Progress
-          value={value}
-          total={total}
+          className='gradient-progress'
           progress='ratio'
           style={{
-            height: `${PROGRESS_BAR_HEIGHT}px`,
             '--progress-ratio': value / total,
+            height: `${PROGRESS_BAR_HEIGHT}px`,
           }}
-          className='gradient-progress'
+          total={total}
+          value={value}
         />
         {/* Markers container - using relative positioning with negative margin */}
         <div>
           {groupedPoints.map((point, idx) => {
             const positionPercent = (point.roundedValue / total) * 100;
             const popupContent = (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                }}
+              >
                 {point.labels.reverse().map((label, labelIdx) => (
                   <div key={labelIdx}>{label}: {point.roundedValue}</div>
                 ))}
@@ -83,29 +96,28 @@ const PoolOverview = ({
               <div
                 key={idx}
                 style={{
-                  position: 'absolute',
+                  cursor: 'pointer',
                   left: `${positionPercent}%`,
+                  position: 'absolute',
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
-                  cursor: 'pointer',
                   zIndex: 10,
                 }}
               >
                 <Popup
-                  content={popupContent}
-                  // position='bottom'
                   basic
+                  content={popupContent}
                   hideOnScroll
                   trigger={
                     <div
+                      className='marker-line'
                       style={{
-                        width: '6px',
-                        height: `${MARKER_HEIGHT}px`,
                         backgroundColor: 'rgba(0, 0, 0, 0.3)',
                         borderRadius: '2px',
+                        height: `${MARKER_HEIGHT}px`,
                         transition: 'all 0.2s ease',
+                        width: '6px',
                       }}
-                      className='marker-line'
                     />
                   }
                 />
@@ -140,14 +152,21 @@ const PoolOverview = ({
                 <Statistic.Label>Most</Statistic.Label>
               </Statistic>
             </Statistic.Group>
-            <div style={{ marginTop: '24px' }}>
-              <p style={{ fontSize: '14px', marginBottom: '8px', fontWeight: '600' }}>
+            <div
+              style={{
+                marginTop: '24px',
+              }}
+            >
+              <p
+                style={{
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  marginBottom: '8px',
+                }}
+              >
                 Roster Completion
               </p>
               <ProgressBarWithMarkers
-                // value={averagePlayersRemaining}
-                value={mostPlayersRemaining}
-                total={16}
                 dataPoints={[
                   { value: leastPlayersRemaining, label: 'Least', position: 'left' },
                   { value: q1PlayersRemaining, label: 'Q1 (25%)', position: 'left-center' },
@@ -157,6 +176,8 @@ const PoolOverview = ({
                   { value: mostPlayersRemaining, label: 'Most', position: 'right' },
                 ]}
                 label='Players'
+                total={16}
+                value={mostPlayersRemaining}
               />
             </div>
           </Card.Content>
@@ -184,14 +205,21 @@ const PoolOverview = ({
                 <Statistic.Label>Most</Statistic.Label>
               </Statistic>
             </Statistic.Group>
-            <div style={{ marginTop: '24px' }}>
-              <p style={{ fontSize: '14px', marginBottom: '8px', fontWeight: '600' }}>
+            <div
+              style={{
+                marginTop: '24px',
+              }}
+            >
+              <p
+                style={{
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  marginBottom: '8px',
+                }}
+              >
                 Point Distribution
               </p>
               <ProgressBarWithMarkers
-                // value={averagePoints}
-                value={mostPoints}
-                total={mostPoints}
                 dataPoints={[
                   { value: leastPoints, label: 'Least', position: 'left' },
                   { value: q1Points, label: 'Q1 (25%)', position: 'left-center' },
@@ -201,6 +229,8 @@ const PoolOverview = ({
                   { value: mostPoints, label: 'Most', position: 'right' },
                 ]}
                 label='Points'
+                total={mostPoints}
+                value={mostPoints}
               />
             </div>
           </Card.Content>

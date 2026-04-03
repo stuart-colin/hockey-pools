@@ -483,7 +483,7 @@ export const getBonusHunters = (players, topN = 10) => {
  */
 export const getLoneWolves = (players, topN = 10) => {
   return players
-    .filter(p => p.pickCount === 1 && p.points > 0)
+    .filter(p => p.pickCount === 1)
     .sort((a, b) => b.points - a.points)
     .slice(0, topN);
 };

@@ -41,7 +41,7 @@ const ThresholdControl = ({
         <span className='bound-max'>{maxThresh}%</span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'space-between' }}>
+      <div style={{ alignItems: 'center', display: 'flex', gap: '12px', justifyContent: 'space-between' }}>
         <p className='threshold-description' style={{ margin: 0 }}>{description}</p>
         <Button
           icon

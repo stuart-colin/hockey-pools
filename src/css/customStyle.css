@@ -19,17 +19,17 @@
 }
 
 .expandedStyle {
-  max-height: calc(100dvh - 482px);
+  max-height: calc(100dvh - 475px);
   overflow: auto;
 }
 
 .expandedPlayersStyle {
-  max-height: calc(100dvh - 489px);
+  max-height: calc(100dvh - 482px);
   overflow: auto;
 }
 
 .expandedRosterStyle {
-  max-height: calc(100dvh - 580px);
+  max-height: calc(100dvh - 572px);
   overflow: auto;
 }
 

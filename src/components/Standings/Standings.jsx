@@ -158,7 +158,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
       <Segment
         attached="bottom"
         style={{
-          maxHeight: isMobile || isTablet ? 'calc(100dvh - 215px)' : 'calc(100dvh - 471px)',
+          maxHeight: isMobile || isTablet ? 'calc(100dvh - 215px)' : 'calc(100dvh - 460px)',
           overflow: 'auto',
           padding: 0,
         }}

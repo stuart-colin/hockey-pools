@@ -109,7 +109,7 @@ const TeamCompositionPanel = ({
                           paddingBottom: '8px',
                         }}
                       >
-                        <span style={{ fontSize: '14px', fontWeight: '600' }}>
+                        <span style={{ fontWeight: '600', fontSize: '14px' }}>
                           {position}
                         </span>
                       </div>

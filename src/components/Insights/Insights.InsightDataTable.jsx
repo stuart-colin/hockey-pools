@@ -39,7 +39,7 @@ const InsightDataTable = ({
   const isMobile = useIsMobile();
 
   if (!players || players.length === 0) {
-    return <p style={{ color: '#999', fontStyle: 'italic', textAlign: 'center', padding: '16px 0', margin: 0 }}>{emptyMessage}</p>;
+    return <p style={{ color: '#999', fontStyle: 'italic', margin: 0, padding: '16px 0', textAlign: 'center' }}>{emptyMessage}</p>;
   }
 
   const displayRows = isExpanded
@@ -115,7 +115,7 @@ const InsightDataTable = ({
       {showPercentage && <Table.Cell collapsing textAlign='right'>
         {totalTeams ? (
           <>
-            {player.pickCount} <span style={{ fontSize: '0.9em', color: '#666' }}>({Math.round((player.pickCount / totalTeams) * 100)}%)</span>
+            {player.pickCount} <span style={{ color: '#666', fontSize: '0.9em' }}>({Math.round((player.pickCount / totalTeams) * 100)}%)</span>
           </>
         ) : (
           `${player.pickCount}%`
@@ -161,13 +161,13 @@ const InsightDataTable = ({
           {/* Fade effect when collapsed */}
           {!isExpanded && hasMore && (
             <div style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '50px',
               background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
+              bottom: 0,
+              height: '50px',
+              left: 0,
               pointerEvents: 'none',
+              position: 'absolute',
+              right: 0,
             }} />
           )}
         </div>
