@@ -6,7 +6,7 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import { POSITION_ARRAYS } from '../../constants/positions';
-import Search from '../Search';
+import StandingsSearch from './Standings.Search';
 import StandingsItem from './Standings.Item';
 import StandingsListHeader from './Standings.ListHeader';
 import '../../css/customStyle.css';
@@ -148,7 +148,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
           pot={pot}
           season={season}
         />
-        <Search
+        <StandingsSearch
           loading={users.loading}
           onSearchResultClick={handleSearchSelect}
           placeholder="Search Rosters"

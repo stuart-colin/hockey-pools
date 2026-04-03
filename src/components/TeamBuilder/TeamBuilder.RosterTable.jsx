@@ -123,7 +123,7 @@ const RosterTable = ({
             {/* Team stats - compact */}
             <Label size='small' style={{ display: 'inline-flex', alignItems: 'center' }}>
               {myTeam.length}/{TOTAL_ROSTER_SIZE}
-              {Object.entries(teamCount).slice(0, 2).map(([team, count]) => (
+              {Object.entries(teamCount).map(([team, count]) => (
                 <Label.Detail key={team} style={{ display: 'inline-flex', alignItems: 'center' }}>
                   <Image
                     src={`${TEAM_LOGO_URL}${team}_light.svg`}

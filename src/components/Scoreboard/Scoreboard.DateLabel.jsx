@@ -20,12 +20,13 @@ const DateLabel = ({ date, dateOffset, onNext, onPrev, onReset }) => (
       gap: '0.4em',
     }}
   >
+    {/* Disabled until we add a date picker
     <Icon
       name='calendar outline'
       style={{
         margin: '0.5em',
       }}
-    />
+    /> */}
     <Icon
       name='chevron left'
       onClick={(e) => {

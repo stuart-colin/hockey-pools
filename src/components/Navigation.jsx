@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, Menu, Sidebar, Icon, Segment, Label } from 'semantic-ui-react';
+import {
+  Checkbox,
+  Icon,
+  Label,
+  Menu,
+  Segment,
+  Sidebar,
+} from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
+
 import { useBreakpoint } from '../hooks/useBreakpoint';
-import AuthButtons from './AuthButtons';
+import { AuthButtons } from './Auth';
 
 const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);

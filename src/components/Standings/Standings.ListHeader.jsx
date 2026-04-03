@@ -3,7 +3,7 @@ import { Flag, Grid, Header, Icon, Popup } from 'semantic-ui-react';
 
 const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot, season }) => {
   const getHeaderTitle = () => {
-    if (moversMode === 'points') return "Point Gainers";
+    if (moversMode === 'points') return 'Point Gainers';
     if (moversMode === 'rank') return 'Rank Climbers';
     return `${season} Standings`;
   };
@@ -19,7 +19,7 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
       <Grid.Row columns={3}>
         <Grid.Column
           textAlign='left'
-          width={3}
+          width={4}
         >
           {liveStatsEnabled && (
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -27,12 +27,13 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
                 <Popup
                   content={tooltip}
                   key={mode}
-                  position="right center"
+                  position='right center'
                   trigger={
                     <Icon
                       color={moversMode === mode ? color : 'grey'}
                       name={icon}
                       onClick={() => onMoversToggle(mode)}
+                      size='large'
                       style={{ cursor: 'pointer' }}
                     />
                   }
@@ -43,11 +44,11 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
         </Grid.Column>
         <Grid.Column
           textAlign='center'
-          width={10}
+          width={8}
         >
           <Header
-            color="blue"
-            size="medium"
+            color='blue'
+            size='medium'
             style={{ whiteSpace: 'nowrap' }}
           >
             {getHeaderTitle()}
@@ -55,18 +56,19 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
         </Grid.Column>
         <Grid.Column
           textAlign='right'
-          width={3}>
+          width={4}>
           <Popup
             content={
               <div>
-                Pot: ${pot} <Flag name="canada" />
+                Pot: ${pot} <Flag name='canada' />
               </div>
             }
             position='left center'
             trigger={
               <Icon
-                color="green"
-                name="dollar sign"
+                color='green'
+                name='dollar sign'
+                size='large'
               />
             }
           />
