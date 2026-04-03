@@ -496,7 +496,7 @@ const Insights = ({ users, players, season, regularSeasonStats }) => {
               <Header as='h3' dividing>
                 The Dream vs. The Reality
               </Header>
-              <Grid stackable columns={2}>
+              <Grid columns={2} className='team-composition-grid' stackable>
                 <Grid.Column>
                   <TeamCompositionPanel
                     title='The Dream Team'

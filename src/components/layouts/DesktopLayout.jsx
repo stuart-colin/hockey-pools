@@ -15,11 +15,6 @@ const DesktopLayout = ({
 }) => {
   return (
     <Fragment>
-      <Navigation
-        liveStatsEnabled={liveStatsEnabled}
-        onLiveStatsToggle={toggleLiveStats}
-        onMenuSelect={setActiveItem}
-      />
       <Grid stackable>
         <Grid.Row>
           {isWide && (
@@ -32,6 +27,11 @@ const DesktopLayout = ({
             </Grid.Column>
           )}
           <Grid.Column width={isWide ? 12 : 16}>
+            <Navigation
+              liveStatsEnabled={liveStatsEnabled}
+              onLiveStatsToggle={toggleLiveStats}
+              onMenuSelect={setActiveItem}
+            />
             {contentMap[activeItem] || null}
           </Grid.Column>
         </Grid.Row>

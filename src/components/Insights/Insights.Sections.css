@@ -237,9 +237,12 @@
   }
 }
 
-/* Semantic UI Overrides for consistency */
-.insights-section .ui.statistic {
-  margin: 8px 0 !important;
+/* Responsive Grid - Team Composition Panels */
+@media (max-width: 1024px) {
+  .insights-section .team-composition-grid.ui.grid > .column {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+  }
 }
 
 .insights-section .ui.statistics {
