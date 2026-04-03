@@ -1,22 +1,16 @@
 import React from 'react';
 import {
   Card,
-  Grid,
-  Header,
   Icon,
   Image,
   Popup,
-  Segment,
   Statistic,
 } from 'semantic-ui-react';
 
-import { chunkArray } from '../../utils/insightCalculations';
 import {
-  GRID_LAYOUT,
-  POSITION_ORDER,
   TOTAL_ROSTER_SIZE,
 } from '../../constants/insights';
-import useBreakpoint from '../../hooks/useBreakpoint';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 /**
  * TeamCompositionPanel - Displays team roster organized by position
@@ -25,7 +19,6 @@ import useBreakpoint from '../../hooks/useBreakpoint';
 const TeamCompositionPanel = ({
   color,
   getTeamByPosition,
-  renderStatistics,
   team,
   teamPoints,
   teamRemaining,
