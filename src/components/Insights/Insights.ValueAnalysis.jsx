@@ -39,6 +39,7 @@ const ValueAnalysis = ({
                 Biggest Steals
                 <Popup
                   content='Higher value players: lower selection rates but higher points. Rosters with these guys have an edge.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -83,6 +84,7 @@ const ValueAnalysis = ({
                 Biggest Busts
                 <Popup
                   content='Lower value players: higher selection rates but lower points. Rosters with these picks have less of an advantage.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -127,6 +129,7 @@ const ValueAnalysis = ({
                 Position Breakdown
                 <Popup
                   content='Average points per player by position — see which positions are carrying the most weight.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon

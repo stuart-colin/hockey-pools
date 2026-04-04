@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Alert from "./Alert";
@@ -54,7 +54,8 @@ const AppContent = ({ season, setSeason }) => {
   const regularSeasonStats = useRegularSeasonStats(playoffTeams, season);
   const users = useUsers(season, eliminatedTeams, eliminatedLoading);
   const todayScores = useScores(devTools.testScoresDate, { skip: !liveStatsEnabled });
-  const { boxscores } = useBoxscores(liveStatsEnabled ? todayScores.games : []);
+  const gamesToBoxscore = useMemo(() => liveStatsEnabled ? todayScores.games : [], [liveStatsEnabled, todayScores.games]);
+  const { boxscores } = useBoxscores(gamesToBoxscore);
   const { augmentedUsers, playerDeltas } = useLiveStats(todayScores.games, boxscores, users);
   const activeUsers = liveStatsEnabled ? augmentedUsers : users;
   const players = usePlayerData(activeUsers);

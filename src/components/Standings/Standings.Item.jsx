@@ -8,10 +8,8 @@ import '../../css/customStyle.css';
 const StandingsItem = React.forwardRef(
   (
     {
-      hasLiveGames,
       isRosterVisible,
       onToggleRoster,
-      poolSize,
       rankDelta,
       user,
     },
@@ -28,7 +26,12 @@ const StandingsItem = React.forwardRef(
         >
           <List.Content
             floated="left"
-            style={{ minWidth: '2.5em', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
+            style={{
+              minWidth: '2.5em',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start'
+            }}
             verticalAlign="middle"
           >
             {user.rank}
@@ -82,11 +85,20 @@ const StandingsItem = React.forwardRef(
           <List.Content
             style={{ maxWidth: '40%' }}
           >
-            <List.Header style={{ paddingBottom: '5px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <List.Header
+              style={{
+                paddingBottom: '5px',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center'
+              }}>
               {user.owner &&
                 user.owner.country &&
                 user.owner.country.toLowerCase() !== 'n/a' && (
-                  <Flag style={{ opacity: 0.5 }} name={user.owner.country.toLowerCase()} />
+                  <Flag
+                    style={{ opacity: 0.5 }}
+                    name={user.owner.country.toLowerCase()}
+                  />
                 )}
               {user.owner.name}
             </List.Header>
@@ -101,7 +113,15 @@ const StandingsItem = React.forwardRef(
               name={!isRosterVisible ? 'chevron down' : 'chevron up'}
             />
           </List.Content>
-          <List.Content floated='right' verticalAlign='middle' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-end' }}>
+          <List.Content
+            floated='right'
+            verticalAlign='middle'
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-end'
+            }}>
             {/* <List.Description style={{ display: 'flex', flexDirection: 'column' }}> */}
             <span>
               {user.points} Points

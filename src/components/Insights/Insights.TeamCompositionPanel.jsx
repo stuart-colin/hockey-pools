@@ -44,6 +44,7 @@ const TeamCompositionPanel = ({
             {tooltip && (
               <Popup
                 content={tooltip}
+                hideOnScroll
                 position='right center'
                 trigger={
                   <Icon

@@ -23,6 +23,12 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
     if (!users.loading) setLoading(false);
   }, [users.loading]);
 
+  useEffect(() => {
+    if (!liveStatsEnabled) {
+      setMoversMode('standings');
+    }
+  }, [liveStatsEnabled]);
+
   const rankedRosters = useMemo(() => {
     if (!users.rosters || users.rosters.length === 0) {
       return [];
@@ -75,7 +81,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
 
     return withRank.map((roster) => ({
       ...roster,
-      rankDelta: roster.livePoints > 0 ? baseRankMap[roster.owner.id] - roster.rank : 0,
+      rankDelta: baseRankMap[roster.owner.id] - roster.rank,
     }));
   }, [users.rosters]);
 
@@ -172,7 +178,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
           </Dimmer>
         ) : (
           <List
-            animated
+            animated={isMobile || isTablet ? false : true}
             divided
             relaxed
             selection
