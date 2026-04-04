@@ -113,7 +113,6 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
               {liveStatsBadge}
             </Menu.Item>
           </Sidebar>
-          <Segment basic style={{ marginTop: '50px' }} />
         </>
       ) : (
         <Menu stackable>
