@@ -10,6 +10,7 @@ import {
 } from 'semantic-ui-react';
 
 import { customSort } from '../utils/stats';
+import '../css/customStyle.css';
 
 const TeamDetails = ({ users, players, season }) => {
   const [loading, setLoading] = useState(true);

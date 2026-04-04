@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Flag, Icon, Image, List, Transition } from 'semantic-ui-react';
-import RosterView from '../RosterView';
+import StandingsRosterView from './Standings.RosterView';
 import { getAvatarSvg, TOP_10_COLORS } from './Standings.utils';
 import '../../css/customStyle.css';
 
@@ -165,7 +165,7 @@ const StandingsItem = React.forwardRef(
                 flexBasis: '100%',
               }}
             >
-              <RosterView user={user} />
+              <StandingsRosterView user={user} />
             </div>
           </Transition>
         </List.Item>
