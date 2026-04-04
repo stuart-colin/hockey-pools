@@ -82,7 +82,7 @@ const DraftDaySnapshot = ({
                 emptyMessage='No roster data available'
                 headerRenderer={() => (
                   <Table.Row>
-                    <Table.HeaderCell>Teams</Table.HeaderCell>
+                    <Table.HeaderCell>NHL Teams</Table.HeaderCell>
                     <Table.HeaderCell textAlign='right'>Rosters</Table.HeaderCell>
                     <Table.HeaderCell textAlign='right'>% of Pool</Table.HeaderCell>
                   </Table.Row>

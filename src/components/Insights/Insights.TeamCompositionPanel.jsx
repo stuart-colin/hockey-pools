@@ -137,7 +137,6 @@ const TeamCompositionPanel = ({
                                   opacity: player.isEliminated ? 0.5 : 1,
                                 }}
                               />
-                              <vatar />
                               {player.name}
                             </div>
                             <div

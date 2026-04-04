@@ -1,14 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   Flag,
   Grid,
   Header,
-  Icon,
   Segment,
   Statistic
 } from 'semantic-ui-react';
-import useIsMobile from '../hooks/useBreakpoint';
-import StatsCard from './StatsCard';
 import StatsSlim from './StatsSlim';
 import rosterPositions from '../constants/rosterPositions';
 import eliminatedPlayers from '../utils/eliminatedPlayers';
@@ -23,8 +20,6 @@ import '../css/customStyle.css';
 const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
   const { roster: rawRoster, error, isLoading } = useMyTeam(rosterDataEndpoint);
-  const isMobile = useIsMobile();
-  const [cardView, setCardView] = useState(isMobile);
 
   const roster = useMemo(() => {
     if (!rawRoster) return null;
@@ -87,7 +82,7 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
         </Header>
         {playersInPosition.map((player, playerIndex) => (
           <div style={{ paddingBottom: '10px' }} key={playerIndex}>
-            {cardView ? <StatsSlim player={player} /> : <StatsCard player={player} />}
+            <StatsSlim player={player} />
           </div>
         ))}
       </Grid.Column>
@@ -98,39 +93,32 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
     <Segment.Group>
       <Segment attached='top'>
         <Grid>
-          <Grid.Row columns={3}>
-            <Grid.Column width={2} />
-            <Grid.Column width={12} textAlign='center'>
-              <Header size='medium' color='blue'>
+          <Grid.Row columns={2}>
+            <Grid.Column width={8}>
+              <Header size='medium' color='blue' style={{ marginBottom: '8px' }}>
                 {roster.owner.name}
               </Header>
-              <span>
-                {roster.owner && roster.owner.country && roster.owner.country.toLowerCase() !== 'n/a' &&
-                  <Flag name={roster.owner.country.toLowerCase()} />
-                }
+              <div style={{ fontSize: '0.95em', color: '#666' }}>
+                {roster.owner && roster.owner.country && roster.owner.country.toLowerCase() !== 'n/a' && (
+                  <>
+                    <Flag name={roster.owner.country.toLowerCase()} />
+                    {' '}
+                  </>
+                )}
                 {roster.owner.region}
-              </span>
+              </div>
             </Grid.Column>
-            <Grid.Column width={2} textAlign='right'>
-              <Icon
-                color='blue'
-                size='large'
-                onClick={() => setCardView(!cardView)}
-                style={{ marginBottom: '10px', cursor: 'pointer' }}
-                name={cardView ? 'id badge outline' : 'id card outline'}
-              />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row columns={1}>
-            <Grid.Column width={16} textAlign='center'>
-              <Statistic horizontal size='mini' color='blue'>
-                <Statistic.Value>{countPoints(roster)}</Statistic.Value>
-                <Statistic.Label>Pool Points</Statistic.Label>
-              </Statistic>
-              <Statistic horizontal size='mini' color='blue'>
-                <Statistic.Value>{eliminatedPlayers(roster, eliminatedTeams)}/16</Statistic.Value>
-                <Statistic.Label>Players Remaining</Statistic.Label>
-              </Statistic>
+            <Grid.Column width={8} textAlign='right'>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-end' }}>
+                <Statistic horizontal color='blue' size='mini'>
+                  <Statistic.Value>{countPoints(roster)}</Statistic.Value>
+                  <Statistic.Label>Points</Statistic.Label>
+                </Statistic>
+                <Statistic horizontal color='blue' size='mini'>
+                  <Statistic.Value>{eliminatedPlayers(roster, eliminatedTeams)}/16</Statistic.Value>
+                  <Statistic.Label>Players</Statistic.Label>
+                </Statistic>
+              </div>
             </Grid.Column>
           </Grid.Row>
         </Grid>
