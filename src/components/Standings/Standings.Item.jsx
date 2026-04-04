@@ -42,7 +42,7 @@ const StandingsItem = React.forwardRef(
               >
                 <Icon
                   color="green"
-                  name="caret up"
+                  name="arrow up"
                   style={{
                     marginRight: '0em',
                   }}
@@ -60,7 +60,7 @@ const StandingsItem = React.forwardRef(
               >
                 <Icon
                   color="red"
-                  name="caret down"
+                  name="arrow down"
                   style={{
                     marginRight: '0em',
                   }}
@@ -116,7 +116,7 @@ const StandingsItem = React.forwardRef(
                 >
                   <Icon
                     color="green"
-                    name="caret up"
+                    name="lightning"
                     style={{
                       marginRight: '0em',
                     }}
