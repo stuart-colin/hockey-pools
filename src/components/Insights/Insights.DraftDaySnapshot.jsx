@@ -28,6 +28,7 @@ const DraftDaySnapshot = ({
                 Consensus
                 <Popup
                   content='Players everyone wanted — the obvious picks that drove the draft.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -61,6 +62,7 @@ const DraftDaySnapshot = ({
                 All Your Eggs
                 <Popup
                   content='How many NHL teams rosters are spread across — fewer teams means higher risk if those teams get eliminated.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon

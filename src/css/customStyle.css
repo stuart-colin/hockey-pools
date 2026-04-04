@@ -77,10 +77,10 @@
     max-height: calc(100dvh - 251px);
   }
 
-  .ui.blue.card {
+  /* .ui.blue.card {
     width: 100%;
     box-sizing: border-box;
-  }
+  } */
 
   .teamLogoSlim {
     width: 400px;

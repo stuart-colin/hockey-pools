@@ -31,6 +31,7 @@ const HitsAndMisses = ({
                 Power Plays
                 <Popup
                   content='Players with the most overall points.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -65,6 +66,7 @@ const HitsAndMisses = ({
                 Today's Movers
                 <Popup
                   content='Players with the most points today.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -100,6 +102,8 @@ const HitsAndMisses = ({
                 Disappointments
                 <Popup
                   content="Players with the lowest overall points."
+                  hideOnScroll
+
                   position='right center'
                   trigger={(
                     <Icon
@@ -134,6 +138,7 @@ const HitsAndMisses = ({
                 Missed Opportunities
                 <Popup
                   content='Highest scoring players that no one selected.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon

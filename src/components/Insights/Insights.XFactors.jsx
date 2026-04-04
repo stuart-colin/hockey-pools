@@ -34,6 +34,7 @@ const XFactors = ({
                 Verhaeghe Effect
                 <Popup
                   content='Playoff performance vs. regular season — who elevates their game when it matters most.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -89,6 +90,7 @@ const XFactors = ({
                 Bonus Hunters
                 <Popup
                   content='Players earning extra points from overtime goals and shutouts.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -171,6 +173,7 @@ const XFactors = ({
                 Lone Wolves
                 <Popup
                   content='Players only on one roster — exclusive picks that give their owner a unique edge, if they can produce.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon

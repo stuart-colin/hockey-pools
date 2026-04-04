@@ -1,5 +1,12 @@
 import React from 'react';
-import { Flag, Grid, Header, Icon, Popup } from 'semantic-ui-react';
+
+import {
+  Flag,
+  Grid,
+  Header,
+  Icon,
+  Popup
+} from 'semantic-ui-react';
 
 const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot, season }) => {
   const getHeaderTitle = () => {
@@ -26,8 +33,9 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
               {moverModes.map(({ mode, icon, color, tooltip }) => (
                 <Popup
                   content={tooltip}
+                  hideOnScroll
                   key={mode}
-                  position='right center'
+                  position='bottom left'
                   trigger={
                     <Icon
                       color={moversMode === mode ? color : 'grey'}
@@ -63,7 +71,8 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
                 Pot: ${pot} <Flag name='canada' />
               </div>
             }
-            position='left center'
+            hideOnScroll
+            position='bottom right'
             trigger={
               <Icon
                 color='green'
