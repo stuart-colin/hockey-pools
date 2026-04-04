@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import '../css/customStyle.css';
+import '../css/customStyle.css';
 
 const StatsSlim = ({ player }) => {
 

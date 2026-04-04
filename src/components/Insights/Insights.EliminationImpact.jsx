@@ -38,6 +38,7 @@ const EliminationImpact = ({
                 Golf Course All-Stars
                 <Popup
                   content='The highest scoring players who traded their sticks for clubs — gone but not forgotten.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon
@@ -72,6 +73,7 @@ const EliminationImpact = ({
                 Dead Weight
                 <Popup
                   content='The rosters with the most points locked up in eliminated picks — capped value from out-of-action players.'
+                  hideOnScroll
                   position='right center'
                   trigger={(
                     <Icon

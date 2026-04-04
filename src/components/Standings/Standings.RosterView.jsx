@@ -1,8 +1,8 @@
 import React from 'react';
-import StatsSlim from './StatsSlim';
-import '../css/customStyle.css';
+import StatsSlim from '../StatsSlim';
+import '../../css/customStyle.css';
 
-const RosterView = ({ user }) => {
+const StandingsRosterView = ({ user }) => {
 
   const roster = [
     ...(user.left || []),
@@ -30,4 +30,4 @@ const RosterView = ({ user }) => {
   )
 }
 
-export default RosterView;
+export default StandingsRosterView;

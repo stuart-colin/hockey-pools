@@ -9,7 +9,7 @@ import DesktopLayout from "./layouts/DesktopLayout";
 import Header from "./Header";
 import Insights from "./Insights";
 import MobileLayout from "./layouts/MobileLayout";
-import ParticipantRoster from "./ParticipantRoster";
+import MyTeam from "./MyTeam";
 import PlayerDetails from "./PlayerDetails";
 import Scoreboard from "./Scoreboard";
 import SplashScreen from "./SplashScreen";
@@ -84,7 +84,7 @@ const AppContent = ({ season, setSeason }) => {
       />
     ),
     "my-team": (
-      <ParticipantRoster
+      <MyTeam
         playerDeltas={playerDeltas}
         rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint}
       />
