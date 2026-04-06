@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
-import { Flag, Icon, Image, List, Transition } from 'semantic-ui-react';
-import StandingsRosterView from './Standings.RosterView';
+import { Flag, Grid, Icon, Image, List, Transition } from 'semantic-ui-react';
+import RosterGrid from '../MyTeam/MyTeam.RosterGrid';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { getAvatarSvg, TOP_10_COLORS } from './Standings.utils';
 import '../../css/customStyle.css';
 
@@ -16,6 +17,7 @@ const StandingsItem = React.forwardRef(
     ref
   ) => {
     const backgroundColor = user.rank <= 10 ? TOP_10_COLORS[user.rank - 1] : '';
+    const { isMobile, isTablet, isWide } = useBreakpoint();
 
     return (
       <Fragment>
@@ -165,7 +167,13 @@ const StandingsItem = React.forwardRef(
                 flexBasis: '100%',
               }}
             >
-              <StandingsRosterView user={user} />
+              {isMobile || isWide ? (
+                <RosterGrid roster={user} />
+              ) : (
+                <Grid stackable columns={isMobile || isWide ? 1 : isTablet ? 2 : 3}>
+                  <RosterGrid roster={user} />
+                </Grid>
+              )}
             </div>
           </Transition>
         </List.Item>
