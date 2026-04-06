@@ -6,20 +6,22 @@ import {
   Segment,
   Statistic
 } from 'semantic-ui-react';
-import StatsSlim from './StatsSlim';
-import rosterPositions from '../constants/rosterPositions';
-import eliminatedPlayers from '../utils/eliminatedPlayers';
-import normalizePlayer from '../utils/normalizePlayer';
-import { augmentRoster } from '../utils/parseLiveStats';
-import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
-import countPoints from '../utils/countPoints';
-import useMyTeam from '../hooks/useMyTeam';
-import { POSITION_ARRAYS } from '../constants/positions';
-import '../css/customStyle.css';
+import RosterGrid from './MyTeam.RosterGrid';
+import eliminatedPlayers from '../../utils/eliminatedPlayers';
+import normalizePlayer from '../../utils/normalizePlayer';
+import { augmentRoster } from '../../utils/parseLiveStats';
+import { useEliminatedTeamsContext } from '../../context/EliminatedTeamsContext';
+import countPoints from '../../utils/countPoints';
+import useMyTeam from '../../hooks/useMyTeam';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { POSITION_ARRAYS } from '../../constants/positions';
+import '../../css/customStyle.css';
 
 const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
   const { roster: rawRoster, error, isLoading } = useMyTeam(rosterDataEndpoint);
+
+  const { isMobile, isTablet } = useBreakpoint();
 
   const roster = useMemo(() => {
     if (!rawRoster) return null;
@@ -65,30 +67,6 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
     );
   }
 
-  const rosterPlayers = rosterPositions.map((position, index) => {
-    const playersInPosition =
-      position === 'utility'
-        ? roster.utility
-          ? [roster.utility]
-          : []
-        : Array.isArray(roster[position])
-          ? roster[position]
-          : [];
-
-    return (
-      <Grid.Column key={index}>
-        <Header size='small' color='blue'>
-          {position.charAt(0).toUpperCase() + position.slice(1)}
-        </Header>
-        {playersInPosition.map((player, playerIndex) => (
-          <div style={{ paddingBottom: '10px' }} key={playerIndex}>
-            <StatsSlim player={player} />
-          </div>
-        ))}
-      </Grid.Column>
-    );
-  });
-
   return (
     <Segment.Group>
       <Segment attached='top'>
@@ -125,7 +103,9 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
       </Segment>
 
       <Segment attached='bottom' className={'expandedRosterStyle'}>
-        <Grid stackable columns={3}>{rosterPlayers}</Grid>
+        <Grid stackable columns={isMobile ? 1 : isTablet ? 2 : 3}>
+          <RosterGrid roster={roster} />
+        </Grid>
       </Segment>
     </Segment.Group>
   );

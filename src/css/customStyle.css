@@ -52,16 +52,19 @@
 }
 
 .teamLogoSlim {
-  opacity: 0.15;
+  opacity: 0.1;
   width: 350px;
-  top: -5em;
-  left: 7em;
-  right: 0em;
-  bottom: 0em;
+  top: -6em;
+  right: -8em;
   position: absolute;
   pointer-events: none;
-  -webkit-filter: blur(3px);
-  filter: blur(3px);
+  /* -webkit-filter: blur(3px); */
+  /* filter: blur(3px); */
+}
+
+.ui.blue.card {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media screen and (max-width: 767px) {
@@ -77,10 +80,6 @@
     max-height: calc(100dvh - 251px);
   }
 
-  /* .ui.blue.card {
-    width: 100%;
-    box-sizing: border-box;
-  } */
 
   .teamLogoSlim {
     width: 400px;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Table, Icon, Button } from 'semantic-ui-react';
-import { INSIGHT_COLORS } from '../../constants/insights';
-import useIsMobile from '../../hooks/useBreakpoint';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 
 /**
@@ -36,7 +35,7 @@ const InsightDataTable = ({
   emptyMessage = 'No data to display',
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isMobile = useIsMobile();
+  const { isMobile, isTablet } = useBreakpoint();
 
   if (!players || players.length === 0) {
     return <p style={{ color: '#999', fontStyle: 'italic', margin: 0, padding: '16px 0', textAlign: 'center' }}>{emptyMessage}</p>;
@@ -112,15 +111,17 @@ const InsightDataTable = ({
       </Table.Cell>
       <Table.Cell collapsing>
       </Table.Cell>
-      {showPercentage && <Table.Cell collapsing textAlign='right'>
-        {totalTeams ? (
-          <>
-            {player.pickCount} <span style={{ color: '#666', fontSize: '0.9em' }}>({Math.round((player.pickCount / totalTeams) * 100)}%)</span>
-          </>
-        ) : (
-          `${player.pickCount}%`
-        )}
-      </Table.Cell>}
+      {
+        showPercentage && <Table.Cell collapsing textAlign='right'>
+          {totalTeams ? (
+            <>
+              {player.pickCount} <span style={{ color: '#666', fontSize: '0.9em' }}>({Math.round((player.pickCount / totalTeams) * 100)}%)</span>
+            </>
+          ) : (
+            `${player.pickCount}%`
+          )}
+        </Table.Cell>
+      }
       <Table.Cell textAlign='right'>
         <strong>{player.points}</strong>
       </Table.Cell>
@@ -133,12 +134,14 @@ const InsightDataTable = ({
           )}
         </strong>
       </Table.Cell>
-      {customColumns.map((col) => (
-        <Table.Cell key={col.key} textAlign='right'>
-          {col.render ? col.render(player) : player[col.key]}
-        </Table.Cell>
-      ))}
-    </Table.Row>
+      {
+        customColumns.map((col) => (
+          <Table.Cell key={col.key} textAlign='right'>
+            {col.render ? col.render(player) : player[col.key]}
+          </Table.Cell>
+        ))
+      }
+    </Table.Row >
   );
 
   return (
