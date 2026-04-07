@@ -250,30 +250,27 @@ const PlayerDetails = ({ users, players, season }) => {
   return (
     <Segment.Group>
       <Segment attached='top'>
-        <Grid columns='equal'>
-          <Grid.Row>
-            <Grid.Column />
-            <Grid.Column>
-              <Header color='blue' textAlign='center' size='medium' style={{ whiteSpace: 'nowrap' }}>
-                Player Details
-              </Header>
+        <Grid>
+          <Grid.Row columns={2}>
+            <Grid.Column width={14}>
+              {filtersVisible && (
+                playerFilters()
+              )}
             </Grid.Column>
-            <Grid.Column textAlign='right'>
+            <Grid.Column width={2} textAlign='right'>
               <Button
                 basic={!filtersVisible}
                 color='blue'
                 icon
                 onClick={() => setFiltersVisible(!filtersVisible)}
                 size='mini'
+                style={{ margin: '5px 0' }}
               >
                 <Icon name='filter' />
               </Button>
             </Grid.Column>
           </Grid.Row>
         </Grid>
-        {filtersVisible && (
-          playerFilters()
-        )}
       </Segment>
       <Segment attached='bottom' className={'expandedPlayersStyle'} style={{ paddingTop: 0 }}>
         {loading ? (

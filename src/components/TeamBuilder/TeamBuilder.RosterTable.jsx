@@ -97,7 +97,7 @@ const RosterTable = ({
         <div style={{
           position: 'fixed',
           top: isExpanded ? 55 : 'auto',
-          bottom: isExpanded ? 55 : 60,
+          bottom: 55,
           left: 0,
           right: 0,
           zIndex: 100,
@@ -244,11 +244,16 @@ const RosterTable = ({
   return (
     <>
       <Grid.Column style={{ padding: 0 }}>
-        <div style={{ height: '60dvh', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ height: '70dvh', display: 'flex', flexDirection: 'column' }}>
           <Grid stackable style={{ padding: 0, position: 'sticky', top: 0, zIndex: 10, background: 'white', marginBottom: '10px', flex: 'none' }}>
-            <Grid.Row>
+            <Grid.Row verticalAlign='middle'>
               <Grid.Column width={4}>
-                <Header as='h4' >My Team</Header>
+                <Header
+                  as='h4'
+                  style={{ margin: 0 }}
+                >
+                  My Team
+                </Header>
               </Grid.Column>
               <Grid.Column width={12}>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center' }}>

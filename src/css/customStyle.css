@@ -8,6 +8,11 @@
   /* Smooth fade-in effect */
 }
 
+.sidebar-bottom {
+  margin-bottom: 50px !important;
+  z-index: 10 !important;
+}
+
 /* Gradually show the app content */
 .visible-content {
   opacity: 1;
@@ -19,17 +24,17 @@
 }
 
 .expandedStyle {
-  max-height: calc(100dvh - 475px);
+  max-height: calc(100dvh - 166px);
   overflow: auto;
 }
 
 .expandedPlayersStyle {
-  max-height: calc(100dvh - 482px);
+  max-height: calc(100dvh - 233px);
   overflow: auto;
 }
 
 .expandedRosterStyle {
-  max-height: calc(100dvh - 523px);
+  max-height: calc(100dvh - 262px);
   overflow: auto;
 }
 
@@ -69,7 +74,7 @@
 
 @media screen and (max-width: 767px) {
   .expandedStyle {
-    max-height: calc(100dvh - 154px);
+    max-height: calc(100dvh - 112px);
   }
 
   .expandedPlayersStyle {

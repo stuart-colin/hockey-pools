@@ -55,7 +55,7 @@ const Scoreboard = ({ todayScores }) => {
         top: 0,
         backgroundColor: 'white',
         width: '100vw',
-        zIndex: '1000',
+        zIndex: '10',
       }}
       textAlign='center'
     >

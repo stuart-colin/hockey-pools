@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { Grid } from 'semantic-ui-react';
-import Navigation from '../Navigation';
+import Navigation from '../Navigation/Navigation';
 import Standings from '../Standings';
+import { max } from '../../utils/stats';
 
 const DesktopLayout = ({
   activeItem,
@@ -15,7 +16,7 @@ const DesktopLayout = ({
 }) => {
   return (
     <Fragment>
-      <Grid stackable>
+      <Grid stackable style={{ marginTop: 4, maxHeight: 'calc(100dvh - 55px)' }}>
         <Grid.Row>
           {isWide && (
             <Grid.Column width={4}>

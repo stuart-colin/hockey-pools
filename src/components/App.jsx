@@ -6,7 +6,6 @@ import CommissionersCorner from "./CommissionersCorner";
 import CountdownTimer from "./CountdownTimer";
 import DevTools from "./DevTools";
 import DesktopLayout from "./layouts/DesktopLayout";
-import Header from "./Header";
 import Insights from "./Insights";
 import MobileLayout from "./layouts/MobileLayout";
 import MyTeam from "./MyTeam";
@@ -132,9 +131,6 @@ const AppContent = ({ season, setSeason }) => {
             style={{
               paddingTop: "55px",
             }}>
-            {(isDesktop || isWide) &&
-              <Header season={season} />
-            }
             {showAlert && (
               <Alert
                 messageHeading={alertMessageHeading}

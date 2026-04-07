@@ -17,7 +17,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
   const [activeRosterKey, setActiveRosterKey] = useState(null);
   const [moversMode, setMoversMode] = useState('standings'); // 'standings' | 'points' | 'rank'
   const itemRefs = useRef({});
-  const { isMobile, isTablet } = useBreakpoint();
+  const { isMobile, isTablet, isWide } = useBreakpoint();
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -164,7 +164,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
       <Segment
         attached="bottom"
         style={{
-          maxHeight: isMobile || isTablet ? 'calc(100dvh - 215px)' : 'calc(100dvh - 460px)',
+          maxHeight: isMobile || isTablet ? 'calc(100dvh - 215px)' : isWide ? 'calc(100dvh - 193px)' : 'calc(100dvh - 270px)',
           overflow: 'auto',
           padding: 0,
         }}

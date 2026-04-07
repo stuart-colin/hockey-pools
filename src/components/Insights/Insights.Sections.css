@@ -3,13 +3,13 @@
 .insights-container {
   padding: 24px !important;
   background: #fafbfc !important;
-  max-height: calc(100dvh - 475px);
+  max-height: calc(100dvh - 166px);
   overflow-y: auto;
 }
 
 @media (max-width: 1024px) {
   .insights-container {
-    max-height: calc(100dvh - 160px);
+    max-height: calc(100dvh - 110px);
     overflow-y: auto;
   }
 }

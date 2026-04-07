@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import {
   Checkbox,
   Icon,
+  Image,
   Label,
   Menu,
-  Segment,
-  Sidebar,
 } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
 
-import { useBreakpoint } from '../hooks/useBreakpoint';
-import { AuthButtons } from './Auth';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { AuthButtons } from '../Auth';
+import CustomSidebar from './CustomSidebar';
 
 const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -74,7 +74,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
     <>
       {isMobileOrTablet ? (
         <>
-          <Menu fixed='bottom'>
+          <Menu fixed='bottom' fluid>
             <Menu.Item onClick={() => setSidebarVisible(!sidebarVisible)}>
               <Icon
                 color='blue'
@@ -82,40 +82,55 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
                 size='large'
               />
             </Menu.Item>
+            <Menu.Item header style={{ flex: 1, justifyContent: 'center', color: '#2185d0', fontSize: '1.3em' }}>
+              {menuItems.find(item => item.name === activeItem)?.label}
+            </Menu.Item>
             <Menu.Item position='right'>
               <AuthButtons />
             </Menu.Item>
           </Menu>
 
-          <Sidebar
-            as={Menu}
-            animation='overlay'
-            direction='bottom'
-            icon='labeled'
-            vertical
-            visible={sidebarVisible}
-            onHide={() => setSidebarVisible(false)}
+          <CustomSidebar
+            isVisible={sidebarVisible}
+            onClose={() => setSidebarVisible(false)}
           >
-            {renderMenuItems()}
-            {isAuthenticated && (
-              <Menu.Item
-                name='team-builder'
-                active={activeItem === 'team-builder'}
-                onClick={() => {
-                  setActiveItem('team-builder');
-                  setSidebarVisible(false);
-                }}
-              >
-                Team Builder
+            <Menu vertical fluid>
+              <Menu.Item header>
+                <Image
+                  alt='bps annual hockey pool logo'
+                  centered
+                  size='small'
+                  src='/public/../logo.svg'
+                />
               </Menu.Item>
-            )}
-            <Menu.Item>
-              {liveStatsBadge}
-            </Menu.Item>
-          </Sidebar>
+              {renderMenuItems()}
+              {isAuthenticated && (
+                <Menu.Item
+                  name='team-builder'
+                  active={activeItem === 'team-builder'}
+                  onClick={() => {
+                    setActiveItem('team-builder');
+                    setSidebarVisible(false);
+                  }}
+                >
+                  Team Builder
+                </Menu.Item>
+              )}
+              <Menu.Item>
+                {liveStatsBadge}
+              </Menu.Item>
+            </Menu>
+          </CustomSidebar>
         </>
       ) : (
         <Menu stackable>
+          <Menu.Item>
+            <Image
+              src='/public/../logo.svg'
+              size='mini'
+              alt='bps annual hockey pool logo'
+            />
+          </Menu.Item>
           {renderMenuItems()}
           <Menu.Menu position='right'>
             {isAuthenticated && (

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Grid } from 'semantic-ui-react';
-import Navigation from '../Navigation';
+import Navigation from '../Navigation/Navigation';
 
 const MobileLayout = ({
   activeItem,
