@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Message, Icon } from "semantic-ui-react";
 
+const messageStyle = {
+  margin: "10px",
+};
+
+const closeIconStyle = {
+  cursor: "pointer",
+  position: "absolute",
+  top: "10px",
+  right: "10px",
+};
+
 const Alert = ({ messageHeading, message, onClose }) => {
   const [visible, setVisible] = useState(true);
 
@@ -34,13 +45,11 @@ const Alert = ({ messageHeading, message, onClose }) => {
   return (
     <Message
       warning
-      style={{
-        margin: "10px",
-      }}
+      style={messageStyle}
     >
       <Icon
         name="close"
-        style={{ cursor: "pointer", position: "absolute", top: "10px", right: "10px" }}
+        style={closeIconStyle}
         onClick={handleClose}
       />
       <Message.Content>

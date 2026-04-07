@@ -1,0 +1,261 @@
+/*
+ * App shell layout — avoids per-component calc(100dvh - Npx) by using flex + min-height: 0.
+ *
+ * Chrome (fixed/sticky UI) is expressed as named variables so offsets stay consistent:
+ * - --app-scoreboard-height: in-flow scoreboard strip (see .app-scoreboard)
+ * - --app-mobile-nav-height: Semantic UI bottom Menu approximate height + safe area
+ *
+ * Desktop: route column clips; scroll inside .app-desktop-content-scroll / segments.
+ * Mobile: one scroll root (.app-mobile-route-scroll) so all routes scroll without per-page class names.
+ */
+
+:root {
+  --app-scoreboard-height: 52px;
+  --app-mobile-nav-height: 52px;
+  --app-mobile-nav-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --app-mobile-bottom-offset: calc(var(--app-mobile-nav-height) + var(--app-mobile-nav-safe-bottom));
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Full viewport column: scoreboard + main stack */
+.app-shell {
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Scoreboard is in normal flow (not position:fixed) so main area can flex without padding-top hacks */
+.app-scoreboard {
+  flex: 0 0 auto;
+  width: 100%;
+  z-index: 10;
+}
+
+/* Alert, countdown, and routed layouts live here */
+/* flex-basis: 0 — not "auto" — so children can shrink below content size and scroll */
+.app-main-stack {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Routed page column: grows and passes height to children */
+.app-page-column {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Route column shell: clip only — real scroll is on inner segments (keeps headers / sticky rows fixed) */
+.app-fill-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile: wrapper fills app-page-column; single scroll child; bottom nav is position:fixed */
+.app-mobile-wrapper {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/*
+ * Scroll root (no Semantic Grid — Grid broke the flex height chain). This element must
+ * receive a bounded height (flex + min-height:0) and overflow-y: auto so content scrolls.
+ */
+.app-mobile-wrapper > .app-mobile-route-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Bottom inset for fixed Semantic bottom Menu + safe area */
+.app-mobile-page {
+  padding-bottom: var(--app-mobile-bottom-offset);
+}
+
+.app-mobile-page .expandedStyle,
+.app-mobile-page .expandedPlayersStyle,
+.app-mobile-page .expandedRosterStyle,
+.app-mobile-page .insights-container {
+  max-height: none !important;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-mobile-page .ui.segments {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-mobile-page .ui.segments > .segment:first-child:not(:last-child) {
+  flex: 0 0 auto;
+}
+
+/* Desktop: two-column row stretches; each column is a flex stack */
+.app-desktop-root {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/*
+ * Desktop shell: only the top-level Grid inside .app-desktop-root (DesktopLayout).
+ * Child selector must not match nested .ui.grid (Insights, TeamBuilder inner layouts, etc.).
+ */
+.app-desktop-root > .ui.grid {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  margin-top: 4px !important;
+}
+
+.app-desktop-root > .ui.grid > .row {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+}
+
+.app-desktop-root > .ui.grid > .row > .column {
+  display: flex !important;
+  flex-direction: column;
+  min-height: 0;
+  /* Width stays from Semantic UI (.four.wide, .twelve.wide, etc.) */
+}
+
+.app-desktop-content {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Let expanded table segments and Insights fill the scroll column instead of max-height calc */
+.app-desktop-content-scroll .expandedStyle,
+.app-desktop-content-scroll .expandedPlayersStyle,
+.app-desktop-content-scroll .expandedRosterStyle,
+.app-desktop-content-scroll .insights-container {
+  max-height: none !important;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Single root Segment (e.g. DevTools) — no Segment.Group */
+.app-desktop-content-scroll > .ui.segment {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.app-desktop-content-scroll > .ui.segments {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Multi-segment groups: header/filter row fixed; scrollable body grows */
+.app-desktop-content-scroll > .ui.segments > .segment:first-child:not(:last-child) {
+  flex: 0 0 auto;
+}
+
+/* Standings (sidebar or full page): list segment scrolls */
+.standings-root.ui.segments {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.standings-root .ui.segment:first-child {
+  flex: 0 0 auto;
+}
+
+.standings-root .standings-list-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Team builder: two columns fill row height */
+.team-builder-page.ui.segments {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Inner segment must fill the group and be a flex column — otherwise the grid’s flex:1 has no height
+   and the main row can collapse to 0 (min-height:0 on the row). */
+.team-builder-page > .ui.segment {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Only the main two-column grid under the first segment — not any nested grids */
+.team-builder-page > .ui.segment > .ui.grid {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+}
+
+.team-builder-page > .ui.segment > .ui.grid > .row {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+}
+
+.team-builder-page > .ui.segment > .ui.grid > .row > .column {
+  flex: 1 1 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}

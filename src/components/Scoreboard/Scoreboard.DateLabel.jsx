@@ -11,32 +11,35 @@ function prettyDate(date) {
   });
 }
 
+const dateLabelRootStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.4em',
+};
+
+const dateNavIconStyle = {
+  cursor: 'pointer',
+  margin: 7,
+};
+
+const resetDateIconStyle = {
+  cursor: 'pointer',
+  margin: '0.5em',
+};
+
 const DateLabel = ({ date, dateOffset, onNext, onPrev, onReset }) => (
   <Label
     color='blue'
-    style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '0.4em',
-    }}
+    style={dateLabelRootStyle}
   >
-    {/* Disabled until we add a date picker
-    <Icon
-      name='calendar outline'
-      style={{
-        margin: '0.5em',
-      }}
-    /> */}
+    {/* Disabled until we add a date picker */}
     <Icon
       name='chevron left'
       onClick={(e) => {
         e.stopPropagation();
         onPrev();
       }}
-      style={{
-        cursor: 'pointer',
-        margin: 7,
-      }}
+      style={dateNavIconStyle}
       title='Previous day'
     />
     {date ? prettyDate(date) : 'No games scheduled'}
@@ -46,10 +49,7 @@ const DateLabel = ({ date, dateOffset, onNext, onPrev, onReset }) => (
         e.stopPropagation();
         onNext();
       }}
-      style={{
-        cursor: 'pointer',
-        margin: 7,
-      }}
+      style={dateNavIconStyle}
       title='Next day'
     />
     {dateOffset !== 0 && (
@@ -59,10 +59,7 @@ const DateLabel = ({ date, dateOffset, onNext, onPrev, onReset }) => (
           e.stopPropagation();
           onReset();
         }}
-        style={{
-          cursor: 'pointer',
-          margin: '0.5em',
-        }}
+        style={resetDateIconStyle}
         title='Back to today'
       />
     )}

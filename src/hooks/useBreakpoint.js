@@ -3,14 +3,15 @@ import { useMediaQuery } from 'react-responsive';
 /**
  * useBreakpoint - Generalized hook for responsive breakpoints
  * Returns device type and individual boolean flags for mobile, tablet, desktop
- * 
+ *
  * Breakpoints:
  *   Mobile: < 768px
  *   Tablet: 768px - 1024px
- *   Desktop: > 1024px
- * 
+ *   Desktop: 1024px - 1440px
+ *   Wide: > 1440px
+ *
  * Usage:
- *   const { isMobile, isTablet, isDesktop, deviceType } = useBreakpoint();
+ *   const { isMobile, isTablet, isDesktop, isWide, deviceType } = useBreakpoint();
  *   return isTablet ? <TabletLayout /> : isMobile ? <Mobile /> : <Desktop />;
  */
 const useBreakpoint = () => {
@@ -33,13 +34,4 @@ const useBreakpoint = () => {
   };
 };
 
-/**
- * useIsMobile - Backward compatible hook
- * Returns true if viewport width is 767px or less
- */
-const useIsMobile = () => {
-  return useBreakpoint().isMobile;
-};
-
-export default useIsMobile;
 export { useBreakpoint };

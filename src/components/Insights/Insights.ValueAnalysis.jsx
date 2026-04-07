@@ -11,6 +11,12 @@ import { INSIGHT_COLORS } from '../../constants/insights';
 import InsightDataTable from './Insights.InsightDataTable';
 import ThresholdControl from './Insights.ThresholdControl';
 
+const popupQuestionIconStyle = {
+  cursor: 'pointer',
+  marginLeft: '6px',
+  opacity: 0.6,
+};
+
 const ValueAnalysis = ({
   bestByPickThresholdList,
   worstByPickThresholdList,
@@ -45,11 +51,7 @@ const ValueAnalysis = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />
@@ -90,11 +92,7 @@ const ValueAnalysis = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />
@@ -135,11 +133,7 @@ const ValueAnalysis = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />

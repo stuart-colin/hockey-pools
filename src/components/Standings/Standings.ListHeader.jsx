@@ -8,6 +8,19 @@ import {
   Popup
 } from 'semantic-ui-react';
 
+const moverIconsRowStyle = {
+  display: 'flex',
+  gap: '8px',
+};
+
+const clickableIconStyle = {
+  cursor: 'pointer',
+};
+
+const headerTitleStyle = {
+  whiteSpace: 'nowrap',
+};
+
 const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot, season }) => {
   const getHeaderTitle = () => {
     if (moversMode === 'points') return 'Point Gainers';
@@ -29,7 +42,7 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
           width={4}
         >
           {liveStatsEnabled && (
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div style={moverIconsRowStyle}>
               {moverModes.map(({ mode, icon, color, tooltip }) => (
                 <Popup
                   content={tooltip}
@@ -42,7 +55,7 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
                       name={icon}
                       onClick={() => onMoversToggle(mode)}
                       size='large'
-                      style={{ cursor: 'pointer' }}
+                      style={clickableIconStyle}
                     />
                   }
                 />
@@ -57,7 +70,7 @@ const StandingsListHeader = ({ liveStatsEnabled, moversMode, onMoversToggle, pot
           <Header
             color='blue'
             size='medium'
-            style={{ whiteSpace: 'nowrap' }}
+            style={headerTitleStyle}
           >
             {getHeaderTitle()}
           </Header>

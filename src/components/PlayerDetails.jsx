@@ -15,7 +15,42 @@ import {
 import { customSort } from '../utils/stats';
 import useUnselectedPlayers from '../hooks/useUnselectedPlayers';
 import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
-import '../css/customStyle.css';
+
+const filtersRowStyle = {
+  background: 'white',
+  alignItems: 'center',
+};
+
+const filterCheckboxesColumnStyle = {
+  display: 'flex',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+};
+
+const sortablePlayerHeaderStyle = {
+  cursor: 'pointer',
+  paddingTop: 13,
+  background: 'white',
+};
+
+const filterToggleButtonStyle = {
+  margin: '5px 0',
+};
+
+const segmentBottomNoTopPaddingStyle = {
+  paddingTop: 0,
+};
+
+const loaderMarginStyle = {
+  marginTop: 13,
+};
+
+const stickyPlayerTableHeaderStyle = {
+  position: 'sticky',
+  top: 0,
+  background: 'white',
+  zIndex: 2,
+};
 
 const PlayerDetails = ({ users, players, season }) => {
   const [loading, setLoading] = useState(true);
@@ -118,14 +153,7 @@ const PlayerDetails = ({ users, players, season }) => {
     return (
       <Grid stackable columns='equal'>
         <Grid.Row columns={4}
-          style={{
-            position: 'sticky',
-            top: 0,
-            left: 0,
-            zIndex: 10,
-            background: 'white',
-            alignItems: 'center'
-          }}
+          style={filtersRowStyle}
         >
           <Grid.Column>
             <Input
@@ -161,7 +189,7 @@ const PlayerDetails = ({ users, players, season }) => {
               value={positionFilter}
             />
           </Grid.Column>
-          <Grid.Column style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+          <Grid.Column style={filterCheckboxesColumnStyle}>
             <Checkbox
               label='Active'
               checked={showActive}
@@ -195,11 +223,7 @@ const PlayerDetails = ({ users, players, season }) => {
           setReverse(false);
         }
       }}
-      style={{
-        cursor: 'pointer',
-        paddingTop: 13,
-        background: 'white'
-      }}
+      style={sortablePlayerHeaderStyle}
     >
       {header}
       {sortPlayerOption === header && !reverse ? (
@@ -264,7 +288,7 @@ const PlayerDetails = ({ users, players, season }) => {
                 icon
                 onClick={() => setFiltersVisible(!filtersVisible)}
                 size='mini'
-                style={{ margin: '5px 0' }}
+                style={filterToggleButtonStyle}
               >
                 <Icon name='filter' />
               </Button>
@@ -272,20 +296,15 @@ const PlayerDetails = ({ users, players, season }) => {
           </Grid.Row>
         </Grid>
       </Segment>
-      <Segment attached='bottom' className={'expandedPlayersStyle'} style={{ paddingTop: 0 }}>
+      <Segment attached='bottom' className={'expandedPlayersStyle'} style={segmentBottomNoTopPaddingStyle}>
         {loading ? (
-          <Loader active={loading} inline='centered' size='large' style={{ marginTop: 13 }}>
+          <Loader active={loading} inline='centered' size='large' style={loaderMarginStyle}>
             Loading Player Details...
           </Loader>
         ) : (
           <Table basic='very' singleLine unstackable selectable>
             <Table.Header
-              style={{
-                position: 'sticky',
-                top: 0,
-                background: 'white',
-                zIndex: 2,
-              }}>
+              style={stickyPlayerTableHeaderStyle}>
               <Table.Row>
                 <Table.HeaderCell />
                 {playerHeaders}

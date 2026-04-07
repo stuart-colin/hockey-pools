@@ -9,15 +9,19 @@ import { POSITION_ARRAYS } from '../../constants/positions';
 import StandingsSearch from './Standings.Search';
 import StandingsItem from './Standings.Item';
 import StandingsListHeader from './Standings.ListHeader';
-import '../../css/customStyle.css';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+
+const standingsListSegmentStyle = {
+  overflow: 'auto',
+  padding: 0,
+};
 
 const Standings = ({ liveStatsEnabled, season, users }) => {
   const [loading, setLoading] = useState(true);
   const [activeRosterKey, setActiveRosterKey] = useState(null);
   const [moversMode, setMoversMode] = useState('standings'); // 'standings' | 'points' | 'rank'
   const itemRefs = useRef({});
-  const { isMobile, isTablet, isWide } = useBreakpoint();
+  const { isMobile, isTablet } = useBreakpoint();
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -145,7 +149,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
   ));
 
   return (
-    <Segment.Group>
+    <Segment.Group className='standings-root'>
       <Segment attached="top">
         <StandingsListHeader
           liveStatsEnabled={liveStatsEnabled}
@@ -163,11 +167,8 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
       </Segment>
       <Segment
         attached="bottom"
-        style={{
-          maxHeight: isMobile || isTablet ? 'calc(100dvh - 215px)' : isWide ? 'calc(100dvh - 193px)' : 'calc(100dvh - 270px)',
-          overflow: 'auto',
-          padding: 0,
-        }}
+        className='standings-list-scroll'
+        style={standingsListSegmentStyle}
       >
         {loading ? (
           <Dimmer

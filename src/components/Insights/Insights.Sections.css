@@ -3,15 +3,10 @@
 .insights-container {
   padding: 24px !important;
   background: #fafbfc !important;
-  max-height: calc(100dvh - 166px);
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-}
-
-@media (max-width: 1024px) {
-  .insights-container {
-    max-height: calc(100dvh - 110px);
-    overflow-y: auto;
-  }
+  max-height: none !important;
 }
 
 .insights-section {

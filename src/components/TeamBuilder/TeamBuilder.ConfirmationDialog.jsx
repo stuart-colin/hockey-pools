@@ -1,6 +1,42 @@
 import React from 'react';
 import { Button, Modal, Header, Icon } from 'semantic-ui-react';
 
+const modalWhiteStyle = {
+  background: '#fff',
+};
+
+const modalContentStyle = {
+  background: '#fff',
+  padding: '40px 20px',
+  textAlign: 'center',
+};
+
+const iconSectionStyle = {
+  marginBottom: '20px',
+};
+
+const modalIconStyle = {
+  marginBottom: '15px',
+};
+
+const modalTitleStyle = {
+  marginTop: '10px',
+  marginBottom: '20px',
+  color: '#333',
+};
+
+const modalBodyTextStyle = {
+  fontSize: '16px',
+  color: '#666',
+  marginBottom: '0',
+};
+
+const modalActionsStyle = {
+  background: '#f5f5f5',
+  borderTop: '1px solid #ddd',
+  padding: '10px 10px',
+};
+
 /**
  * Reusable confirmation dialog for clear and submit actions
  */
@@ -18,27 +54,27 @@ const ConfirmationDialog = ({
       onClose={onCancel}
       open={isOpen}
       size='small'
-      style={{ background: '#fff' }}
+      style={modalWhiteStyle}
     >
-      <Modal.Content style={{ background: '#fff', padding: '40px 20px', textAlign: 'center' }}>
-        <div style={{ marginBottom: '20px' }}>
+      <Modal.Content style={modalContentStyle}>
+        <div style={iconSectionStyle}>
           <Icon
             name={isClearing ? 'trash' : 'checkmark'}
             size='huge'
             color={isClearing ? 'red' : 'green'}
-            style={{ marginBottom: '15px' }}
+            style={modalIconStyle}
           />
-          <h2 style={{ marginTop: '10px', marginBottom: '20px', color: '#333' }}>
+          <h2 style={modalTitleStyle}>
             {isClearing ? 'Clear Team' : 'Submit Team'}
           </h2>
         </div>
-        <p style={{ fontSize: '16px', color: '#666', marginBottom: '0' }}>
+        <p style={modalBodyTextStyle}>
           {isClearing
             ? 'Are you sure you want to clear your entire team? This action cannot be undone.'
             : 'Are you sure you want to submit this team? You can edit it later if needed.'}
         </p>
       </Modal.Content>
-      <Modal.Actions style={{ background: '#f5f5f5', borderTop: '1px solid #ddd', padding: '10px 10px' }}>
+      <Modal.Actions style={modalActionsStyle}>
         <Button onClick={onCancel}>
           Cancel
         </Button>

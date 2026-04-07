@@ -22,6 +22,61 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
  *   - customColumns: Array of additional columns for player renderer
  *   - emptyMessage: Message when no data
 */
+
+const emptyStateTextStyle = {
+  color: '#999',
+  fontStyle: 'italic',
+  margin: 0,
+  padding: '16px 0',
+  textAlign: 'center',
+};
+
+const logoBackdropWrapperStyle = (isMobile) => ({
+  height: isMobile ? '32px' : '44px',
+  marginLeft: -75,
+  marginTop: isMobile ? -5 : -9,
+  position: 'absolute',
+});
+
+const teamLogoWatermarkStyle = (player) => ({
+  opacity: 0.1,
+  height: '100%',
+  objectFit: 'cover',
+  filter: player.isEliminated ? 'grayscale(1)' : 'none',
+});
+
+const playerHeadshotStyle = (player) => ({
+  filter: player.isEliminated ? 'grayscale(1)' : 'none',
+  opacity: player.isEliminated ? 0.5 : 1,
+});
+
+const selectionPercentMutedStyle = {
+  color: '#666',
+  fontSize: '0.9em',
+};
+
+const liveDeltaPositiveStyle = {
+  color: '#21ba45',
+};
+
+const tableOuterStyle = {
+  position: 'relative',
+};
+
+const tableHorizontalScrollStyle = {
+  overflowX: 'scroll',
+};
+
+const collapsedTableFadeStyle = {
+  background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
+  bottom: 0,
+  height: '50px',
+  left: 0,
+  pointerEvents: 'none',
+  position: 'absolute',
+  right: 0,
+};
+
 const InsightDataTable = ({
   players,
   color,
@@ -38,7 +93,7 @@ const InsightDataTable = ({
   const { isMobile, isTablet } = useBreakpoint();
 
   if (!players || players.length === 0) {
-    return <p style={{ color: '#999', fontStyle: 'italic', margin: 0, padding: '16px 0', textAlign: 'center' }}>{emptyMessage}</p>;
+    return <p style={emptyStateTextStyle}>{emptyMessage}</p>;
   }
 
   const displayRows = isExpanded
@@ -79,33 +134,20 @@ const InsightDataTable = ({
     >
       <Table.Cell collapsing>
         <div
-          style={{
-            height: isMobile ? '32px' : '44px',
-            marginLeft: -75,
-            marginTop: isMobile ? -5 : -9,
-            position: 'absolute',
-          }}
+          style={logoBackdropWrapperStyle(isMobile)}
         >
           <Image
             alt={`${player.teamName} Logo`}
             size='large'
             src={player.teamLogo}
-            style={{
-              opacity: 0.1,
-              height: '100%',
-              objectFit: 'cover',
-              filter: player.isEliminated ? 'grayscale(1)' : 'none',
-            }}
+            style={teamLogoWatermarkStyle(player)}
           />
         </div>
         <Image
           alt={player.name}
           avatar
           src={player.headshot}
-          style={{
-            filter: player.isEliminated ? 'grayscale(1)' : 'none',
-            opacity: player.isEliminated ? 0.5 : 1,
-          }}
+          style={playerHeadshotStyle(player)}
         />
         {player.name}
       </Table.Cell>
@@ -115,7 +157,7 @@ const InsightDataTable = ({
         showPercentage && <Table.Cell collapsing textAlign='right'>
           {totalTeams ? (
             <>
-              {player.pickCount} <span style={{ color: '#666', fontSize: '0.9em' }}>({Math.round((player.pickCount / totalTeams) * 100)}%)</span>
+              {player.pickCount} <span style={selectionPercentMutedStyle}>({Math.round((player.pickCount / totalTeams) * 100)}%)</span>
             </>
           ) : (
             `${player.pickCount}%`
@@ -128,7 +170,7 @@ const InsightDataTable = ({
       <Table.Cell>
         <strong>
           {player._delta?.points > 0 ? (
-            <span style={{ color: '#21ba45' }}>+{player._delta.points}</span>
+            <span style={liveDeltaPositiveStyle}>+{player._delta.points}</span>
           ) : (
             null
           )}
@@ -146,8 +188,8 @@ const InsightDataTable = ({
 
   return (
     <div>
-      <div style={{ position: 'relative' }}>
-        <div style={{ overflowX: 'scroll' }}>
+      <div style={tableOuterStyle}>
+        <div style={tableHorizontalScrollStyle}>
           <Table padded singleLine unstackable selectable color={color}>
             <Table.Header>
               {headerRenderer ? headerRenderer(isMobile) : renderDefaultHeaders()}
@@ -163,15 +205,7 @@ const InsightDataTable = ({
 
           {/* Fade effect when collapsed */}
           {!isExpanded && hasMore && (
-            <div style={{
-              background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
-              bottom: 0,
-              height: '50px',
-              left: 0,
-              pointerEvents: 'none',
-              position: 'absolute',
-              right: 0,
-            }} />
+            <div style={collapsedTableFadeStyle} />
           )}
         </div>
       </div>

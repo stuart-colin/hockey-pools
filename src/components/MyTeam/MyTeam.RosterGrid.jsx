@@ -6,6 +6,10 @@ import {
 import StatsSlim from '../StatsSlim';
 import rosterPositions from '../../constants/rosterPositions';
 
+const playerSlotSpacingStyle = {
+  paddingBottom: '10px',
+};
+
 const RosterGrid = ({ roster }) => {
   const rosterPlayers = rosterPositions.map((position, index) => {
     const playersInPosition =
@@ -23,7 +27,7 @@ const RosterGrid = ({ roster }) => {
           {position.charAt(0).toUpperCase() + position.slice(1)}
         </Header>
         {playersInPosition.map((player, playerIndex) => (
-          <div style={{ paddingBottom: '10px' }} key={playerIndex}>
+          <div style={playerSlotSpacingStyle} key={playerIndex}>
             <StatsSlim player={player} />
           </div>
         ))}

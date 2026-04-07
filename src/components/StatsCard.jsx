@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/customStyle.css';
+import '../css/statsCard.css';
 
 const StatsCard = ({ player }) => {
 
@@ -28,9 +28,13 @@ const StatsCard = ({ player }) => {
   }
 
   return (
-    <div key={player.name} className={`ui blue card ${player.isEliminated ? 'eliminated' : ''}`} alt={`${player.teamName} logo`}>
-      <div className='logoBox'>
-        <img className='teamLogo' src={player.teamLogo} alt={`${player.teamName} Logo`} />
+    <div
+      key={player.name}
+      className={`ui blue card stats-card ${player.isEliminated ? 'stats-card--eliminated' : ''}`}
+      alt={`${player.teamName} logo`}
+    >
+      <div className='stats-card__logo-wrap'>
+        <img className='stats-card__bg-logo' src={player.teamLogo} alt={`${player.teamName} Logo`} />
       </div>
       <div className='content'>
         <div className='left floated meta'>
@@ -75,6 +79,6 @@ const StatsCard = ({ player }) => {
       </div>
     </div>
   );
-}
+};
 
 export default StatsCard;

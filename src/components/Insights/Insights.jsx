@@ -42,9 +42,14 @@ import DraftDaySnapshot from './Insights.DraftDaySnapshot';
 import EliminationImpact from './Insights.EliminationImpact';
 import XFactors from './Insights.XFactors';
 import { useEliminatedTeamsContext } from '../../context/EliminatedTeamsContext';
-import '../../css/customStyle.css';
 import './Insights.Sections.css';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+
+const insightsSectionsLayoutStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '32px',
+};
 
 const Insights = ({
   players,
@@ -184,7 +189,7 @@ const Insights = ({
             Loading Insights...
           </Loader>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div style={insightsSectionsLayoutStyle}>
             {/* Section 1: Pool Overview */}
             <section className='insights-section'>
               <Header as='h3' dividing>

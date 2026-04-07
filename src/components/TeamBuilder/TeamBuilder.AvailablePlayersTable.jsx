@@ -9,7 +9,6 @@ import {
   Loader,
   Table,
 } from 'semantic-ui-react';
-import useIsMobile from '../../hooks/useBreakpoint';
 import PlayerRow from './TeamBuilder.PlayerRow';
 import {
   POSITION_OPTIONS,
@@ -22,6 +21,71 @@ import {
   getTeamAbbrev,
   createTableHeader,
 } from '../../utils/teambuilder';
+
+const availablePlayersRootStyle = {
+  marginTop: 0,
+  flex: '1 1 0',
+  minHeight: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  overflow: 'hidden',
+};
+
+const gridNoBottomMarginStyle = {
+  marginBottom: 0,
+};
+
+const headerNoMarginStyle = {
+  margin: 0,
+};
+
+const filtersStickyGridStyle = {
+  position: 'sticky',
+  zIndex: 10,
+  marginBottom: 10,
+  marginTop: 0,
+  flex: 'none',
+};
+
+const filterRowNoPaddingStyle = {
+  padding: 0,
+};
+
+const teamDropdownLabelRowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const teamDropdownLogoStyle = {
+  width: '16px',
+  height: '16px',
+  marginRight: '5px',
+  borderRadius: '2px',
+};
+
+const teamDropdownChipStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  margin: '2px',
+  padding: '4px 8px',
+  borderRadius: '4px',
+  background: '#f1f1f1',
+};
+
+const playersScrollStyle = {
+  flex: '1 1 0',
+  minHeight: 0,
+  overflow: 'auto',
+  WebkitOverflowScrolling: 'touch',
+};
+
+const playersGridNoRightMarginStyle = {
+  marginRight: 0,
+};
+
+const playersColumnNoRightPaddingStyle = {
+  paddingRight: 0,
+};
 
 /**
  * Left panel: Available players with filters
@@ -43,7 +107,6 @@ const AvailablePlayersTable = ({
   utilityBonus,
   onPlayerToggle,
 }) => {
-  const isMobile = useIsMobile();
   // Build team options from available stats
   const teamOptions = useMemo(() => {
     const teams = Array.from(
@@ -74,11 +137,11 @@ const AvailablePlayersTable = ({
   }, [skaterStats, nameSearch, teamFilter, positionFilter]);
 
   return (
-    <div style={{ marginTop: 0, height: isMobile ? 'calc(100dvh - 200px)' : 'auto', maxHeight: isMobile ? 'none' : 'calc(100dvh - 194px)', display: 'flex', flexDirection: 'column' }}>
-      <Grid style={{ marginBottom: 0 }}>
+    <div style={availablePlayersRootStyle}>
+      <Grid style={gridNoBottomMarginStyle}>
         <Grid.Row columns={2} verticalAlign='middle'>
           <Grid.Column>
-            <Header as='h4' style={{ margin: 0 }}>
+            <Header as='h4' style={headerNoMarginStyle}>
               Available Players
             </Header>
           </Grid.Column>
@@ -98,8 +161,8 @@ const AvailablePlayersTable = ({
 
       {/* Filters */}
       {filtersVisible && (
-        <Grid stackable style={{ position: 'sticky', zIndex: 10, marginBottom: 10, marginTop: 0, flex: 'none' }}>
-          <Grid.Row columns={3} style={{ padding: 0 }}>
+        <Grid stackable style={filtersStickyGridStyle}>
+          <Grid.Row columns={3} style={filterRowNoPaddingStyle}>
             <Grid.Column>
               <Input
                 placeholder='Name'
@@ -121,23 +184,16 @@ const AvailablePlayersTable = ({
                 noResultsMessage={teamFilter.length === teamOptions.length ? 'All selected' : 'No results found'}
                 renderLabel={(item) => ({
                   content: (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={teamDropdownLabelRowStyle}>
                       <img
                         src={item.image.src}
                         alt={item.text}
-                        style={{ width: '16px', height: '16px', marginRight: '5px', borderRadius: '2px' }}
+                        style={teamDropdownLogoStyle}
                       />
                       <span>{item.text}</span>
                     </div>
                   ),
-                  style: {
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    margin: '2px',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    background: '#f1f1f1',
-                  },
+                  style: teamDropdownChipStyle,
                 })}
               />
             </Grid.Column>
@@ -159,10 +215,10 @@ const AvailablePlayersTable = ({
       )}
 
       {/* Scrollable Players Table Container */}
-      <div style={{ flex: 1, overflow: 'auto' }}>
-        <Grid style={{ marginRight: 0 }}>
+      <div style={playersScrollStyle}>
+        <Grid style={playersGridNoRightMarginStyle}>
           <Grid.Row>
-            <Grid.Column style={{ paddingRight: 0 }}>
+            <Grid.Column style={playersColumnNoRightPaddingStyle}>
               {loading ? (
                 <Loader active inline='centered' size='medium'>
                   Loading Available Players...

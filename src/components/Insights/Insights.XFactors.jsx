@@ -11,6 +11,55 @@ import {
 import { INSIGHT_COLORS } from '../../constants/insights';
 import InsightDataTable from './Insights.InsightDataTable';
 
+const popupQuestionIconStyle = {
+  cursor: 'pointer',
+  marginLeft: '6px',
+  opacity: 0.6,
+};
+
+const verhaegheNameRowStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '100%',
+};
+
+const verhaegheNameStrongStyle = {
+  fontSize: '14px',
+};
+
+const verhaegheClutchValueStyle = (player) => ({
+  color: player.clutchRating > 0 ? '#21ba45' : player.clutchRating < 0 ? '#db2828' : '#666',
+  fontSize: '13px',
+  fontWeight: 'bold',
+});
+
+const verhaegheMetaRowStyle = {
+  color: '#999',
+  display: 'flex',
+  fontSize: '12px',
+  justifyContent: 'space-between',
+  marginTop: '4px',
+};
+
+const bonusRowLogoBackdropStyle = (isMobileRow) => ({
+  height: isMobileRow ? '32px' : '44px',
+  marginLeft: -75,
+  marginTop: isMobileRow ? -5 : -9,
+  position: 'absolute',
+});
+
+const bonusRowTeamLogoStyle = (player) => ({
+  opacity: 0.1,
+  height: '100%',
+  objectFit: 'cover',
+  filter: player.isEliminated ? 'grayscale(1)' : 'none',
+});
+
+const bonusRowHeadshotStyle = (player) => ({
+  filter: player.isEliminated ? 'grayscale(1)' : 'none',
+  opacity: player.isEliminated ? 0.5 : 1,
+});
+
 const XFactors = ({
   clutchFactorData,
   bonusHuntersList,
@@ -40,11 +89,7 @@ const XFactors = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />
@@ -59,17 +104,13 @@ const XFactors = ({
                 rowRenderer={(player) => (
                   <Table.Row key={player.id} negative={player.isEliminated}>
                     <Table.Cell colspan='2'>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                        <strong style={{ fontSize: '14px' }}>{player.name}</strong>
-                        <span style={{
-                          color: player.clutchRating > 0 ? '#21ba45' : player.clutchRating < 0 ? '#db2828' : '#666',
-                          fontSize: '13px',
-                          fontWeight: 'bold',
-                        }}>
+                      <div style={verhaegheNameRowStyle}>
+                        <strong style={verhaegheNameStrongStyle}>{player.name}</strong>
+                        <span style={verhaegheClutchValueStyle(player)}>
                           {player.clutchRating > 0 ? '+' : ''}{player.clutchRating}
                         </span>
                       </div>
-                      <div style={{ color: '#999', display: 'flex', fontSize: '12px', justifyContent: 'space-between', marginTop: '4px' }}>
+                      <div style={verhaegheMetaRowStyle}>
                         <span>Playoff: {player.playoffPPG} PPG</span>
                         <span>Regular: {player.regularSeasonPPG} PPG</span>
                       </div>
@@ -96,11 +137,7 @@ const XFactors = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />
@@ -123,33 +160,20 @@ const XFactors = ({
                   <Table.Row key={player.id} negative={player.isEliminated}>
                     <Table.Cell collapsing>
                       <div
-                        style={{
-                          height: isMobileRow ? '32px' : '44px',
-                          marginLeft: -75,
-                          marginTop: isMobileRow ? -5 : -9,
-                          position: 'absolute',
-                        }}
+                        style={bonusRowLogoBackdropStyle(isMobileRow)}
                       >
                         <Image
                           alt={`${player.teamName} Logo`}
                           size='large'
                           src={player.teamLogo}
-                          style={{
-                            opacity: 0.1,
-                            height: '100%',
-                            objectFit: 'cover',
-                            filter: player.isEliminated ? 'grayscale(1)' : 'none',
-                          }}
+                          style={bonusRowTeamLogoStyle(player)}
                         />
                       </div>
                       <Image
                         alt={player.name}
                         avatar
                         src={player.headshot}
-                        style={{
-                          filter: player.isEliminated ? 'grayscale(1)' : 'none',
-                          opacity: player.isEliminated ? 0.5 : 1,
-                        }}
+                        style={bonusRowHeadshotStyle(player)}
                       />
                       {player.name}
                     </Table.Cell>
@@ -179,11 +203,7 @@ const XFactors = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />

@@ -2,6 +2,10 @@ import React from "react";
 import { List } from 'semantic-ui-react'
 import seasons from "../constants/seasons";
 
+const seasonsRootStyle = {
+  textAlign: 'center',
+};
+
 const Seasons = ({ onSeasonSelect }) => {
 
   const renderedSeasons = seasons.seasonList.map((season, index) => {
@@ -22,7 +26,7 @@ const Seasons = ({ onSeasonSelect }) => {
   )
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={seasonsRootStyle}>
       <List horizontal>
         {renderedSeasons}
       </List>

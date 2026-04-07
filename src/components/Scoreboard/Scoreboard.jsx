@@ -1,9 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { Label, List, Segment } from 'semantic-ui-react';
 import useScores from '../../hooks/useScores';
-import useIsMobile from '../../hooks/useBreakpoint';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import DateLabel from './Scoreboard.DateLabel';
 import GameCard from './Scoreboard.GameCard';
+
+/* In-flow strip at top of .app-shell — avoids padding-top / 100dvh offset hacks */
+const scoreboardSegmentStyle = {
+  overflowX: 'auto',
+  whiteSpace: 'nowrap',
+  padding: 5,
+  backgroundColor: 'white',
+  width: '100%',
+  zIndex: 10,
+};
 
 const formatDateParam = (date) => {
   const y = date.getFullYear();
@@ -27,7 +37,7 @@ const Scoreboard = ({ todayScores }) => {
   // Only fetch independently when viewing a different date; reuse App's today fetch otherwise
   const otherDateScores = useScores(dateParam, { skip: dateOffset === 0 });
   const scoreboard = dateOffset === 0 ? todayScores : otherDateScores;
-  const isMobile = useIsMobile();
+  const { isMobile } = useBreakpoint();
 
   const sortedGames = useMemo(() => {
     if (!scoreboard.games || !Array.isArray(scoreboard.games)) {
@@ -47,16 +57,8 @@ const Scoreboard = ({ todayScores }) => {
 
   return (
     <Segment
-      style={{
-        position: 'fixed',
-        overflowX: 'auto',
-        whiteSpace: 'nowrap',
-        padding: 5,
-        top: 0,
-        backgroundColor: 'white',
-        width: '100vw',
-        zIndex: '10',
-      }}
+      className='app-scoreboard'
+      style={scoreboardSegmentStyle}
       textAlign='center'
     >
       <List horizontal>

@@ -15,7 +15,27 @@ import countPoints from '../../utils/countPoints';
 import useMyTeam from '../../hooks/useMyTeam';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { POSITION_ARRAYS } from '../../constants/positions';
-import '../../css/customStyle.css';
+import { getPlayersRemainingColor } from '../../constants/playersRemaining';
+
+const noTeamHeaderStyle = {
+  whiteSpace: 'nowrap',
+};
+
+const ownerHeaderStyle = {
+  marginBottom: '8px',
+};
+
+const ownerMetaStyle = {
+  fontSize: '0.95em',
+  color: '#666',
+};
+
+const statsColumnStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  alignItems: 'flex-end',
+};
 
 const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
@@ -54,7 +74,7 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
             <Grid.Row columns={3}>
               <Grid.Column width={2} />
               <Grid.Column width={12} textAlign='center'>
-                <Header size='medium' color='blue' style={{ whiteSpace: 'nowrap' }}>
+                <Header size='medium' color='blue' style={noTeamHeaderStyle}>
                   No Team Found
                 </Header>
                 Please sign in to see your team.
@@ -67,16 +87,18 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
     );
   }
 
+  const playersRemainingCount = eliminatedPlayers(roster, eliminatedTeams);
+
   return (
     <Segment.Group>
       <Segment attached='top'>
         <Grid>
           <Grid.Row columns={2}>
             <Grid.Column width={8}>
-              <Header size='medium' color='blue' style={{ marginBottom: '8px' }}>
+              <Header size='medium' color='blue' style={ownerHeaderStyle}>
                 {roster.owner.name}
               </Header>
-              <div style={{ fontSize: '0.95em', color: '#666' }}>
+              <div style={ownerMetaStyle}>
                 {roster.owner && roster.owner.country && roster.owner.country.toLowerCase() !== 'n/a' && (
                   <>
                     <Flag name={roster.owner.country.toLowerCase()} />
@@ -87,13 +109,17 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
               </div>
             </Grid.Column>
             <Grid.Column width={8} textAlign='right'>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-end' }}>
+              <div style={statsColumnStyle}>
                 <Statistic horizontal color='blue' size='mini'>
                   <Statistic.Value>{countPoints(roster)}</Statistic.Value>
                   <Statistic.Label>Points</Statistic.Label>
                 </Statistic>
                 <Statistic horizontal color='blue' size='mini'>
-                  <Statistic.Value>{eliminatedPlayers(roster, eliminatedTeams)}/16</Statistic.Value>
+                  <Statistic.Value
+                    style={{ color: getPlayersRemainingColor(playersRemainingCount) }}
+                  >
+                    {playersRemainingCount}/16
+                  </Statistic.Value>
                   <Statistic.Label>Players</Statistic.Label>
                 </Statistic>
               </div>
