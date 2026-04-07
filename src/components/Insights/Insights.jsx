@@ -178,16 +178,6 @@ const Insights = ({
 
   return (
     <Segment.Group>
-      <Segment attached='top'>
-        <Grid>
-          <Grid.Column width={2} />
-          <Grid.Column textAlign='center' width={12}>
-            <Header size='medium' color='blue'>
-              Insights
-            </Header>
-          </Grid.Column>
-        </Grid>
-      </Segment>
       <Segment attached='bottom' className={'insights-container'}>
         {loading ? (
           <Loader active inline='centered' size='large'>

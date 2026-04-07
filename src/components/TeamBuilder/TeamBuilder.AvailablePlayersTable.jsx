@@ -1,8 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
+  Button,
   Dropdown,
   Grid,
   Header,
+  Icon,
   Input,
   Loader,
   Table,
@@ -29,6 +31,7 @@ const AvailablePlayersTable = ({
   skaterStats,
   loading,
   filtersVisible,
+  onFiltersToggle,
   nameSearch,
   onNameSearchChange,
   teamFilter,
@@ -57,6 +60,7 @@ const AvailablePlayersTable = ({
     }));
   }, [goalieStats, skaterStats]);
 
+
   // Filter and sort goalies
   const filteredGoalies = useMemo(() => {
     const filtered = filterPlayers(goalieStats, nameSearch, teamFilter, positionFilter);
@@ -70,11 +74,24 @@ const AvailablePlayersTable = ({
   }, [skaterStats, nameSearch, teamFilter, positionFilter]);
 
   return (
-    <div style={{ marginTop: 0, height: isMobile ? 'calc(100dvh - 272px)' : 'auto', maxHeight: isMobile ? 'none' : '60dvh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ marginTop: 0, height: isMobile ? 'calc(100dvh - 200px)' : 'auto', maxHeight: isMobile ? 'none' : 'calc(100dvh - 194px)', display: 'flex', flexDirection: 'column' }}>
       <Grid style={{ marginBottom: 0 }}>
-        <Grid.Row columns={2}>
+        <Grid.Row columns={2} verticalAlign='middle'>
           <Grid.Column>
-            <Header as='h4'>Available Players</Header>
+            <Header as='h4' style={{ margin: 0 }}>
+              Available Players
+            </Header>
+          </Grid.Column>
+          <Grid.Column textAlign='right'>
+            <Button
+              basic={!filtersVisible}
+              color="blue"
+              icon
+              onClick={onFiltersToggle}
+              size='mini'
+            >
+              <Icon name="filter" />
+            </Button>
           </Grid.Column>
         </Grid.Row>
       </Grid>

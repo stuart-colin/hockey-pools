@@ -148,15 +148,7 @@ const TeamDetails = ({ users, players, season }) => {
 
   return (
     <Segment.Group>
-      <Segment attached='top'>
-        <Grid>
-          <Grid.Column width={2} />
-          <Grid.Column textAlign='center' width={12}>
-            <Header color='blue' size='medium'>Team Details</Header>
-          </Grid.Column>
-        </Grid>
-      </Segment>
-      <Segment attached='bottom' className={'expandedStyle'} style={{ paddingTop: 0 }}>
+      <Segment className={'expandedStyle'} style={{ paddingTop: 0 }}>
         {loading ? (
           <Loader active inline='centered' size='large' style={{ marginTop: 13 }}>
             Loading Team Details...

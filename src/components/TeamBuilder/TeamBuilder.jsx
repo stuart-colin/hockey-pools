@@ -178,28 +178,7 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
 
   return (
     <Segment.Group>
-      <Segment attached="top">
-        <Grid columns={3} verticalAlign='middle'>
-          <Grid.Row verticalAlign='middle'>
-            <Grid.Column />
-            <Grid.Column verticalAlign='middle' textAlign='center'>
-              <Header as='h3' color='blue' style={{ whiteSpace: 'nowrap' }}>Team Builder</Header>
-            </Grid.Column>
-            <Grid.Column textAlign='right'>
-              <Button
-                basic={!filtersVisible}
-                color="blue"
-                icon
-                onClick={() => setFiltersVisible(!filtersVisible)}
-                size='mini'
-              >
-                <Icon name="filter" />
-              </Button>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Segment>
-      <Segment attached="bottom">
+      <Segment>
         <Grid columns={2} stackable>
           <Grid.Row>
             <Grid.Column>
@@ -228,6 +207,7 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
                 positionLimit={positionLimits}
                 utilityBonus={utilityBonus}
                 onPlayerToggle={handlePlayerToggle}
+                onFiltersToggle={() => setFiltersVisible(!filtersVisible)}
               />
             </Grid.Column>
             <Grid.Column>

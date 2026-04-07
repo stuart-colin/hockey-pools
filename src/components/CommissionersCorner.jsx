@@ -201,20 +201,7 @@ const CommissionersCorner = ({ season }) => {
 
   return (
     <Segment.Group>
-      <Segment attached='top'>
-        <Grid>
-          <Grid.Row columns={3}>
-            <Grid.Column width={2} />
-            <Grid.Column width={12} textAlign='center'>
-              <Header size='medium' color='blue' style={{ whiteSpace: 'nowrap' }}>
-                Commissioner's Corner
-              </Header>
-            </Grid.Column>
-            <Grid.Column width={2} />
-          </Grid.Row>
-        </Grid>
-      </Segment>
-      <Segment attached='bottom' className={'expandedStyle'}>
+      <Segment className={'expandedStyle'}>
         <Item.Group divided>
           {announcementsToDisplay.map((announcement) => (
             <Item key={announcement.id}>
