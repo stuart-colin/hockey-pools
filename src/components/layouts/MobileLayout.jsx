@@ -1,6 +1,15 @@
-import React, { Fragment } from 'react';
-import { Grid } from 'semantic-ui-react';
+import React from 'react';
+
 import Navigation from '../Navigation/Navigation';
+
+
+
+/**
+ * Mobile route shell — plain flex column (no Semantic Grid). SUI Grid rows/columns
+ * fight the flex height chain, so the scroll region never gets a bounded height and
+ * nothing scrolls while overflow:hidden ancestors clip content.
+
+ */
 
 const MobileLayout = ({
   activeItem,
@@ -8,33 +17,19 @@ const MobileLayout = ({
   contentMap,
   toggleLiveStats,
   liveStatsEnabled,
-  season,
-  activeUsers,
-  isMobile,
-  isTablet,
 }) => {
   return (
-    <Fragment>
-      <Grid
-        stackable
-        style={{
-          position: 'fixed',
-          left: isMobile ? -15 : 0,
-          right: isMobile ? -15 : 0,
-        }}
-      >
-        <Grid.Row>
-          <Grid.Column width={16}>
-            {contentMap[activeItem] || null}
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+    <div className='app-mobile-wrapper'>
+      <div className='app-mobile-route-scroll app-mobile-page'>
+        {contentMap[activeItem] || null}
+      </div>
+
       <Navigation
         liveStatsEnabled={liveStatsEnabled}
         onLiveStatsToggle={toggleLiveStats}
         onMenuSelect={setActiveItem}
       />
-    </Fragment>
+    </div>
   );
 };
 

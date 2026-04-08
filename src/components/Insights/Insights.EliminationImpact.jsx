@@ -10,6 +10,12 @@ import {
 import { INSIGHT_COLORS } from '../../constants/insights';
 import InsightDataTable from './Insights.InsightDataTable';
 
+const popupQuestionIconStyle = {
+  cursor: 'pointer',
+  marginLeft: '6px',
+  opacity: 0.6,
+};
+
 const EliminationImpact = ({
   eliminatedPlayersList,
   sunkCostData,
@@ -44,11 +50,7 @@ const EliminationImpact = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />
@@ -79,11 +81,7 @@ const EliminationImpact = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />

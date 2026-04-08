@@ -7,6 +7,16 @@ import {
 } from 'semantic-ui-react';
 import getOrdinal from '../../utils/getOrdinals';
 
+const searchResultItemStyle = {
+  cursor: 'pointer',
+  padding: '5px 0',
+  textAlign: 'left',
+};
+
+const searchRootStyle = {
+  padding: '15px 0 0',
+};
+
 const StandingsSearch = ({ loading, rankedRosters, placeholder, onSearchResultClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -34,7 +44,7 @@ const StandingsSearch = ({ loading, rankedRosters, placeholder, onSearchResultCl
       <List.Item
         key={user.owner.id}
         onClick={() => onSearchResultClick && onSearchResultClick(user.owner.id)}
-        style={{ cursor: 'pointer', padding: '5px 0', textAlign: 'left' }}
+        style={searchResultItemStyle}
       >
         <strong>{user.owner.name}</strong>
         {`: ${user.rank}${getOrdinal(user.rank)} place — ${user.points} points — ${user.playersRemaining}/16 players`}
@@ -42,7 +52,7 @@ const StandingsSearch = ({ loading, rankedRosters, placeholder, onSearchResultCl
     ));
 
   return (
-    <div style={{ padding: '15px 0 0' }}>
+    <div style={searchRootStyle}>
       <Input
         error={!filteredUsers.length}
         fluid

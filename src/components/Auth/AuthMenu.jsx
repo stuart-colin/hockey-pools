@@ -6,6 +6,24 @@ import {
 } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
 
+const clickableIconStyle = {
+  cursor: 'pointer',
+};
+
+const dropdownHeaderPaddingStyle = {
+  padding: '8px',
+};
+
+const dropdownHeaderNameStyle = {
+  fontWeight: 'bold',
+  marginBottom: '4px',
+};
+
+const dropdownHeaderEmailStyle = {
+  color: '#666',
+  fontSize: '0.9em',
+};
+
 const AuthMenu = () => {
   const { isAuthenticated, loginWithPopup, logout, user } = useAuth0();
 
@@ -15,7 +33,7 @@ const AuthMenu = () => {
         color='blue'
         name='user circle'
         size='large'
-        style={{ cursor: 'pointer' }}
+        style={clickableIconStyle}
         onClick={() => loginWithPopup()}
       />
     );
@@ -26,14 +44,14 @@ const AuthMenu = () => {
       alt={user.name}
       avatar
       src={user.picture}
-      style={{ cursor: 'pointer' }}
+      style={clickableIconStyle}
     />
   ) : (
     <Icon
       color='blue'
       name='user circle'
       size='large'
-      style={{ cursor: 'pointer' }}
+      style={clickableIconStyle}
     />
   );
 
@@ -45,12 +63,12 @@ const AuthMenu = () => {
     >
       <Dropdown.Menu>
         <Dropdown.Header>
-          <div style={{ padding: '8px' }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+          <div style={dropdownHeaderPaddingStyle}>
+            <div style={dropdownHeaderNameStyle}>
               {user?.name}
             </div>
             {user?.email !== user?.name && (
-              <div style={{ color: '#666', fontSize: '0.9em' }}>
+              <div style={dropdownHeaderEmailStyle}>
                 {user?.email}
               </div>
             )}

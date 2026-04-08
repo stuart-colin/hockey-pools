@@ -2,9 +2,73 @@ import React, { Fragment } from 'react';
 import { Flag, Grid, Icon, Image, List, Transition } from 'semantic-ui-react';
 import RosterGrid from '../MyTeam/MyTeam.RosterGrid';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { getPlayersRemainingColor } from '../../constants/playersRemaining';
 import { getAvatarSvg, TOP_10_COLORS } from './Standings.utils';
-import '../../css/customStyle.css';
 
+const rankColumnStyle = {
+  minWidth: '2.5em',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+};
+
+const rankDeltaPositiveStyle = {
+  color: '#21ba45',
+  fontSize: '0.75em',
+  paddingTop: '5px',
+};
+
+const rankDeltaIconTightStyle = {
+  marginRight: '0em',
+};
+
+const rankDeltaNegativeStyle = {
+  color: 'red',
+  fontSize: '0.75em',
+  paddingTop: '5px',
+};
+
+const avatarImageStyle = {
+  height: '2.5em',
+  width: '2.5em',
+};
+
+const ownerNameColumnStyle = {
+  maxWidth: '40%',
+};
+
+const listHeaderRowStyle = {
+  paddingBottom: '5px',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+};
+
+const flagDimmedStyle = {
+  opacity: 0.5,
+};
+
+const pointsColumnStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  alignItems: 'flex-end',
+};
+
+const livePointsBadgeStyle = {
+  color: '#21ba45',
+  fontSize: '0.75em',
+  fontWeight: 'bold',
+  marginLeft: '0.4em',
+};
+
+const rosterExpandRegionStyle = {
+  paddingTop: '10px',
+  width: '100%',
+  flexBasis: '100%',
+};
+
+const listItemBackgroundStyle = (backgroundColor) => ({ backgroundColor });
 
 const StandingsItem = React.forwardRef(
   (
@@ -24,51 +88,34 @@ const StandingsItem = React.forwardRef(
         <div ref={ref} />
         <List.Item
           onClick={onToggleRoster}
-          style={{ backgroundColor }}
+          style={listItemBackgroundStyle(backgroundColor)}
         >
           <List.Content
             floated="left"
-            style={{
-              minWidth: '2.5em',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start'
-            }}
+            style={rankColumnStyle}
             verticalAlign="middle"
           >
             {user.rank}
             {rankDelta > 0 && (
               <span
-                style={{
-                  color: '#21ba45',
-                  fontSize: '0.75em',
-                  paddingTop: '5px',
-                }}
+                style={rankDeltaPositiveStyle}
               >
                 <Icon
                   color="green"
                   name="arrow up"
-                  style={{
-                    marginRight: '0em',
-                  }}
+                  style={rankDeltaIconTightStyle}
                 />
                 {rankDelta}
               </span>
             )}
             {rankDelta < 0 && (
               <span
-                style={{
-                  color: 'red',
-                  fontSize: '0.75em',
-                  paddingTop: '5px',
-                }}
+                style={rankDeltaNegativeStyle}
               >
                 <Icon
                   color="red"
                   name="arrow down"
-                  style={{
-                    marginRight: '0em',
-                  }}
+                  style={rankDeltaIconTightStyle}
                 />
                 {Math.abs(rankDelta)}
               </span>
@@ -78,27 +125,19 @@ const StandingsItem = React.forwardRef(
             alt="participant avatar"
             avatar
             src={getAvatarSvg(user.owner.name)}
-            style={{
-              height: '2.5em',
-              width: '2.5em',
-            }}
+            style={avatarImageStyle}
             verticalAlign="middle"
           />
           <List.Content
-            style={{ maxWidth: '40%' }}
+            style={ownerNameColumnStyle}
           >
             <List.Header
-              style={{
-                paddingBottom: '5px',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center'
-              }}>
+              style={listHeaderRowStyle}>
               {user.owner &&
                 user.owner.country &&
                 user.owner.country.toLowerCase() !== 'n/a' && (
                   <Flag
-                    style={{ opacity: 0.5 }}
+                    style={flagDimmedStyle}
                     name={user.owner.country.toLowerCase()}
                   />
                 )}
@@ -118,38 +157,24 @@ const StandingsItem = React.forwardRef(
           <List.Content
             floated='right'
             verticalAlign='middle'
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-end'
-            }}>
+            style={pointsColumnStyle}>
             {/* <List.Description style={{ display: 'flex', flexDirection: 'column' }}> */}
             <span>
               {user.points} Points
               {user.livePoints > 0 && (
                 <span
-                  style={{
-                    color: '#21ba45',
-                    fontSize: '0.75em',
-                    fontWeight: 'bold',
-                    marginLeft: '0.4em',
-                  }}
+                  style={livePointsBadgeStyle}
                 >
                   <Icon
                     color="green"
                     name="lightning"
-                    style={{
-                      marginRight: '0em',
-                    }}
+                    style={rankDeltaIconTightStyle}
                   />
                   {user.livePoints}
                 </span>
               )}
             </span>
-            <span
-              className={`playersRemaining${user.playersRemaining}`}
-            >
+            <span style={{ color: getPlayersRemainingColor(user.playersRemaining) }}>
               {user.playersRemaining}/16
             </span>
             {/* </List.Description> */}
@@ -161,11 +186,7 @@ const StandingsItem = React.forwardRef(
             visible={isRosterVisible}
           >
             <div
-              style={{
-                paddingTop: '10px',
-                width: '100%',
-                flexBasis: '100%',
-              }}
+              style={rosterExpandRegionStyle}
             >
               {isMobile || isWide ? (
                 <RosterGrid roster={user} />

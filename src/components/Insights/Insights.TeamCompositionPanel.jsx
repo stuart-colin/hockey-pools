@@ -12,6 +12,72 @@ import {
 } from '../../constants/insights';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 
+const popupQuestionIconStyle = {
+  cursor: 'pointer',
+  marginLeft: '6px',
+  opacity: 0.6,
+};
+
+const compositionGridStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '32px',
+};
+
+const positionRowGridStyle = (isMobile) => ({
+  display: 'grid',
+  gap: '24px',
+  gridTemplateColumns: `repeat(${isMobile ? 2 : 3}, 1fr)`,
+  minWidth: 0,
+});
+
+const positionHeaderRowStyle = {
+  borderBottom: '1px solid #e0e0e0',
+  display: 'flex',
+  marginBottom: '12px',
+  paddingBottom: '8px',
+};
+
+const positionTitleStyle = {
+  fontWeight: '600',
+  fontSize: '14px',
+};
+
+const positionPlayersStackStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+};
+
+const playerRowStyle = {
+  alignItems: 'center',
+  display: 'flex',
+  gap: '12px',
+};
+
+const playerNameCellStyle = (player) => ({
+  color: player.isEliminated ? 'red' : null,
+  flex: 1,
+  fontSize: '13px',
+  fontWeight: '500',
+  minWidth: 0,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+});
+
+const playerHeadshotStyle = (player) => ({
+  filter: player.isEliminated ? 'grayscale(1)' : 'none',
+  opacity: player.isEliminated ? 0.5 : 1,
+});
+
+const playerPointsStyle = (color) => ({
+  color: color === 'green' ? '#21ba45' : color === 'red' ? '#db2828' : '#2185d0',
+  flexShrink: 0,
+  fontSize: '13px',
+  fontWeight: '700',
+});
+
 /**
  * TeamCompositionPanel - Displays team roster organized by position
  * Shows the Perfect Team or Most Common Team with position-based layout
@@ -50,11 +116,7 @@ const TeamCompositionPanel = ({
                   <Icon
                     name='question circle outline'
                     size='small'
-                    style={{
-                      cursor: 'pointer',
-                      marginLeft: '6px',
-                      opacity: 0.6,
-                    }}
+                    style={popupQuestionIconStyle}
                   />
                 }
               />
@@ -78,75 +140,44 @@ const TeamCompositionPanel = ({
         </Statistic.Group>
       </Card.Content>
       <Card.Content>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={compositionGridStyle}>
           {(isMobile ?
             [['Left', 'Center'], ['Right', 'Defense'], ['Goalie', 'Utility']] :
             [['Left', 'Center', 'Right'], ['Defense', 'Goalie', 'Utility']]).map((row, rowIdx) => (
               <div
                 key={rowIdx}
-                style={{
-                  display: 'grid',
-                  gap: '24px',
-                  gridTemplateColumns: `repeat(${isMobile ? 2 : 3}, 1fr)`,
-                  minWidth: 0,
-                }}
+                style={positionRowGridStyle(isMobile)}
               >
                 {row.map((position) => {
                   const posPlayers = getTeamByPosition(team, position);
                   return (
                     <div key={position}>
                       <div
-                        style={{
-                          borderBottom: '1px solid #e0e0e0',
-                          display: 'flex',
-                          marginBottom: '12px',
-                          paddingBottom: '8px',
-                        }}
+                        style={positionHeaderRowStyle}
                       >
-                        <span style={{ fontWeight: '600', fontSize: '14px' }}>
+                        <span style={positionTitleStyle}>
                           {position}
                         </span>
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div style={positionPlayersStackStyle}>
                         {posPlayers.map((player) => (
                           <div
                             key={player.id}
-                            style={{
-                              alignItems: 'center',
-                              display: 'flex',
-                              gap: '12px',
-                            }}
+                            style={playerRowStyle}
                           >
                             <div
-                              style={{
-                                color: player.isEliminated ? 'red' : null,
-                                flex: 1,
-                                fontSize: '13px',
-                                fontWeight: '500',
-                                minWidth: 0,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                              }}
+                              style={playerNameCellStyle(player)}
                             >
                               <Image
                                 alt={player.name}
                                 avatar
                                 src={player.headshot}
-                                style={{
-                                  filter: player.isEliminated ? 'grayscale(1)' : 'none',
-                                  opacity: player.isEliminated ? 0.5 : 1,
-                                }}
+                                style={playerHeadshotStyle(player)}
                               />
                               {player.name}
                             </div>
                             <div
-                              style={{
-                                color: color === 'green' ? '#21ba45' : color === 'red' ? '#db2828' : '#2185d0',
-                                flexShrink: 0,
-                                fontSize: '13px',
-                                fontWeight: '700',
-                              }}
+                              style={playerPointsStyle(color)}
                             >
                               {player.points}
                             </div>

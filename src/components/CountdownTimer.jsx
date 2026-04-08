@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Message } from "semantic-ui-react";
 
+const countdownMessageStyle = {
+  textAlign: "center",
+  margin: "10px",
+};
+
 const CountdownTimer = () => {
   // Target date: Saturday, April 19th at 6 PM EST
   const targetDate = new Date("2025-04-14T18:00:00-04:00").getTime();
@@ -42,11 +47,11 @@ const CountdownTimer = () => {
   }
 
   if (!timeLeft) {
-    return <Message color='red' style={{ textAlign: "center", margin: "10px" }}>Rosters submissions are locked!</Message>;
+    return <Message color='red' style={countdownMessageStyle}>Rosters submissions are locked!</Message>;
   }
 
   return (
-    <Message color='red' style={{ textAlign: "center", margin: "10px" }}>
+    <Message color='red' style={countdownMessageStyle}>
       <div className="header">Puck Drop & Roster Lock 🏒</div>
       <p>
         {timeLeft.hours} hours,

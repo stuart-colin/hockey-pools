@@ -9,6 +9,7 @@ import {
   calculateUtilityBonus,
   buildTeamIds,
 } from '../../utils/teambuilder';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import AvailablePlayersTable from './TeamBuilder.AvailablePlayersTable';
 import RosterTable from './TeamBuilder.RosterTable';
 
@@ -54,6 +55,7 @@ const teamBuilderReducer = (state, action) => {
 };
 
 const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
+  const { isMobile } = useBreakpoint();
   const [state, dispatch] = useReducer(teamBuilderReducer, initialState);
   const { user, isAuthenticated } = useAuth0();
   const { postData } = useSubmitRoster();
@@ -176,54 +178,65 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
     handleSubmitRoster();
   };
 
+  const rosterTableProps = {
+    myTeam: state.myTeam,
+    teamCount,
+    submissionStatus: state.submissionStatus,
+    teamIds: state.submittedTeam,
+    onClearTeam: handleClearTeam,
+    onRemovePlayer: (player) => handleRemovePlayer(player?.playerId),
+    onSubmit: handleSubmitClick,
+    onDismissStatus: handleDismissFeedback,
+  };
+
+  const availablePlayersTable = (
+    <AvailablePlayersTable
+      goalieStats={regularSeasonStats.goalieStats || []}
+      skaterStats={regularSeasonStats.skaterStats || []}
+      loading={regularSeasonStats.loading}
+      filtersVisible={filtersVisible}
+      nameSearch={state.filterName}
+      onNameSearchChange={handleNameFilterChange}
+      teamFilter={state.filterTeam}
+      onTeamFilterChange={(teams) =>
+        dispatch({
+          type: 'SET_FILTER_TEAM',
+          payload: teams,
+        })
+      }
+      positionFilter={state.filterPosition}
+      onPositionFilterChange={(positions) =>
+        dispatch({
+          type: 'SET_FILTER_POSITION',
+          payload: positions,
+        })
+      }
+      myTeam={state.myTeam}
+      positionLimit={positionLimits}
+      utilityBonus={utilityBonus}
+      onPlayerToggle={handlePlayerToggle}
+      onFiltersToggle={() => setFiltersVisible(!filtersVisible)}
+    />
+  );
+
   return (
-    <Segment.Group>
+    <Segment.Group className='team-builder-page'>
       <Segment>
-        <Grid columns={2} stackable>
+        {/*
+          On mobile, RosterTable is position:fixed (drawer) — it leaves the 2nd Grid.Column empty
+          in normal flow (~50% blank). Single-column grid + RosterTable outside the grid fixes it.
+        */}
+        <Grid columns={isMobile ? 1 : 2} stackable>
           <Grid.Row>
-            <Grid.Column>
-              <AvailablePlayersTable
-                goalieStats={regularSeasonStats.goalieStats || []}
-                skaterStats={regularSeasonStats.skaterStats || []}
-                loading={regularSeasonStats.loading}
-                filtersVisible={filtersVisible}
-                nameSearch={state.filterName}
-                onNameSearchChange={handleNameFilterChange}
-                teamFilter={state.filterTeam}
-                onTeamFilterChange={(teams) =>
-                  dispatch({
-                    type: 'SET_FILTER_TEAM',
-                    payload: teams,
-                  })
-                }
-                positionFilter={state.filterPosition}
-                onPositionFilterChange={(positions) =>
-                  dispatch({
-                    type: 'SET_FILTER_POSITION',
-                    payload: positions,
-                  })
-                }
-                myTeam={state.myTeam}
-                positionLimit={positionLimits}
-                utilityBonus={utilityBonus}
-                onPlayerToggle={handlePlayerToggle}
-                onFiltersToggle={() => setFiltersVisible(!filtersVisible)}
-              />
-            </Grid.Column>
-            <Grid.Column>
-              <RosterTable
-                myTeam={state.myTeam}
-                teamCount={teamCount}
-                submissionStatus={state.submissionStatus}
-                teamIds={state.submittedTeam}
-                onClearTeam={handleClearTeam}
-                onRemovePlayer={(player) => handleRemovePlayer(player?.playerId)}
-                onSubmit={handleSubmitClick}
-                onDismissStatus={handleDismissFeedback}
-              />
-            </Grid.Column>
+            <Grid.Column>{availablePlayersTable}</Grid.Column>
+            {!isMobile && (
+              <Grid.Column>
+                <RosterTable {...rosterTableProps} />
+              </Grid.Column>
+            )}
           </Grid.Row>
         </Grid>
+        {isMobile && <RosterTable {...rosterTableProps} />}
       </Segment>
     </Segment.Group>
   );

@@ -10,7 +10,27 @@ import {
 } from 'semantic-ui-react';
 
 import { customSort } from '../utils/stats';
-import '../css/customStyle.css';
+
+const sortableHeaderCellStyle = {
+  cursor: 'pointer',
+  paddingTop: 13,
+  background: 'white',
+};
+
+const segmentNoTopPaddingStyle = {
+  paddingTop: 0,
+};
+
+const loaderMarginStyle = {
+  marginTop: 13,
+};
+
+const stickyTableHeaderStyle = {
+  position: 'sticky',
+  top: 0,
+  background: 'white',
+  zIndex: 2,
+};
 
 const TeamDetails = ({ users, players, season }) => {
   const [loading, setLoading] = useState(true);
@@ -106,7 +126,7 @@ const TeamDetails = ({ users, players, season }) => {
             setReverse(false);
           }
         }}
-        style={{ cursor: 'pointer', paddingTop: 13, background: 'white' }}
+        style={sortableHeaderCellStyle}
       >
         {header}
         {sortTeamOption === header && !reverse ? (
@@ -123,13 +143,7 @@ const TeamDetails = ({ users, players, season }) => {
   const teamDetails = sortedTeams.map((team, index) => (
     <Table.Row key={team.name} negative={team.isEliminated}>
       <Table.Cell collapsing>{index + 1}</Table.Cell>
-      <Table.Cell
-        style={{
-          // position: 'sticky',
-          // left: -15,
-          // background: 'white', // Ensure the sticky column has a background
-          // zIndex: 1,
-        }}>
+      <Table.Cell>
         <Image src={team.logo} avatar alt={`${team.name} logo`} />
         {team.name}
       </Table.Cell>
@@ -148,20 +162,15 @@ const TeamDetails = ({ users, players, season }) => {
 
   return (
     <Segment.Group>
-      <Segment className={'expandedStyle'} style={{ paddingTop: 0 }}>
+      <Segment className={'expandedStyle'} style={segmentNoTopPaddingStyle}>
         {loading ? (
-          <Loader active inline='centered' size='large' style={{ marginTop: 13 }}>
+          <Loader active inline='centered' size='large' style={loaderMarginStyle}>
             Loading Team Details...
           </Loader>
         ) : (
           <Table basic='very' singleLine unstackable selectable>
             <Table.Header
-              style={{
-                position: 'sticky',
-                top: 0,
-                background: 'white',
-                zIndex: 2,
-              }}>
+              style={stickyTableHeaderStyle}>
               <Table.Row>
                 <Table.HeaderCell></Table.HeaderCell>
                 {teamHeaders}

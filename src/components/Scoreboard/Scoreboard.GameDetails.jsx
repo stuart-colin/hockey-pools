@@ -22,29 +22,53 @@ const getSeriesStatusText = (awayWins, homeWins, awayAbbrev, homeAbbrev) => {
   return awayWins > homeWins ? `${awayAbbrev} LEADS` : `${homeAbbrev} LEADS`;
 };
 
+const goalRowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const goalImageSpacingStyle = {
+  marginRight: '10px',
+};
+
+const gameDetailsListStyle = {
+  maxHeight: '70dvh',
+  overflow: 'auto',
+};
+
+const scoreboardLabelRowStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const scoreboardCenterColumnStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'column',
+};
+
+const playoffSeriesHeaderStyle = {
+  paddingBottom: 5,
+};
+
 const renderGoalItem = (goal, index) => (
   <List.Item
     key={index}
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-    }}
+    style={goalRowStyle}
   >
     <Image
       alt={`${goal.teamName} Logo`}
       avatar
       src={teamLogo + goal.teamAbbrev + '_light.svg'}
-      style={{
-        marginRight: '10px',
-      }}
+      style={goalImageSpacingStyle}
     />
     <Image
       alt={`${goal.name.default}'s mugshot`}
       avatar
       src={goal.mugshot}
-      style={{
-        marginRight: '10px',
-      }}
+      style={goalImageSpacingStyle}
     />
     <List.Content>
       <List.Header>
@@ -98,18 +122,11 @@ const GameDetails = ({ game }) => {
     <List
       divided
       relaxed
-      style={{
-        maxHeight: '70dvh',
-        overflow: 'auto',
-      }}
+      style={gameDetailsListStyle}
     >
       <List.Item>
         <Label
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          style={scoreboardLabelRowStyle}
         >
           <Image
             alt={`${game.awayTeam.name.default} Logo`}
@@ -118,15 +135,10 @@ const GameDetails = ({ game }) => {
           />
           <Label>{displayValue[0]}</Label>
           <Label
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-            }}
+            style={scoreboardCenterColumnStyle}
           >
             <List.Header
-              style={playoff ? { paddingBottom: 5 } : null}
+              style={playoff ? playoffSeriesHeaderStyle : null}
             >
               {displayLabel}
             </List.Header>

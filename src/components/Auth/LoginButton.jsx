@@ -2,6 +2,10 @@ import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Icon } from 'semantic-ui-react';
 
+const clickableIconStyle = {
+  cursor: 'pointer',
+};
+
 const LoginButton = () => {
   const { isAuthenticated, loginWithRedirect } = useAuth0();
   return (
@@ -10,7 +14,7 @@ const LoginButton = () => {
         color='blue'
         name='user circle'
         size='large'
-        style={{ cursor: 'pointer' }}
+        style={clickableIconStyle}
         onClick={() => loginWithRedirect()}
       />
     )

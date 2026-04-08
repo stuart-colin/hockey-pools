@@ -1,7 +1,56 @@
 import React from 'react';
 import { Card, Grid, Statistic, Progress, Popup } from 'semantic-ui-react';
 import { INSIGHT_COLORS } from '../../constants/insights';
-import useIsMobile from '../../hooks/useBreakpoint';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+
+const progressBarTrackContainerStyle = (heightPx) => ({
+  display: 'block',
+  height: `${heightPx}px`,
+  position: 'relative',
+  width: '100%',
+});
+
+const progressBarRatioStyle = (value, total, heightPx) => ({
+  '--progress-ratio': value / total,
+  height: `${heightPx}px`,
+});
+
+const markerPopupColumnStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+};
+
+const distributionMarkerHitStyle = {
+  cursor: 'pointer',
+  position: 'absolute',
+  top: '50%',
+  transform: 'translate(-50%, -50%)',
+  zIndex: 10,
+};
+
+const distributionMarkerAtPositionStyle = (leftPercent) => ({
+  ...distributionMarkerHitStyle,
+  left: `${leftPercent}%`,
+});
+
+const distributionMarkerLineStyle = (markerHeightPx) => ({
+  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  borderRadius: '2px',
+  height: `${markerHeightPx}px`,
+  transition: 'all 0.2s ease',
+  width: '6px',
+});
+
+const rosterCompletionSectionStyle = {
+  marginTop: '24px',
+};
+
+const distributionSectionTitleStyle = {
+  fontWeight: '600',
+  fontSize: '14px',
+  marginBottom: '8px',
+};
 
 /**
  * PoolOverview - Displays pool-level statistics (players remaining, points)
@@ -33,7 +82,7 @@ const PoolOverview = ({
   q3Points,
   leastPoints,
 }) => {
-  const isMobile = useIsMobile();
+  const { isMobile } = useBreakpoint();
   const STAT_GROUP_SIZE = isMobile ? 'tiny' : 'small';
   /**
    * ProgressBarWithMarkers - Renders a progress bar with tooltipped markers for data points
@@ -57,20 +106,12 @@ const PoolOverview = ({
 
     return (
       <div
-        style={{
-          display: 'block',
-          height: `${PROGRESS_BAR_HEIGHT}px`,
-          position: 'relative',
-          width: '100%',
-        }}
+        style={progressBarTrackContainerStyle(PROGRESS_BAR_HEIGHT)}
       >
         <Progress
           className='gradient-progress'
           progress='ratio'
-          style={{
-            '--progress-ratio': value / total,
-            height: `${PROGRESS_BAR_HEIGHT}px`,
-          }}
+          style={progressBarRatioStyle(value, total, PROGRESS_BAR_HEIGHT)}
           total={total}
           value={value}
         />
@@ -80,11 +121,7 @@ const PoolOverview = ({
             const positionPercent = (point.roundedValue / total) * 100;
             const popupContent = (
               <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '4px',
-                }}
+                style={markerPopupColumnStyle}
               >
                 {point.labels.reverse().map((label, labelIdx) => (
                   <div key={labelIdx}>{label}: {point.roundedValue}</div>
@@ -95,14 +132,7 @@ const PoolOverview = ({
             return (
               <div
                 key={idx}
-                style={{
-                  cursor: 'pointer',
-                  left: `${positionPercent}%`,
-                  position: 'absolute',
-                  top: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 10,
-                }}
+                style={distributionMarkerAtPositionStyle(positionPercent)}
               >
                 <Popup
                   basic
@@ -111,13 +141,7 @@ const PoolOverview = ({
                   trigger={
                     <div
                       className='marker-line'
-                      style={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                        borderRadius: '2px',
-                        height: `${MARKER_HEIGHT}px`,
-                        transition: 'all 0.2s ease',
-                        width: '6px',
-                      }}
+                      style={distributionMarkerLineStyle(MARKER_HEIGHT)}
                     />
                   }
                 />
@@ -153,16 +177,10 @@ const PoolOverview = ({
               </Statistic>
             </Statistic.Group>
             <div
-              style={{
-                marginTop: '24px',
-              }}
+              style={rosterCompletionSectionStyle}
             >
               <p
-                style={{
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  marginBottom: '8px',
-                }}
+                style={distributionSectionTitleStyle}
               >
                 Roster Completion
               </p>
@@ -206,16 +224,10 @@ const PoolOverview = ({
               </Statistic>
             </Statistic.Group>
             <div
-              style={{
-                marginTop: '24px',
-              }}
+              style={rosterCompletionSectionStyle}
             >
               <p
-                style={{
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  marginBottom: '8px',
-                }}
+                style={distributionSectionTitleStyle}
               >
                 Point Distribution
               </p>

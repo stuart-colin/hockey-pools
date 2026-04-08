@@ -10,6 +10,12 @@ import {
 import { INSIGHT_COLORS } from '../../constants/insights';
 import InsightDataTable from './Insights.InsightDataTable';
 
+const popupQuestionIconStyle = {
+  cursor: 'pointer',
+  marginLeft: '6px',
+  opacity: 0.6,
+};
+
 const DraftDaySnapshot = ({
   mostPickedPlayersList,
   rosterDiversityData,
@@ -34,11 +40,7 @@ const DraftDaySnapshot = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />
@@ -68,11 +70,7 @@ const DraftDaySnapshot = ({
                     <Icon
                       name='question circle outline'
                       size='small'
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '6px',
-                        opacity: 0.6,
-                      }}
+                      style={popupQuestionIconStyle}
                     />
                   )}
                 />

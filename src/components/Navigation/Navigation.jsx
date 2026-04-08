@@ -12,13 +12,20 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { AuthButtons } from '../Auth';
 import NavigationSidebar from './Navigation.Sidebar';
 
+const mobileHeaderTitleStyle = {
+  flex: 1,
+  justifyContent: 'center',
+  color: '#2185d0',
+  fontSize: '1.3em',
+};
+
 const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('insights');
   const { isAuthenticated, user } = useAuth0();
   const isAdmin = user?.email === 'stuart.colin@gmail.com';
 
-  const { isMobile, isTablet, isDesktop, isWide } = useBreakpoint();
+  const { isMobile, isTablet, isWide } = useBreakpoint();
   const isMobileOrTablet = isMobile || isTablet;
 
   useEffect(() => {
@@ -82,7 +89,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
                 size='large'
               />
             </Menu.Item>
-            <Menu.Item header style={{ flex: 1, justifyContent: 'center', color: '#2185d0', fontSize: '1.3em' }}>
+            <Menu.Item header style={mobileHeaderTitleStyle}>
               {menuItems.find(item => item.name === activeItem)?.label}
             </Menu.Item>
             <Menu.Item position='right'>

@@ -7,6 +7,17 @@ import {
 } from '../../constants/insights';
 import './Insights.ThresholdControl.css';
 
+const thresholdControlFooterRowStyle = {
+  alignItems: 'center',
+  display: 'flex',
+  gap: '12px',
+  justifyContent: 'space-between',
+};
+
+const thresholdDescriptionTextStyle = {
+  margin: 0,
+};
+
 /**
  * ThresholdControl - Interactive threshold adjustment with slider
  * Provides a modern slider-based control for adjusting pick rate thresholds
@@ -41,8 +52,8 @@ const ThresholdControl = ({
         <span className='bound-max'>{maxThresh}%</span>
       </div>
 
-      <div style={{ alignItems: 'center', display: 'flex', gap: '12px', justifyContent: 'space-between' }}>
-        <p className='threshold-description' style={{ margin: 0 }}>{description}</p>
+      <div style={thresholdControlFooterRowStyle}>
+        <p className='threshold-description' style={thresholdDescriptionTextStyle}>{description}</p>
         <Button
           icon
           size='mini'

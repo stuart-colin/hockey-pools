@@ -124,13 +124,10 @@ const AppContent = ({ season, setSeason }) => {
   return (
     <>
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
-      <div className={`app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
+      <div className={`app-shell app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
           <Scoreboard todayScores={todayScores} />
-          <div
-            style={{
-              paddingTop: "55px",
-            }}>
+          <div className="app-main-stack">
             {showAlert && (
               <Alert
                 messageHeading={alertMessageHeading}
@@ -140,30 +137,28 @@ const AppContent = ({ season, setSeason }) => {
             )}
             <CountdownTimer />
 
-            {(isMobile || isTablet) ? (
-              <MobileLayout
-                activeItem={activeItem}
-                setActiveItem={setActiveItem}
-                contentMap={contentMap}
-                toggleLiveStats={toggleLiveStats}
-                liveStatsEnabled={liveStatsEnabled}
-                season={season}
-                activeUsers={activeUsers}
-                isMobile={isMobile}
-                isTablet={isTablet}
-              />
-            ) : (
-              <DesktopLayout
-                activeItem={activeItem}
-                setActiveItem={setActiveItem}
-                contentMap={contentMap}
-                toggleLiveStats={toggleLiveStats}
-                liveStatsEnabled={liveStatsEnabled}
-                season={season}
-                activeUsers={activeUsers}
-                isWide={isWide}
-              />
-            )}
+            <div className="app-page-column">
+              {(isMobile || isTablet) ? (
+                <MobileLayout
+                  activeItem={activeItem}
+                  setActiveItem={setActiveItem}
+                  contentMap={contentMap}
+                  toggleLiveStats={toggleLiveStats}
+                  liveStatsEnabled={liveStatsEnabled}
+                />
+              ) : (
+                <DesktopLayout
+                  activeItem={activeItem}
+                  setActiveItem={setActiveItem}
+                  contentMap={contentMap}
+                  toggleLiveStats={toggleLiveStats}
+                  liveStatsEnabled={liveStatsEnabled}
+                  season={season}
+                  activeUsers={activeUsers}
+                  isWide={isWide}
+                />
+              )}
+            </div>
           </div>
         </Fragment>
       </div>
