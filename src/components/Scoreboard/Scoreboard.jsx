@@ -8,6 +8,7 @@ import GameCard from './Scoreboard.GameCard';
 /* In-flow strip at top of .app-shell — avoids padding-top / 100dvh offset hacks */
 const scoreboardSegmentStyle = {
   overflowX: 'auto',
+  marginBottom: 0,
   whiteSpace: 'nowrap',
   padding: 5,
   backgroundColor: 'white',
