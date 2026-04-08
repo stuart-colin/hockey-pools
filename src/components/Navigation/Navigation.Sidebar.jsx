@@ -1,12 +1,12 @@
 import React from 'react';
-import './CustomSidebar.css';
+import './Navigation.Sidebar.css';
 
 const overlayStyle = (isVisible) => ({
   opacity: isVisible ? 1 : 0,
   pointerEvents: isVisible ? 'auto' : 'none',
 });
 
-const CustomSidebar = ({ isVisible, onClose, children }) => {
+const NavigationSidebar = ({ isVisible, onClose, children }) => {
   return (
     <>
       {/* Overlay backdrop */}
@@ -26,4 +26,4 @@ const CustomSidebar = ({ isVisible, onClose, children }) => {
   );
 };
 
-export default CustomSidebar;
+export default NavigationSidebar;
