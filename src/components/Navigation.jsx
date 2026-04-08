@@ -8,9 +8,9 @@ import {
 } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
 
-import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { AuthButtons } from '../Auth';
-import NavigationSidebar from './Navigation.Sidebar';
+import { useBreakpoint } from '../hooks/useBreakpoint';
+import { AuthButtons } from './Auth';
+import CustomSidebar from './Navigation/Navigation.Sidebar';
 
 const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -90,7 +90,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
             </Menu.Item>
           </Menu>
 
-          <NavigationSidebar
+          <CustomSidebar
             isVisible={sidebarVisible}
             onClose={() => setSidebarVisible(false)}
           >
@@ -120,7 +120,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
                 {liveStatsBadge}
               </Menu.Item>
             </Menu>
-          </NavigationSidebar>
+          </CustomSidebar>
         </>
       ) : (
         <Menu stackable>
@@ -129,7 +129,6 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
               src='/public/../logo.svg'
               size='mini'
               alt='bps annual hockey pool logo'
-              style={{ scale: '1.3' }}
             />
           </Menu.Item>
           {renderMenuItems()}
