@@ -87,8 +87,6 @@ body,
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
-  overscroll-behavior-y: contain;
-  touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
 
