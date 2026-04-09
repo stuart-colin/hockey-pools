@@ -27,7 +27,10 @@ import getSeasonOrdinal from "../utils/getSeasonOrdinal";
 
 const AppContent = ({ season, setSeason }) => {
   // ===== UI State =====
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    // Only show splash screen if it hasn't been shown in this session
+    return !sessionStorage.getItem('splashShown');
+  });
   const [showAlert, setShowAlert] = useState(true);
 
   // ===== Feature Toggles =====
@@ -65,7 +68,14 @@ const AppContent = ({ season, setSeason }) => {
 
   return (
     <>
-      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+      {showSplash && (
+        <SplashScreen 
+          onComplete={() => {
+            sessionStorage.setItem('splashShown', 'true');
+            setShowSplash(false);
+          }} 
+        />
+      )}
       <div className={`app-shell app-content ${showSplash ? "hidden-content" : "visible-content"}`}>
         <Fragment>
           <Scoreboard todayScores={todayScores} />
