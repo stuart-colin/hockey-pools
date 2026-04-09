@@ -21,6 +21,7 @@ import {
   getTeamAbbrev,
   createTableHeader,
 } from '../../utils/teambuilder';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 const availablePlayersRootStyle = {
   marginTop: 0,
@@ -83,13 +84,10 @@ const playersGridNoRightMarginStyle = {
   marginRight: 0,
 };
 
-const playersColumnNoRightPaddingStyle = {
-  paddingRight: 0,
-};
 
 /**
  * Left panel: Available players with filters
- */
+*/
 const AvailablePlayersTable = ({
   goalieStats,
   skaterStats,
@@ -123,7 +121,11 @@ const AvailablePlayersTable = ({
     }));
   }, [goalieStats, skaterStats]);
 
+  const { isMobile } = useBreakpoint();
 
+  const playersColumnNoRightPaddingStyle = {
+    marginBottom: isMobile ? 60 : 0,
+  };
   // Filter and sort goalies
   const filteredGoalies = useMemo(() => {
     const filtered = filterPlayers(goalieStats, nameSearch, teamFilter, positionFilter);
