@@ -419,4 +419,4 @@ const CommissionersCorner = ({ season }) => {
   );
 };
 
-export default CommissionersCorner;
+export default React.memo(CommissionersCorner);

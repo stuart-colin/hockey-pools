@@ -7,7 +7,6 @@ import {
   Statistic,
 } from 'semantic-ui-react';
 import { min, max, mean, customSort } from '../../utils/stats';
-import useUnselectedPlayers from '../../hooks/useUnselectedPlayers';
 import {
   buildPlayerPickRate,
   buildBestTeam,
@@ -55,7 +54,8 @@ const Insights = ({
   players,
   regularSeasonStats,
   season,
-  users
+  users,
+  unselectedPlayers
 }) => {
   const [highThresh, setHighThresh] = useState(DEFAULT_HIGH_THRESHOLD);
   const [lowThresh, setLowThresh] = useState(DEFAULT_LOW_THRESHOLD);
@@ -63,8 +63,7 @@ const Insights = ({
   const { isMobile } = useBreakpoint();
 
   const { eliminatedTeams } = useEliminatedTeamsContext();
-  const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
-  const loading = users.loading || loadingUnselected;
+  const loading = users.loading;
 
   const playerPickRate = useMemo(() => buildPlayerPickRate(players, users.rosters.length), [players, users.rosters.length]);
 
@@ -299,4 +298,4 @@ const Insights = ({
   );
 };
 
-export default Insights;
+export default React.memo(Insights);

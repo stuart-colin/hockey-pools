@@ -20,6 +20,7 @@ const DesktopLayout = ({
   season,
   activeUsers,
   players,
+  unselectedPlayers,
   regularSeasonStats,
   playerDeltas,
   isWide,
@@ -50,13 +51,13 @@ const DesktopLayout = ({
                   <Routes>
                     <Route path="/admin" element={<DevTools />} />
                     <Route path="/commissioners-corner" element={<CommissionersCorner season={season} />} />
-                    <Route path="/insights" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} />} />
+                    <Route path="/insights" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />} />
                     <Route path="/my-team" element={<MyTeam playerDeltas={playerDeltas} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
-                    <Route path="/player-details" element={<PlayerDetails players={players} season={season} users={activeUsers} />} />
+                    <Route path="/player-details" element={<PlayerDetails players={players} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />} />
                     <Route path="/standings" element={<Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />} />
                     <Route path="/team-builder" element={<TeamBuilder regularSeasonStats={regularSeasonStats} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
                     <Route path="/team-details" element={<TeamDetails players={players} season={season} users={activeUsers} />} />
-                    <Route path="/" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} />} />
+                    <Route path="/" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />} />
                   </Routes>
                 </div>
               </div>
@@ -68,4 +69,4 @@ const DesktopLayout = ({
   );
 };
 
-export default DesktopLayout;
+export default React.memo(DesktopLayout);

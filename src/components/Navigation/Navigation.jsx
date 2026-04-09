@@ -30,7 +30,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
   const { isMobile, isTablet, isWide } = useBreakpoint();
   const isMobileOrTablet = isMobile || isTablet;
 
-  const menuItems = [
+  const menuItems = useMemo(() => [
     { name: "commissioners-corner", label: "Commissioner's Corner", path: "/commissioners-corner" },
     { name: "standings", label: "Standings", hideOnWide: true, path: "/standings" },
     { name: "insights", label: "Insights", path: "/insights" },
@@ -39,7 +39,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
     { name: "my-team", label: "My Team", path: "/my-team" },
     { name: "team-builder", label: "Team Builder", path: "/team-builder", authenticatedOnly: true },
     ...(isAdmin ? [{ name: "admin", label: "🔧 Admin", path: "/admin" }] : []),
-  ];
+  ], [isAdmin]);
 
   // Get current active item from URL pathname
   const activeItem = useMemo(() => {
