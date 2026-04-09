@@ -6,3 +6,9 @@
   to = ":splat"
   status = 200
   force = true
+
+# SPA routing: redirect all 404s to index.html so React Router can handle client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
