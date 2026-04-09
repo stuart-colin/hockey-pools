@@ -16,6 +16,7 @@ import usePlayerData from "../hooks/usePlayerData";
 import useRegularSeasonStats from "../hooks/useRegularSeasonStats";
 import useScores from "../hooks/useScores";
 import useStandings from "../hooks/useStandings";
+import useUnselectedPlayers from "../hooks/useUnselectedPlayers";
 import useUsers from "../hooks/useUsers";
 
 import { DevToolsProvider, useDevTools } from "../context/DevToolsContext";
@@ -49,6 +50,7 @@ const AppContent = ({ season, setSeason }) => {
   const { augmentedUsers, playerDeltas } = useLiveStats(todayScores.games, boxscores, users);
   const activeUsers = liveStatsEnabled ? augmentedUsers : users;
   const players = usePlayerData(activeUsers);
+  const { unselectedPlayers } = useUnselectedPlayers(players, season, eliminatedTeams);
 
   // ===== Helpers =====
   const toggleLiveStats = () => {
@@ -87,6 +89,7 @@ const AppContent = ({ season, setSeason }) => {
                       season={season}
                       activeUsers={activeUsers}
                       players={players}
+                      unselectedPlayers={unselectedPlayers}
                       regularSeasonStats={regularSeasonStats}
                       playerDeltas={playerDeltas}
                     />
@@ -97,6 +100,7 @@ const AppContent = ({ season, setSeason }) => {
                       season={season}
                       activeUsers={activeUsers}
                       players={players}
+                      unselectedPlayers={unselectedPlayers}
                       regularSeasonStats={regularSeasonStats}
                       playerDeltas={playerDeltas}
                       isWide={isWide}

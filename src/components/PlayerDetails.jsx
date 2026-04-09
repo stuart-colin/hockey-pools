@@ -13,7 +13,6 @@ import {
   Table,
 } from 'semantic-ui-react';
 import { customSort } from '../utils/stats';
-import useUnselectedPlayers from '../hooks/useUnselectedPlayers';
 import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 
 const filtersRowStyle = {
@@ -52,7 +51,7 @@ const stickyPlayerTableHeaderStyle = {
   zIndex: 2,
 };
 
-const PlayerDetails = ({ users, players, season }) => {
+const PlayerDetails = ({ users, players, season, unselectedPlayers }) => {
   const [loading, setLoading] = useState(true);
   const [sortPlayerOption, setSortPlayerOption] = useState('Points');
   const [reverse, setReverse] = useState(false);
@@ -65,7 +64,6 @@ const PlayerDetails = ({ users, players, season }) => {
   const [showUnselected, setShowUnselected] = useState(false);
 
   const { eliminatedTeams } = useEliminatedTeamsContext();
-  const { unselectedPlayers, loadingUnselected } = useUnselectedPlayers(players, season, eliminatedTeams);
 
   const allPlayoffPlayers = useMemo(() => {
     const processedSelectedPlayers = players.map(p => ({ ...p, id: p.id ? p.id.toString() : p.name }));
@@ -73,8 +71,8 @@ const PlayerDetails = ({ users, players, season }) => {
   }, [players, unselectedPlayers]);
 
   useEffect(() => {
-    setLoading(users.loading || loadingUnselected);
-  }, [users.loading, loadingUnselected]);
+    setLoading(users.loading);
+  }, [users.loading]);
 
   // Memoize headerKeys to prevent unnecessary re-renders
   const headerKeys = useMemo(() => ({
@@ -320,4 +318,4 @@ const PlayerDetails = ({ users, players, season }) => {
   );
 };
 
-export default PlayerDetails;
+export default React.memo(PlayerDetails);

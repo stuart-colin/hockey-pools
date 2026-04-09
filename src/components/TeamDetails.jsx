@@ -184,4 +184,4 @@ const TeamDetails = ({ users, players, season }) => {
   );
 };
 
-export default TeamDetails;
+export default React.memo(TeamDetails);
