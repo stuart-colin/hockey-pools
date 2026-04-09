@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Checkbox,
   Icon,
@@ -7,6 +7,7 @@ import {
   Menu,
 } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { AuthButtons } from '../Auth';
@@ -19,43 +20,52 @@ const mobileHeaderTitleStyle = {
   fontSize: '1.3em',
 };
 
-const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
+const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [activeItem, setActiveItem] = useState('insights');
+  const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, user } = useAuth0();
   const isAdmin = user?.email === 'stuart.colin@gmail.com';
 
   const { isMobile, isTablet, isWide } = useBreakpoint();
   const isMobileOrTablet = isMobile || isTablet;
 
-  useEffect(() => {
-    setActiveItem(isMobileOrTablet ? 'standings' : 'insights');
-  }, [isMobileOrTablet]);
-
-  useEffect(() => {
-    onMenuSelect(activeItem);
-  }, [activeItem, onMenuSelect]);
-
   const menuItems = [
-    { name: "commissioners-corner", label: "Commissioner's Corner" },
-    { name: "standings", label: "Standings", hideOnWide: true },
-    { name: "insights", label: "Insights" },
-    { name: "player-details", label: "Player Details" },
-    { name: "team-details", label: "Team Details" },
-    { name: "my-team", label: "My Team" },
-    ...(isAdmin ? [{ name: "admin", label: "🔧 Admin" }] : []),
+    { name: "commissioners-corner", label: "Commissioner's Corner", path: "/commissioners-corner" },
+    { name: "standings", label: "Standings", hideOnWide: true, path: "/standings" },
+    { name: "insights", label: "Insights", path: "/insights" },
+    { name: "player-details", label: "Player Details", path: "/player-details" },
+    { name: "team-details", label: "Team Details", path: "/team-details" },
+    { name: "my-team", label: "My Team", path: "/my-team" },
+    { name: "team-builder", label: "Team Builder", path: "/team-builder", authenticatedOnly: true },
+    ...(isAdmin ? [{ name: "admin", label: "🔧 Admin", path: "/admin" }] : []),
   ];
+
+  // Get current active item from URL pathname
+  const activeItem = useMemo(() => {
+    const pathname = location.pathname === '/' ? '/insights' : location.pathname;
+    const item = menuItems.find(m => m.path === pathname);
+    return item?.name || 'insights';
+  }, [location.pathname, menuItems]);
+
+  // Set default to insights on mount if on root
+  useEffect(() => {
+    if (location.pathname === '/') {
+      navigate(isMobileOrTablet ? '/standings' : '/insights', { replace: true });
+    }
+  }, [location.pathname, isMobileOrTablet, navigate]);
 
   const renderMenuItems = () =>
     menuItems
       .filter(item => !item.hideOnWide || !isWide)
+      .filter(item => !item.authenticatedOnly || isAuthenticated)
       .map((item) => (
         <Menu.Item
           key={item.name}
           name={item.name}
           active={activeItem === item.name}
           onClick={() => {
-            setActiveItem(item.name);
+            navigate(item.path);
             setSidebarVisible(false);
           }}
         >
@@ -111,18 +121,6 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
                 />
               </Menu.Item>
               {renderMenuItems()}
-              {isAuthenticated && (
-                <Menu.Item
-                  name='team-builder'
-                  active={activeItem === 'team-builder'}
-                  onClick={() => {
-                    setActiveItem('team-builder');
-                    setSidebarVisible(false);
-                  }}
-                >
-                  Team Builder
-                </Menu.Item>
-              )}
               <Menu.Item>
                 {liveStatsBadge}
               </Menu.Item>
@@ -141,15 +139,6 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle, onMenuSelect }) => {
           </Menu.Item>
           {renderMenuItems()}
           <Menu.Menu position='right'>
-            {isAuthenticated && (
-              <Menu.Item
-                name='team-builder'
-                active={activeItem === 'team-builder'}
-                onClick={() => setActiveItem('team-builder')}
-              >
-                Team Builder
-              </Menu.Item>
-            )}
             <Menu.Item>
               {liveStatsBadge}
             </Menu.Item>

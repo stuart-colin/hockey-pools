@@ -1,16 +1,27 @@
 import React, { Fragment } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
+
+import CommissionersCorner from '../CommissionersCorner';
+import DevTools from '../DevTools';
+import Insights from '../Insights';
+import MyTeam from '../MyTeam';
 import Navigation from '../Navigation/Navigation';
+import PlayerDetails from '../PlayerDetails';
 import Standings from '../Standings';
+import TeamBuilder from '../TeamBuilder/TeamBuilder';
+import TeamDetails from '../TeamDetails';
+
+import { APP_CONFIG } from '../../config/appConfig';
 
 const DesktopLayout = ({
-  activeItem,
-  setActiveItem,
-  contentMap,
   toggleLiveStats,
   liveStatsEnabled,
   season,
   activeUsers,
+  players,
+  regularSeasonStats,
+  playerDeltas,
   isWide,
 }) => {
   return (
@@ -34,10 +45,19 @@ const DesktopLayout = ({
                 <Navigation
                   liveStatsEnabled={liveStatsEnabled}
                   onLiveStatsToggle={toggleLiveStats}
-                  onMenuSelect={setActiveItem}
                 />
                 <div className='app-desktop-content-scroll app-fill-scroll'>
-                  {contentMap[activeItem] || null}
+                  <Routes>
+                    <Route path="/admin" element={<DevTools />} />
+                    <Route path="/commissioners-corner" element={<CommissionersCorner season={season} />} />
+                    <Route path="/insights" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} />} />
+                    <Route path="/my-team" element={<MyTeam playerDeltas={playerDeltas} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
+                    <Route path="/player-details" element={<PlayerDetails players={players} season={season} users={activeUsers} />} />
+                    <Route path="/standings" element={<Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />} />
+                    <Route path="/team-builder" element={<TeamBuilder regularSeasonStats={regularSeasonStats} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
+                    <Route path="/team-details" element={<TeamDetails players={players} season={season} users={activeUsers} />} />
+                    <Route path="/" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} />} />
+                  </Routes>
                 </div>
               </div>
             </Grid.Column>

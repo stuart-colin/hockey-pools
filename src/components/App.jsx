@@ -1,20 +1,13 @@
 import React, { Fragment, useMemo, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Routes, Route } from "react-router-dom";
 
 import Alert from "./Alert";
-import CommissionersCorner from "./CommissionersCorner";
 import CountdownTimer from "./CountdownTimer";
-import DevTools from "./DevTools";
 import DesktopLayout from "./layouts/DesktopLayout";
-import Insights from "./Insights";
 import MobileLayout from "./layouts/MobileLayout";
-import MyTeam from "./MyTeam";
-import PlayerDetails from "./PlayerDetails";
 import Scoreboard from "./Scoreboard";
 import SplashScreen from "./SplashScreen";
-import Standings from "./Standings";
-import TeamBuilder from "./TeamBuilder/TeamBuilder";
-import TeamDetails from "./TeamDetails";
 
 import { useBreakpoint } from "../hooks/useBreakpoint";
 import useBoxscores from "../hooks/useBoxscores";
@@ -34,7 +27,6 @@ import getSeasonOrdinal from "../utils/getSeasonOrdinal";
 const AppContent = ({ season, setSeason }) => {
   // ===== UI State =====
   const [showSplash, setShowSplash] = useState(true);
-  const [activeItem, setActiveItem] = useState("");
   const [showAlert, setShowAlert] = useState(true);
 
   // ===== Feature Toggles =====
@@ -43,7 +35,6 @@ const AppContent = ({ season, setSeason }) => {
   );
 
   // ===== Auth & Breakpoints =====
-  const { isAuthenticated } = useAuth0();
   const { isMobile, isTablet, isDesktop, isWide } = useBreakpoint();
 
   // ===== Data Hooks =====
@@ -70,57 +61,6 @@ const AppContent = ({ season, setSeason }) => {
 
   const alertMessageHeading = `📢 Welcome to BP's ${getSeasonOrdinal(season)} Annual Hockey Pool!`;
 
-  // ===== Content Mapping =====
-  const contentMap = {
-    "commissioners-corner": (
-      <CommissionersCorner season={season} />
-    ),
-    "standings": (
-      <Standings
-        liveStatsEnabled={liveStatsEnabled}
-        season={season}
-        users={activeUsers}
-      />
-    ),
-    "my-team": (
-      <MyTeam
-        playerDeltas={playerDeltas}
-        rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint}
-      />
-    ),
-    "insights": (
-      <Insights
-        players={players}
-        regularSeasonStats={regularSeasonStats}
-        season={season}
-        users={activeUsers}
-      />
-    ),
-    "player-details": (
-      <PlayerDetails
-        players={players}
-        season={season}
-        users={activeUsers}
-      />
-    ),
-    "team-details": (
-      <TeamDetails
-        players={players}
-        season={season}
-        users={activeUsers}
-      />
-    ),
-    "team-builder": (
-      <TeamBuilder
-        regularSeasonStats={regularSeasonStats}
-        rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint}
-      />
-    ),
-    "admin": (
-      <DevTools regularSeasonStats={regularSeasonStats} />
-    ),
-  };
-
   return (
     <>
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
@@ -138,26 +78,32 @@ const AppContent = ({ season, setSeason }) => {
             <CountdownTimer />
 
             <div className="app-page-column">
-              {(isMobile || isTablet) ? (
-                <MobileLayout
-                  activeItem={activeItem}
-                  setActiveItem={setActiveItem}
-                  contentMap={contentMap}
-                  toggleLiveStats={toggleLiveStats}
-                  liveStatsEnabled={liveStatsEnabled}
-                />
-              ) : (
-                <DesktopLayout
-                  activeItem={activeItem}
-                  setActiveItem={setActiveItem}
-                  contentMap={contentMap}
-                  toggleLiveStats={toggleLiveStats}
-                  liveStatsEnabled={liveStatsEnabled}
-                  season={season}
-                  activeUsers={activeUsers}
-                  isWide={isWide}
-                />
-              )}
+              <Routes>
+                <Route path="/*" element={
+                  isMobile || isTablet ? (
+                    <MobileLayout
+                      toggleLiveStats={toggleLiveStats}
+                      liveStatsEnabled={liveStatsEnabled}
+                      season={season}
+                      activeUsers={activeUsers}
+                      players={players}
+                      regularSeasonStats={regularSeasonStats}
+                      playerDeltas={playerDeltas}
+                    />
+                  ) : (
+                    <DesktopLayout
+                      toggleLiveStats={toggleLiveStats}
+                      liveStatsEnabled={liveStatsEnabled}
+                      season={season}
+                      activeUsers={activeUsers}
+                      players={players}
+                      regularSeasonStats={regularSeasonStats}
+                      playerDeltas={playerDeltas}
+                      isWide={isWide}
+                    />
+                  )
+                } />
+              </Routes>
             </div>
           </div>
         </Fragment>
