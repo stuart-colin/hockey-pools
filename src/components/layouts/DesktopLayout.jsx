@@ -49,7 +49,7 @@ const DesktopLayout = ({
                 />
                 <div className='app-desktop-content-scroll app-fill-scroll'>
                   <Routes>
-                    <Route path="/admin" element={<DevTools />} />
+                    <Route path="/admin" element={<DevTools regularSeasonStats={regularSeasonStats} />} />
                     <Route path="/commissioners-corner" element={<CommissionersCorner season={season} />} />
                     <Route path="/insights" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />} />
                     <Route path="/my-team" element={<MyTeam playerDeltas={playerDeltas} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />

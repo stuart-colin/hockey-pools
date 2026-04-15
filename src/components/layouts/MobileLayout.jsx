@@ -33,7 +33,7 @@ const MobileLayout = ({
     <div className='app-mobile-wrapper'>
       <div className='app-mobile-route-scroll app-mobile-page'>
         <Routes>
-          <Route path="/admin" element={<DevTools />} />
+          <Route path="/admin" element={<DevTools regularSeasonStats={regularSeasonStats} />} />
           <Route path="/commissioners-corner" element={<CommissionersCorner season={season} />} />
           <Route path="/insights" element={<Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />} />
           <Route path="/my-team" element={<MyTeam playerDeltas={playerDeltas} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
