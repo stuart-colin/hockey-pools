@@ -74,12 +74,20 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
   const { roster } = useMyTeam(rosterDataEndpoint);
 
   useEffect(() => {
-    if (roster && roster.center && regularSeasonStats.skaterStats && regularSeasonStats.goalieStats && !rosterLoaded.current) {
-      rosterLoaded.current = true;
-      // Combine all stats for lookup
-      const allPlayers = [...regularSeasonStats.skaterStats, ...regularSeasonStats.goalieStats];
+    // Wait for BOTH the roster fetch and the season stats fetch to actually
+    // produce data. The stats arrays are initialized to [] (truthy!), so a
+    // simple `&&` check fired prematurely when the roster arrived first —
+    // hydration ran with an empty player pool, matched nothing, then set the
+    // ref so it never re-hydrated when stats actually arrived.
+    const skaterStats = regularSeasonStats.skaterStats || [];
+    const goalieStats = regularSeasonStats.goalieStats || [];
+    const statsReady =
+      !regularSeasonStats.loading && (skaterStats.length > 0 || goalieStats.length > 0);
 
-      // Get all NHL IDs from roster (extract nhl_id from player objects)
+    if (roster && roster.center && statsReady && !rosterLoaded.current) {
+      rosterLoaded.current = true;
+      const allPlayers = [...skaterStats, ...goalieStats];
+
       const nhlIds = [
         ...roster.center.map(p => p.nhl_id),
         ...roster.left.map(p => p.nhl_id),
@@ -89,7 +97,6 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
         ...(roster.utility && roster.utility.nhl_id ? [roster.utility.nhl_id] : []),
       ];
 
-      // Look up each player in available stats and add to team
       nhlIds.forEach((nhlId) => {
         const playerData = allPlayers.find((p) => p.playerId === nhlId);
         if (playerData) {
@@ -99,6 +106,7 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
     }
   }, [roster,
     regularSeasonStats.goalieStats,
+    regularSeasonStats.loading,
     regularSeasonStats.skaterStats,
   ]);
 
