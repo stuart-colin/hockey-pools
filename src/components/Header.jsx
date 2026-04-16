@@ -1,4 +1,5 @@
 import React from 'react';
+import { APP_CONFIG } from '../config/appConfig';
 import getSeasonOrdinal from '../utils/getSeasonOrdinal';
 
 const logoStyle = {
@@ -14,9 +15,10 @@ const Header = ({ season }) => {
     <h1 className='ui center aligned icon header'>
       <div className='content'>
         <img
-          src='/public/../logo.svg'
+          alt='bps annual hockey pool logo'
+          src={APP_CONFIG.logoPath}
           style={logoStyle}
-          alt='bps annual hockey pool logo' />
+        />
       </div>
     </h1>
   )

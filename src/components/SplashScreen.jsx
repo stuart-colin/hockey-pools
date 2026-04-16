@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Transition, Image } from "semantic-ui-react";
 
+import { APP_CONFIG } from '../config/appConfig';
+
 const SplashScreen = ({ onComplete }) => {
   const [visible, setVisible] = useState(true);
 
@@ -18,7 +20,7 @@ const SplashScreen = ({ onComplete }) => {
     <div style={styles.container}>
       <Transition visible={visible} animation="fade" duration={500}>
         <Image
-          src='/public/../logo.svg'
+          src={APP_CONFIG.logoPath}
           style={styles.logo}
         />
       </Transition>

@@ -8,6 +8,7 @@ import {
 } from 'semantic-ui-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import { APP_CONFIG } from '../../config/appConfig';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import useIsAdmin from '../../hooks/useIsAdmin';
 import usePlayoffLock from '../../hooks/usePlayoffLock';
@@ -124,7 +125,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
                   alt='bps annual hockey pool logo'
                   centered
                   size='small'
-                  src='/public/../logo.svg'
+                  src={APP_CONFIG.logoPath}
                 />
               </Menu.Item>
               {renderMenuItems()}
@@ -138,9 +139,9 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
         <Menu stackable>
           <Menu.Item>
             <Image
-              src='/public/../logo.svg'
-              size='mini'
               alt='bps annual hockey pool logo'
+              size='mini'
+              src={APP_CONFIG.logoPath}
               style={{ scale: '1.3' }}
             />
           </Menu.Item>
