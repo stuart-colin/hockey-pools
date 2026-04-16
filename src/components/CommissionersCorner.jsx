@@ -4,16 +4,119 @@ import {
   Grid,
   Header,
   Image,
-  Segment,
   Item, // Added Item for structuring posts
+  Segment,
+  Table,
 } from 'semantic-ui-react';
 import bp from '../images/bp-crop.jpg';
 import colin from '../images/colin.jpg';
 import CF_top10 from '../images/CF_top10.png';
 
+const pastChampions = [
+  { year: 2006, name: 'Andrew Belsheim', entries: 12 },
+  { year: 2007, name: 'Brian Park', entries: 11 },
+  { year: 2008, name: 'Colin Stuart', entries: 20 },
+  { year: 2009, name: 'Brian Park', entries: 22 },
+  { year: 2010, name: 'Colin Stuart', entries: 28 },
+  { year: 2011, name: 'Bryan Hoy', entries: 39 },
+  { year: 2012, name: 'Gladwin Sun', entries: 42 },
+  { year: 2013, name: 'Erin Raddis', entries: 44 },
+  { year: 2014, name: 'Mark Carlson', entries: 50 },
+  { year: 2015, name: 'Cameron Scutt', entries: 41 },
+  { year: 2016, name: 'Kieran Gallivan', entries: 52 },
+  { year: 2017, name: 'Don Belsheim', entries: 53 },
+  { year: 2018, name: 'Brian Giacoppo', entries: 62 },
+  { year: 2019, name: 'Alim Rashid', entries: 70 },
+  { year: 2020, name: 'Brian Park', entries: 61 },
+  { year: 2021, name: 'Gladwin Sun', entries: 71 },
+  { year: 2022, name: 'Brett Long', entries: 85 },
+  { year: 2023, name: 'Stefan Lundberg', entries: 122 },
+  { year: 2024, name: 'Caleb Ijzerman', entries: 145 },
+  { year: 2025, name: 'Nicholas Como', entries: 160 },
+];
+
+const pastChampionsTable = (
+  <Table
+    celled
+    compact
+    size='small'
+    unstackable
+  >
+    <Table.Header>
+      <Table.Row>
+        <Table.HeaderCell>Year</Table.HeaderCell>
+        <Table.HeaderCell>Champion</Table.HeaderCell>
+        <Table.HeaderCell textAlign='right'># of Entries</Table.HeaderCell>
+      </Table.Row>
+    </Table.Header>
+    <Table.Body>
+      {pastChampions.map((row) => (
+        <Table.Row key={row.year}>
+          <Table.Cell>{row.year}</Table.Cell>
+          <Table.Cell>{row.name}</Table.Cell>
+          <Table.Cell textAlign='right'>{row.entries}</Table.Cell>
+        </Table.Row>
+      ))}
+    </Table.Body>
+  </Table>
+);
+
 
 // We can add a 'season' property to each announcement later if needed for filtering
 const allAnnouncements = [
+  {
+    id: '20260416',
+    season: '2026',
+    date: '4/15/2026',
+    title: "Welcome to BP's 21st Annual Playoff Hockey Pool!",
+    author: 'BP',
+    authorImage: bp,
+    content: [
+      'Hi all,',
+      "The 2026 Playoffs are creeping up quickly and it's time for another installment in BP's Annual Playoff Pool. Welcome to the 21st edition of BP's Annual Playoff Pool!",
+      <h5>Key Details</h5>,
+      <ul>
+        <li><b>Entry Fee:</b> $20</li>
+        <li><b>Deadline:</b> Before puck drop on Saturday, April 18</li>
+        <li><b>Payment:</b> E-transfer to <a href='mailto:brianpark08@hotmail.com'>brianpark08@hotmail.com</a> (include your name in the note)</li>
+      </ul>,
+      'EVERYONE IS WELCOME — feel free to forward these details to friends, co-workers, and family.',
+      <h5>How to Enter</h5>,
+      <>Submit picks via the pool website: sign up with your name and email, then select <b>Team Builder</b> in the menu to build your team seamlessly.</>,
+      <i>NOTE: You must be logged in to access the Team Builder option.</i>,
+      <h5>Roster Format</h5>,
+      <ul>
+        <li>3 Left Wingers</li>
+        <li>3 Centres</li>
+        <li>3 Right Wingers</li>
+        <li>4 Defensemen</li>
+        <li>2 Goalies</li>
+        <li>1 Utility (any position, including goalie)</li>
+      </ul>,
+      <h5>Scoring</h5>,
+      <ul>
+        <li><b>Skaters:</b> 1 pt (Goal), 1 pt (Assist), 2 pts (OT Goal)</li>
+        <li><b>Goalies:</b> 2 pts (Win), 1 pt (OT Loss), 2 pts (Shutout)</li>
+      </ul>,
+      <h5>Tiebreakers</h5>,
+      'Most players remaining in the Stanley Cup Final, then: OT goals, goals, wins, shutouts.',
+      <i>Note: Player positions will be based on NHL.com.</i>,
+      <h5>Pool Website & Stats</h5>,
+      'Our custom playoff pool website (developed by Colin Stuart) will track live standings, picks, and detailed stats throughout the playoffs.',
+      <h5>New Webpage Features</h5>,
+      <ul>
+        <li>Mobile device friendly across all pages</li>
+        <li>Real-time stats uploaded within the minute from NHL.com</li>
+        <li>Enhanced insights and analysis</li>
+        <li>Cleaner user interface</li>
+      </ul>,
+      <h5>Discord Channel</h5>,
+      <>Join the discussion and playoff chatter here: <a href='https://discord.gg/GZQ4AWnv39'>https://discord.gg/GZQ4AWnv39</a><br />Discord works on iPhone and Android through their respective App Stores as well as PC and Mac via website (<a href='https://discord.com/'>https://discord.com/</a>).</>,
+      <h5>Past Pool Champions</h5>,
+      pastChampionsTable,
+      'Play On!',
+    ],
+  },
   {
     id: '20250523',
     season: '2025',
