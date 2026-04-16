@@ -41,7 +41,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
     { name: "player-details", label: "Player Details", path: "/player-details", lockedBeforePlayoffs: true },
     { name: "team-details", label: "Team Details", path: "/team-details", lockedBeforePlayoffs: true },
     { name: "my-team", label: "My Team", path: "/my-team" },
-    { name: "team-builder", label: "Team Builder", path: "/team-builder", authenticatedOnly: true, hideAfterPlayoffs: true },
+    { name: "team-builder", label: "Team Builder", path: "/team-builder", hideAfterPlayoffs: true },
     ...(isAdmin ? [{ name: "admin", label: "🔧 Admin", path: "/admin" }] : []),
   ], [isAdmin]);
 

@@ -1,5 +1,5 @@
 import React, { useReducer, useMemo, useCallback, useState, useEffect } from 'react';
-import { Grid, Segment, Header, Icon, Button } from 'semantic-ui-react';
+import { Grid, Segment } from 'semantic-ui-react';
 import { useAuth0 } from '@auth0/auth0-react';
 import useSubmitRoster from '../../hooks/useSubmitRoster';
 import useMyTeam from '../../hooks/useMyTeam';
@@ -10,6 +10,7 @@ import {
   buildTeamIds,
 } from '../../utils/teambuilder';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import SignInNotice from '../SignInNotice';
 import AvailablePlayersTable from './TeamBuilder.AvailablePlayersTable';
 import RosterTable from './TeamBuilder.RosterTable';
 
@@ -57,7 +58,7 @@ const teamBuilderReducer = (state, action) => {
 const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
   const { isMobile } = useBreakpoint();
   const [state, dispatch] = useReducer(teamBuilderReducer, initialState);
-  const { user, isAuthenticated } = useAuth0();
+  const { isAuthenticated, isLoading: isAuthLoading, user } = useAuth0();
   const { postData } = useSubmitRoster();
   const rosterLoaded = React.useRef(false);
 
@@ -233,6 +234,15 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
       onFiltersToggle={() => setFiltersVisible(!filtersVisible)}
     />
   );
+
+  if (!isAuthLoading && !isAuthenticated) {
+    return (
+      <SignInNotice
+        message='Use the sign-in button to create an account or log in, then come back to pick your playoff roster.'
+        title='Sign in to build your team'
+      />
+    );
+  }
 
   return (
     <Segment.Group className='team-builder-page'>

@@ -6,7 +6,9 @@ import {
   Segment,
   Statistic
 } from 'semantic-ui-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import RosterGrid from './MyTeam.RosterGrid';
+import SignInNotice from '../SignInNotice';
 import eliminatedPlayers from '../../utils/eliminatedPlayers';
 import normalizePlayer from '../../utils/normalizePlayer';
 import { augmentRoster } from '../../utils/parseLiveStats';
@@ -39,6 +41,7 @@ const statsColumnStyle = {
 
 const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
   const { eliminatedTeams } = useEliminatedTeamsContext();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth0();
   const { roster: rawRoster, error, isLoading } = useMyTeam(rosterDataEndpoint);
 
   const { isMobile, isTablet } = useBreakpoint();
@@ -57,6 +60,15 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
     // Augment with live stats if available
     return playerDeltas?.size > 0 ? augmentRoster(normalized, playerDeltas) : normalized;
   }, [rawRoster, eliminatedTeams, playerDeltas]);
+
+  if (!isAuthLoading && !isAuthenticated) {
+    return (
+      <SignInNotice
+        message='Use the sign-in button to create an account or log in, then come back to view your team.'
+        title='Sign in to see your team'
+      />
+    );
+  }
 
   if (isLoading) {
     return <Segment loading>Loading roster...</Segment>;
@@ -77,7 +89,7 @@ const ParticipantRoster = ({ playerDeltas, rosterDataEndpoint }) => {
                 <Header size='medium' color='blue' style={noTeamHeaderStyle}>
                   No Team Found
                 </Header>
-                Please sign in to see your team.
+                Head to the Team Builder to pick your roster.
               </Grid.Column>
               <Grid.Column width={2} />
             </Grid.Row>
