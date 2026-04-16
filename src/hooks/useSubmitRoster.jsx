@@ -31,17 +31,20 @@ const useSubmitRoster = () => {
     }
 
     try {
+      // Profile fields (name/region/country) are injected onto the access
+      // token by a post-login Action from Auth0 user_metadata. Tokens are
+      // cached in memory by default, so a user whose metadata was updated
+      // after their last login would keep sending the old claim-less token
+      // until it expired (default 24h). cacheMode: 'off' forces silent auth
+      // which re-runs the Action and refreshes the custom claims.
       const accessToken = await getAccessTokenSilently({
+        cacheMode: 'off',
         authorizationParams: {
           audience: `${process.env.REACT_APP_BASE_URL}/`,
           scope: "roster:create",
         },
       });
 
-      // Profile fields (name/region/country) come from Auth0 user_metadata
-      // via a post-login Action that injects them as custom claims on the
-      // access token. The API reads them straight off req.user — no need
-      // to send them from the client.
       const payload = { ...rosterData, owner: ownerId };
 
       const res = await fetch(ROSTERS_API_ENDPOINT, {
