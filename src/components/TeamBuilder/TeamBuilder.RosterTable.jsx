@@ -10,10 +10,10 @@ import { findUtilityPlayer, createTableHeader } from '../../utils/teambuilder';
 const mobileDrawerStyle = (isExpanded) => ({
   position: 'fixed',
   top: isExpanded ? 'var(--app-scoreboard-height, 55px)' : 'auto',
-  bottom: 'var(--app-mobile-nav-height, 55px)',
+  bottom: 'var(--app-mobile-bottom-offset, 55px)',
   left: 0,
   right: 0,
-  zIndex: 100,
+  zIndex: 20,
   background: 'white',
   borderTop: '2px solid #e0e0e0',
   display: 'flex',
@@ -333,65 +333,65 @@ const RosterTable = ({
   return (
     <>
       <div style={desktopRosterRootStyle}>
-          <Grid stackable style={desktopStickyHeaderGridStyle}>
-            <Grid.Row verticalAlign='middle'>
-              <Grid.Column width={4}>
-                <Header
-                  as='h4'
-                  style={rosterHeaderNoMarginStyle}
-                >
-                  My Team
-                </Header>
-              </Grid.Column>
-              <Grid.Column width={12}>
-                <div style={desktopTeamSummaryRowStyle}>
-                  <Label size='large' style={labelInlineFlexStyle}>
-                    {myTeam.length} / {TOTAL_ROSTER_SIZE}
-                    {Object.entries(teamCount).map(([team, count]) => (
-                      <Label.Detail key={team} style={labelInlineFlexStyle}>
-                        <Image
-                          src={`${TEAM_LOGO_URL}${team}_light.svg`}
-                          alt={`${team} Logo`}
-                          style={desktopTeamLogoStyle}
-                        />
-                        {count}
-                      </Label.Detail>
-                    ))}
-                  </Label>
-                  <Button.Group size='small'>
-                    <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
-                      Clear
-                    </Button>
-                    <Button
-                      color='green'
-                      disabled={myTeam.length < TOTAL_ROSTER_SIZE || !canSubmit}
-                      onClick={() => setConfirmationAction('submit')}
-                    >
-                      Submit
-                    </Button>
-                  </Button.Group>
-                </div>
+        <Grid stackable style={desktopStickyHeaderGridStyle}>
+          <Grid.Row verticalAlign='middle'>
+            <Grid.Column width={4}>
+              <Header
+                as='h4'
+                style={rosterHeaderNoMarginStyle}
+              >
+                My Team
+              </Header>
+            </Grid.Column>
+            <Grid.Column width={12}>
+              <div style={desktopTeamSummaryRowStyle}>
+                <Label size='large' style={labelInlineFlexStyle}>
+                  {myTeam.length} / {TOTAL_ROSTER_SIZE}
+                  {Object.entries(teamCount).map(([team, count]) => (
+                    <Label.Detail key={team} style={labelInlineFlexStyle}>
+                      <Image
+                        src={`${TEAM_LOGO_URL}${team}_light.svg`}
+                        alt={`${team} Logo`}
+                        style={desktopTeamLogoStyle}
+                      />
+                      {count}
+                    </Label.Detail>
+                  ))}
+                </Label>
+                <Button.Group size='small'>
+                  <Button color='red' disabled={myTeam.length === 0} onClick={() => setConfirmationAction('clear')}>
+                    Clear
+                  </Button>
+                  <Button
+                    color='green'
+                    disabled={myTeam.length < TOTAL_ROSTER_SIZE || !canSubmit}
+                    onClick={() => setConfirmationAction('submit')}
+                  >
+                    Submit
+                  </Button>
+                </Button.Group>
+              </div>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+
+        {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
+          <Grid stackable style={submissionFeedbackGridStyle}>
+            <Grid.Row>
+              <Grid.Column>
+                <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
               </Grid.Column>
             </Grid.Row>
           </Grid>
+        )}
 
-          {submissionStatus && ['processing', 'success', 'error'].includes(submissionStatus) && (
-            <Grid stackable style={submissionFeedbackGridStyle}>
-              <Grid.Row>
-                <Grid.Column>
-                  <SubmissionFeedback status={submissionStatus} onDismiss={onDismissStatus} />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          )}
-
-          {/* Roster table - Scrollable */}
-          <div style={rosterTableScrollStyle}>
-            <Table singleLine unstackable basic='very' compact='very'>
-              {createTableHeader()}
-              <Table.Body>{rosterRows}</Table.Body>
-            </Table>
-          </div>
+        {/* Roster table - Scrollable */}
+        <div style={rosterTableScrollStyle}>
+          <Table singleLine unstackable basic='very' compact='very'>
+            {createTableHeader()}
+            <Table.Body>{rosterRows}</Table.Body>
+          </Table>
+        </div>
       </div>
 
       {/* Clear Team Confirmation Modal */}
