@@ -47,8 +47,13 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
       return { ...roster, livePoints };
     });
 
+    const validRosters = withLivePoints.filter((r) => r.owner?.id != null);
+    if (validRosters.length === 0) {
+      return [];
+    }
+
     // Rank by total points (including today)
-    const sorted = [...withLivePoints].sort((a, b) => b.points - a.points);
+    const sorted = [...validRosters].sort((a, b) => b.points - a.points);
     let currentRank = 0;
     let stack = 1;
     let lastPoints = -Infinity;
@@ -64,7 +69,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
     });
 
     // Base rank by points excluding today's live contribution
-    const baseSorted = [...withLivePoints].sort(
+    const baseSorted = [...validRosters].sort(
       (a, b) => (b.points - b.livePoints) - (a.points - a.livePoints)
     );
     let baseRank = 0;

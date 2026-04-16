@@ -1,5 +1,5 @@
-import React from 'react';
-import { Segment, Header, Form, Checkbox, Input, Button } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Segment, Header, Form, Checkbox, Input, Button, Progress } from 'semantic-ui-react';
 import { useDevTools } from '../context/DevToolsContext';
 import useCreatePlayer from '../hooks/useCreatePlayer';
 
@@ -71,9 +71,18 @@ const resetSectionStyle = {
   borderTop: '1px solid #eee',
 };
 
+const playerPostProgressWrapStyle = {
+  marginTop: '12px',
+};
+
 const DevTools = ({ regularSeasonStats }) => {
   const { devTools, updateDevTools, resetDevTools } = useDevTools();
   const { postData } = useCreatePlayer();
+  const [playerPostProgress, setPlayerPostProgress] = useState({
+    status: 'idle',
+    current: 0,
+    total: 0,
+  });
 
   const handleTestEliminatedChange = (_, { checked }) => {
     updateDevTools('testEliminatedTeams', checked);
@@ -99,8 +108,13 @@ const DevTools = ({ regularSeasonStats }) => {
     const goalies = regularSeasonStats.goalieStats.map((goalie) => goalie.playerId);
     const skaters = regularSeasonStats.skaterStats.map((skater) => skater.playerId);
     const allPlayers = [...goalies, ...skaters];
+    const total = allPlayers.length;
+    if (total === 0) return;
 
-    for (const player of allPlayers) {
+    setPlayerPostProgress({ status: 'posting', current: 0, total });
+
+    for (let i = 0; i < allPlayers.length; i++) {
+      const player = allPlayers[i];
       const playerData = { id: String(player) };
       try {
         await postData(playerData);
@@ -108,7 +122,10 @@ const DevTools = ({ regularSeasonStats }) => {
       } catch (error) {
         console.error(`Failed to post player: ${player}`, error);
       }
+      setPlayerPostProgress({ status: 'posting', current: i + 1, total });
     }
+
+    setPlayerPostProgress({ status: 'done', current: total, total });
   };
 
   return (
@@ -175,16 +192,34 @@ const DevTools = ({ regularSeasonStats }) => {
           <p style={playerCreatorIntroStyle}>
             Post all active NHL players to the database
           </p>
-          <Button
-            primary
-            onClick={handlePostAllPlayers}
-            disabled={!regularSeasonStats}
-          >
-            Post All Players
-          </Button>
           <p style={postPlayersHintStyle}>
             This will post all skaters and goalies from the current season
           </p>
+          <Button
+            primary
+            onClick={handlePostAllPlayers}
+            disabled={!regularSeasonStats || playerPostProgress.status === 'posting'}
+            loading={playerPostProgress.status === 'posting'}
+          >
+            Post All Players
+          </Button>
+          {(playerPostProgress.status === 'posting' || playerPostProgress.status === 'done') && (
+            <div style={playerPostProgressWrapStyle}>
+              <Progress
+                value={playerPostProgress.current}
+                total={playerPostProgress.total}
+                progress='ratio'
+                indicating
+                success={playerPostProgress.status === 'done'}
+                active={playerPostProgress.status === 'posting'}
+              />
+              <p style={postPlayersHintStyle}>
+                {playerPostProgress.status === 'done'
+                  ? 'Finished posting all players.'
+                  : `Posting players… ${playerPostProgress.current} of ${playerPostProgress.total}`}
+              </p>
+            </div>
+          )}
         </div>
       </Form>
 
