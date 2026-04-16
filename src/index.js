@@ -18,10 +18,13 @@ root.render(
     <Auth0Provider
       domain={domain}
       clientId={clientId}
+      cacheLocation="localstorage"
+      useRefreshTokens
+      useRefreshTokensFallback
       authorizationParams={{
         redirect_uri: window.location.origin,
         audience: `${baseUrl}/`,
-        scope: "openid profile email read:current_user update:current_user_metadata roster:create",
+        scope: "openid profile email offline_access read:current_user update:current_user_metadata roster:create",
       }}
     >
       <App />

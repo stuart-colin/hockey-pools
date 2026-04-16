@@ -8,23 +8,38 @@ const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
 // real name/region/country (the /userinfo endpoint only returns OIDC
 // standard claims, which for DB users falls back to the email).
 const fetchAuth0Profile = async (getAccessTokenSilently, userSub) => {
+  let mgmtToken;
   try {
-    const mgmtToken = await getAccessTokenSilently({
+    mgmtToken = await getAccessTokenSilently({
       authorizationParams: {
         audience: `https://${AUTH0_DOMAIN}/api/v2/`,
         scope: 'read:current_user',
       },
     });
+  } catch (e) {
+    console.warn(
+      '[useSubmitRoster] Could not get Management API token:',
+      e?.error || e?.message || e
+    );
+    return null;
+  }
+
+  try {
     const res = await fetch(
       `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(userSub)}`,
       { headers: { Authorization: `Bearer ${mgmtToken}` } }
     );
     if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      console.warn(
+        `[useSubmitRoster] Management API returned ${res.status}:`,
+        body
+      );
       return null;
     }
     return await res.json();
   } catch (e) {
-    console.warn('Unable to fetch Auth0 user_metadata:', e.message);
+    console.warn('[useSubmitRoster] Management API fetch failed:', e?.message || e);
     return null;
   }
 };
