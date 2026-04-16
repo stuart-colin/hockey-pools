@@ -1,65 +1,45 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Message } from "semantic-ui-react";
+import React from 'react';
+import { Message } from 'semantic-ui-react';
+
+import usePlayoffLock from '../hooks/usePlayoffLock';
 
 const countdownMessageStyle = {
-  textAlign: "center",
-  margin: "10px",
+  textAlign: 'center',
+  margin: '10px',
+};
+
+// Hide the "rosters locked" message this long after puck drop so it doesn't
+// linger forever.
+const HIDE_AFTER_MS = 2 * 24 * 60 * 60 * 1000;
+
+const formatSegments = ({ days, hours, minutes, seconds }) => {
+  const parts = [];
+  if (days > 0) parts.push(`${days} day${days === 1 ? '' : 's'}`);
+  parts.push(`${hours} hour${hours === 1 ? '' : 's'}`);
+  parts.push(`${minutes} minute${minutes === 1 ? '' : 's'}`);
+  parts.push(`${seconds} second${seconds === 1 ? '' : 's'}`);
+  return parts.join(', ');
 };
 
 const CountdownTimer = () => {
-  // Target date: Saturday, April 19th at 6 PM EST
-  const targetDate = new Date("2025-04-14T18:00:00-04:00").getTime();
-  const twoDaysAfterTarget = targetDate + 2 * 24 * 60 * 60 * 1000; // Add 2 days in milliseconds
+  const { hasStarted, targetDate, timeLeft } = usePlayoffLock();
 
-  const [timeLeft, setTimeLeft] = useState(null);
-
-  // Function to calculate the remaining time
-  const calculateTimeLeft = useCallback(() => {
-    const now = new Date().getTime();
-    const difference = targetDate - now;
-
-    if (difference <= 0) {
-      return null; // Timer has completed
+  if (hasStarted) {
+    const elapsed = Date.now() - targetDate.getTime();
+    if (elapsed > HIDE_AFTER_MS) {
+      return null;
     }
-
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-    return { days, hours, minutes, seconds };
-  }, [targetDate]);
-
-  // Update the timer every second
-  useEffect(() => {
-    setTimeLeft(calculateTimeLeft()); // Set initial value immediately
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
-    return () => clearInterval(timer); // Cleanup on component unmount
-  }, [calculateTimeLeft]);
-
-  // Check if the current time is more than 2 days after the target date
-  const now = new Date().getTime();
-  if (now > twoDaysAfterTarget) {
-    return null; // Stop rendering the component
-  }
-
-  if (!timeLeft) {
-    return <Message color='red' style={countdownMessageStyle}>Rosters submissions are locked!</Message>;
+    return (
+      <Message color='red' style={countdownMessageStyle}>
+        Rosters are locked — the playoffs are underway!
+      </Message>
+    );
   }
 
   return (
     <Message color='red' style={countdownMessageStyle}>
-      <div className="header">Puck Drop & Roster Lock 🏒</div>
-      <p>
-        {timeLeft.hours} hours,
-        {" "}
-        {timeLeft.minutes} minutes,
-        {" "}
-        {timeLeft.seconds} seconds
-      </p>
+      <div className='header'>Puck Drop & Roster Lock 🏒</div>
+      <p>{formatSegments(timeLeft)}</p>
     </Message>
   );
 };

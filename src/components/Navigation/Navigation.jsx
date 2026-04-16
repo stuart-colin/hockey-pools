@@ -10,6 +10,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import useIsAdmin from '../../hooks/useIsAdmin';
+import usePlayoffLock from '../../hooks/usePlayoffLock';
 import { AuthButtons } from '../Auth';
 import NavigationSidebar from './Navigation.Sidebar';
 
@@ -24,41 +26,51 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, user } = useAuth0();
-  const isAdmin = user?.email === 'stuart.colin@gmail.com';
+  const { isAuthenticated } = useAuth0();
+  const isAdmin = useIsAdmin();
+  const { hasStarted } = usePlayoffLock();
+  const showPoolData = hasStarted || isAdmin;
 
   const { isMobile, isTablet, isWide } = useBreakpoint();
   const isMobileOrTablet = isMobile || isTablet;
 
   const menuItems = useMemo(() => [
     { name: "commissioners-corner", label: "Commissioner's Corner", path: "/commissioners-corner" },
-    { name: "standings", label: "Standings", hideOnWide: true, path: "/standings" },
-    { name: "insights", label: "Insights", path: "/insights" },
-    { name: "player-details", label: "Player Details", path: "/player-details" },
-    { name: "team-details", label: "Team Details", path: "/team-details" },
+    { name: "standings", label: "Standings", hideOnWide: true, path: "/standings", lockedBeforePlayoffs: true },
+    { name: "insights", label: "Insights", path: "/insights", lockedBeforePlayoffs: true },
+    { name: "player-details", label: "Player Details", path: "/player-details", lockedBeforePlayoffs: true },
+    { name: "team-details", label: "Team Details", path: "/team-details", lockedBeforePlayoffs: true },
     { name: "my-team", label: "My Team", path: "/my-team" },
-    { name: "team-builder", label: "Team Builder", path: "/team-builder", authenticatedOnly: true },
+    { name: "team-builder", label: "Team Builder", path: "/team-builder", authenticatedOnly: true, hideAfterPlayoffs: true },
     ...(isAdmin ? [{ name: "admin", label: "🔧 Admin", path: "/admin" }] : []),
   ], [isAdmin]);
 
   // Get current active item from URL pathname
   const activeItem = useMemo(() => {
-    const pathname = location.pathname === '/' ? '/insights' : location.pathname;
+    const fallbackPath = showPoolData
+      ? (isMobileOrTablet ? '/standings' : '/insights')
+      : '/team-builder';
+    const pathname = location.pathname === '/' ? fallbackPath : location.pathname;
     const item = menuItems.find(m => m.path === pathname);
-    return item?.name || 'insights';
-  }, [location.pathname, menuItems]);
+    return item?.name || (showPoolData ? 'insights' : 'team-builder');
+  }, [location.pathname, menuItems, isMobileOrTablet, showPoolData]);
 
-  // Set default to insights on mount if on root
+  // Set default landing page on mount if on root
   useEffect(() => {
     if (location.pathname === '/') {
-      navigate(isMobileOrTablet ? '/standings' : '/insights', { replace: true });
+      const target = showPoolData
+        ? (isMobileOrTablet ? '/standings' : '/insights')
+        : '/team-builder';
+      navigate(target, { replace: true });
     }
-  }, [location.pathname, isMobileOrTablet, navigate]);
+  }, [location.pathname, isMobileOrTablet, navigate, showPoolData]);
 
   const renderMenuItems = () =>
     menuItems
       .filter(item => !item.hideOnWide || !isWide)
       .filter(item => !item.authenticatedOnly || isAuthenticated)
+      .filter(item => !item.lockedBeforePlayoffs || showPoolData)
+      .filter(item => !item.hideAfterPlayoffs || !hasStarted)
       .map((item) => (
         <Menu.Item
           key={item.name}
