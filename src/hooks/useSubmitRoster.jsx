@@ -2,6 +2,32 @@ import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const ROSTERS_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`;
+const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
+
+// Pulls the user's Auth0 user_metadata so the API can persist their
+// real name/region/country (the /userinfo endpoint only returns OIDC
+// standard claims, which for DB users falls back to the email).
+const fetchAuth0Profile = async (getAccessTokenSilently, userSub) => {
+  try {
+    const mgmtToken = await getAccessTokenSilently({
+      authorizationParams: {
+        audience: `https://${AUTH0_DOMAIN}/api/v2/`,
+        scope: 'read:current_user',
+      },
+    });
+    const res = await fetch(
+      `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(userSub)}`,
+      { headers: { Authorization: `Bearer ${mgmtToken}` } }
+    );
+    if (!res.ok) {
+      return null;
+    }
+    return await res.json();
+  } catch (e) {
+    console.warn('Unable to fetch Auth0 user_metadata:', e.message);
+    return null;
+  }
+};
 
 const useSubmitRoster = () => {
   const [loading, setLoading] = useState(false);
@@ -38,7 +64,15 @@ const useSubmitRoster = () => {
         },
       });
 
-      const payload = { ...rosterData, owner: ownerId };
+      const auth0Profile = await fetchAuth0Profile(getAccessTokenSilently, user.sub);
+      const md = auth0Profile?.user_metadata || {};
+      const profile = {
+        name: md.name || user?.name || '',
+        region: md.region || '',
+        country: md.country || '',
+      };
+
+      const payload = { ...rosterData, owner: ownerId, profile };
 
       const res = await fetch(ROSTERS_API_ENDPOINT, {
         method: "POST",
