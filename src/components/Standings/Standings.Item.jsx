@@ -82,6 +82,8 @@ const StandingsItem = React.forwardRef(
   ) => {
     const backgroundColor = user.rank <= 10 ? TOP_10_COLORS[user.rank - 1] : '';
     const { isMobile, isTablet, isWide } = useBreakpoint();
+    const ownerName = user.owner?.name || 'Unclaimed Roster';
+    const ownerCountry = user.owner?.country;
 
     return (
       <Fragment>
@@ -124,7 +126,7 @@ const StandingsItem = React.forwardRef(
           <Image
             alt="participant avatar"
             avatar
-            src={getAvatarSvg(user.owner.name)}
+            src={getAvatarSvg(ownerName)}
             style={avatarImageStyle}
             verticalAlign="middle"
           />
@@ -133,15 +135,14 @@ const StandingsItem = React.forwardRef(
           >
             <List.Header
               style={listHeaderRowStyle}>
-              {user.owner &&
-                user.owner.country &&
-                user.owner.country.toLowerCase() !== 'n/a' && (
+              {ownerCountry &&
+                ownerCountry.toLowerCase() !== 'n/a' && (
                   <Flag
                     style={flagDimmedStyle}
-                    name={user.owner.country.toLowerCase()}
+                    name={ownerCountry.toLowerCase()}
                   />
                 )}
-              {user.owner.name}
+              {ownerName}
             </List.Header>
           </List.Content>
           <List.Content

@@ -47,13 +47,8 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
       return { ...roster, livePoints };
     });
 
-    const validRosters = withLivePoints.filter((r) => r.owner?.id != null);
-    if (validRosters.length === 0) {
-      return [];
-    }
-
     // Rank by total points (including today)
-    const sorted = [...validRosters].sort((a, b) => b.points - a.points);
+    const sorted = [...withLivePoints].sort((a, b) => b.points - a.points);
     let currentRank = 0;
     let stack = 1;
     let lastPoints = -Infinity;
@@ -68,8 +63,9 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
       return { ...roster, rank: currentRank };
     });
 
-    // Base rank by points excluding today's live contribution
-    const baseSorted = [...validRosters].sort(
+    // Base rank by points excluding today's live contribution.
+    // Keyed off roster.id (stable Mongo id) so ownerless rosters still participate.
+    const baseSorted = [...withLivePoints].sort(
       (a, b) => (b.points - b.livePoints) - (a.points - a.livePoints)
     );
     let baseRank = 0;
@@ -85,12 +81,12 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
         baseStack += 1;
       }
       lastBasePoints = basePoints;
-      baseRankMap[roster.owner.id] = baseRank;
+      baseRankMap[roster.id] = baseRank;
     });
 
     return withRank.map((roster) => ({
       ...roster,
-      rankDelta: baseRankMap[roster.owner.id] - roster.rank,
+      rankDelta: baseRankMap[roster.id] - roster.rank,
     }));
   }, [users.rosters]);
 
@@ -109,13 +105,13 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
   useEffect(() => {
     const newRefs = {};
     rankedRosters.forEach((roster) => {
-      if (roster.owner?.id) {
-        // Preserve existing refs to prevent recreating DOM nodes
-        if (itemRefs.current[roster.owner.id]) {
-          newRefs[roster.owner.id] = itemRefs.current[roster.owner.id];
-        } else {
-          newRefs[roster.owner.id] = React.createRef();
-        }
+      const key = roster.id;
+      if (!key) return;
+      // Preserve existing refs to prevent recreating DOM nodes
+      if (itemRefs.current[key]) {
+        newRefs[key] = itemRefs.current[key];
+      } else {
+        newRefs[key] = React.createRef();
       }
     });
     itemRefs.current = newRefs;
@@ -143,12 +139,12 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
 
   const standingsList = displayedRosters.map((user) => (
     <StandingsItem
-      isRosterVisible={activeRosterKey === user.owner.id}
-      key={user.owner.id}
-      onToggleRoster={() => handleToggleRoster(user.owner.id)}
+      isRosterVisible={activeRosterKey === user.id}
+      key={user.id}
+      onToggleRoster={() => handleToggleRoster(user.id)}
       poolSize={rankedRosters.length}
       rankDelta={user.rankDelta}
-      ref={itemRefs.current[user.owner.id]}
+      ref={itemRefs.current[user.id]}
       user={user}
     />
   ));

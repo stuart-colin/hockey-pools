@@ -140,11 +140,17 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
   }, []);
 
   const handleSubmitRoster = useCallback(async () => {
+    // Bail out if Auth0 hasn't populated the user id yet — submitting with an
+    // empty owner was causing rosters to be persisted with owner:null.
+    if (!state.userId) {
+      console.warn('Skipping submit: userId not ready');
+      return;
+    }
+
     dispatch({ type: 'SET_SUBMISSION_STATUS', payload: 'processing' });
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
-      // Use the userId from state that was set from Auth0 in useEffect
       const teamIds = buildTeamIds(state.myTeam, state.userId);
       dispatch({ type: 'SET_SUBMITTED_TEAM', payload: teamIds });
       await postData(teamIds);
@@ -179,14 +185,15 @@ const TeamBuilder = ({ regularSeasonStats, rosterDataEndpoint }) => {
   };
 
   const rosterTableProps = {
+    canSubmit: !!state.userId,
     myTeam: state.myTeam,
-    teamCount,
-    submissionStatus: state.submissionStatus,
-    teamIds: state.submittedTeam,
     onClearTeam: handleClearTeam,
+    onDismissStatus: handleDismissFeedback,
     onRemovePlayer: (player) => handleRemovePlayer(player?.playerId),
     onSubmit: handleSubmitClick,
-    onDismissStatus: handleDismissFeedback,
+    submissionStatus: state.submissionStatus,
+    teamCount,
+    teamIds: state.submittedTeam,
   };
 
   const availablePlayersTable = (

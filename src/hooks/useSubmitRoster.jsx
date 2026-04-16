@@ -9,7 +9,6 @@ const useSubmitRoster = () => {
   const [response, setResponse] = useState(null);
 
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 
   const postData = async (rosterData) => {
     setLoading(true);
@@ -21,6 +20,16 @@ const useSubmitRoster = () => {
       throw new Error("User is not authenticated");
     }
 
+    // Derive owner from the Auth0 identity so callers can't submit an
+    // empty/stale owner (which was producing rosters with owner:null in the DB).
+    const ownerId = user?.sub ? user.sub.split('|').pop() : null;
+    if (!ownerId) {
+      const msg = 'Missing owner id from Auth0 user';
+      setError(msg);
+      setLoading(false);
+      throw new Error(msg);
+    }
+
     try {
       const accessToken = await getAccessTokenSilently({
         authorizationParams: {
@@ -29,15 +38,7 @@ const useSubmitRoster = () => {
         },
       });
 
-      // Decode token to inspect claims
-      const parts = accessToken.split('.');
-      if (parts.length === 3) {
-        try {
-          const payload = JSON.parse(atob(parts[1]));
-        } catch (e) {
-          // Token decode failed, continue anyway
-        }
-      }
+      const payload = { ...rosterData, owner: ownerId };
 
       const res = await fetch(ROSTERS_API_ENDPOINT, {
         method: "POST",
@@ -45,7 +46,7 @@ const useSubmitRoster = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(rosterData),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {

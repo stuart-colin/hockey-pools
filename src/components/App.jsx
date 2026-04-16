@@ -69,11 +69,11 @@ const AppContent = ({ season, setSeason }) => {
   return (
     <>
       {showSplash && (
-        <SplashScreen 
+        <SplashScreen
           onComplete={() => {
             sessionStorage.setItem('splashShown', 'true');
             setShowSplash(false);
-          }} 
+          }}
         />
       )}
       <div className={`app-shell app-content ${showSplash ? "hidden-content" : "visible-content"}`}>

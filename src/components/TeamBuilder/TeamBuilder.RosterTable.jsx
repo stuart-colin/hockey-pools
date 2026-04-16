@@ -145,13 +145,14 @@ const rosterTableScrollStyle = {
  * Right panel: Team roster display and submission
  */
 const RosterTable = ({
+  canSubmit = true,
   myTeam,
-  teamCount,
-  submissionStatus,
   onClearTeam,
+  onDismissStatus,
   onRemovePlayer,
   onSubmit,
-  onDismissStatus,
+  submissionStatus,
+  teamCount,
 }) => {
   const { isMobile } = useBreakpoint();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -277,7 +278,7 @@ const RosterTable = ({
                   </Button>
                   <Button
                     color='green'
-                    disabled={myTeam.length < TOTAL_ROSTER_SIZE}
+                    disabled={myTeam.length < TOTAL_ROSTER_SIZE || !canSubmit}
                     onClick={() => setConfirmationAction('submit')}
                   >
                     Submit
@@ -363,7 +364,7 @@ const RosterTable = ({
                     </Button>
                     <Button
                       color='green'
-                      disabled={myTeam.length < TOTAL_ROSTER_SIZE}
+                      disabled={myTeam.length < TOTAL_ROSTER_SIZE || !canSubmit}
                       onClick={() => setConfirmationAction('submit')}
                     >
                       Submit

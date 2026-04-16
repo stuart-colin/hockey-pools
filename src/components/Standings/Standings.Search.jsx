@@ -42,8 +42,8 @@ const StandingsSearch = ({ loading, rankedRosters, placeholder, onSearchResultCl
     .slice(0, 5)
     .map(user => (
       <List.Item
-        key={user.owner.id}
-        onClick={() => onSearchResultClick && onSearchResultClick(user.owner.id)}
+        key={user.id}
+        onClick={() => onSearchResultClick && onSearchResultClick(user.id)}
         style={searchResultItemStyle}
       >
         <strong>{user.owner.name}</strong>
