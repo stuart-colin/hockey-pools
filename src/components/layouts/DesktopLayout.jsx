@@ -74,8 +74,10 @@ const DesktopLayout = ({
                       ? <TeamDetails players={players} season={season} users={activeUsers} />
                       : <PlayoffLocked page='team-details' />
                     } />
-                    <Route path="/" element={showPoolData
-                      ? <Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />
+                    <Route path="/" element={hasStarted
+                      ? (isWide
+                        ? <Insights players={players} regularSeasonStats={regularSeasonStats} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />
+                        : <Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />)
                       : <Navigate replace to='/team-builder' />
                     } />
                   </Routes>

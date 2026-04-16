@@ -27,7 +27,6 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
   const location = useLocation();
   const isAdmin = useIsAdmin();
   const { hasStarted } = usePlayoffLock();
-  const showPoolData = hasStarted || isAdmin;
 
   const { isMobile, isTablet, isWide } = useBreakpoint();
   const isMobileOrTablet = isMobile || isTablet;
@@ -45,23 +44,23 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
 
   // Get current active item from URL pathname
   const activeItem = useMemo(() => {
-    const fallbackPath = showPoolData
-      ? (isMobileOrTablet ? '/standings' : '/insights')
+    const fallbackPath = hasStarted
+      ? (isWide ? '/insights' : '/standings')
       : '/team-builder';
     const pathname = location.pathname === '/' ? fallbackPath : location.pathname;
     const item = menuItems.find(m => m.path === pathname);
-    return item?.name || (showPoolData ? 'insights' : 'team-builder');
-  }, [location.pathname, menuItems, isMobileOrTablet, showPoolData]);
+    return item?.name || (hasStarted ? (isWide ? 'insights' : 'standings') : 'team-builder');
+  }, [location.pathname, menuItems, isWide, hasStarted]);
 
   // Set default landing page on mount if on root
   useEffect(() => {
     if (location.pathname === '/') {
-      const target = showPoolData
-        ? (isMobileOrTablet ? '/standings' : '/insights')
+      const target = hasStarted
+        ? (isWide ? '/insights' : '/standings')
         : '/team-builder';
       navigate(target, { replace: true });
     }
-  }, [location.pathname, isMobileOrTablet, navigate, showPoolData]);
+  }, [location.pathname, isWide, navigate, hasStarted]);
 
   const renderMenuItems = () =>
     menuItems

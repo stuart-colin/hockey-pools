@@ -58,7 +58,7 @@ const MobileLayout = ({
             ? <TeamDetails players={players} season={season} users={activeUsers} />
             : <PlayoffLocked page='team-details' />
           } />
-          <Route path="/" element={showPoolData
+          <Route path="/" element={hasStarted
             ? <Standings season={season} users={activeUsers} liveStatsEnabled={liveStatsEnabled} />
             : <Navigate replace to='/team-builder' />
           } />
