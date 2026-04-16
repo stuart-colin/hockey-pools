@@ -2,47 +2,6 @@ import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const ROSTERS_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/rosters/`;
-const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
-
-// Pulls the user's Auth0 user_metadata so the API can persist their
-// real name/region/country (the /userinfo endpoint only returns OIDC
-// standard claims, which for DB users falls back to the email).
-const fetchAuth0Profile = async (getAccessTokenSilently, userSub) => {
-  let mgmtToken;
-  try {
-    mgmtToken = await getAccessTokenSilently({
-      authorizationParams: {
-        audience: `https://${AUTH0_DOMAIN}/api/v2/`,
-        scope: 'read:current_user',
-      },
-    });
-  } catch (e) {
-    console.warn(
-      '[useSubmitRoster] Could not get Management API token:',
-      e?.error || e?.message || e
-    );
-    return null;
-  }
-
-  try {
-    const res = await fetch(
-      `https://${AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(userSub)}`,
-      { headers: { Authorization: `Bearer ${mgmtToken}` } }
-    );
-    if (!res.ok) {
-      const body = await res.text().catch(() => '');
-      console.warn(
-        `[useSubmitRoster] Management API returned ${res.status}:`,
-        body
-      );
-      return null;
-    }
-    return await res.json();
-  } catch (e) {
-    console.warn('[useSubmitRoster] Management API fetch failed:', e?.message || e);
-    return null;
-  }
-};
 
 const useSubmitRoster = () => {
   const [loading, setLoading] = useState(false);
@@ -79,15 +38,11 @@ const useSubmitRoster = () => {
         },
       });
 
-      const auth0Profile = await fetchAuth0Profile(getAccessTokenSilently, user.sub);
-      const md = auth0Profile?.user_metadata || {};
-      const profile = {
-        name: md.name || user?.name || '',
-        region: md.region || '',
-        country: md.country || '',
-      };
-
-      const payload = { ...rosterData, owner: ownerId, profile };
+      // Profile fields (name/region/country) come from Auth0 user_metadata
+      // via a post-login Action that injects them as custom claims on the
+      // access token. The API reads them straight off req.user — no need
+      // to send them from the client.
+      const payload = { ...rosterData, owner: ownerId };
 
       const res = await fetch(ROSTERS_API_ENDPOINT, {
         method: "POST",
