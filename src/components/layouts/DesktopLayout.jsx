@@ -38,7 +38,7 @@ const DesktopLayout = ({
       <div className='app-desktop-root'>
         <Grid stackable>
           <Grid.Row>
-            {isWide && showPoolData && (
+            {isWide && (
               <Grid.Column width={4}>
                 <div className='app-page-column'>
                   <Standings
@@ -49,7 +49,7 @@ const DesktopLayout = ({
                 </div>
               </Grid.Column>
             )}
-            <Grid.Column width={isWide && showPoolData ? 12 : 16}>
+            <Grid.Column width={isWide ? 12 : 16}>
               <div className='app-desktop-content'>
                 <Navigation
                   liveStatsEnabled={liveStatsEnabled}
@@ -68,10 +68,7 @@ const DesktopLayout = ({
                       ? <PlayerDetails players={players} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />
                       : <PlayoffLocked page='player-details' />
                     } />
-                    <Route path="/standings" element={showPoolData
-                      ? <Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />
-                      : <PlayoffLocked page='standings' />
-                    } />
+                    <Route path="/standings" element={<Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />} />
                     <Route path="/team-builder" element={<TeamBuilder regularSeasonStats={regularSeasonStats} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
                     <Route path="/team-details" element={showPoolData
                       ? <TeamDetails players={players} season={season} users={activeUsers} />

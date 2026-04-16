@@ -70,10 +70,15 @@ const rosterExpandRegionStyle = {
 
 const listItemBackgroundStyle = (backgroundColor) => ({ backgroundColor });
 
+const lockedToggleStyle = {
+  cursor: 'not-allowed',
+};
+
 const StandingsItem = React.forwardRef(
   (
     {
       isRosterVisible,
+      locked,
       onToggleRoster,
       rankDelta,
       user,
@@ -85,12 +90,17 @@ const StandingsItem = React.forwardRef(
     const ownerName = user.owner?.name || 'Unclaimed Roster';
     const ownerCountry = user.owner?.country;
 
+    const expandVisible = isRosterVisible && !locked;
+
     return (
       <Fragment>
         <div ref={ref} />
         <List.Item
-          onClick={onToggleRoster}
-          style={listItemBackgroundStyle(backgroundColor)}
+          onClick={locked ? undefined : onToggleRoster}
+          style={{
+            ...listItemBackgroundStyle(backgroundColor),
+            ...(locked ? lockedToggleStyle : {}),
+          }}
         >
           <List.Content
             floated="left"
@@ -151,8 +161,9 @@ const StandingsItem = React.forwardRef(
           >
             <Icon
               circular
-              color="blue"
-              name={!isRosterVisible ? 'chevron down' : 'chevron up'}
+              color={locked ? 'grey' : 'blue'}
+              disabled={locked}
+              name={locked ? 'lock' : (!isRosterVisible ? 'chevron down' : 'chevron up')}
             />
           </List.Content>
           <List.Content
@@ -184,7 +195,7 @@ const StandingsItem = React.forwardRef(
             animation="fade"
             duration={250}
             unmountOnHide
-            visible={isRosterVisible}
+            visible={expandVisible}
           >
             <div
               style={rosterExpandRegionStyle}

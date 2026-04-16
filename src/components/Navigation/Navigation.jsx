@@ -6,7 +6,6 @@ import {
   Label,
   Menu,
 } from 'semantic-ui-react';
-import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useBreakpoint } from '../../hooks/useBreakpoint';
@@ -26,7 +25,6 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated } = useAuth0();
   const isAdmin = useIsAdmin();
   const { hasStarted } = usePlayoffLock();
   const showPoolData = hasStarted || isAdmin;
@@ -36,10 +34,10 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
 
   const menuItems = useMemo(() => [
     { name: "commissioners-corner", label: "Commissioner's Corner", path: "/commissioners-corner" },
-    { name: "standings", label: "Standings", hideOnWide: true, path: "/standings", lockedBeforePlayoffs: true },
-    { name: "insights", label: "Insights", path: "/insights", lockedBeforePlayoffs: true },
-    { name: "player-details", label: "Player Details", path: "/player-details", lockedBeforePlayoffs: true },
-    { name: "team-details", label: "Team Details", path: "/team-details", lockedBeforePlayoffs: true },
+    { name: "standings", label: "Standings", hideOnWide: true, path: "/standings" },
+    { name: "insights", label: "Insights", path: "/insights" },
+    { name: "player-details", label: "Player Details", path: "/player-details" },
+    { name: "team-details", label: "Team Details", path: "/team-details" },
     { name: "my-team", label: "My Team", path: "/my-team" },
     { name: "team-builder", label: "Team Builder", path: "/team-builder", hideAfterPlayoffs: true },
     ...(isAdmin ? [{ name: "admin", label: "🔧 Admin", path: "/admin" }] : []),
@@ -68,9 +66,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
   const renderMenuItems = () =>
     menuItems
       .filter(item => !item.hideOnWide || !isWide)
-      .filter(item => !item.authenticatedOnly || isAuthenticated)
-      .filter(item => !item.lockedBeforePlayoffs || showPoolData)
-      .filter(item => !item.hideAfterPlayoffs || !hasStarted)
+      .filter(item => !item.hideAfterPlayoffs || !hasStarted || isAdmin)
       .map((item) => (
         <Menu.Item
           key={item.name}

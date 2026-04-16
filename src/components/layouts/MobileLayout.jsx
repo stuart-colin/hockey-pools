@@ -52,10 +52,7 @@ const MobileLayout = ({
             ? <PlayerDetails players={players} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />
             : <PlayoffLocked page='player-details' />
           } />
-          <Route path="/standings" element={showPoolData
-            ? <Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />
-            : <PlayoffLocked page='standings' />
-          } />
+          <Route path="/standings" element={<Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />} />
           <Route path="/team-builder" element={<TeamBuilder regularSeasonStats={regularSeasonStats} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
           <Route path="/team-details" element={showPoolData
             ? <TeamDetails players={players} season={season} users={activeUsers} />

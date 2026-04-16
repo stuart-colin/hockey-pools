@@ -10,6 +10,8 @@ import StandingsSearch from './Standings.Search';
 import StandingsItem from './Standings.Item';
 import StandingsListHeader from './Standings.ListHeader';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import useIsAdmin from '../../hooks/useIsAdmin';
+import usePlayoffLock from '../../hooks/usePlayoffLock';
 
 const standingsListSegmentStyle = {
   overflow: 'auto',
@@ -22,6 +24,9 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
   const [moversMode, setMoversMode] = useState('standings'); // 'standings' | 'points' | 'rank'
   const itemRefs = useRef({});
   const { isMobile, isTablet } = useBreakpoint();
+  const { hasStarted } = usePlayoffLock();
+  const isAdmin = useIsAdmin();
+  const rostersLocked = !hasStarted && !isAdmin;
 
   useEffect(() => {
     if (!users.loading) setLoading(false);
@@ -141,6 +146,7 @@ const Standings = ({ liveStatsEnabled, season, users }) => {
     <StandingsItem
       isRosterVisible={activeRosterKey === user.id}
       key={user.id}
+      locked={rostersLocked}
       onToggleRoster={() => handleToggleRoster(user.id)}
       poolSize={rankedRosters.length}
       rankDelta={user.rankDelta}
