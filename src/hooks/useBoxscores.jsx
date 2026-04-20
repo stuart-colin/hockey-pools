@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
 const NHL_WEB_API_ENDPOINT = `${process.env.REACT_APP_BASE_URL}/v1/nhl/web`;
-const ACTIVE_STATES = new Set(['LIVE', 'OFF', 'FINAL']);
+// NHL Web API also reports CRIT (critical / sudden-death — common in playoff OT)
+// and OVER (brief post-final transition). Without these, boxscores stop refreshing
+// the moment a tight game flips out of LIVE, which silently freezes goalie deltas.
+const ACTIVE_STATES = new Set(['LIVE', 'CRIT', 'OVER', 'FINAL', 'OFF']);
+const TERMINAL_STATES = new Set(['OFF', 'FINAL']);
 
 const fetchWithTimeout = async (url, timeoutMs = 10000) => {
   const controller = new AbortController();
@@ -50,8 +54,8 @@ const useBoxscores = (games, { skip = false } = {}) => {
         const gameId = game.id;
         const cached = cacheRef.current.get(gameId);
 
-        // If we have a cached OFF boxscore, reuse it (game is done, won't change)
-        if (cached && cached.gameState === 'OFF') {
+        // If we have a cached terminal-state boxscore, reuse it (game is done, won't change)
+        if (cached && TERMINAL_STATES.has(cached.gameState)) {
           return cached;
         }
 

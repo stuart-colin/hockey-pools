@@ -17,9 +17,13 @@ export const parseLivePlayerStats = (games, poolPlayerIds) => {
     return { playerDeltas, hasLiveGames: false };
   }
 
-  const activeStates = new Set(['LIVE', 'OFF', 'FINAL']);
+  // NHL Web API gameState values include LIVE, CRIT (critical/sudden-death — common
+  // throughout playoff overtime), OVER (brief post-final transition), FINAL, and OFF.
+  // All of these may contain goal/assist data that should contribute to live deltas.
+  const activeStates = new Set(['LIVE', 'CRIT', 'OVER', 'FINAL', 'OFF']);
+  const liveStates = new Set(['LIVE', 'CRIT']);
   const activeGames = games.filter(g => activeStates.has(g.gameState));
-  const hasLiveGames = games.some(g => g.gameState === 'LIVE');
+  const hasLiveGames = games.some(g => liveStates.has(g.gameState));
 
   for (const game of activeGames) {
     const goals = game.goals;
@@ -151,10 +155,11 @@ export const parseLiveGoalieStats = (boxscores, poolPlayerIds) => {
     return goalieDeltas;
   }
 
+  const ACTIVE_GOALIE_STATES = new Set(['LIVE', 'CRIT', 'OVER', 'FINAL', 'OFF']);
+
   for (const boxscore of boxscores) {
     const gameState = boxscore.gameState;
-    // Only process completed or live games
-    if (gameState !== 'FINAL' && gameState !== 'OFF' && gameState !== 'LIVE') continue;
+    if (!ACTIVE_GOALIE_STATES.has(gameState)) continue;
 
     const lastPeriodType = boxscore.gameOutcome?.lastPeriodType; // 'REG', 'OT', 'SO'
 
