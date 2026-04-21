@@ -179,8 +179,11 @@ export const parseLiveGoalieStats = (boxscores, poolPlayerIds) => {
 
         if (goalie.decision === 'W') {
           delta.wins += 1;
-          // Shutout: must be starter AND 0 goals against
-          if (goalie.starter === true && goalie.goalsAgainst === 0) {
+          // Shutout requires the goalie to have played the entire game with 0 GA.
+          // Prefer the official `starter` flag when the NHL provides it; fall back
+          // to inferring "lone goalie" from TOI when `starter` is missing (the NHL
+          // sometimes omits it for live/recently-finished games).
+          if (goalie.goalsAgainst === 0 && isStartingGoalie(goalie, goalies)) {
             delta.shutouts += 1;
           }
         } else if (goalie.decision === 'L') {
@@ -217,6 +220,30 @@ export const mergeLiveDeltas = (skaterDeltas, goalieDeltas) => {
 };
 
 // --- Helpers ---
+
+// Convert a "MM:SS" or "HH:MM:SS" TOI string to total seconds. Returns 0 for
+// missing/invalid values so we can safely compare across goalies.
+const toiToSeconds = (toi) => {
+  if (typeof toi !== 'string' || toi.length === 0) return 0;
+  const parts = toi.split(':').map(Number);
+  if (parts.some(Number.isNaN)) return 0;
+  return parts.reduce((acc, n) => acc * 60 + n, 0);
+};
+
+// True when the given goalie is the only one on their side with any TOI.
+const isLoneGoalie = (goalie, sideGoalies) => {
+  if (toiToSeconds(goalie.toi) === 0) return false;
+  return sideGoalies.every(g => g.playerId === goalie.playerId || toiToSeconds(g.toi) === 0);
+};
+
+// Treat a goalie as "the starter" when the NHL marks them as such; if the
+// `starter` field is missing entirely from the boxscore, fall back to inferring
+// it from TOI. An explicit `starter: false` is respected and not overridden.
+const isStartingGoalie = (goalie, sideGoalies) => {
+  if (goalie.starter === true) return true;
+  if (goalie.starter === false) return false;
+  return isLoneGoalie(goalie, sideGoalies);
+};
 
 const getOrCreateDelta = (map, playerId) => {
   if (!map.has(playerId)) {
