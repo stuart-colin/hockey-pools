@@ -3,10 +3,18 @@
  */
 
 // Threshold control defaults
-export const DEFAULT_HIGH_THRESHOLD = 50; // Filter for "Most Advantageous" - players under this % pick rate
-export const DEFAULT_LOW_THRESHOLD = 50; // Filter for "Least Advantageous" - players over this % pick rate
-export const THRESHOLD_SMALL_STEP = 1; // Single icon click increment
-export const THRESHOLD_BIG_STEP = 10; // Double icon click increment
+export const DEFAULT_HIGH_THRESHOLD = 15; // Steals: max selection % a player can have
+export const DEFAULT_LOW_THRESHOLD = 15;  // Busts: min selection % a player must have
+export const THRESHOLD_SMALL_STEP = 1;
+export const THRESHOLD_BIG_STEP = 10;
+
+// Threshold-aware descriptions for the slider tooltips.
+export const INSIGHT_DESCRIPTIONS = {
+  MOST_ADVANTAGEOUS: (threshold) =>
+    `Players selected by ${threshold}% or fewer of teams who outscored what their selection rate predicted (within their position group).`,
+  LEAST_ADVANTAGEOUS: (threshold) =>
+    `Players selected by at least ${threshold}% of teams who fell furthest below what their selection rate predicted (within their position group).`,
+};
 
 // Roster position configuration with slot counts
 export const POSITION_CONFIG = {
@@ -45,11 +53,6 @@ export const INSIGHT_TITLES = {
   BEST_UNSELECTED: 'Best Players No One Took',
   PERFECT_TEAM: 'Perfect Team',
   MOST_COMMON_TEAM: 'Most Common Team',
-};
-
-export const INSIGHT_DESCRIPTIONS = {
-  MOST_ADVANTAGEOUS: (threshold) => `Highest points under ${threshold}% selection rate`,
-  LEAST_ADVANTAGEOUS: (threshold) => `Lowest points over ${threshold}% selection rate`,
 };
 
 // Color scheme for insights

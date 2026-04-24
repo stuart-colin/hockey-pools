@@ -31,3 +31,7 @@ AGENTS.md
 TODO.md
 PLAN-data-cleanup.md
 PLAN-live-stats.md
+
+# local API data snapshots fetched by scripts/compare-bust-models.js
+/rosters.json
+/players.json

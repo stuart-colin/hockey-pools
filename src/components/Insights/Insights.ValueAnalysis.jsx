@@ -17,6 +17,41 @@ const popupQuestionIconStyle = {
   opacity: 0.6,
 };
 
+const POSITION_GROUP_LABEL = {
+  F: 'forwards',
+  D: 'defensemen',
+  G: 'goalies',
+};
+
+const formatSigned = (value) => {
+  if (value === 0) return '0';
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${value.toFixed(1)}`;
+};
+
+const valueScoreColumn = (scoreKey, label, { negate = false } = {}) => ({
+  key: scoreKey,
+  label,
+  width: 1,
+  render: (player) => {
+    const score = player[scoreKey];
+    if (score === undefined || score === null) return null;
+    const displayScore = negate ? -score : score;
+    const expected = player._expectedPoints ?? 0;
+    const actual = player.points ?? 0;
+    const groupLabel = POSITION_GROUP_LABEL[player._positionGroup] || 'peers';
+    const tooltip = `Expected ${expected.toFixed(1)} pts based on selection rate among ${groupLabel}; got ${actual}.`;
+    return (
+      <Popup
+        content={tooltip}
+        hideOnScroll
+        position='left center'
+        trigger={<strong>{formatSigned(displayScore)}</strong>}
+      />
+    );
+  },
+});
+
 const ValueAnalysis = ({
   bestByPickThresholdList,
   worstByPickThresholdList,
@@ -44,7 +79,7 @@ const ValueAnalysis = ({
               <Card.Header>
                 Biggest Steals
                 <Popup
-                  content='Higher value players: lower selection rates but higher points. Rosters with these guys have an edge.'
+                  content='Players who outscored what their selection rate predicted, ranked within their position group (forwards, defense, goalies). Each group has its own expected-points line, so a goalie pulling big wins on a few picks still counts as a steal.'
                   hideOnScroll
                   position='right center'
                   trigger={(
@@ -70,9 +105,10 @@ const ValueAnalysis = ({
               <InsightDataTable
                 players={bestByPickThresholdList}
                 color={INSIGHT_COLORS.MOST_ADVANTAGEOUS}
+                customColumns={[valueScoreColumn('_stealScore', 'Score')]}
                 showPercentage={true}
                 totalTeams={usersRostersLength}
-                emptyMessage='No players match this threshold'
+                emptyMessage='No clear steals at this threshold — every qualifying player is performing in line with their selection rate.'
               />
             </Card.Content>
           </Card>
@@ -85,7 +121,7 @@ const ValueAnalysis = ({
               <Card.Header>
                 Biggest Busts
                 <Popup
-                  content='Lower value players: higher selection rates but lower points. Rosters with these picks have less of an advantage.'
+                  content='Players who fell furthest below the points their selection rate predicted, fit separately for forwards, defense, and goalies. A widely-picked goalie still putting up wins won\u2019t be flagged just because forwards score more.'
                   hideOnScroll
                   position='right center'
                   trigger={(
@@ -111,9 +147,10 @@ const ValueAnalysis = ({
               <InsightDataTable
                 players={worstByPickThresholdList}
                 color={INSIGHT_COLORS.LEAST_ADVANTAGEOUS}
+                customColumns={[valueScoreColumn('_bustScore', 'Score', { negate: true })]}
                 showPercentage={true}
                 totalTeams={usersRostersLength}
-                emptyMessage='No players match this threshold'
+                emptyMessage='No clear busts at this threshold — every qualifying player is performing in line with their selection rate.'
               />
             </Card.Content>
           </Card>

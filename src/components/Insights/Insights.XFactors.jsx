@@ -17,12 +17,6 @@ const popupQuestionIconStyle = {
   opacity: 0.6,
 };
 
-const verhaegheNameRowStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  width: '100%',
-};
-
 const verhaegheNameStrongStyle = {
   fontSize: '14px',
 };
@@ -35,10 +29,10 @@ const verhaegheClutchValueStyle = (player) => ({
 
 const verhaegheMetaRowStyle = {
   color: '#999',
-  display: 'flex',
+  display: 'inline-flex',
   fontSize: '12px',
-  justifyContent: 'space-between',
-  marginTop: '4px',
+  gap: '12px',
+  marginLeft: '12px',
 };
 
 const bonusRowLogoBackdropStyle = (isMobileRow) => ({
@@ -101,19 +95,39 @@ const XFactors = ({
                 color='blue'
                 visibleRows={4}
                 expandedRows={10}
-                rowRenderer={(player) => (
+                headerRenderer={() => (
+                  <Table.Row>
+                    <Table.HeaderCell>Player</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>Clutch (Δ PPG)</Table.HeaderCell>
+                  </Table.Row>
+                )}
+                rowRenderer={(player, isMobileRow) => (
                   <Table.Row key={player.id} negative={player.isEliminated}>
-                    <Table.Cell colspan='2'>
-                      <div style={verhaegheNameRowStyle}>
-                        <strong style={verhaegheNameStrongStyle}>{player.name}</strong>
-                        <span style={verhaegheClutchValueStyle(player)}>
-                          {player.clutchRating > 0 ? '+' : ''}{player.clutchRating}
-                        </span>
+                    <Table.Cell>
+                      <div style={bonusRowLogoBackdropStyle(isMobileRow)}>
+                        <Image
+                          alt={`${player.teamName} Logo`}
+                          size='large'
+                          src={player.teamLogo}
+                          style={bonusRowTeamLogoStyle(player)}
+                        />
                       </div>
-                      <div style={verhaegheMetaRowStyle}>
-                        <span>Playoff: {player.playoffPPG} PPG</span>
+                      <Image
+                        alt={player.name}
+                        avatar
+                        src={player.headshot}
+                        style={bonusRowHeadshotStyle(player)}
+                      />
+                      <strong style={verhaegheNameStrongStyle}>{player.name}</strong>
+                      <span style={verhaegheMetaRowStyle}>
                         <span>Regular: {player.regularSeasonPPG} PPG</span>
-                      </div>
+                        <span>Playoff: {player.playoffPPG} PPG</span>
+                      </span>
+                    </Table.Cell>
+                    <Table.Cell textAlign='right' verticalAlign='middle'>
+                      <span style={verhaegheClutchValueStyle(player)}>
+                        {player.clutchRating > 0 ? '+' : ''}{player.clutchRating}
+                      </span>
                     </Table.Cell>
                   </Table.Row>
                 )}

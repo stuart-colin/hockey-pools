@@ -181,7 +181,13 @@ export const getMostPickedPlayers = (playerPickRate, topN = 3) => {
  * @returns {Array} Top N highest-scoring players
  */
 export const getTopPlayersByPoints = (playerPickRate, topN = 3) => {
-  return customSort(playerPickRate, 'points').slice(0, topN);
+  return [...playerPickRate]
+    .sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      // Tie-breaker: lower selection rate ranks higher (more impressive value).
+      return (a.pickRate || 0) - (b.pickRate || 0);
+    })
+    .slice(0, topN);
 };
 
 /**
@@ -191,34 +197,157 @@ export const getTopPlayersByPoints = (playerPickRate, topN = 3) => {
  * @returns {Array} Bottom N lowest-scoring players
  */
 export const getBottomPlayersByPoints = (playerPickRate, bottomN = 3) => {
-  return customSort(playerPickRate, 'points')
-    .slice(-bottomN)
-    .reverse();
+  return [...playerPickRate]
+    .sort((a, b) => {
+      if (a.points !== b.points) return a.points - b.points;
+      // Tie-breaker: higher selection rate ranks lower (more disappointing).
+      return (b.pickRate || 0) - (a.pickRate || 0);
+    })
+    .slice(0, bottomN);
 };
 
 /**
- * Get players filtered by pick rate threshold
- * @param {Array} playerPickRate - Players with pick rate data
- * @param {number} threshold - Pick rate threshold (0-100)
- * @param {string} mode - 'above' (high threshold) or 'below' (low threshold)
- * @param {number} topN - Number of players to return
- * @returns {Array} Filtered and sorted players
+ * Bucket each player into one of three position groups for fair peer comparison:
+ * Forwards (L/C/R), Defense (D), Goalies (G). Goalies and defensemen score on
+ * very different scales than forwards, so a single regression of points vs
+ * pick rate across all positions produces misleading "expected points" values.
  */
-export const getPlayersByPickRateThreshold = (playerPickRate, threshold, mode = 'below', topN = 3) => {
-  let filtered;
+const POSITION_GROUP = {
+  L: 'F',
+  C: 'F',
+  R: 'F',
+  D: 'D',
+  G: 'G',
+};
 
-  if (mode === 'below') {
-    // High threshold: most advantageous (below threshold)
-    filtered = playerPickRate.filter(p => Math.round(p.pickRate) <= threshold);
-  } else {
-    // Low threshold: least advantageous (above/equal threshold)
-    filtered = playerPickRate.filter(p => p.pickRate >= threshold);
+const getPositionGroup = (position) => POSITION_GROUP[position] || 'F';
+
+/**
+ * Ordinary least-squares fit: y = a + b*x.
+ * Returns { a, b } so callers can compute expected y for any given x.
+ */
+const linearFit = (xs, ys) => {
+  const n = xs.length;
+  if (n === 0) return { a: 0, b: 0 };
+  if (n === 1) return { a: ys[0], b: 0 };
+
+  let sumX = 0, sumY = 0;
+  for (let i = 0; i < n; i += 1) {
+    sumX += xs[i];
+    sumY += ys[i];
+  }
+  const meanX = sumX / n;
+  const meanY = sumY / n;
+
+  let num = 0, den = 0;
+  for (let i = 0; i < n; i += 1) {
+    const dx = xs[i] - meanX;
+    num += dx * (ys[i] - meanY);
+    den += dx * dx;
+  }
+  const b = den === 0 ? 0 : num / den;
+  const a = meanY - b * meanX;
+  return { a, b };
+};
+
+/**
+ * Augment each player with an expected-points value derived from a per-position
+ * regression of points vs. pick rate, plus residual-based bust/steal scores.
+ *
+ * Within each position group (F/D/G) we fit:  expectedPoints = a + b * pickRate
+ * Then for each player:
+ *   _expectedPoints  = a + b * player.pickRate     // what their pick rate predicted
+ *   _pointsResidual  = actual - expected           // positive = beat expectation
+ *   _bustScore       = expected - actual           // positive = underperformed
+ *   _stealScore      = actual - expected           // positive = overperformed
+ *
+ * Because each group has its own regression line, a goalie with strong wins
+ * sits above the goalie line (steal candidate), while a heavily-picked forward
+ * with 0 points sits well below the forward line (bust candidate). Cross-
+ * position comparisons can never trip the model because positions never share
+ * a baseline.
+ */
+export const augmentWithValueScores = (playerPickRate) => {
+  if (!playerPickRate || playerPickRate.length === 0) return [];
+
+  const groups = {};
+  for (const player of playerPickRate) {
+    const group = getPositionGroup(player.position);
+    if (!groups[group]) groups[group] = { pickRates: [], points: [] };
+    groups[group].pickRates.push(player.pickRate || 0);
+    groups[group].points.push(player.points || 0);
   }
 
-  const sorted = customSort(filtered, 'points');
-  return mode === 'below'
-    ? sorted.slice(0, topN)
-    : sorted.slice(-topN).reverse();
+  const fits = {};
+  for (const [group, data] of Object.entries(groups)) {
+    fits[group] = linearFit(data.pickRates, data.points);
+  }
+
+  return playerPickRate.map(player => {
+    const group = getPositionGroup(player.position);
+    const { a, b } = fits[group];
+    const pickRate = player.pickRate || 0;
+    const actual = player.points || 0;
+    const expected = a + b * pickRate;
+    const residual = actual - expected;
+    return {
+      ...player,
+      _positionGroup: group,
+      _expectedPoints: expected,
+      _pointsResidual: residual,
+      _bustScore: -residual,
+      _stealScore: residual,
+    };
+  });
+};
+
+/**
+ * Rank players by their value score (residual against expected points).
+ *
+ * Players are only included if they actually under/over-performed expectation;
+ * a "bust" must have bustScore > 0 and a "steal" must have stealScore > 0.
+ * An optional pick-rate threshold can further constrain the candidate pool:
+ *   - mode 'steal': pickRate <= threshold (max ceiling)
+ *   - mode 'bust' : pickRate >= threshold (min floor)
+ * Pass `threshold = null` (or omit it) to skip the pick-rate filter entirely.
+ *
+ * @param {Array}        playerPickRate - Players with pick rate data
+ * @param {number|null}  threshold      - Pick rate threshold (0-100) or null to disable
+ * @param {string}       mode           - 'steal' or 'bust'
+ * @param {number}       topN           - Maximum number of players to return
+ * @returns {Array} Players sorted by score desc with expected-points context
+ */
+export const getPlayersByValueScore = (playerPickRate, threshold = null, mode = 'bust', topN = 3) => {
+  if (!playerPickRate || playerPickRate.length === 0) return [];
+
+  const augmented = augmentWithValueScores(playerPickRate);
+
+  const filtered = augmented.filter(p => {
+    if (mode === 'steal') {
+      if (p._stealScore <= 0) return false;
+      if (threshold != null && Math.round(p.pickRate) > threshold) return false;
+      return true;
+    }
+    if (p._bustScore <= 0) return false;
+    if (threshold != null && p.pickRate < threshold) return false;
+    return true;
+  });
+
+  // Sort by the score relevant to the mode. Ties broken first by pick rate
+  // (more-picked busts and less-picked steals are more interesting), then by
+  // raw points as a final tiebreak.
+  const scored = [...filtered].sort((a, b) => {
+    if (mode === 'steal') {
+      if (b._stealScore !== a._stealScore) return b._stealScore - a._stealScore;
+      if (a.pickRate !== b.pickRate) return a.pickRate - b.pickRate;
+      return (b.points || 0) - (a.points || 0);
+    }
+    if (b._bustScore !== a._bustScore) return b._bustScore - a._bustScore;
+    if (a.pickRate !== b.pickRate) return b.pickRate - a.pickRate;
+    return (a.points || 0) - (b.points || 0);
+  });
+
+  return scored.slice(0, topN);
 };
 
 /**
@@ -358,6 +487,7 @@ export const calculateSunkCosts = (rosters, eliminatedTeams) => {
       eliminatedCount,
       totalPoints,
       sunkPercentage: totalPoints > 0 ? +((sunkPoints / totalPoints) * 100).toFixed(1) : 0,
+      avgEliminatedPoints: eliminatedCount > 0 ? +(sunkPoints / eliminatedCount).toFixed(1) : 0,
     };
   }).sort((a, b) => b.sunkPoints - a.sunkPoints);
 };

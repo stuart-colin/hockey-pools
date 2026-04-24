@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Card,
   Grid,
@@ -21,6 +21,26 @@ const EliminationImpact = ({
   sunkCostData,
   usersRostersLength,
 }) => {
+  const frozenAssetsList = useMemo(() => (
+    sunkCostData
+      .filter(r => r.eliminatedCount > 0)
+      .sort((a, b) => parseFloat(b.sunkPercentage) - parseFloat(a.sunkPercentage))
+      .slice(0, 10)
+  ), [sunkCostData]);
+
+  const deadWeightList = useMemo(() => (
+    sunkCostData
+      .filter(r => r.eliminatedCount > 0)
+      .sort((a, b) => {
+        if (a.avgEliminatedPoints !== b.avgEliminatedPoints) {
+          return a.avgEliminatedPoints - b.avgEliminatedPoints;
+        }
+        // Tie-breaker: more eliminated picks ranks higher (more wasted slots).
+        return b.eliminatedCount - a.eliminatedCount;
+      })
+      .slice(0, 10)
+  ), [sunkCostData]);
+
   return (
     <section className='insights-section'>
       <Header as='h3' dividing>
@@ -36,7 +56,7 @@ const EliminationImpact = ({
       {/*   - Track: early losses (Round 1-2) vs late eliminations (Round 3+) */}
       {/*   - Metric: "Roster Resilience" - how long rosters stayed alive */}
 
-      <Grid stackable columns={2}>
+      <Grid stackable columns={2} className='pick-analysis-grid three-column'>
         <Grid.Column>
           <Card fluid>
             <Card.Content>
@@ -72,9 +92,9 @@ const EliminationImpact = ({
           <Card fluid>
             <Card.Content>
               <Card.Header>
-                Dead Weight
+                Frozen Assets
                 <Popup
-                  content='The rosters with the most points locked up in eliminated picks — capped value from out-of-action players.'
+                  content='The rosters with the most points locked up in eliminated picks — high-value picks now stuck on the sideline.'
                   hideOnScroll
                   position='right center'
                   trigger={(
@@ -89,10 +109,7 @@ const EliminationImpact = ({
             </Card.Content>
             <Card.Content>
               <InsightDataTable
-                players={sunkCostData
-                  .filter(r => r.eliminatedCount > 0)
-                  .sort((a, b) => parseInt(b.sunkPercentage) - parseInt(a.sunkPercentage))
-                  .slice(0, 10)}
+                players={frozenAssetsList}
                 color={INSIGHT_COLORS.WORST_PICKS}
                 headerRenderer={() => (
                   <Table.Row>
@@ -108,6 +125,51 @@ const EliminationImpact = ({
                     <Table.Cell textAlign='right'>{item.eliminatedCount}</Table.Cell>
                     <Table.Cell textAlign='right'>{item.sunkPoints} ({item.sunkPercentage}%)</Table.Cell>
                     <Table.Cell textAlign='right'>{item.totalPoints}</Table.Cell>
+                  </Table.Row>
+                )}
+                emptyMessage='No eliminations yet'
+              />
+            </Card.Content>
+          </Card>
+        </Grid.Column>
+
+        <Grid.Column>
+          <Card fluid>
+            <Card.Content>
+              <Card.Header>
+                Dead Weight
+                <Popup
+                  content='Rosters whose eliminated picks contributed the least per slot — players who took up roster spots without producing points.'
+                  hideOnScroll
+                  position='right center'
+                  trigger={(
+                    <Icon
+                      name='question circle outline'
+                      size='small'
+                      style={popupQuestionIconStyle}
+                    />
+                  )}
+                />
+              </Card.Header>
+            </Card.Content>
+            <Card.Content>
+              <InsightDataTable
+                players={deadWeightList}
+                color={INSIGHT_COLORS.WORST_PICKS}
+                headerRenderer={() => (
+                  <Table.Row>
+                    <Table.HeaderCell>Owner</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>Eliminated</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>Avg Pts</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>Sunk Pts</Table.HeaderCell>
+                  </Table.Row>
+                )}
+                rowRenderer={(item) => (
+                  <Table.Row key={item.owner}>
+                    <Table.Cell collapsing><strong>{item.owner}</strong></Table.Cell>
+                    <Table.Cell textAlign='right'>{item.eliminatedCount}</Table.Cell>
+                    <Table.Cell textAlign='right'>{item.avgEliminatedPoints}</Table.Cell>
+                    <Table.Cell textAlign='right'>{item.sunkPoints}</Table.Cell>
                   </Table.Row>
                 )}
                 emptyMessage='No eliminations yet'

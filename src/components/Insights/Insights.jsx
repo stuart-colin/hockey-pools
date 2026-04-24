@@ -16,7 +16,7 @@ import {
   getMostPickedPlayers,
   getTopPlayersByPoints,
   getBottomPlayersByPoints,
-  getPlayersByPickRateThreshold,
+  getPlayersByValueScore,
   calculatePoolStats,
   getTopEliminatedPlayers,
   calculatePositionPointsBreakdown,
@@ -86,7 +86,12 @@ const Insights = ({
 
   const mostPickedPlayersList = useMemo(() => getMostPickedPlayers(playerPickRate, TOP_N.MOST_PICKS), [playerPickRate]);
 
-  const bestTeam = useMemo(() => buildBestTeam(playerPickRate), [playerPickRate]);
+  const allPlayersWithPickRate = useMemo(() => {
+    const unselected = (unselectedPlayers || []).map(p => ({ ...p, pickCount: 0, pickRate: 0 }));
+    return [...playerPickRate, ...unselected];
+  }, [playerPickRate, unselectedPlayers]);
+
+  const bestTeam = useMemo(() => buildBestTeam(allPlayersWithPickRate), [allPlayersWithPickRate]);
   const { points: bestPoints, remaining: bestRemaining } = useMemo(() => calculateTeamStats(bestTeam), [bestTeam]);
 
   const commonTeam = useMemo(() => buildCommonTeam(playerPickRate), [playerPickRate]);
@@ -97,14 +102,14 @@ const Insights = ({
   const bottomPlayersList = useMemo(() => getBottomPlayersByPoints(playerPickRate, TOP_N.WORST_PICKS), [playerPickRate]);
 
   const bestByPickThresholdList = useMemo(
-    () => getPlayersByPickRateThreshold(playerPickRate, highThresh, 'below', TOP_N.MOST_ADVANTAGEOUS),
+    () => getPlayersByValueScore(playerPickRate, highThresh, 'steal', TOP_N.MOST_ADVANTAGEOUS),
     [playerPickRate, highThresh]
   );
 
   const { min: highThreshMin, max: highThreshMax } = useMemo(() => getPickRateRange(playerPickRate), [playerPickRate]);
 
   const worstByPickThresholdList = useMemo(
-    () => getPlayersByPickRateThreshold(playerPickRate, lowThresh, 'above', TOP_N.LEAST_ADVANTAGEOUS),
+    () => getPlayersByValueScore(playerPickRate, lowThresh, 'bust', TOP_N.LEAST_ADVANTAGEOUS),
     [playerPickRate, lowThresh]
   );
 

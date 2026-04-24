@@ -62,9 +62,22 @@ const playerNameCellStyle = (player) => ({
   fontWeight: '500',
   minWidth: 0,
   overflow: 'hidden',
+});
+
+const playerNameTextStyle = {
+  overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-});
+};
+
+const playerSubLineStyle = {
+  color: '#888',
+  fontSize: '11px',
+  fontWeight: '500',
+  lineHeight: '1.2',
+  marginTop: '2px',
+  textAlign: 'right',
+};
 
 const playerHeadshotStyle = (player) => ({
   filter: player.isEliminated ? 'grayscale(1)' : 'none',
@@ -77,6 +90,11 @@ const playerPointsStyle = (color) => ({
   fontSize: '13px',
   fontWeight: '700',
 });
+
+const formatPickRate = (player) => {
+  if (player.isUnselected || !player.pickRate) return '—';
+  return `${Math.round(player.pickRate)}%`;
+};
 
 /**
  * TeamCompositionPanel - Displays team roster organized by position
@@ -161,25 +179,25 @@ const TeamCompositionPanel = ({
                       </div>
                       <div style={positionPlayersStackStyle}>
                         {posPlayers.map((player) => (
-                          <div
-                            key={player.id}
-                            style={playerRowStyle}
-                          >
-                            <div
-                              style={playerNameCellStyle(player)}
-                            >
-                              <Image
-                                alt={player.name}
-                                avatar
-                                src={player.headshot}
-                                style={playerHeadshotStyle(player)}
-                              />
-                              {player.name}
+                          <div key={player.id}>
+                            <div style={playerRowStyle}>
+                              <div style={playerNameCellStyle(player)}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                                  <Image
+                                    alt={player.name}
+                                    avatar
+                                    src={player.headshot}
+                                    style={playerHeadshotStyle(player)}
+                                  />
+                                  <span style={playerNameTextStyle}>{player.name}</span>
+                                </div>
+                              </div>
+                              <div style={playerPointsStyle(color)}>
+                                {player.points}
+                              </div>
                             </div>
-                            <div
-                              style={playerPointsStyle(color)}
-                            >
-                              {player.points}
+                            <div style={playerSubLineStyle}>
+                              {formatPickRate(player)}
                             </div>
                           </div>
                         ))}
