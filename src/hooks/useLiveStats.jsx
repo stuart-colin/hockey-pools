@@ -28,27 +28,35 @@ const serializeDeltas = (deltas) => {
  * @param {Array} games - Today's games from useScores
  * @param {Array} boxscores - Boxscore data from useBoxscores
  * @param {object} users - The users object from useUsers ({ rosters, loading, ... })
+ * @param {Set<number>} [extraPlayerIds] - Optional additional NHL ids to track
+ *   live deltas for (e.g. unselected players surfaced in Insights). Roster
+ *   augmentation is unaffected — this only widens the universe of ids the
+ *   delta extractor will keep entries for so consumers can apply them
+ *   downstream.
  * @returns {{ augmentedUsers: object, playerDeltas: Map, hasLiveGames: boolean }}
  */
-const useLiveStats = (games, boxscores, users) => {
+const useLiveStats = (games, boxscores, users, extraPlayerIds) => {
   const rosters = users?.rosters;
   const prevDeltaKeyRef = useRef('');
   const prevUsersRef = useRef(null);
   const prevAugmentedRef = useRef(null);
 
-  const poolPlayerIds = useMemo(
-    () => buildPoolPlayerIds(rosters),
-    [rosters]
-  );
+  const trackedPlayerIds = useMemo(() => {
+    const ids = buildPoolPlayerIds(rosters);
+    if (extraPlayerIds && extraPlayerIds.size > 0) {
+      for (const id of extraPlayerIds) ids.add(id);
+    }
+    return ids;
+  }, [rosters, extraPlayerIds]);
 
   const { playerDeltas: skaterDeltas, hasLiveGames } = useMemo(
-    () => parseLivePlayerStats(games, poolPlayerIds),
-    [games, poolPlayerIds]
+    () => parseLivePlayerStats(games, trackedPlayerIds),
+    [games, trackedPlayerIds]
   );
 
   const goalieDeltas = useMemo(
-    () => parseLiveGoalieStats(boxscores, poolPlayerIds),
-    [boxscores, poolPlayerIds]
+    () => parseLiveGoalieStats(boxscores, trackedPlayerIds),
+    [boxscores, trackedPlayerIds]
   );
 
   const playerDeltas = useMemo(

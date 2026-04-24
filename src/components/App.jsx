@@ -23,7 +23,9 @@ import { DevToolsProvider, useDevTools } from "../context/DevToolsContext";
 import { EliminatedTeamsProvider, useEliminatedTeamsContext } from "../context/EliminatedTeamsContext";
 
 import { APP_CONFIG } from "../config/appConfig";
+import { POSITION_ARRAYS } from "../constants/positions";
 import getSeasonOrdinal from "../utils/getSeasonOrdinal";
+import { augmentUnselectedPlayers } from "../utils/parseLiveStats";
 
 const AppContent = ({ season, setSeason }) => {
   // ===== UI State =====
@@ -50,10 +52,45 @@ const AppContent = ({ season, setSeason }) => {
   const todayScores = useScores(devTools.testScoresDate, { skip: !liveStatsEnabled });
   const gamesToBoxscore = useMemo(() => liveStatsEnabled ? todayScores.games : [], [liveStatsEnabled, todayScores.games]);
   const { boxscores } = useBoxscores(gamesToBoxscore);
-  const { augmentedUsers, playerDeltas } = useLiveStats(todayScores.games, boxscores, users);
+
+  // Build a stable stub list of selected players (id + name only) directly from
+  // the raw rosters so useUnselectedPlayers can run *before* live-stats merging.
+  // This breaks the dependency cycle (live stats need to know unselected ids
+  // to track their deltas, but unselected fetch needs to know selected ids).
+  const selectedPlayerStubs = useMemo(() => {
+    if (!users?.rosters) return [];
+    const stubs = [];
+    for (const roster of users.rosters) {
+      for (const pos of POSITION_ARRAYS) {
+        if (Array.isArray(roster[pos])) {
+          for (const p of roster[pos]) if (p) stubs.push({ id: p.id, name: p.name });
+        }
+      }
+      if (roster.utility) stubs.push({ id: roster.utility.id, name: roster.utility.name });
+    }
+    return stubs;
+  }, [users?.rosters]);
+
+  const { unselectedPlayers: rawUnselectedPlayers } = useUnselectedPlayers(selectedPlayerStubs, season, eliminatedTeams);
+
+  const unselectedPlayerIds = useMemo(() => {
+    const ids = new Set();
+    for (const p of rawUnselectedPlayers || []) {
+      if (p?.id == null) continue;
+      const numericId = typeof p.id === 'string' ? parseInt(p.id, 10) : p.id;
+      if (!Number.isNaN(numericId)) ids.add(numericId);
+    }
+    return ids;
+  }, [rawUnselectedPlayers]);
+
+  const { augmentedUsers, playerDeltas } = useLiveStats(todayScores.games, boxscores, users, unselectedPlayerIds);
   const activeUsers = liveStatsEnabled ? augmentedUsers : users;
   const players = usePlayerData(activeUsers);
-  const { unselectedPlayers } = useUnselectedPlayers(players, season, eliminatedTeams);
+
+  const unselectedPlayers = useMemo(() => {
+    if (!liveStatsEnabled) return rawUnselectedPlayers;
+    return augmentUnselectedPlayers(rawUnselectedPlayers, playerDeltas);
+  }, [rawUnselectedPlayers, playerDeltas, liveStatsEnabled]);
 
   // ===== Helpers =====
   const toggleLiveStats = () => {

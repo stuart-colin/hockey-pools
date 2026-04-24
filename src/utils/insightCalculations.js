@@ -495,7 +495,7 @@ export const calculateSunkCosts = (rosters, eliminatedTeams) => {
 /**
  * Calculate "Clutch Factor" — playoff performance vs regular season baseline
  * Compares PPG in playoffs against regular season to surface over/underperformers.
- * @param {Array} players - Playoff players with points, gamesPlayed, position, stat1, stat2
+ * @param {Array} players - Playoff players with points, gamesPlayed, position, goals, assists, etc.
  * @param {Object} regularSeasonStats - { skaterStats, goalieStats, loading } from useRegularSeasonStats
  * @returns {Array} Players with clutchRating, sorted by biggest overperformers first
  */
@@ -526,7 +526,7 @@ export const calculateClutchFactor = (players, regularSeasonStats) => {
         if (!rs || !rs.gamesPlayed) return null;
         // Compare standard PPG (goals + assists / GP) for fair comparison
         rsPPG = rs.points / rs.gamesPlayed;
-        playoffPPG = (player.stat1 + player.stat2) / player.gamesPlayed;
+        playoffPPG = ((player.goals || 0) + (player.assists || 0)) / player.gamesPlayed;
       }
 
       return {
@@ -579,25 +579,25 @@ export const calculateRosterDiversity = (rosters, eliminatedTeams) => {
 
 /**
  * Get players earning disproportionate bonus points (OT goals for skaters, shutouts for goalies)
- * @param {Array} players - All players with stat fields
+ * @param {Array} players - Normalized player list (with goals/otGoals/wins/shutouts fields)
  * @param {number} topN - Number of players to return
  * @returns {Array} Top bonus point earners sorted by bonus points descending
  */
 export const getBonusHunters = (players, topN = 10) => {
   const skaterBonuses = players
-    .filter(p => p.position !== 'G' && p.stat3 > 0)
+    .filter(p => p.position !== 'G' && (p.otGoals || 0) > 0)
     .map(p => ({
       ...p,
-      bonusPoints: p.stat3,
-      bonusLabel: `${p.stat3} OTG${p.stat3 !== 1 ? 's' : ''}`,
+      bonusPoints: p.otGoals,
+      bonusLabel: `${p.otGoals} OTG${p.otGoals !== 1 ? 's' : ''}`,
     }));
 
   const goalieBonuses = players
-    .filter(p => p.position === 'G' && p.stat2 > 0)
+    .filter(p => p.position === 'G' && (p.shutouts || 0) > 0)
     .map(p => ({
       ...p,
-      bonusPoints: p.stat2 * 2,
-      bonusLabel: `${p.stat2} SO${p.stat2 !== 1 ? 's' : ''}`,
+      bonusPoints: p.shutouts * 2,
+      bonusLabel: `${p.shutouts} SO${p.shutouts !== 1 ? 's' : ''}`,
     }));
 
   return [...skaterBonuses, ...goalieBonuses]

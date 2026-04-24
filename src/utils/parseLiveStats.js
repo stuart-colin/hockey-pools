@@ -1,6 +1,7 @@
 import { calculateSkaterPoints, calculateGoaliePoints } from './points';
 import countPoints from './countPoints';
 import { POSITION_ARRAYS } from '../constants/positions';
+import { applyDeltaToPlayer } from './playerStats';
 
 /**
  * Parse live game data from the NHL scores API and produce per-player stat deltas
@@ -101,27 +102,7 @@ export const augmentRoster = (roster, playerDeltas) => {
 
   const augmentPlayer = (player) => {
     if (!player) return player;
-    const delta = playerDeltas.get(player.id);
-    if (!delta) return { ...player, _delta: null };
-    const isGoalie = player.position === 'G';
-    if (isGoalie) {
-      return {
-        ...player,
-        wins: (player.wins || 0) + (delta.wins || 0),
-        shutouts: (player.shutouts || 0) + (delta.shutouts || 0),
-        otl: (player.otl || 0) + (delta.otl || 0),
-        points: (player.points || 0) + delta.points,
-        _delta: { ...delta },
-      };
-    }
-    return {
-      ...player,
-      goals: (player.goals || 0) + (delta.goals || 0),
-      assists: (player.assists || 0) + (delta.assists || 0),
-      otGoals: (player.otGoals || 0) + (delta.otGoals || 0),
-      points: (player.points || 0) + delta.points,
-      _delta: { ...delta },
-    };
+    return applyDeltaToPlayer(player, playerDeltas.get(player.id));
   };
 
   const augmented = { ...roster };
@@ -138,6 +119,28 @@ export const augmentRoster = (roster, playerDeltas) => {
   augmented.points = countPoints(augmented);
 
   return augmented;
+};
+
+/**
+ * Augment a flat list of unselected players (from useUnselectedPlayers) with
+ * live stat deltas. Unselected players use the same normalized stat shape as
+ * roster players, so we share `applyDeltaToPlayer` here. The only quirk is
+ * that unselected players store their NHL id as a string while live deltas are
+ * keyed by numeric ids.
+ *
+ * @param {Array} unselectedPlayers - List from useUnselectedPlayers
+ * @param {Map<number, object>} playerDeltas - Combined delta map
+ * @returns {Array} - New list with augmented players (or the same list if no deltas apply)
+ */
+export const augmentUnselectedPlayers = (unselectedPlayers, playerDeltas) => {
+  if (!Array.isArray(unselectedPlayers) || unselectedPlayers.length === 0) return unselectedPlayers;
+  if (!playerDeltas || playerDeltas.size === 0) return unselectedPlayers;
+
+  return unselectedPlayers.map(player => {
+    if (!player) return player;
+    const numericId = typeof player.id === 'string' ? parseInt(player.id, 10) : player.id;
+    return applyDeltaToPlayer(player, playerDeltas.get(numericId));
+  });
 };
 
 /**

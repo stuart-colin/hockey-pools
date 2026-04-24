@@ -30,7 +30,6 @@ const usePlayerData = (users) => {
         if (!player || !player.name) return;
 
         if (!playerMap.has(player.name)) {
-          const isGoalie = player.position === 'G';
           const pointsPerGame = player.gamesPlayed > 0
             ? (player.points / player.gamesPlayed)
             : 0;
@@ -44,9 +43,12 @@ const usePlayerData = (users) => {
             teamName: player.teamName,
             gamesPlayed: player.gamesPlayed,
             points: player.points,
-            stat1: isGoalie ? player.wins : player.goals,
-            stat2: isGoalie ? player.shutouts : player.assists,
-            stat3: isGoalie ? player.otl : player.otGoals,
+            goals: player.goals || 0,
+            assists: player.assists || 0,
+            otGoals: player.otGoals || 0,
+            wins: player.wins || 0,
+            shutouts: player.shutouts || 0,
+            otl: player.otl || 0,
             pickCount: 1,
             pointsPerGame,
             isEliminated: player.isEliminated,

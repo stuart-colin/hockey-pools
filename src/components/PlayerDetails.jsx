@@ -13,6 +13,7 @@ import {
   Table,
 } from 'semantic-ui-react';
 import { customSort } from '../utils/stats';
+import { formatStatTripleLine } from '../utils/playerStats';
 import { useEliminatedTeamsContext } from '../context/EliminatedTeamsContext';
 
 const filtersRowStyle = {
@@ -251,9 +252,7 @@ const PlayerDetails = ({ users, players, season, unselectedPlayers }) => {
       </Table.Cell>
       <Table.Cell>
         <strong>{player.points}</strong>
-        {player.position === 'G'
-          ? ` — ${player.stat1} W | ${player.stat2} SO | ${player.stat3} OTL`
-          : ` — ${player.stat1} G | ${player.stat2} A | ${player.stat3} OTG`}
+        {` — ${formatStatTripleLine(player)}`}
       </Table.Cell>
       <Table.Cell>
         {player.gamesPlayed}
