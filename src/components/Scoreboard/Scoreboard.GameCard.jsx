@@ -28,7 +28,6 @@ const GameCard = ({ game, isMobile }) => (
     <Popup
       content={<GameDetails game={game} />}
       flowing
-      hideOnScroll
       position={isMobile ? 'bottom right' : 'bottom center'}
       trigger={
         <Label>
