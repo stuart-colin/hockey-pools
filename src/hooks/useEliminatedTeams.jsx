@@ -41,15 +41,39 @@ const useEliminatedTeams = (season) => {
       return [];
     }
 
-    bracketData.series.forEach(s => {
-      if (s.losingTeamId && s.topSeedTeam && s.bottomSeedTeam) {
-        const loser = s.topSeedTeam.id === s.losingTeamId ? s.topSeedTeam : (s.bottomSeedTeam.id === s.losingTeamId ? s.bottomSeedTeam : null);
-        if (loser && loser.name && loser.name.default) {
-          eliminated.add(loser.name.default);
-        }
+    // NHL playoff series are best-of-7; a team needs 4 wins to advance.
+    // Prefer the explicit `losingTeamId` from the bracket; fall back to the
+    // win counts in case that field hasn't been populated yet for a clinched
+    // series.
+    const WINS_TO_ADVANCE = 4;
+
+    const addLoserName = (team) => {
+      if (team && team.name && team.name.default) {
+        eliminated.add(team.name.default);
       }
-    }
-    );
+    };
+
+    bracketData.series.forEach(s => {
+      const top = s.topSeedTeam;
+      const bottom = s.bottomSeedTeam;
+      if (!top || !bottom) return;
+
+      if (s.losingTeamId) {
+        const loser = top.id === s.losingTeamId ? top : (bottom.id === s.losingTeamId ? bottom : null);
+        addLoserName(loser);
+        return;
+      }
+
+      const neededToWin = s.neededToWin || WINS_TO_ADVANCE;
+      const topWins = s.topSeedWins || 0;
+      const bottomWins = s.bottomSeedWins || 0;
+
+      if (topWins >= neededToWin) {
+        addLoserName(bottom);
+      } else if (bottomWins >= neededToWin) {
+        addLoserName(top);
+      }
+    });
     return Array.from(eliminated);
   }, [bracketData]);
 
