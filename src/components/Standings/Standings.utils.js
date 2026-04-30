@@ -1,4 +1,5 @@
 const AVATAR_COLORS = [
+  // Semantic UI brand colors
   '#db2828', // red
   '#f2711c', // orange
   '#b5cc18', // olive
@@ -9,6 +10,18 @@ const AVATAR_COLORS = [
   '#a333c8', // purple
   '#e03997', // pink
   '#a5673f', // brown
+  // Additional distinct hues so the chart lines collide less often when
+  // many rosters are highlighted (also bumps avatar diversity).
+  '#fbbd08', // yellow
+  '#ff7a45', // coral
+  '#5cba47', // lime green
+  '#0e7c66', // emerald
+  '#1e88e5', // sky blue
+  '#3949ab', // indigo
+  '#8e24aa', // dark purple
+  '#d81b60', // raspberry
+  '#5d4037', // chocolate
+  '#546e7a', // slate
 ];
 
 export const getInitials = (name) => {
