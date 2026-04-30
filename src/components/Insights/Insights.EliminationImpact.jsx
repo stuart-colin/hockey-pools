@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import {
   Card,
   Grid,
-  Header,
   Icon,
   Popup,
   Table,
@@ -42,21 +41,7 @@ const EliminationImpact = ({
   ), [sunkCostData]);
 
   return (
-    <section className='insights-section'>
-      <Header as='h3' dividing>
-        Elimination Impact
-      </Header>
-
-      {/* FUTURE ENHANCEMENT: Elimination Timing Impact */}
-      {/* Shows when each roster's players were eliminated (Round 1, 2, 3, etc) */}
-      {/* Implementation Blocker: Current data only tracks final elimination status, */}
-      {/* not timing. Would require: */}
-      {/*   - Playoff bracket timestamps from NHL API (series end dates) */}
-      {/*   - Cross-reference player elimination date with roster picks */}
-      {/*   - Track: early losses (Round 1-2) vs late eliminations (Round 3+) */}
-      {/*   - Metric: "Roster Resilience" - how long rosters stayed alive */}
-
-      <Grid stackable columns={2} className='pick-analysis-grid three-column'>
+    <Grid stackable columns={2} className='pick-analysis-grid three-column'>
         <Grid.Column>
           <Card fluid>
             <Card.Content>
@@ -177,8 +162,7 @@ const EliminationImpact = ({
             </Card.Content>
           </Card>
         </Grid.Column>
-      </Grid>
-    </section>
+    </Grid>
   );
 };
 

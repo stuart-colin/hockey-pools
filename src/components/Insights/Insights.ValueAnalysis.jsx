@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Card,
   Grid,
-  Header,
   Icon,
   Popup,
   Table,
@@ -67,11 +66,7 @@ const ValueAnalysis = ({
   usersRostersLength,
 }) => {
   return (
-    <section className='insights-section'>
-      <Header as='h3' dividing>
-        Value Analysis
-      </Header>
-      <Grid stackable columns={2} className='pick-analysis-grid three-column'>
+    <Grid stackable columns={2} className='pick-analysis-grid three-column'>
         {/* Most Advantageous Picks (Column 1) */}
         <Grid.Column>
           <Card fluid>
@@ -204,8 +199,7 @@ const ValueAnalysis = ({
             </Card.Content>
           </Card>
         </Grid.Column>
-      </Grid>
-    </section>
+    </Grid>
   );
 };
 

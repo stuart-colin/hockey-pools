@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Card,
   Grid,
-  Header,
   Icon,
   Popup,
 } from 'semantic-ui-react';
@@ -23,11 +22,7 @@ const HitsAndMisses = ({
   usersRostersLength,
 }) => {
   return (
-    <section className='insights-section'>
-      <Header as='h3' dividing>
-        Hits & Misses
-      </Header>
-      <Grid columns={2} stackable className='pick-analysis-grid two-column'>
+    <Grid columns={2} stackable className='pick-analysis-grid two-column'>
 
         {/* Best Picks */}
         <Grid.Column>
@@ -155,8 +150,7 @@ const HitsAndMisses = ({
           </Card>
         </Grid.Column>
 
-      </Grid>
-    </section>
+    </Grid>
   );
 };
 

@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Card,
   Grid,
-  Header,
   Icon,
   Image,
   Popup,
@@ -63,11 +62,7 @@ const XFactors = ({
   isMobile,
 }) => {
   return (
-    <section className='insights-section'>
-      <Header as='h3' dividing>
-        X Factors
-      </Header>
-      <Grid stackable columns={2} className='pick-analysis-grid three-column'>
+    <Grid stackable columns={2} className='pick-analysis-grid three-column'>
 
         {/* Verhaeghe Effect */}
         <Grid.Column>
@@ -234,8 +229,7 @@ const XFactors = ({
           </Card>
         </Grid.Column>
 
-      </Grid>
-    </section>
+    </Grid>
   );
 };
 

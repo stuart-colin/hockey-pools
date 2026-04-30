@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Card,
   Grid,
-  Header,
   Icon,
   Popup,
   Table,
@@ -22,11 +21,7 @@ const DraftDaySnapshot = ({
   usersRostersLength,
 }) => {
   return (
-    <section className='insights-section'>
-      <Header as='h3' dividing>
-        Draft Day Snapshot
-      </Header>
-      <Grid stackable columns={2}>
+    <Grid stackable columns={2}>
         <Grid.Column>
           <Card fluid>
             <Card.Content>
@@ -100,8 +95,7 @@ const DraftDaySnapshot = ({
             </Card.Content>
           </Card>
         </Grid.Column>
-      </Grid>
-    </section>
+    </Grid>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
   Grid,
-  Header,
   Loader,
   Segment,
   Statistic,
@@ -34,6 +33,7 @@ import {
   INSIGHT_COLORS,
   TOP_N,
 } from '../../constants/insights';
+import CollapsibleSection from './Insights.CollapsibleSection';
 import PoolOverview from './Insights.PoolOverview';
 import TeamCompositionPanel from './Insights.TeamCompositionPanel';
 import HitsAndMisses from './Insights.HitsAndMisses';
@@ -207,10 +207,7 @@ const Insights = ({
         ) : (
           <div style={insightsSectionsLayoutStyle}>
             {/* Section 1: Pool Overview */}
-            <section className='insights-section'>
-              <Header as='h3' dividing>
-                The Field
-              </Header>
+            <CollapsibleSection title='The Field'>
               <PoolOverview
                 mostPlayersRemaining={mostPlayersRemaining}
                 averagePlayersRemaining={averagePlayersRemaining}
@@ -226,45 +223,48 @@ const Insights = ({
                 leastPoints={leastPoints}
               />
               <PoolVitality vitality={poolVitality} />
-            </section>
+            </CollapsibleSection>
 
             {/* Section 2: Hits & Misses */}
-            <HitsAndMisses
-              bottomPlayersList={bottomPlayersList}
-              topPlayerGainers={topPlayerGainers}
-              topPlayersList={topPlayersList}
-              topUnselectedPlayers={topUnselectedPlayers}
-              usersRostersLength={users.rosters.length}
-            />
+            <CollapsibleSection title='Hits & Misses'>
+              <HitsAndMisses
+                bottomPlayersList={bottomPlayersList}
+                topPlayerGainers={topPlayerGainers}
+                topPlayersList={topPlayersList}
+                topUnselectedPlayers={topUnselectedPlayers}
+                usersRostersLength={users.rosters.length}
+              />
+            </CollapsibleSection>
 
             {/* Section 3: Value Analysis and Position Breakdown */}
-            <ValueAnalysis
-              bestByPickThresholdList={bestByPickThresholdList}
-              highThresh={highThresh}
-              highThreshMax={highThreshMax}
-              highThreshMin={highThreshMin}
-              lowThresh={lowThresh}
-              lowThreshMax={lowThreshMax}
-              lowThreshMin={lowThreshMin}
-              positionPointsData={positionPointsData}
-              setHighThresh={setHighThresh}
-              setLowThresh={setLowThresh}
-              usersRostersLength={users.rosters.length}
-              worstByPickThresholdList={worstByPickThresholdList}
-            />
+            <CollapsibleSection title='Value Analysis'>
+              <ValueAnalysis
+                bestByPickThresholdList={bestByPickThresholdList}
+                highThresh={highThresh}
+                highThreshMax={highThreshMax}
+                highThreshMin={highThreshMin}
+                lowThresh={lowThresh}
+                lowThreshMax={lowThreshMax}
+                lowThreshMin={lowThreshMin}
+                positionPointsData={positionPointsData}
+                setHighThresh={setHighThresh}
+                setLowThresh={setLowThresh}
+                usersRostersLength={users.rosters.length}
+                worstByPickThresholdList={worstByPickThresholdList}
+              />
+            </CollapsibleSection>
 
             {/* Section 4: Draft Day Snapshot */}
-            <DraftDaySnapshot
-              mostPickedPlayersList={mostPickedPlayersList}
-              rosterDiversityData={rosterDiversityData}
-              usersRostersLength={users.rosters.length}
-            />
+            <CollapsibleSection title='Draft Day Snapshot'>
+              <DraftDaySnapshot
+                mostPickedPlayersList={mostPickedPlayersList}
+                rosterDiversityData={rosterDiversityData}
+                usersRostersLength={users.rosters.length}
+              />
+            </CollapsibleSection>
 
             {/* Section 5: Team Composition */}
-            <section className='insights-section'>
-              <Header as='h3' dividing>
-                The Dream vs. The Reality
-              </Header>
+            <CollapsibleSection title='The Dream vs. The Reality'>
               <Grid columns={2} className='team-composition-grid' stackable>
                 <Grid.Column>
                   <TeamCompositionPanel
@@ -291,24 +291,36 @@ const Insights = ({
                   />
                 </Grid.Column>
               </Grid>
-            </section>
+            </CollapsibleSection>
 
             {/* Section 6: Elimination Impact */}
-            <EliminationImpact
-              eliminatedPlayersList={eliminatedPlayersList}
-              sunkCostData={sunkCostData}
-              usersRostersLength={users.rosters.length}
-            />
+            {/* FUTURE ENHANCEMENT: Elimination Timing Impact */}
+            {/* Shows when each roster's players were eliminated (Round 1, 2, 3, etc) */}
+            {/* Implementation Blocker: Current data only tracks final elimination status, */}
+            {/* not timing. Would require: */}
+            {/*   - Playoff bracket timestamps from NHL API (series end dates) */}
+            {/*   - Cross-reference player elimination date with roster picks */}
+            {/*   - Track: early losses (Round 1-2) vs late eliminations (Round 3+) */}
+            {/*   - Metric: "Roster Resilience" - how long rosters stayed alive */}
+            <CollapsibleSection title='Elimination Impact'>
+              <EliminationImpact
+                eliminatedPlayersList={eliminatedPlayersList}
+                sunkCostData={sunkCostData}
+                usersRostersLength={users.rosters.length}
+              />
+            </CollapsibleSection>
 
             {/* Section 7: X Factors */}
-            <XFactors
-              bonusHuntersList={bonusHuntersList}
-              clutchFactorData={clutchFactorData}
-              isMobile={isMobile}
-              loneWolvesList={loneWolvesList}
-              regularSeasonStats={regularSeasonStats}
-              usersRostersLength={users.rosters.length}
-            />
+            <CollapsibleSection title='X Factors'>
+              <XFactors
+                bonusHuntersList={bonusHuntersList}
+                clutchFactorData={clutchFactorData}
+                isMobile={isMobile}
+                loneWolvesList={loneWolvesList}
+                regularSeasonStats={regularSeasonStats}
+                usersRostersLength={users.rosters.length}
+              />
+            </CollapsibleSection>
           </div>
         )}
       </Segment>
