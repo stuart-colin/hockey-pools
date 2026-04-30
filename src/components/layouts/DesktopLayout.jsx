@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Grid } from 'semantic-ui-react';
+import { Grid, Loader } from 'semantic-ui-react';
 
 import CommissionersCorner from '../CommissionersCorner';
 import DevTools from '../DevTools';
@@ -17,6 +17,9 @@ import useIsAdmin from '../../hooks/useIsAdmin';
 import usePlayoffLock from '../../hooks/usePlayoffLock';
 
 import { APP_CONFIG } from '../../config/appConfig';
+
+// Lazy so the recharts bundle (~70 KB gz) only ships when someone visits /history.
+const History = lazy(() => import('../History/History'));
 
 const DesktopLayout = ({
   toggleLiveStats,
@@ -67,6 +70,14 @@ const DesktopLayout = ({
                     <Route path="/player-details" element={showPoolData
                       ? <PlayerDetails players={players} season={season} users={activeUsers} unselectedPlayers={unselectedPlayers} />
                       : <PlayoffLocked page='player-details' />
+                    } />
+                    <Route path="/history" element={showPoolData
+                      ? (
+                        <Suspense fallback={<Loader active inline='centered' size='large'>Loading History...</Loader>}>
+                          <History season={season} />
+                        </Suspense>
+                      )
+                      : <PlayoffLocked page='history' />
                     } />
                     <Route path="/standings" element={<Standings liveStatsEnabled={liveStatsEnabled} season={season} users={activeUsers} />} />
                     <Route path="/team-builder" element={<TeamBuilder regularSeasonStats={regularSeasonStats} rosterDataEndpoint={APP_CONFIG.rosterDataEndpoint} />} />
