@@ -4,6 +4,9 @@ import { useDevTools } from './DevToolsContext';
 
 const EliminatedTeamsContext = createContext({
   eliminatedTeams: [],
+  eliminationsByRound: {},
+  completedRounds: [],
+  atRiskTeams: [],
   loading: true,
   error: null,
 });
@@ -11,7 +14,14 @@ const EliminatedTeamsContext = createContext({
 export const useEliminatedTeamsContext = () => useContext(EliminatedTeamsContext);
 
 export const EliminatedTeamsProvider = ({ season, children }) => {
-  const { eliminatedTeams, loading, error } = useEliminatedTeams(season);
+  const {
+    eliminatedTeams,
+    eliminationsByRound,
+    completedRounds,
+    atRiskTeams,
+    loading,
+    error,
+  } = useEliminatedTeams(season);
   const { devTools } = useDevTools();
 
   const mergedTeams = useMemo(() => {
@@ -20,7 +30,16 @@ export const EliminatedTeamsProvider = ({ season, children }) => {
   }, [eliminatedTeams, devTools]);
 
   return (
-    <EliminatedTeamsContext.Provider value={{ eliminatedTeams: mergedTeams, loading, error }}>
+    <EliminatedTeamsContext.Provider
+      value={{
+        eliminatedTeams: mergedTeams,
+        eliminationsByRound: eliminationsByRound || {},
+        completedRounds: completedRounds || [],
+        atRiskTeams: atRiskTeams || [],
+        loading,
+        error,
+      }}
+    >
       {children}
     </EliminatedTeamsContext.Provider>
   );

@@ -493,6 +493,206 @@ export const calculateSunkCosts = (rosters, eliminatedTeams) => {
 };
 
 /**
+ * Calculate "Pool Vitality" — pool-wide aliveness across all rosters.
+ *
+ * For every player slot across every roster, count whether the player is
+ * still alive (their team isn't eliminated) and how many points they've
+ * contributed. Returns aggregate alive %s by picks and points, plus a
+ * per-position breakdown and the highest-scoring alive vs eliminated player.
+ *
+ * Picks are weighted equally (pure "% of the pool still in it"). Points
+ * are weighted by what each pick has actually delivered, so the two %s
+ * tell different stories — e.g. 80% picks alive but only 60% points alive
+ * means the eliminated picks were the high scorers.
+ *
+ * @param {Array}  rosters         - All user rosters (each with left/center/right/defense/goalie/utility arrays of augmented player objects).
+ * @param {Array}  playerPickRate  - Deduped player pool (used for top-alive / top-eliminated callouts).
+ * @param {Array}  eliminatedTeams - List of eliminated team names (for the "X of 32 teams eliminated" subtitle).
+ * @returns {{
+ *   overall:       { totalPicks, eliminatedPicks, totalPoints, eliminatedPoints, picksAlivePct, pointsAlivePct },
+ *   byPosition:    Record<'L'|'C'|'R'|'D'|'G', { totalPicks, eliminatedPicks, totalPoints, eliminatedPoints, picksAlivePct, pointsAlivePct }>,
+ *   eliminatedTeamCount: number,
+ *   topAlivePlayer: object|null,
+ *   topEliminatedPlayer: object|null,
+ * }}
+ */
+export const calculatePoolVitality = (
+  rosters,
+  playerPickRate,
+  eliminatedTeams,
+  { eliminationsByRound = {}, completedRounds = [], atRiskTeams = [] } = {}
+) => {
+  const positions = ['L', 'C', 'R', 'D', 'G'];
+  const emptyBucket = () => ({
+    totalPicks: 0,
+    eliminatedPicks: 0,
+    totalPoints: 0,
+    eliminatedPoints: 0,
+  });
+
+  const overall = emptyBucket();
+  const byPosition = positions.reduce(
+    (acc, pos) => ({ ...acc, [pos]: emptyBucket() }),
+    {}
+  );
+
+  // Per-team aggregates so we can later compute "what would alive% drop to if
+  // team X gets eliminated next?" without rewalking the rosters.
+  const byTeam = new Map();
+  const ensureTeamBucket = (teamName) => {
+    if (!teamName) return null;
+    if (!byTeam.has(teamName)) byTeam.set(teamName, emptyBucket());
+    return byTeam.get(teamName);
+  };
+
+  (rosters || []).forEach((roster) => {
+    const slots = [
+      ...(roster.left || []),
+      ...(roster.center || []),
+      ...(roster.right || []),
+      ...(roster.defense || []),
+      ...(roster.goalie || []),
+      ...(roster.utility ? [roster.utility] : []),
+    ].filter(Boolean);
+
+    slots.forEach((player) => {
+      const points = player.points || 0;
+      const pos = player.position;
+      const eliminated = !!player.isEliminated;
+      const teamName = player.teamName || player.team || null;
+
+      overall.totalPicks += 1;
+      overall.totalPoints += points;
+      if (eliminated) {
+        overall.eliminatedPicks += 1;
+        overall.eliminatedPoints += points;
+      }
+
+      // Bucket utility players by their actual NHL position (e.g. a goalie
+      // in the utility slot still counts as G).
+      if (byPosition[pos]) {
+        byPosition[pos].totalPicks += 1;
+        byPosition[pos].totalPoints += points;
+        if (eliminated) {
+          byPosition[pos].eliminatedPicks += 1;
+          byPosition[pos].eliminatedPoints += points;
+        }
+      }
+
+      const teamBucket = ensureTeamBucket(teamName);
+      if (teamBucket) {
+        teamBucket.totalPicks += 1;
+        teamBucket.totalPoints += points;
+      }
+    });
+  });
+
+  const withAlivePcts = (b) => ({
+    ...b,
+    picksAlivePct: b.totalPicks
+      ? +(((b.totalPicks - b.eliminatedPicks) / b.totalPicks) * 100).toFixed(1)
+      : 0,
+    pointsAlivePct: b.totalPoints
+      ? +(((b.totalPoints - b.eliminatedPoints) / b.totalPoints) * 100).toFixed(1)
+      : 0,
+  });
+
+  // Highest-scoring alive vs eliminated player across the deduplicated pool.
+  // Restrict to players that were actually drafted; an unselected player
+  // shouldn't show up as "the most-valuable alive pick."
+  const drafted = (playerPickRate || []).filter((p) => (p.pickCount || 0) > 0);
+  const sortedByPoints = [...drafted].sort(
+    (a, b) => (b.points || 0) - (a.points || 0)
+  );
+  const topAlivePlayer = sortedByPoints.find((p) => !p.isEliminated) || null;
+  const topEliminatedPlayer = sortedByPoints.find((p) => p.isEliminated) || null;
+
+  // ---- Round-end markers --------------------------------------------------
+  // Only emit a tick for rounds that are fully resolved. Mid-round counts
+  // would shift each time another team gets eliminated, which is misleading
+  // when the tick is labelled "End of Round R."
+  // Picks are temporally stable so the picks % is exact. Points uses today's
+  // totals for both numerator and denominator (we don't have historical
+  // snapshots), so it represents "of the points scored to date, what fraction
+  // came from teams still alive at the end of round R."
+  const completedRoundSet = new Set(completedRounds.map(Number));
+  const roundsSorted = Object.keys(eliminationsByRound)
+    .map((r) => Number(r))
+    .filter((r) => Number.isFinite(r))
+    .sort((a, b) => a - b);
+
+  const roundMarkers = [];
+  let cumulativeEliminatedPicks = 0;
+  let cumulativeEliminatedPoints = 0;
+  roundsSorted.forEach((round) => {
+    const teamsThisRound = eliminationsByRound[round] || [];
+    teamsThisRound.forEach((teamName) => {
+      const bucket = byTeam.get(teamName);
+      if (!bucket) return;
+      cumulativeEliminatedPicks += bucket.totalPicks;
+      cumulativeEliminatedPoints += bucket.totalPoints;
+    });
+    if (!completedRoundSet.has(round) || teamsThisRound.length === 0) return;
+    const picksAlivePct = overall.totalPicks
+      ? +(((overall.totalPicks - cumulativeEliminatedPicks) / overall.totalPicks) * 100).toFixed(1)
+      : 0;
+    const pointsAlivePct = overall.totalPoints
+      ? +(((overall.totalPoints - cumulativeEliminatedPoints) / overall.totalPoints) * 100).toFixed(1)
+      : 0;
+    roundMarkers.push({
+      round,
+      teams: teamsThisRound,
+      picksAlivePct,
+      pointsAlivePct,
+    });
+  });
+
+  // ---- At-risk forecast markers ------------------------------------------
+  // For each team currently one loss from elimination, project where the
+  // bars would land if they fall. We assume the team's current bucket (today's
+  // pick share + today's points) is what would be "newly eliminated."
+  const atRiskMarkers = (atRiskTeams || [])
+    .map((t) => {
+      const bucket = t.name ? byTeam.get(t.name) : null;
+      if (!bucket) return null;
+      const newEliminatedPicks = overall.eliminatedPicks + bucket.totalPicks;
+      const newEliminatedPoints = overall.eliminatedPoints + bucket.totalPoints;
+      const projectedPicksAlivePct = overall.totalPicks
+        ? +(((overall.totalPicks - newEliminatedPicks) / overall.totalPicks) * 100).toFixed(1)
+        : 0;
+      const projectedPointsAlivePct = overall.totalPoints
+        ? +(((overall.totalPoints - newEliminatedPoints) / overall.totalPoints) * 100).toFixed(1)
+        : 0;
+      return {
+        name: t.name,
+        commonName: t.commonName,
+        abbrev: t.abbrev,
+        ownWins: t.ownWins,
+        otherWins: t.otherWins,
+        neededToWin: t.neededToWin,
+        picksAtStake: bucket.totalPicks,
+        pointsAtStake: bucket.totalPoints,
+        projectedPicksAlivePct,
+        projectedPointsAlivePct,
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    overall: withAlivePcts(overall),
+    byPosition: positions.reduce(
+      (acc, pos) => ({ ...acc, [pos]: withAlivePcts(byPosition[pos]) }),
+      {}
+    ),
+    eliminatedTeamCount: (eliminatedTeams || []).length,
+    topAlivePlayer,
+    topEliminatedPlayer,
+    roundMarkers,
+    atRiskMarkers,
+  };
+};
+
+/**
  * Calculate "Clutch Factor" — playoff performance vs regular season baseline
  * Compares PPG in playoffs against regular season to surface over/underperformers.
  * @param {Array} players - Playoff players with points, gamesPlayed, position, goals, assists, etc.

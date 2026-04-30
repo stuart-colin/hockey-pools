@@ -21,6 +21,7 @@ import {
   getTopEliminatedPlayers,
   calculatePositionPointsBreakdown,
   calculateSunkCosts,
+  calculatePoolVitality,
   calculateClutchFactor,
   calculateRosterDiversity,
   getBonusHunters,
@@ -39,6 +40,7 @@ import HitsAndMisses from './Insights.HitsAndMisses';
 import ValueAnalysis from './Insights.ValueAnalysis';
 import DraftDaySnapshot from './Insights.DraftDaySnapshot';
 import EliminationImpact from './Insights.EliminationImpact';
+import PoolVitality from './Insights.PoolVitality';
 import XFactors from './Insights.XFactors';
 import { useEliminatedTeamsContext } from '../../context/EliminatedTeamsContext';
 import './Insights.Sections.css';
@@ -62,7 +64,7 @@ const Insights = ({
 
   const { isMobile } = useBreakpoint();
 
-  const { eliminatedTeams } = useEliminatedTeamsContext();
+  const { eliminatedTeams, eliminationsByRound, completedRounds, atRiskTeams } = useEliminatedTeamsContext();
   const loading = users.loading;
 
   const playerPickRate = useMemo(() => buildPlayerPickRate(players, users.rosters.length), [players, users.rosters.length]);
@@ -121,6 +123,16 @@ const Insights = ({
   const positionPointsData = useMemo(() => calculatePositionPointsBreakdown(playerPickRate), [playerPickRate]);
 
   const sunkCostData = useMemo(() => calculateSunkCosts(users.rosters, eliminatedTeams), [users.rosters, eliminatedTeams]);
+
+  const poolVitality = useMemo(
+    () =>
+      calculatePoolVitality(users.rosters, playerPickRate, eliminatedTeams, {
+        eliminationsByRound,
+        completedRounds,
+        atRiskTeams,
+      }),
+    [users.rosters, playerPickRate, eliminatedTeams, eliminationsByRound, completedRounds, atRiskTeams]
+  );
 
   // New Analytics
   const clutchFactorData = useMemo(() => calculateClutchFactor(playerPickRate, regularSeasonStats), [playerPickRate, regularSeasonStats]);
@@ -213,6 +225,7 @@ const Insights = ({
                 q3Points={q3Points}
                 leastPoints={leastPoints}
               />
+              <PoolVitality vitality={poolVitality} />
             </section>
 
             {/* Section 2: Hits & Misses */}
