@@ -1,45 +1,11 @@
 import React from 'react';
-import { Card, Grid, Statistic, Progress, Popup } from 'semantic-ui-react';
+import { Card, Grid, Statistic } from 'semantic-ui-react';
 import { INSIGHT_COLORS } from '../../constants/insights';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import ProgressBarWithMarkers from './Insights.ProgressBarWithMarkers';
 
-const progressBarTrackContainerStyle = (heightPx) => ({
-  display: 'block',
-  height: `${heightPx}px`,
-  position: 'relative',
-  width: '100%',
-});
-
-const progressBarRatioStyle = (value, total, heightPx) => ({
+const progressBarRatioStyle = (value, total) => ({
   '--progress-ratio': value / total,
-  height: `${heightPx}px`,
-});
-
-const markerPopupColumnStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-};
-
-const distributionMarkerHitStyle = {
-  cursor: 'pointer',
-  position: 'absolute',
-  top: '50%',
-  transform: 'translate(-50%, -50%)',
-  zIndex: 10,
-};
-
-const distributionMarkerAtPositionStyle = (leftPercent) => ({
-  ...distributionMarkerHitStyle,
-  left: `${leftPercent}%`,
-});
-
-const distributionMarkerLineStyle = (markerHeightPx) => ({
-  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  borderRadius: '2px',
-  height: `${markerHeightPx}px`,
-  transition: 'all 0.2s ease',
-  width: '6px',
 });
 
 const rosterCompletionSectionStyle = {
@@ -84,74 +50,33 @@ const PoolOverview = ({
 }) => {
   const { isMobile } = useBreakpoint();
   const STAT_GROUP_SIZE = isMobile ? 'tiny' : 'small';
-  /**
-   * ProgressBarWithMarkers - Renders a progress bar with tooltipped markers for data points
-   */
-  const ProgressBarWithMarkers = ({ value, total, dataPoints }) => {
-    // dataPoints: array of { value, label, position }
-    const PROGRESS_BAR_HEIGHT = 24; // px
-    const MARKER_HEIGHT = 30; // px
 
-    // Group data points by value to handle duplicates
-    const groupedPoints = dataPoints.reduce((acc, point) => {
-      const roundedValue = Math.round(point.value * 100) / 100; // Round to 2 decimal places
-      const existing = acc.find(g => g.roundedValue === roundedValue);
-      if (existing) {
-        existing.labels.push(point.label);
-      } else {
-        acc.push({ value: point.value, roundedValue, labels: [point.label] });
-      }
-      return acc;
-    }, []);
-
-    return (
-      <div
-        style={progressBarTrackContainerStyle(PROGRESS_BAR_HEIGHT)}
-      >
-        <Progress
-          className='gradient-progress'
-          progress='ratio'
-          style={progressBarRatioStyle(value, total, PROGRESS_BAR_HEIGHT)}
-          total={total}
-          value={value}
-        />
-        {/* Markers container - using relative positioning with negative margin */}
-        <div>
-          {groupedPoints.map((point, idx) => {
-            const positionPercent = (point.roundedValue / total) * 100;
-            const popupContent = (
-              <div
-                style={markerPopupColumnStyle}
-              >
-                {point.labels.reverse().map((label, labelIdx) => (
-                  <div key={labelIdx}>{label}: {point.roundedValue}</div>
-                ))}
-              </div>
-            );
-
-            return (
-              <div
-                key={idx}
-                style={distributionMarkerAtPositionStyle(positionPercent)}
-              >
-                <Popup
-                  basic
-                  content={popupContent}
-                  hideOnScroll
-                  trigger={
-                    <div
-                      className='marker-line'
-                      style={distributionMarkerLineStyle(MARKER_HEIGHT)}
-                    />
-                  }
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
+  // Adapter so we keep the existing call sites that pass `value/total/dataPoints`
+  // as labelled distribution markers (Least, Q1, Median, etc.). The shared
+  // marker component takes care of grouping near-duplicates and rendering.
+  // `progress` controls Semantic UI's Progress label: 'ratio' renders
+  // "value/total", 'value' renders just the value.
+  // The leader value is intentionally NOT rendered inside the bar (no
+  // `progress` prop) — `showTickValues` already places it at the leader's
+  // tick, and showing it twice clutters the bar. Callers can still pass
+  // `progress` explicitly if they ever want the in-bar label back.
+  const DistributionBar = ({ value, total, dataPoints, progress }) => (
+    <ProgressBarWithMarkers
+      dataPoints={dataPoints.map((p) => ({
+        value: p.value,
+        label: `${p.label}: ${Math.round(p.value * 100) / 100}`,
+      }))}
+      total={total}
+      progressProps={{
+        className: 'gradient-progress',
+        progress,
+        style: progressBarRatioStyle(value, total),
+        total,
+        value,
+      }}
+      showTickValues
+    />
+  );
 
   return (
     <Grid stackable columns={2}>
@@ -184,16 +109,15 @@ const PoolOverview = ({
               >
                 Roster Completion
               </p>
-              <ProgressBarWithMarkers
+              <DistributionBar
                 dataPoints={[
-                  { value: leastPlayersRemaining, label: 'Least', position: 'left' },
-                  { value: q1PlayersRemaining, label: 'Q1 (25%)', position: 'left-center' },
-                  { value: medianPlayersRemaining, label: 'Median', position: 'center' },
-                  { value: averagePlayersRemaining, label: 'Average', position: 'center' },
-                  { value: q3PlayersRemaining, label: 'Q3 (75%)', position: 'right-center' },
-                  { value: mostPlayersRemaining, label: 'Most', position: 'right' },
+                  { value: leastPlayersRemaining, label: 'Least' },
+                  { value: q1PlayersRemaining, label: 'Q1 (25%)' },
+                  { value: medianPlayersRemaining, label: 'Median' },
+                  { value: averagePlayersRemaining, label: 'Average' },
+                  { value: q3PlayersRemaining, label: 'Q3 (75%)' },
+                  { value: mostPlayersRemaining, label: 'Most' },
                 ]}
-                label='Players'
                 total={16}
                 value={mostPlayersRemaining}
               />
@@ -231,16 +155,15 @@ const PoolOverview = ({
               >
                 Point Distribution
               </p>
-              <ProgressBarWithMarkers
+              <DistributionBar
                 dataPoints={[
-                  { value: leastPoints, label: 'Least', position: 'left' },
-                  { value: q1Points, label: 'Q1 (25%)', position: 'left-center' },
-                  { value: medianPoints, label: 'Median', position: 'center' },
-                  { value: averagePoints, label: 'Average', position: 'center' },
-                  { value: q3Points, label: 'Q3 (75%)', position: 'right-center' },
-                  { value: mostPoints, label: 'Most', position: 'right' },
+                  { value: leastPoints, label: 'Least' },
+                  { value: q1Points, label: 'Q1 (25%)' },
+                  { value: medianPoints, label: 'Median' },
+                  { value: averagePoints, label: 'Average' },
+                  { value: q3Points, label: 'Q3 (75%)' },
+                  { value: mostPoints, label: 'Most' },
                 ]}
-                label='Points'
                 total={mostPoints}
                 value={mostPoints}
               />
