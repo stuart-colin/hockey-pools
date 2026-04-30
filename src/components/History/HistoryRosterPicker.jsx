@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Icon, Input, Label } from 'semantic-ui-react';
-import { colorForRosterId } from './colorPalette';
+import { colorForRoster } from './colorPalette';
 import './History.css';
 
 const FILTER_OPTIONS = [
@@ -43,12 +43,18 @@ const HistoryRosterPicker = ({ series, pinnedSet, onTogglePin, filterMode, onCha
 
       <Input
         error={search.trim().length > 0 && matches.length === 0}
-        icon='search'
+        fluid
+        icon={
+          search ? (
+            <Icon name='times' link onClick={() => setSearch('')} />
+          ) : (
+            'search'
+          )
+        }
         iconPosition='left'
+        onChange={(_, data) => setSearch(data.value)}
         placeholder='Search Rosters'
         value={search}
-        onChange={(_, data) => setSearch(data.value)}
-        fluid
       />
 
       {search && matches.length > 0 && (
@@ -64,7 +70,7 @@ const HistoryRosterPicker = ({ series, pinnedSet, onTogglePin, filterMode, onCha
               >
                 <span
                   className='history-picker__swatch'
-                  style={{ background: colorForRosterId(s.rosterId) }}
+                  style={{ background: colorForRoster(s.ownerName) }}
                 />
                 <span className='history-picker__name'>{s.ownerName}</span>
                 <Icon
@@ -96,7 +102,7 @@ const HistoryRosterPicker = ({ series, pinnedSet, onTogglePin, filterMode, onCha
               >
                 <span
                   className='history-picker__swatch'
-                  style={{ background: colorForRosterId(s.rosterId) }}
+                  style={{ background: colorForRoster(s.ownerName) }}
                 />
                 {s.ownerName}
                 <Icon name='delete' />

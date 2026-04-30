@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { colorForRosterId, GHOST_COLOR, GHOST_HOVER_COLOR } from './colorPalette';
+import { colorForRoster, GHOST_COLOR, GHOST_HOVER_COLOR } from './colorPalette';
 
 const tooltipContainerStyle = {
   background: 'white',
@@ -170,7 +170,7 @@ const HistoryChart = ({
         <div style={{ fontWeight: 600, marginBottom: 6, color: '#1b1c1d' }}>{label}</div>
         {rows.map((s) => (
           <div key={s.rosterId} style={tooltipRowStyle}>
-            <span style={swatchStyle(colorForRosterId(s.rosterId))} />
+            <span style={swatchStyle(colorForRoster(s.ownerName))} />
             <span style={tooltipRankStyle}>{rankByRoster.get(s.rosterId)}</span>
             <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {s.ownerName}
@@ -220,11 +220,11 @@ const HistoryChart = ({
           let strokeWidth;
           let opacity;
           if (isHovered) {
-            stroke = colorForRosterId(s.rosterId);
+            stroke = colorForRoster(s.ownerName);
             strokeWidth = 2.5;
             opacity = 1;
           } else if (isHighlighted) {
-            stroke = colorForRosterId(s.rosterId);
+            stroke = colorForRoster(s.ownerName);
             strokeWidth = 2;
             opacity = 0.95;
           } else {

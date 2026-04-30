@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Icon } from 'semantic-ui-react';
 import getOrdinal from '../../utils/getOrdinals';
 import { TOP_10_COLORS } from '../Standings/Standings.utils';
-import { colorForRosterId } from './colorPalette';
+import { colorForRoster } from './colorPalette';
 import { computeRankMatrix } from './historyAnalytics';
 import './History.css';
 
@@ -170,7 +170,7 @@ const HistoryStandingsPanel = ({
               <span className='history-standings__rank'>{row.rank}</span>
               <span
                 className='history-picker__swatch'
-                style={{ background: colorForRosterId(row.rosterId) }}
+                style={{ background: colorForRoster(row.ownerName) }}
               />
               <span className='history-standings__name-block'>
                 <span className='history-standings__name'>{row.ownerName}</span>
