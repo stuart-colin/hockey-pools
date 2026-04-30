@@ -36,7 +36,7 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
     { name: "commissioners-corner", label: "Commissioner's Corner", path: "/commissioners-corner" },
     { name: "standings", label: "Standings", hideOnWide: true, path: "/standings" },
     { name: "insights", label: "Insights", path: "/insights" },
-    { name: "history", label: "History", path: "/history" },
+    { name: "history", label: "History", path: "/history", isNew: true },
     { name: "player-details", label: "Player Details", path: "/player-details" },
     { name: "team-details", label: "Team Details", path: "/team-details" },
     { name: "my-team", label: "My Team", path: "/my-team" },
@@ -79,6 +79,11 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
           }}
         >
           {item.label}
+          {item.isNew && (
+            <Label color='blue' size='mini' style={{ marginLeft: '6px' }}>
+              New
+            </Label>
+          )}
         </Menu.Item>
       ));
 
