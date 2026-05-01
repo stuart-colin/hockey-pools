@@ -15,16 +15,20 @@ const fetchWithTimeout = async (url, timeoutMs = 10000) => {
 };
 
 const normalizeScorePayload = (json) => {
-  const nextDate =
+  const currentDate =
     typeof json.currentDate === "string" && !Number.isNaN(new Date(json.currentDate).getTime())
       ? json.currentDate
       : "";
-  const nextGames = Array.isArray(json && json.games) ? json.games : [];
-  return { nextDate, nextGames };
+  const prevDate = typeof json.prevDate === "string" ? json.prevDate : "";
+  const nextDate = typeof json.nextDate === "string" ? json.nextDate : "";
+  const games = Array.isArray(json && json.games) ? json.games : [];
+  return { currentDate, prevDate, nextDate, games };
 };
 
 const useScores = (dateOverride, { skip = false } = {}) => {
   const [date, setDate] = useState("");
+  const [prevDate, setPrevDate] = useState("");
+  const [nextDate, setNextDate] = useState("");
   const [games, setGames] = useState([]);
 
   useEffect(() => {
@@ -42,16 +46,20 @@ const useScores = (dateOverride, { skip = false } = {}) => {
         }
 
         const json = await res.json();
-        const { nextDate, nextGames } = normalizeScorePayload(json);
+        const payload = normalizeScorePayload(json);
 
         if (isMounted) {
-          setDate(nextDate);
-          setGames(nextGames);
+          setDate(payload.currentDate);
+          setPrevDate(payload.prevDate);
+          setNextDate(payload.nextDate);
+          setGames(payload.games);
         }
       } catch (error) {
         // Keep UI stable and avoid unhandled promise rejections during polling.
         if (isMounted) {
           setDate("");
+          setPrevDate("");
+          setNextDate("");
           setGames([]);
         }
         console.error("Unable to fetch NHL scores", error);
@@ -70,8 +78,10 @@ const useScores = (dateOverride, { skip = false } = {}) => {
   }, [dateOverride, skip]);
 
   return {
-    date: date,
-    games: games,
+    date,
+    prevDate,
+    nextDate,
+    games,
   };
 };
 

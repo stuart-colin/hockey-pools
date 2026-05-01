@@ -22,24 +22,37 @@ const dateNavIconStyle = {
   margin: 7,
 };
 
+const dateNavIconDisabledStyle = {
+  ...dateNavIconStyle,
+  cursor: 'not-allowed',
+  opacity: 0.4,
+};
+
 const resetDateIconStyle = {
   cursor: 'pointer',
   margin: '0.5em',
 };
 
-const DateLabel = ({ date, dateOffset, onNext, onPrev, onReset }) => (
+const DateLabel = ({
+  date,
+  isOffDate,
+  canGoNext = true,
+  canGoPrev = true,
+  onNext,
+  onPrev,
+  onReset,
+}) => (
   <Label
     color='blue'
     style={dateLabelRootStyle}
   >
-    {/* Disabled until we add a date picker */}
     <Icon
       name='chevron left'
       onClick={(e) => {
         e.stopPropagation();
-        onPrev();
+        if (canGoPrev) onPrev();
       }}
-      style={dateNavIconStyle}
+      style={canGoPrev ? dateNavIconStyle : dateNavIconDisabledStyle}
       title='Previous day'
     />
     {date ? prettyDate(date) : 'No games scheduled'}
@@ -47,12 +60,12 @@ const DateLabel = ({ date, dateOffset, onNext, onPrev, onReset }) => (
       name='chevron right'
       onClick={(e) => {
         e.stopPropagation();
-        onNext();
+        if (canGoNext) onNext();
       }}
-      style={dateNavIconStyle}
+      style={canGoNext ? dateNavIconStyle : dateNavIconDisabledStyle}
       title='Next day'
     />
-    {dateOffset !== 0 && (
+    {isOffDate && (
       <Icon
         name='undo'
         onClick={(e) => {
