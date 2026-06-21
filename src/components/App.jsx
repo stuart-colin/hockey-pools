@@ -36,9 +36,11 @@ const AppContent = ({ season, setSeason }) => {
   const [showAlert, setShowAlert] = useState(true);
 
   // ===== Feature Toggles =====
-  const [liveStatsEnabled, setLiveStatsEnabled] = useState(
-    () => localStorage.getItem('liveStatsEnabled') !== 'false'
-  );
+  // const [liveStatsEnabled, setLiveStatsEnabled] = useState(
+  //   () => localStorage.getItem('liveStatsEnabled') !== 'false'
+  // );
+  const [liveStatsEnabled, setLiveStatsEnabled] = useState(false);
+
 
   // ===== Auth & Breakpoints =====
   const { isMobile, isTablet, isDesktop, isWide } = useBreakpoint();

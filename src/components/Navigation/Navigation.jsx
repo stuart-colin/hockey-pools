@@ -135,9 +135,9 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
                 />
               </Menu.Item>
               {renderMenuItems()}
-              <Menu.Item>
+              {/* <Menu.Item>
                 {liveStatsBadge}
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           </NavigationSidebar>
         </>
@@ -153,9 +153,9 @@ const Navigation = ({ liveStatsEnabled, onLiveStatsToggle }) => {
           </Menu.Item>
           {renderMenuItems()}
           <Menu.Menu position='right'>
-            <Menu.Item>
+            {/* <Menu.Item>
               {liveStatsBadge}
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item>
               <AuthButtons />
             </Menu.Item>
